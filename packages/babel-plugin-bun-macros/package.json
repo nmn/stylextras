@@ -1,0 +1,34 @@
+{
+  "name": "babel-plugin-bun-macros",
+  "version": "0.0.1",
+  "description": "Babel plugin for bun macros",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "bun build"
+  },
+  "dependencies": {
+    "@babel/plugin-syntax-typescript": "^7.23.3",
+    "postcss": "^8.4.32",
+    "postcss-js": "^4.0.1",
+    "prettier-plugin-hermes-parser": "^0.18.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "@babel/preset-flow": "^7.23.3",
+    "babel-plugin-syntax-hermes-parser": "^0.18.0",
+    "flow-api-translator": "^0.18.0",
+    "flow-bin": "^0.226.0",
+    "jest": "^30.0.0-alpha.1",
+    "prettier": "^3.1.0",
+    "yargs": "^17.7.2"
+  },
+  "files": [
+    "lib/*"
+  ],
+  "peerDependencies": {
+    "typescript": "^5.2.0"
+  }
+}

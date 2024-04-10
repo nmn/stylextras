@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "jsc": {
+    "target": "es2018",
+    "keepClassNames": true
+  },
+  "module": {
+    "type": "commonjs"
+  }
+}
