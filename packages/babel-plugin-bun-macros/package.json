@@ -13,13 +13,6 @@
   "devDependencies": {
     "@babel/cli": "^7.23.4",
     "@babel/core": "^7.23.5",
-    "@babel/preset-env": "^7.23.5",
-    "yargs": "^17.7.2"
-  },
-  "files": [
-    "lib/*"
-  ],
-  "peerDependencies": {
-    "typescript": "^5.2.0"
+    "@babel/preset-env": "^7.23.5"
   }
 }

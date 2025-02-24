@@ -19,10 +19,6 @@
     "postcss-js": "^4.0.1",
     "tailwindcss": "^4.0.8"
   },
-  "jest": {},
-  "files": [
-    "lib/*"
-  ],
   "devDependencies": {
     "yargs": "^17.7.2"
   }
