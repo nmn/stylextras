@@ -1,4 +1,13 @@
-# stylextras
+# @stylextras
+
+A collection of tools and libraries that pair well with [StyleX](https://stylexjs.com).
+
+## Packages
+
+- [@stylextras/babel-plugin-tailwind-syntax](./packages/babel-plugin-tailwind-syntax) - A Babel plugin for converting Tailwind CSS to StyleX.
+- (Work in progress) @stylextras/babel-plugin-bun-macros - A Babel plugin for using Bun macros.
+
+## Installation
 
 To install dependencies:
 
