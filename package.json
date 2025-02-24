@@ -1,12 +1,13 @@
 {
   "name": "stylextras",
-  "private": true,
   "devDependencies": {
     "@types/bun": "^1.2.3",
-    "vitest": "^3.0.6"
-  },
-  "peerDependencies": {
+    "vitest": "^3.0.6",
     "typescript": "^5.7.3"
+  },
+  "scripts": {
+    "build": "bun run --filter '*' build",
+    "test": "bun run --filter '*' test"
   },
   "workspaces": [
     "packages/*"
