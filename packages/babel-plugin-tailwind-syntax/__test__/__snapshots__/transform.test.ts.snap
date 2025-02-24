@@ -1,0 +1,689 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tailwind-to-stylex - fixtures > transforms command-menu.js 1`] = `
+"'use client';
+
+import * as _stylex from "@stylexjs/stylex";
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
+import { DialogProps } from '@radix-ui/react-alert-dialog';
+import { CircleIcon, FileIcon, LaptopIcon, MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import { useTheme } from 'next-themes';
+import { docsConfig } from '@/config/docs';
+import { cn } from '@/lib/utils';
+import { Button } from '@/registry/new-york/ui/button';
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/registry/new-york/ui/command';
+export function CommandMenu({
+  ...props
+}: DialogProps) {
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const {
+    setTheme
+  } = useTheme();
+  React.useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen(open => !open);
+      }
+    };
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, []);
+  const runCommand = React.useCallback((command: () => unknown) => {
+    setOpen(false);
+    command();
+  }, []);
+  return <>
+      <Button variant="outline" className={[_styles.$1]} onClick={() => setOpen(true)} {...props}>
+        <span {..._stylex.props(_styles.$2)}>Search documentation...</span>
+        <span {..._stylex.props(_styles.$3)}>Search...</span>
+        <kbd {..._stylex.props(_styles.$4)}>
+          <span {..._stylex.props(_styles.$5)}>⌘</span>K
+        </kbd>
+      </Button>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Links">
+            {docsConfig.mainNav.filter(navitem => !navitem.external).map(navItem => <CommandItem key={navItem.href} value={navItem.title} onSelect={() => {
+            runCommand(() => router.push((navItem.href as string)));
+          }}>
+                  <FileIcon className={_styles.$6} />
+                  {navItem.title}
+                </CommandItem>)}
+          </CommandGroup>
+          {docsConfig.sidebarNav.map(group => <CommandGroup key={group.title} heading={group.title}>
+              {group.items.map(navItem => <CommandItem key={navItem.href} value={navItem.title} onSelect={() => {
+            runCommand(() => router.push((navItem.href as string)));
+          }}>
+                  <div {..._stylex.props(_styles.$7)}>
+                    <CircleIcon className={_styles.$8} />
+                  </div>
+                  {navItem.title}
+                </CommandItem>)}
+            </CommandGroup>)}
+          <CommandSeparator />
+          <CommandGroup heading="Theme">
+            <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
+              <SunIcon className={_styles.$6} />
+              Light
+            </CommandItem>
+            <CommandItem onSelect={() => runCommand(() => setTheme('dark'))}>
+              <MoonIcon className={_styles.$6} />
+              Dark
+            </CommandItem>
+            <CommandItem onSelect={() => runCommand(() => setTheme('system'))}>
+              <LaptopIcon className={_styles.$6} />
+              System
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </>;
+}
+const _styles = _stylex.create({
+  $1: {
+    position: "relative",
+    width: {
+      default: "100%",
+      "@media (width >= 48rem)": "10rem",
+      "@media (width >= 64rem)": "16rem"
+    },
+    justifyContent: "flex-start",
+    paddingRight: {
+      default: null,
+      "@media (width >= 40rem)": "3rem"
+    }
+  },
+  $2: {
+    display: {
+      default: "none",
+      "@media (width >= 64rem)": "inline-flex"
+    }
+  },
+  $3: {
+    display: {
+      default: "inline-flex",
+      "@media (width >= 64rem)": "none"
+    }
+  },
+  $4: {
+    pointerEvents: "none",
+    position: "absolute",
+    top: ".375rem",
+    right: ".375rem",
+    display: {
+      default: "none",
+      "@media (width >= 40rem)": "flex"
+    },
+    height: "1.25rem",
+    alignItems: "center",
+    gap: ".25rem",
+    borderRadius: ".25rem",
+    borderStyle: "var(--tw-border-style)",
+    borderWidth: "1px",
+    paddingInline: ".375rem",
+    fontSize: "10px",
+    opacity: "1",
+    WebkitUserSelect: "none",
+    userSelect: "none"
+  },
+  $5: {},
+  $6: {
+    marginRight: ".5rem",
+    height: "1rem",
+    width: "1rem"
+  },
+  $7: {
+    marginRight: ".5rem",
+    display: "flex",
+    height: "1rem",
+    width: "1rem",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  $8: {
+    height: ".75rem",
+    width: ".75rem"
+  }
+});"
+`;
+
+exports[`tailwind-to-stylex - fixtures > transforms form.js 1`] = `
+"import * as _stylex from "@stylexjs/stylex";
+/**
+ * v0 by Vercel.
+ * @see https://v0.dev/t/WfjCkNNqj9B
+ */
+import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+export default function Component({
+  xstyle
+}) {
+  return <Card>
+      <CardHeader>
+        <CardTitle>Uniswap Slot0 Information</CardTitle>
+        <CardDescription>
+          Detailed pool data for the selected Uniswap slot0.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div {..._stylex.props(_styles.$1, xstyle)}>
+          <div {..._stylex.props(xstyle, _styles.$2)}>
+            <Label htmlFor="sqrtPriceX96">Sqrt Price X96</Label>
+            <Input disabled id="sqrtPriceX96" placeholder="Sqrt Price X96" />
+          </div>
+          <div {..._stylex.props(_styles.$2)}>
+            <Label htmlFor="tick" className={_styles.$2}>
+              Tick
+            </Label>
+            <Input disabled id="tick" placeholder="Tick" className={[_styles.$2, xstyle]} />
+          </div>
+          <div {..._stylex.props(_styles.$2)}>
+            <Label htmlFor="observationIndex">Observation Index</Label>
+            <Input disabled id="observationIndex" placeholder="Observation Index" />
+          </div>
+          <div {..._stylex.props(_styles.$2)}>
+            <Label htmlFor="observationCardinality">
+              Observation Cardinality
+            </Label>
+            <Input disabled id="observationCardinality" placeholder="Observation Cardinality" />
+          </div>
+          <div {..._stylex.props(_styles.$2)}>
+            <Label htmlFor="observationCardinalityNext">
+              Observation Cardinality Next
+            </Label>
+            <Input disabled id="observationCardinalityNext" placeholder="Observation Cardinality Next" />
+          </div>
+          <div {..._stylex.props(_styles.$2)}>
+            <Label htmlFor="feeProtocol">Fee Protocol</Label>
+            <Input disabled id="feeProtocol" placeholder="Fee Protocol" />
+          </div>
+          <div {..._stylex.props(_styles.$2)}>
+            <Label htmlFor="unlocked">Unlocked</Label>
+            <Input disabled id="unlocked" placeholder="Unlocked" />
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className={_styles.$3}>
+        <Button variant="outline">Refresh</Button>
+        <Link className={_styles.$4} href="#">
+          More Details
+        </Link>
+      </CardFooter>
+    </Card>;
+}
+const _styles = _stylex.create({
+  $1: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "1rem"
+  },
+  $2: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  $3: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
+  $4: {
+    color: "#3b82f6"
+  }
+});"
+`;
+
+exports[`tailwind-to-stylex - fixtures > transforms portfolio.js 1`] = `
+"import * as _stylex from "@stylexjs/stylex";
+/**
+ * v0 by Vercel.
+ * @see https://v0.dev/t/u18ILcKLQhV
+ */
+import Link from "next/link";
+import { CardHeader, CardFooter, Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+export default function Component() {
+  return <section {..._stylex.props(_styles.$1)}>
+      <header {..._stylex.props(_styles.$2)}>
+        <Link className={_styles.$3} href="#">
+          <IconMountain className={_styles.$4} />
+          <span {..._stylex.props(_styles.$5)}>Portfolio</span>
+        </Link>
+        <nav {..._stylex.props(_styles.$6)}>
+          <Link className={_styles.$7} href="#">
+            About
+          </Link>
+          <Link className={_styles.$7} href="#">
+            Education
+          </Link>
+          <Link className={_styles.$7} href="#">
+            Projects
+          </Link>
+          <Link className={_styles.$7} href="#">
+            Contact
+          </Link>
+        </nav>
+      </header>
+      <div {..._stylex.props(_styles.$8)}>
+        <div {..._stylex.props(_styles.$9)}>
+          <h1 {..._stylex.props(_styles.$10)}>
+            Welcome to My Portfolio
+          </h1>
+          <p {..._stylex.props(_styles.$11)}>
+            A high school student aspiring to innovate and create.
+          </p>
+          <Link className={_styles.$12} href="#">
+            Contact Me
+          </Link>
+        </div>
+      </div>
+      <div {..._stylex.props(_styles.$13)} id="about">
+        <h2 {..._stylex.props(_styles.$14)}>
+          About Me
+        </h2>
+        <p {..._stylex.props(_styles.$11)}>
+          I am a high school student passionate about technology and problem
+          solving. I enjoy coding, robotics, and exploring new technologies.
+        </p>
+      </div>
+      <div {..._stylex.props(_styles.$13)} id="education">
+        <h2 {..._stylex.props(_styles.$14)}>
+          Education
+        </h2>
+        <p {..._stylex.props(_styles.$11)}>
+          I am currently attending XYZ High School with an expected graduation
+          year of 2025.
+        </p>
+      </div>
+      <div {..._stylex.props(_styles.$15)} id="projects">
+        <Card>
+          <CardHeader style={[_styles.$16]}>
+            <h3 {..._stylex.props(_styles.$17)}>Project 1</h3>
+          </CardHeader>
+          <div>
+            <p {..._stylex.props(_styles.$18)}>
+              This is a brief description of my project. It includes details
+              about the technologies I used and the problems I solved.
+            </p>
+          </div>
+          <CardFooter>
+            <Link className={_styles.$7} href="#">
+              View Project
+            </Link>
+          </CardFooter>
+        </Card>
+        <Card>
+          <CardHeader>
+            <h3 {..._stylex.props(_styles.$17)}>Project 2</h3>
+          </CardHeader>
+          <div>
+            <p {..._stylex.props(_styles.$18)}>
+              This is a brief description of my project. It includes details
+              about the technologies I used and the problems I solved.
+            </p>
+          </div>
+          <CardFooter>
+            <Link className={_styles.$7} href="#">
+              View Project
+            </Link>
+          </CardFooter>
+        </Card>
+        <Card>
+          <CardHeader>
+            <h3 {..._stylex.props(_styles.$17)}>Project 3</h3>
+          </CardHeader>
+          <div>
+            <p {..._stylex.props(_styles.$18)}>
+              This is a brief description of my project. It includes details
+              about the technologies I used and the problems I solved.
+            </p>
+          </div>
+          <CardFooter>
+            <Link className={_styles.$7} href="#">
+              View Project
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
+      <div {..._stylex.props(_styles.$13)} id="contact">
+        <h2 {..._stylex.props(_styles.$14)}>
+          Contact Me
+        </h2>
+        <form {..._stylex.props(_styles.$19)}>
+          <div {..._stylex.props(_styles.$20)}>
+            <div {..._stylex.props(_styles.$21)}>
+              <label {..._stylex.props(_styles.$22)} htmlFor="grid-first-name">
+                Name
+              </label>
+              <Input id="grid-first-name" placeholder="Name" type="text" />
+            </div>
+            <div {..._stylex.props(_styles.$23)}>
+              <label {..._stylex.props(_styles.$22)} htmlFor="grid-last-name">
+                Email
+              </label>
+              <Input id="grid-last-name" placeholder="Email" type="email" />
+            </div>
+          </div>
+          <div {..._stylex.props(_styles.$20)}>
+            <div {..._stylex.props(_styles.$24)}>
+              <label {..._stylex.props(_styles.$22)} htmlFor="grid-password">
+                Message
+              </label>
+              <Input id="grid-password" placeholder="Your message" type="text" />
+            </div>
+          </div>
+          <Button type="submit">Send Message</Button>
+        </form>
+      </div>
+    </section>;
+}
+function IconMountain(props) {
+  return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
+    </svg>;
+}
+const _styles = _stylex.create({
+  $1: {
+    width: "100%",
+    paddingBlock: "3rem"
+  },
+  $2: {
+    display: "flex",
+    height: "3.5rem",
+    alignItems: "center",
+    paddingInline: {
+      default: "1rem",
+      "@media (width >= 64rem)": "1.5rem"
+    }
+  },
+  $3: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  $4: {
+    height: "1.5rem",
+    width: "1.5rem"
+  },
+  $5: {
+    clip: "rect(0, 0, 0, 0)",
+    whiteSpace: "nowrap",
+    borderWidth: "0",
+    width: "1px",
+    height: "1px",
+    margin: "-1px",
+    padding: "0",
+    position: "absolute",
+    overflow: "hidden"
+  },
+  $6: {
+    marginLeft: "auto",
+    display: "flex",
+    gap: {
+      default: "1rem",
+      "@media (width >= 40rem)": "1.5rem"
+    }
+  },
+  $7: {
+    textUnderlineOffset: "4px",
+    textDecorationLine: {
+      default: null,
+      "@media (hover: hover)": {
+        default: null,
+        ":hover": "underline"
+      }
+    }
+  },
+  $8: {
+    width: "100%",
+    maxWidth: {
+      default: null,
+      "@media (width >= 40rem)": "40rem",
+      "@media (width >= 48rem)": "48rem",
+      "@media (width >= 64rem)": "64rem",
+      "@media (width >= 80rem)": "80rem",
+      "@media (width >= 96rem)": "96rem"
+    },
+    paddingInline: {
+      default: "1rem",
+      "@media (width >= 48rem)": "1.5rem"
+    }
+  },
+  $9: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center"
+  },
+  $10: {},
+  $11: {
+    maxWidth: "600px",
+    color: {
+      default: "#6b7280",
+      "@media (prefers-color-scheme: dark)": "#9ca3af"
+    }
+  },
+  $12: {
+    display: "inline-flex",
+    height: "2.5rem",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: ".375rem",
+    backgroundColor: {
+      default: "#111827",
+      "@media (hover: hover)": {
+        default: null,
+        ":hover": "oklab(21.0084% -.00295345 -.031625 / .9)"
+      },
+      "@media (prefers-color-scheme: dark)": "#f9fafb"
+    },
+    paddingInline: "2rem",
+    color: {
+      default: "#f9fafb",
+      "@media (prefers-color-scheme: dark)": "#111827"
+    },
+    "--tw-shadow": "0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a)",
+    boxShadow: {
+      default: "var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)",
+      ":focus-visible": "var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)"
+    },
+    transitionProperty: "color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to",
+    transitionTimingFunction: "var(--tw-ease, cubic-bezier(.4, 0, .2, 1))",
+    transitionDuration: "var(--tw-duration, .15s)",
+    "--tw-ring-shadow": {
+      default: null,
+      ":focus-visible": "var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor)"
+    },
+    "--tw-ring-color": {
+      default: null,
+      ":focus-visible": "#030712"
+    },
+    "--tw-outline-style": {
+      default: null,
+      ":focus-visible": "none"
+    },
+    outlineStyle: {
+      default: null,
+      ":focus-visible": "none"
+    },
+    pointerEvents: {
+      default: null,
+      ":disabled": "none"
+    },
+    opacity: {
+      default: null,
+      ":disabled": ".5"
+    }
+  },
+  $13: {
+    width: "100%",
+    maxWidth: {
+      default: null,
+      "@media (width >= 40rem)": "40rem",
+      "@media (width >= 48rem)": "48rem",
+      "@media (width >= 64rem)": "64rem",
+      "@media (width >= 80rem)": "80rem",
+      "@media (width >= 96rem)": "96rem"
+    },
+    paddingInline: {
+      default: "1rem",
+      "@media (width >= 48rem)": "1.5rem"
+    },
+    paddingBlock: "3rem"
+  },
+  $14: {},
+  $15: {
+    width: "100%",
+    maxWidth: {
+      default: null,
+      "@media (width >= 40rem)": "40rem",
+      "@media (width >= 48rem)": "48rem",
+      "@media (width >= 64rem)": "64rem",
+      "@media (width >= 80rem)": "80rem",
+      "@media (width >= 96rem)": "96rem"
+    },
+    display: "grid",
+    gap: "1.5rem",
+    paddingInline: {
+      default: "1rem",
+      "@media (width >= 48rem)": "1.5rem"
+    },
+    paddingBlock: "3rem",
+    gridTemplateColumns: {
+      default: null,
+      "@media (width >= 40rem)": "repeat(2, minmax(0, 1fr))",
+      "@media (width >= 48rem)": "repeat(3, minmax(0, 1fr))"
+    }
+  },
+  $16: {
+    color: {
+      default: "#6b7280",
+      "@media (prefers-color-scheme: dark)": "#9ca3af"
+    }
+  },
+  $17: {},
+  $18: {
+    color: {
+      default: "#6b7280",
+      "@media (prefers-color-scheme: dark)": "#9ca3af"
+    }
+  },
+  $19: {
+    marginInline: "auto",
+    marginTop: "1.5rem",
+    width: "100%"
+  },
+  $20: {
+    marginInline: "-.75rem",
+    marginBottom: "1.5rem",
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  $21: {
+    marginBottom: {
+      default: "1.5rem",
+      "@media (width >= 48rem)": "0"
+    },
+    width: {
+      default: "100%",
+      "@media (width >= 48rem)": "50%"
+    },
+    paddingInline: ".75rem"
+  },
+  $22: {
+    marginBottom: ".5rem",
+    display: "block",
+    color: "#374151",
+    textTransform: "uppercase"
+  },
+  $23: {
+    width: {
+      default: "100%",
+      "@media (width >= 48rem)": "50%"
+    },
+    paddingInline: ".75rem"
+  },
+  $24: {
+    width: "100%",
+    paddingInline: ".75rem"
+  }
+});"
+`;
+
+exports[`tailwind-to-stylex - fixtures > transforms theme-toggle.js 1`] = `
+"/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ *
+ */
+
+'use client';
+
+import * as _stylex from "@stylexjs/stylex";
+import * as React from 'react';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Button } from '@/components/ui/button';
+export function ThemeToggle() {
+  const {
+    setTheme,
+    theme
+  } = useTheme();
+  return <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+      <Sun className={_styles.$1} />
+      <Moon className={_styles.$2} />
+      <span {..._stylex.props(_styles.$3)}>Toggle theme</span>
+    </Button>;
+}
+const _styles = _stylex.create({
+  $1: {
+    height: "1.5rem",
+    width: "1.3rem",
+    display: {
+      default: null,
+      "@media (prefers-color-scheme: dark)": "none"
+    }
+  },
+  $2: {
+    display: {
+      default: "none",
+      "@media (prefers-color-scheme: dark)": "block"
+    },
+    height: "1.25rem",
+    width: "1.25rem"
+  },
+  $3: {
+    clip: "rect(0, 0, 0, 0)",
+    whiteSpace: "nowrap",
+    borderWidth: "0",
+    width: "1px",
+    height: "1px",
+    margin: "-1px",
+    padding: "0",
+    position: "absolute",
+    overflow: "hidden"
+  }
+});"
+`;
+
+exports[`tailwind-to-stylex - fixtures > transforms variable-are-left-alone.js 1`] = `
+"import * as stylex from "@stylexjs/stylex";
+export const colors = stylex.defineVars({
+  darkBlue: "#006ce9",
+  lightBlue: "#18b6f6",
+  lightPurple: "#ac7ff4",
+  darkPurple: "#713fc2",
+  dirtyBlack: "#1d2033",
+  darkBackground: "#151934",
+  darkText: "#ffffff"
+});"
+`;

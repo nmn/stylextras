@@ -1,0 +1,29 @@
+{
+  "name": "@stylextras/babel-plugin-tailwind-syntax",
+  "version": "0.1.0",
+  "description": "A utility for converting Tailwind CSS to Stylex",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "bin": {
+    "tw-to-stylex": "./lib/tw-to-stylex.js"
+  },
+  "repository": "https://github.com/nmn/tw-to-stylex",
+  "license": "MIT",
+  "scripts": {
+    "build": "find ./src -name '*.ts' -exec sh -c 'bun build {} --outfile ./lib/$(basename {} .ts).js --target node --no-bundle' \\;",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "lightningcss": "^1.27.0",
+    "postcss": "^8.4.32",
+    "postcss-js": "^4.0.1",
+    "tailwindcss": "^4.0.8"
+  },
+  "jest": {},
+  "files": [
+    "lib/*"
+  ],
+  "devDependencies": {
+    "yargs": "^17.7.2"
+  }
+}
