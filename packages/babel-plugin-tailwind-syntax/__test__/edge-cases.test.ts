@@ -1,114 +1,97 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from 'vitest'
 
-import { makeCompiler } from "../src/classes-to-css";
-import { convertFromCssToJss } from "../src/helpers";
+import { makeCompiler } from '../src/classes-to-css'
+import { convertFromCssToJss } from '../src/helpers'
 
 const x = {
-  "flex-grow bg-gray-50 text-gray-700": ["flex-grow"],
-  "inline-flex items-center justify-between space-x-2": ["space-x-2"],
-  "w-3/4 bg-opacity-90 text-opacity-80": ["bg-opacity-90", "text-opacity-80"],
-  "z-50 bg-opacity-75 backdrop-blur-sm": ["bg-opacity-75"],
-  "flex-shrink-0 text-gray-500": ["flex-shrink-0"],
-  "hover:bg-opacity-80 active:bg-opacity-60": [
-    "hover:bg-opacity-80",
-    "active:bg-opacity-60",
+  'flex-grow bg-gray-50 text-gray-700': ['flex-grow'],
+  'inline-flex items-center justify-between space-x-2': ['space-x-2'],
+  'w-3/4 bg-opacity-90 text-opacity-80': ['bg-opacity-90', 'text-opacity-80'],
+  'z-50 bg-opacity-75 backdrop-blur-sm': ['bg-opacity-75'],
+  'flex-shrink-0 text-gray-500': ['flex-shrink-0'],
+  'hover:bg-opacity-80 active:bg-opacity-60': ['hover:bg-opacity-80', 'active:bg-opacity-60'],
+  'md:hover:shadow-2xl md:hover:scale-105 transition-all duration-500': [
+    'md:hover:shadow-2xl',
+    'md:hover:scale-105',
   ],
-  "md:hover:shadow-2xl md:hover:scale-105 transition-all duration-500": [
-    "md:hover:shadow-2xl",
-    "md:hover:scale-105",
+  'container mx-auto sm:px-4 md:px-8 lg:px-16': ['container'],
+  'aspect-w-16 aspect-h-9': ['aspect-w-16', 'aspect-h-9'],
+  'sm:container md:max-w-3xl lg:max-w-5xl': ['sm:container'],
+  'prose prose-lg prose-blue': ['prose', 'prose-lg', 'prose-blue'],
+  'backdrop-filter backdrop-blur-lg bg-opacity-80': ['bg-opacity-80'],
+  'sm:focus-within:shadow-lg sm:focus-within:border-blue-500': [
+    'sm:focus-within:shadow-lg',
+    'sm:focus-within:border-blue-500',
   ],
-  "container mx-auto sm:px-4 md:px-8 lg:px-16": ["container"],
-  "aspect-w-16 aspect-h-9": ["aspect-w-16", "aspect-h-9"],
-  "sm:container md:max-w-3xl lg:max-w-5xl": ["sm:container"],
-  "prose prose-lg prose-blue": ["prose", "prose-lg", "prose-blue"],
-  "backdrop-filter backdrop-blur-lg bg-opacity-80": ["bg-opacity-80"],
-  "sm:focus-within:shadow-lg sm:focus-within:border-blue-500": [
-    "sm:focus-within:shadow-lg",
-    "sm:focus-within:border-blue-500",
+  'container:sm:grid container:sm:grid-cols-3 container:md:flex container:lg:block': [
+    ,
+    'container:sm:grid',
+    'container:sm:grid-cols-3',
+    'container:md:flex',
+    'container:lg:block',
   ],
-  "container:sm:grid container:sm:grid-cols-3 container:md:flex container:lg:block":
-    [
-      ,
-      "container:sm:grid",
-      "container:sm:grid-cols-3",
-      "container:md:flex",
-      "container:lg:block",
-    ],
-  "lg:shadow-outline lg:shadow-md": ["lg:shadow-outline"],
-  "bg-gradient-conic from-blue-400 via-purple-500 to-pink-600": [
-    "bg-gradient-conic",
+  'lg:shadow-outline lg:shadow-md': ['lg:shadow-outline'],
+  'bg-gradient-conic from-blue-400 via-purple-500 to-pink-600': ['bg-gradient-conic'],
+  '2xl:text-6xl sm:text-4xl xs:text-sm': ['2xl:text-6xl', 'xs:text-sm'],
+  'scroll-smooth hover:scroll-snap-stop': ['hover:scroll-snap-stop'],
+  'child:bg-red-400 child:m-4 child:flex child:h-16': [
+    'child:bg-red-400',
+    'child:m-4',
+    'child:flex',
+    'child:h-16',
   ],
-  "2xl:text-6xl sm:text-4xl xs:text-sm": ["2xl:text-6xl", "xs:text-sm"],
-  "scroll-smooth hover:scroll-snap-stop": ["hover:scroll-snap-stop"],
-  "child:bg-red-400 child:m-4 child:flex child:h-16": [
-    "child:bg-red-400",
-    "child:m-4",
-    "child:flex",
-    "child:h-16",
+  'only:child:border-2 only:child:border-gray-500': [
+    'only:child:border-2',
+    'only:child:border-gray-500',
   ],
-  "only:child:border-2 only:child:border-gray-500": [
-    "only:child:border-2",
-    "only:child:border-gray-500",
+  'hover:before:bg-gradient-to-t hover:before:from-green-400 hover:before:to-blue-400': [
+    ,
+    'hover:before:bg-gradient-to-t',
+    'hover:before:from-green-400',
+    'hover:before:to-blue-400',
   ],
-  "hover:before:bg-gradient-to-t hover:before:from-green-400 hover:before:to-blue-400":
-    [
-      ,
-      "hover:before:bg-gradient-to-t",
-      "hover:before:from-green-400",
-      "hover:before:to-blue-400",
-    ],
-  "aria-checked:bg-blue-600 aria-disabled:opacity-50": [
-    "aria-checked:bg-blue-600",
-    "aria-disabled:opacity-50",
+  'aria-checked:bg-blue-600 aria-disabled:opacity-50': [
+    'aria-checked:bg-blue-600',
+    'aria-disabled:opacity-50',
   ],
-  "supports:bg-blend-multiply blend-multiply": [
-    "@supports:bg-blend-multiply",
-    "blend-multiply",
+  'supports:bg-blend-multiply blend-multiply': ['@supports:bg-blend-multiply', 'blend-multiply'],
+  'sm:text-opacity-75 md:text-opacity-50 lg:text-opacity-25': [
+    'sm:text-opacity-75',
+    'md:text-opacity-50',
+    'lg:text-opacity-25',
   ],
-  "sm:text-opacity-75 md:text-opacity-50 lg:text-opacity-25": [
-    "sm:text-opacity-75",
-    "md:text-opacity-50",
-    "lg:text-opacity-25",
+  'marker:text-pink-500 marker:font-extrabold': ['marker:text-pink-500', 'marker:font-extrabold'],
+  'flex-grow-0 flex-shrink hover:grow hover:shrink-0': ['flex-grow-0', 'flex-shrink'],
+  'md:hover:translate-x-2 lg:hover:translate-y-2': [
+    'md:hover:translate-x-2',
+    'lg:hover:translate-y-2',
   ],
-  "marker:text-pink-500 marker:font-extrabold": [
-    "marker:text-pink-500",
-    "marker:font-extrabold",
-  ],
-  "flex-grow-0 flex-shrink hover:grow hover:shrink-0": [
-    "flex-grow-0",
-    "flex-shrink",
-  ],
-  "md:hover:translate-x-2 lg:hover:translate-y-2": [
-    "md:hover:translate-x-2",
-    "lg:hover:translate-y-2",
-  ],
-  "xs:w-auto sm:w-1/2 md:w-full lg:w-screen": ["xs:w-auto"],
-};
+  'xs:w-auto sm:w-1/2 md:w-full lg:w-screen': ['xs:w-auto'],
+}
 
 /**
  * @flow strict
  */
 
-const convert =
-  (compile: (strings: string) => string) => (classNames: string) => {
-    let resultCss, resultJSS;
-    try {
-      resultCss = compile(classNames);
-      resultJSS = convertFromCssToJss(classNames, resultCss);
-      return resultJSS;
-    } catch {
-      console.log("Error converting", classNames);
-      console.log("CSS Result:", resultCss);
-      console.log("JSS Result:", resultJSS, "\n\n\n\n");
-      return null;
-    }
-  };
+const convert = (compile: (strings: string) => string) => (classNames: string) => {
+  let resultCss, resultJSS
+  try {
+    resultCss = compile(classNames)
+    resultJSS = convertFromCssToJss(classNames, resultCss)
+    return resultJSS
+  } catch {
+    console.log('Error converting', classNames)
+    console.log('CSS Result:', resultCss)
+    console.log('JSS Result:', resultJSS, '\n\n\n\n')
+    return null
+  }
+}
 
-describe("tailwind-to-stylex converting individual classnames", () => {
-  test("background opacity (bg-opacity-* NOT supported) --IN-- absolute top-0 left-0 h-full w-full bg-black/50", async () => {
-    const input = "absolute top-0 left-0 h-full w-full bg-black/50";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+describe('tailwind-to-stylex converting individual classnames', () => {
+  test('background opacity (bg-opacity-* NOT supported) --IN-- absolute top-0 left-0 h-full w-full bg-black/50', async () => {
+    const input = 'absolute top-0 left-0 h-full w-full bg-black/50'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
 
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
@@ -136,7 +119,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         background-color: oklab(0% none none / .5);
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -147,12 +130,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         "top": "0",
         "width": "100%",
       }
-    `);
-  });
-  test("grow --IN-- grow bg-gray-50 text-gray-700", async () => {
-    const input = "grow bg-gray-50 text-gray-700";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    `)
+  })
+  test('grow --IN-- grow bg-gray-50 text-gray-700', async () => {
+    const input = 'grow bg-gray-50 text-gray-700'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .grow {
@@ -167,7 +150,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         color: #374151;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
      {
@@ -175,12 +158,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
        "color": "#374151",
        "flexGrow": "1",
      }
-    `);
-  });
+    `)
+  })
   test('space-x-2 NOT SUPPORTED --IN-- "inline-flex items-center justify-between space-x-2"', async () => {
-    const input = "inline-flex items-center justify-between space-x-2";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'inline-flex items-center justify-between space-x-2'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .inline-flex {
@@ -207,7 +190,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         initial-value: 0;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
      {
@@ -215,30 +198,30 @@ describe("tailwind-to-stylex converting individual classnames", () => {
        "display": "inline-flex",
        "justifyContent": "space-between",
      }
-    `);
-  });
+    `)
+  })
   test('text-opacity-80 is DEPRECATED --IN-- "w-3/4 bg-opacity-90 text-opacity-80"', async () => {
-    const input = "w-3/4 bg-opacity-90 text-opacity-80";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'w-3/4 bg-opacity-90 text-opacity-80'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .w-3\\/4 {
         width: 75%;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
      {
        "width": "75%",
      }
-    `);
-  });
+    `)
+  })
   test('"z-50 bg-opacity-75 backdrop-blur-sm"', async () => {
-    const input = "z-50 bg-opacity-75 backdrop-blur-sm";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'z-50 bg-opacity-75 backdrop-blur-sm'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .z-50 {
@@ -296,7 +279,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         inherits: false
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
      {
@@ -305,12 +288,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
        "backdropFilter": "var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, )",
        "zIndex": "50",
      }
-    `);
-  });
+    `)
+  })
   test('"flex-shrink-0 text-gray-500"', async () => {
-    const input = "flex-shrink-0 text-gray-500";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'flex-shrink-0 text-gray-500'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .flex-shrink-0 {
@@ -321,32 +304,31 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         color: #6b7280;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
         "color": "#6b7280",
         "flexShrink": "0",
       }
-    `);
-  });
+    `)
+  })
   test('"hover:bg-opacity-80 active:bg-opacity-60"', async () => {
-    const input = "hover:bg-opacity-80 active:bg-opacity-60";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'hover:bg-opacity-80 active:bg-opacity-60'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"md:hover:shadow-2xl md:hover:scale-105 transition-all duration-500"', async () => {
-    const input =
-      "md:hover:shadow-2xl md:hover:scale-105 transition-all duration-500";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'md:hover:shadow-2xl md:hover:scale-105 transition-all duration-500'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .transition-all {
@@ -470,7 +452,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         initial-value: 0 0 #0000;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -479,12 +461,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         "transitionProperty": "all",
         "transitionTimingFunction": "var(--tw-ease, cubic-bezier(.4, 0, .2, 1))",
       }
-    `);
-  });
+    `)
+  })
   test('"container mx-auto sm:px-4 md:px-8 lg:px-16"', async () => {
-    const input = "container mx-auto sm:px-4 md:px-8 lg:px-16";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'container mx-auto sm:px-4 md:px-8 lg:px-16'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .container {
@@ -543,7 +525,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         }
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -564,24 +546,24 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         },
         "width": "100%",
       }
-    `);
-  });
+    `)
+  })
   test('"aspect-w-16 aspect-h-9"', async () => {
-    const input = "aspect-w-16 aspect-h-9";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'aspect-w-16 aspect-h-9'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"sm:container md:max-w-3xl lg:max-w-5xl"', async () => {
-    const input = "sm:container md:max-w-3xl lg:max-w-5xl";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'sm:container md:max-w-3xl lg:max-w-5xl'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       @media (width >= 40rem) {
@@ -620,7 +602,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         }
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -640,24 +622,24 @@ describe("tailwind-to-stylex converting individual classnames", () => {
           "default": null,
         },
       }
-    `);
-  });
+    `)
+  })
   test('"prose prose-lg prose-blue"', async () => {
-    const input = "prose prose-lg prose-blue";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'prose prose-lg prose-blue'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"backdrop-filter backdrop-blur-lg bg-opacity-80"', async () => {
-    const input = "backdrop-filter backdrop-blur-lg bg-opacity-80";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'backdrop-filter backdrop-blur-lg bg-opacity-80'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .backdrop-blur-lg {
@@ -716,7 +698,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         inherits: false
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
      {
@@ -724,12 +706,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
        "WebkitBackdropFilter": "var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, )",
        "backdropFilter": "var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, )",
      }
-    `);
-  });
+    `)
+  })
   test('"sm:focus-within:shadow-lg sm:focus-within:border-blue-500"', async () => {
-    const input = "sm:focus-within:shadow-lg sm:focus-within:border-blue-500";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'sm:focus-within:shadow-lg sm:focus-within:border-blue-500'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       @media (width >= 40rem) {
@@ -812,14 +794,14 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         initial-value: 0 0 #0000;
       }
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"lg:shadow-outline lg:shadow-md"', async () => {
-    const input = "lg:shadow-outline lg:shadow-md";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'lg:shadow-outline lg:shadow-md'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       @media (width >= 64rem) {
@@ -896,7 +878,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         initial-value: 0 0 #0000;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -909,12 +891,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
           "default": null,
         },
       }
-    `);
-  });
+    `)
+  })
   test('"bg-gradient-conic from-blue-400 via-purple-500 to-pink-600"', async () => {
-    const input = "bg-gradient-conic from-blue-400 via-purple-500 to-pink-600";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'bg-gradient-conic from-blue-400 via-purple-500 to-pink-600'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .from-blue-400 {
@@ -984,7 +966,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         initial-value: 100%;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -994,66 +976,66 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         "--tw-gradient-via": "#a855f7",
         "--tw-gradient-via-stops": "var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position)",
       }
-    `);
-  });
+    `)
+  })
   test('"2xl:text-6xl", "xs:text-sm" --IN-- "2xl:text-6xl sm:text-4xl xs:text-sm"', async () => {
-    const input = "2xl:text-6xl sm:text-4xl xs:text-sm";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = '2xl:text-6xl sm:text-4xl xs:text-sm'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"scroll-smooth hover:scroll-snap-stop"', async () => {
-    const input = "scroll-smooth hover:scroll-snap-stop";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'scroll-smooth hover:scroll-snap-stop'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .scroll-smooth {
         scroll-behavior: smooth;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
      {
        "scrollBehavior": "smooth",
      }
-    `);
-  });
+    `)
+  })
   test('"child:bg-red-400 child:m-4 child:flex child:h-16"', async () => {
-    const input = "child:bg-red-400 child:m-4 child:flex child:h-16";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'child:bg-red-400 child:m-4 child:flex child:h-16'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"only:child:border-2 only:child:border-gray-500"', async () => {
-    const input = "only:child:border-2 only:child:border-gray-500";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'only:child:border-2 only:child:border-gray-500'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"aria-checked:bg-blue-600 aria-disabled:opacity-50"', async () => {
-    const input = "aria-checked:bg-blue-600 aria-disabled:opacity-50";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'aria-checked:bg-blue-600 aria-disabled:opacity-50'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .aria-checked\\:bg-blue-600[aria-checked="true"] {
@@ -1064,38 +1046,38 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         opacity: .5;
       }
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"supports:bg-blend-multiply blend-multiply"', async () => {
-    const input = "supports:bg-blend-multiply blend-multiply";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'supports:bg-blend-multiply blend-multiply'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"sm:text-opacity-75 md:text-opacity-50 lg:text-opacity-25"', async () => {
-    const input = "sm:text-opacity-75 md:text-opacity-50 lg:text-opacity-25";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'sm:text-opacity-75 md:text-opacity-50 lg:text-opacity-25'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
 
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"marker:text-pink-500 marker:font-extrabold"', async () => {
-    const input = "marker:text-pink-500 marker:font-extrabold";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'marker:text-pink-500 marker:font-extrabold'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .marker\\:text-pink-500 ::marker {
@@ -1106,7 +1088,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         color: #ec4899;
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -1115,12 +1097,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
           "default": null,
         },
       }
-    `);
-  });
+    `)
+  })
   test('"flex-grow-0 flex-shrink hover:grow hover:shrink-0"', async () => {
-    const input = "flex-grow-0 flex-shrink hover:grow hover:shrink-0";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'flex-grow-0 flex-shrink hover:grow hover:shrink-0'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       .flex-shrink {
@@ -1143,7 +1125,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         }
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
       {
@@ -1162,12 +1144,12 @@ describe("tailwind-to-stylex converting individual classnames", () => {
           "default": "1",
         },
       }
-    `);
-  });
+    `)
+  })
   test('"md:hover:translate-x-2 lg:hover:translate-y-2"', async () => {
-    const input = "md:hover:translate-x-2 lg:hover:translate-y-2";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'md:hover:translate-x-2 lg:hover:translate-y-2'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       @media (width >= 48rem) {
@@ -1206,14 +1188,14 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         initial-value: 0;
       }
       "
-    `);
+    `)
 
-    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`);
-  });
+    expect(convert(compile)(input)).toMatchInlineSnapshot(`{}`)
+  })
   test('"xs:w-auto sm:w-1/2 md:w-full lg:w-screen"', async () => {
-    const input = "xs:w-auto sm:w-1/2 md:w-full lg:w-screen";
-    const compile = await makeCompiler();
-    const css = compile(input.split(" "));
+    const input = 'xs:w-auto sm:w-1/2 md:w-full lg:w-screen'
+    const compile = await makeCompiler()
+    const css = compile(input.split(' '))
     expect(css).toMatchInlineSnapshot(`
       "/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
       @media (width >= 40rem) {
@@ -1234,7 +1216,7 @@ describe("tailwind-to-stylex converting individual classnames", () => {
         }
       }
       "
-    `);
+    `)
 
     expect(convert(compile)(input)).toMatchInlineSnapshot(`
      {
@@ -1245,6 +1227,6 @@ describe("tailwind-to-stylex converting individual classnames", () => {
          "default": null,
        },
      }
-    `);
-  });
-});
+    `)
+  })
+})

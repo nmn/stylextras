@@ -1,11 +1,11 @@
+import { Button } from '@/components/ui/button'
+import { Card, CardFooter, CardHeader } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/u18ILcKLQhV
  */
-import Link from "next/link";
-import { CardHeader, CardFooter, Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link'
 
 export default function Component() {
   return (
@@ -16,28 +16,16 @@ export default function Component() {
           <span className="sr-only">Portfolio</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="#"
-          >
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
             About
           </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="#"
-          >
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
             Education
           </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="#"
-          >
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
             Projects
           </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="#"
-          >
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
             Contact
           </Link>
         </nav>
@@ -59,21 +47,16 @@ export default function Component() {
         </div>
       </div>
       <div className="container px-4 md:px-6 py-12" id="about">
-        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-          About Me
-        </h2>
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">About Me</h2>
         <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
-          I am a high school student passionate about technology and problem
-          solving. I enjoy coding, robotics, and exploring new technologies.
+          I am a high school student passionate about technology and problem solving. I enjoy
+          coding, robotics, and exploring new technologies.
         </p>
       </div>
       <div className="container px-4 md:px-6 py-12" id="education">
-        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-          Education
-        </h2>
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Education</h2>
         <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
-          I am currently attending XYZ High School with an expected graduation
-          year of 2025.
+          I am currently attending XYZ High School with an expected graduation year of 2025.
         </p>
       </div>
       <div
@@ -81,22 +64,17 @@ export default function Component() {
         id="projects"
       >
         <Card>
-          <CardHeader
-            style={tw("text-lg font-bold text-gray-500 dark:text-gray-400")}
-          >
+          <CardHeader style={tw('text-lg font-bold text-gray-500 dark:text-gray-400')}>
             <h3 className="text-lg font-bold">Project 1</h3>
           </CardHeader>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              This is a brief description of my project. It includes details
-              about the technologies I used and the problems I solved.
+              This is a brief description of my project. It includes details about the technologies
+              I used and the problems I solved.
             </p>
           </div>
           <CardFooter>
-            <Link
-              className="text-sm font-medium hover:underline underline-offset-4"
-              href="#"
-            >
+            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
               View Project
             </Link>
           </CardFooter>
@@ -107,15 +85,12 @@ export default function Component() {
           </CardHeader>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              This is a brief description of my project. It includes details
-              about the technologies I used and the problems I solved.
+              This is a brief description of my project. It includes details about the technologies
+              I used and the problems I solved.
             </p>
           </div>
           <CardFooter>
-            <Link
-              className="text-sm font-medium hover:underline underline-offset-4"
-              href="#"
-            >
+            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
               View Project
             </Link>
           </CardFooter>
@@ -126,24 +101,19 @@ export default function Component() {
           </CardHeader>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              This is a brief description of my project. It includes details
-              about the technologies I used and the problems I solved.
+              This is a brief description of my project. It includes details about the technologies
+              I used and the problems I solved.
             </p>
           </div>
           <CardFooter>
-            <Link
-              className="text-sm font-medium hover:underline underline-offset-4"
-              href="#"
-            >
+            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
               View Project
             </Link>
           </CardFooter>
         </Card>
       </div>
       <div className="container px-4 md:px-6 py-12" id="contact">
-        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-          Contact Me
-        </h2>
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Contact Me</h2>
         <form className="w-full max-w-lg mx-auto mt-6">
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -173,18 +143,14 @@ export default function Component() {
               >
                 Message
               </label>
-              <Input
-                id="grid-password"
-                placeholder="Your message"
-                type="text"
-              />
+              <Input id="grid-password" placeholder="Your message" type="text" />
             </div>
           </div>
           <Button type="submit">Send Message</Button>
         </form>
       </div>
     </section>
-  );
+  )
 }
 
 function IconMountain(props) {
@@ -203,5 +169,5 @@ function IconMountain(props) {
     >
       <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
     </svg>
-  );
+  )
 }

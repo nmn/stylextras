@@ -2,353 +2,336 @@
  * @flow strict
  */
 
-import * as t from "@babel/types";
-import { transformAsync } from "@babel/core";
+import { transformAsync } from '@babel/core'
+import type { PluginObj } from '@babel/core'
 // import * as prettier from 'prettier';
-import type { NodePath } from "@babel/traverse";
-import type { PluginObj } from "@babel/core";
-import { makeCompiler } from "./classes-to-css";
-import { convertFromCssToJss, type Jss, type JssValue } from "./helpers";
+import type { NodePath } from '@babel/traverse'
+import * as t from '@babel/types'
+import { makeCompiler } from './classes-to-css'
+import { type Jss, type JssValue, convertFromCssToJss } from './helpers'
 
 const rebaseJss = (jss: Jss): Jss => {
-  const result: Jss = {};
-  const baseKeys = Object.keys(jss).filter(
-    (key) => !key.startsWith(":") && !key.startsWith("@")
-  );
-  const otherKeys = Object.keys(jss).filter(
-    (key) => key.startsWith(":") || key.startsWith("@")
-  );
+  const result: Jss = {}
+  const baseKeys = Object.keys(jss).filter((key) => !key.startsWith(':') && !key.startsWith('@'))
+  const otherKeys = Object.keys(jss).filter((key) => key.startsWith(':') || key.startsWith('@'))
 
   for (const key of baseKeys) {
-    result[key] = jss[key];
+    result[key] = jss[key]
   }
   for (const key of otherKeys) {
-    const value = jss[key];
-    if (typeof value !== "object" || value == null) {
-      throw new Error(`Expected object for ${key}`);
+    const value = jss[key]
+    if (typeof value !== 'object' || value == null) {
+      throw new Error(`Expected object for ${key}`)
     }
     for (const subKey of Object.keys(value)) {
       const subValue =
-        typeof value[subKey] === "object" && value[subKey] != null
+        typeof value[subKey] === 'object' && value[subKey] != null
           ? rebaseJss(value[subKey])
-          : value[subKey];
+          : value[subKey]
 
       result[subKey] = {
         default: result[subKey] ?? null,
         [key]: subValue,
-      } as JssValue;
+      } as JssValue
     }
   }
-  return result;
-};
+  return result
+}
 
 const canBeIdentifier = (value: string): boolean => {
   if (value.length === 0) {
-    return false;
+    return false
   }
   if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(value)) {
-    return false;
+    return false
   }
-  if (value === "undefined") {
-    return false;
+  if (value === 'undefined') {
+    return false
   }
-  return true;
-};
+  return true
+}
 
 const convertToAst = (value: unknown): t.Expression => {
-  if (typeof value === "string") {
-    return t.stringLiteral(value);
+  if (typeof value === 'string') {
+    return t.stringLiteral(value)
   }
-  if (typeof value === "number") {
-    return t.numericLiteral(value);
+  if (typeof value === 'number') {
+    return t.numericLiteral(value)
   }
-  if (typeof value === "boolean") {
-    return t.booleanLiteral(value);
+  if (typeof value === 'boolean') {
+    return t.booleanLiteral(value)
   }
   if (value === null) {
-    return t.nullLiteral();
+    return t.nullLiteral()
   }
   if (value === undefined) {
-    return t.identifier("undefined");
+    return t.identifier('undefined')
   }
   if (Array.isArray(value)) {
-    return t.arrayExpression(value.map(convertToAst));
+    return t.arrayExpression(value.map(convertToAst))
   }
   if (
-    typeof value === "object" &&
+    typeof value === 'object' &&
     value != null &&
-    "type" in value &&
-    typeof value.type === "string"
+    'type' in value &&
+    typeof value.type === 'string'
   ) {
     // @ts-expect-error
-    return value;
+    return value
   }
-  if (typeof value === "object" && value != null) {
+  if (typeof value === 'object' && value != null) {
     return t.objectExpression(
       Object.keys(value).map((key) =>
         t.objectProperty(
           canBeIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
-          convertToAst((value as Record<string, unknown>)[key])
-        )
-      )
-    );
+          convertToAst((value as Record<string, unknown>)[key]),
+        ),
+      ),
+    )
   }
-  throw new Error(`Cannot convert value to AST: ${String(value)}`);
-};
+  throw new Error(`Cannot convert value to AST: ${String(value)}`)
+}
 
 const customBabelPlugin = async (): Promise<PluginObj<{}>> => {
-  let count = 0;
+  let count = 0
 
-  let cnMap: { [key: string]: string } = {};
-  let styleMap: { [key: string]: unknown } = {};
+  let cnMap: { [key: string]: string } = {}
+  let styleMap: { [key: string]: unknown } = {}
 
-  let stylex: t.Identifier;
-  let styles: t.Identifier;
+  let stylex: t.Identifier
+  let styles: t.Identifier
 
-  const compile = await makeCompiler();
+  const compile = await makeCompiler()
 
   const convertTwToJs = (classNames: string) => {
-    let resultCss, resultJSS;
+    let resultCss, resultJSS
     try {
-      resultCss = compile(classNames);
-      resultJSS = convertFromCssToJss(classNames, resultCss);
-      return resultJSS;
+      resultCss = compile(classNames)
+      resultJSS = convertFromCssToJss(classNames, resultCss)
+      return resultJSS
     } catch {
-      console.log("Error converting", classNames);
-      console.log("CSS Result:", resultCss);
-      console.log("JSS Result:", resultJSS, "\n\n\n\n");
-      return null;
+      console.log('Error converting', classNames)
+      console.log('CSS Result:', resultCss)
+      console.log('JSS Result:', resultJSS, '\n\n\n\n')
+      return null
     }
-  };
+  }
 
   const pathToStyleX = (
-    arg: NodePath<
-      | t.Expression
-      | t.ArgumentPlaceholder
-      | t.JSXNamespacedName
-      | t.SpreadElement
-    >
+    arg: NodePath<t.Expression | t.ArgumentPlaceholder | t.JSXNamespacedName | t.SpreadElement>,
   ): t.Expression | null => {
     if (!arg.isExpression()) {
-      return null;
+      return null
     }
-    const node: t.Expression = arg.node;
-    let expressionMap: { [key: string]: unknown } = {};
-    let input: string;
+    const node: t.Expression = arg.node
+    const expressionMap: { [key: string]: unknown } = {}
+    let input: string
     if (arg.isStringLiteral()) {
-      input = arg.node.value;
+      input = arg.node.value
     } else if (arg.isTemplateLiteral()) {
-      let val = 0;
+      let val = 0
       const replacedExpressions = arg.node.expressions.map((e) => {
-        const key = `$${++val}`;
-        expressionMap[key] = e;
-        return key;
-      });
+        const key = `$${++val}`
+        expressionMap[key] = e
+        return key
+      })
       // join the strings and expressions
-      input = arg.node.quasis
-        .map((q, i) => q.value.raw + (replacedExpressions[i] || ""))
-        .join("");
+      input = arg.node.quasis.map((q, i) => q.value.raw + (replacedExpressions[i] || '')).join('')
     } else {
-      return node;
+      return node
     }
 
-    let keyName;
+    let keyName
     if (input != null && cnMap[input]) {
-      keyName = cnMap[input];
+      keyName = cnMap[input]
     } else {
-      const styleObject = convertTwToJs(input);
+      const styleObject = convertTwToJs(input)
       if (styleObject == null) {
-        return null;
+        return null
       }
       // Put replace IDs with expressions using expressionMap.
       for (const key of Object.keys(styleObject)) {
-        const value = styleObject[key];
+        const value = styleObject[key]
         // @ts-expect-error
         if (expressionMap[value]) {
           // @ts-expect-error
-          styleObject[key] = expressionMap[value];
+          styleObject[key] = expressionMap[value]
         }
       }
 
-      keyName = `$${++count}`;
-      styleMap[keyName] = styleObject;
-      cnMap[input] = keyName;
+      keyName = `$${++count}`
+      styleMap[keyName] = styleObject
+      cnMap[input] = keyName
     }
-    return t.memberExpression(styles, t.identifier(keyName));
-  };
+    return t.memberExpression(styles, t.identifier(keyName))
+  }
 
   return {
-    name: "@stylextras/babel-plugin-tailwind-syntax",
+    name: '@stylextras/babel-plugin-tailwind-syntax',
     visitor: {
       Program: {
         enter: (path: NodePath<t.Program>) => {
-          count = 0;
-          cnMap = {};
-          styleMap = {};
+          count = 0
+          cnMap = {}
+          styleMap = {}
 
-          stylex = path.scope.generateUidIdentifier("stylex");
-          styles = path.scope.generateUidIdentifier("styles");
+          stylex = path.scope.generateUidIdentifier('stylex')
+          styles = path.scope.generateUidIdentifier('styles')
         },
         exit: (path: NodePath<t.Program>) => {
           if (Object.keys(styleMap).length === 0) {
-            return;
+            return
           }
 
-          const statments: Array<NodePath<t.Statement>> = path.get("body");
+          const statments: Array<NodePath<t.Statement>> = path.get('body')
 
-          const firstStatement = statments[0];
-          const lastStatement = statments[statments.length - 1];
+          const firstStatement = statments[0]
+          const lastStatement = statments[statments.length - 1]
 
           firstStatement.insertBefore(
             t.importDeclaration(
               [t.importNamespaceSpecifier(stylex)],
-              t.stringLiteral("@stylexjs/stylex")
-            )
-          );
+              t.stringLiteral('@stylexjs/stylex'),
+            ),
+          )
 
           lastStatement.insertAfter(
-            t.variableDeclaration("const", [
+            t.variableDeclaration('const', [
               t.variableDeclarator(
                 styles,
-                t.callExpression(
-                  t.memberExpression(stylex, t.identifier("create")),
-                  [convertToAst(styleMap)]
-                )
+                t.callExpression(t.memberExpression(stylex, t.identifier('create')), [
+                  convertToAst(styleMap),
+                ]),
               ),
-            ])
-          );
+            ]),
+          )
         },
       },
       JSXAttribute: (path: NodePath<t.JSXAttribute>) => {
-        const jsxOpeningElement = path.parentPath.node;
-        if (jsxOpeningElement.type !== "JSXOpeningElement") {
-          return;
+        const jsxOpeningElement = path.parentPath.node
+        if (jsxOpeningElement.type !== 'JSXOpeningElement') {
+          return
         }
-        const name = jsxOpeningElement.name;
+        const name = jsxOpeningElement.name
         const isHTML =
-          name.type === "JSXIdentifier" &&
+          name.type === 'JSXIdentifier' &&
           name.name[0].toLocaleLowerCase() === name.name[0] &&
-          name.name.match(/^[a-z][a-z0-9\-]*$/);
+          name.name.match(/^[a-z][a-z0-9\-]*$/)
 
-        const node = path.node;
-        if (node.name.name !== "className" && node.name.name !== "class") {
-          return;
+        const node = path.node
+        if (node.name.name !== 'className' && node.name.name !== 'class') {
+          return
         }
-        let valuePath: NodePath<t.Expression> = path
-          .get("value")
-          .isJSXExpressionContainer()
-          ? (path.get("value").get("expression") as NodePath<t.Expression>)
-          : (path.get("value") as NodePath<t.Expression>);
+        const valuePath: NodePath<t.Expression> = path.get('value').isJSXExpressionContainer()
+          ? (path.get('value').get('expression') as NodePath<t.Expression>)
+          : (path.get('value') as NodePath<t.Expression>)
 
-        if (isCallExpressionNamed(valuePath, ["cn", "twMerge"])) {
-          const callExpression: NodePath<t.CallExpression> = valuePath;
+        if (isCallExpressionNamed(valuePath, ['cn', 'twMerge'])) {
+          const callExpression: NodePath<t.CallExpression> = valuePath
           const transformedArgs = callExpression
-            .get("arguments")
+            .get('arguments')
             .map(pathToStyleX)
-            .filter((arg) => arg != null);
+            .filter((arg) => arg != null)
 
           if (isHTML) {
             path.replaceWith(
               t.jsxSpreadAttribute(
                 t.callExpression(
-                  t.memberExpression(stylex, t.identifier("props")),
-                  transformedArgs
-                )
-              )
-            );
+                  t.memberExpression(stylex, t.identifier('props')),
+                  transformedArgs,
+                ),
+              ),
+            )
           } else {
-            valuePath.replaceWith(t.arrayExpression(transformedArgs));
+            valuePath.replaceWith(t.arrayExpression(transformedArgs))
           }
 
-          return;
+          return
         }
 
-        const result = valuePath.evaluate();
-        const { confident, value: existingValue } = result;
+        const result = valuePath.evaluate()
+        const { confident, value: existingValue } = result
         if (!confident) {
-          return;
+          return
         }
-        if (typeof existingValue !== "string") {
-          return;
+        if (typeof existingValue !== 'string') {
+          return
         }
 
-        let keyName;
+        let keyName
 
         if (cnMap[existingValue]) {
-          keyName = cnMap[existingValue];
+          keyName = cnMap[existingValue]
         } else {
-          const styleObject = convertTwToJs(existingValue);
+          const styleObject = convertTwToJs(existingValue)
           if (styleObject == null) {
-            return;
+            return
           }
 
-          keyName = `$${++count}`;
-          styleMap[keyName] = styleObject;
-          cnMap[existingValue] = keyName;
+          keyName = `$${++count}`
+          styleMap[keyName] = styleObject
+          cnMap[existingValue] = keyName
         }
 
         if (isHTML) {
           path.replaceWith(
             t.jsxSpreadAttribute(
-              t.callExpression(
-                t.memberExpression(stylex, t.identifier("props")),
-                [t.memberExpression(styles, t.identifier(keyName))]
-              )
-            )
-          );
+              t.callExpression(t.memberExpression(stylex, t.identifier('props')), [
+                t.memberExpression(styles, t.identifier(keyName)),
+              ]),
+            ),
+          )
         } else {
           valuePath.replaceWith(
-            t.jsxExpressionContainer(
-              t.memberExpression(styles, t.identifier(keyName))
-            )
-          );
+            t.jsxExpressionContainer(t.memberExpression(styles, t.identifier(keyName))),
+          )
         }
       },
       CallExpression(path: NodePath<t.CallExpression>) {
-        if (!isCallExpressionNamed(path, ["tw"])) {
-          return;
+        if (!isCallExpressionNamed(path, ['tw'])) {
+          return
         }
-        const transformedArgs = path.get("arguments").map(pathToStyleX);
-        path.replaceWith(t.arrayExpression(transformedArgs));
+        const transformedArgs = path.get('arguments').map(pathToStyleX)
+        path.replaceWith(t.arrayExpression(transformedArgs))
       },
     },
-  };
-};
+  }
+}
 
 function isCallExpressionNamed(
   path: NodePath<t.Expression>,
-  fnNames: ReadonlyArray<string>
+  fnNames: ReadonlyArray<string>,
 ): path is NodePath<t.CallExpression> {
   if (!path.isCallExpression()) {
-    return false;
+    return false
   }
-  const callee = path.get("callee");
+  const callee = path.get('callee')
   if (!callee.isIdentifier()) {
-    return false;
+    return false
   }
-  const name = callee.node.name;
+  const name = callee.node.name
   if (!fnNames.includes(name)) {
-    return false;
+    return false
   }
-  return true;
+  return true
 }
 
-export default customBabelPlugin;
+export default customBabelPlugin
 
 export async function tailwindToStylex(source: string): Promise<string> {
-  const isFlow = source.includes("@flow");
+  const isFlow = source.includes('@flow')
 
   const result = await transformAsync(source, {
     plugins: [
       ...(isFlow
-        ? ["babel-plugin-syntax-hermes-parser"]
-        : [["@babel/syntax-typescript", { isTSX: true }], "@babel/syntax-jsx"]),
+        ? ['babel-plugin-syntax-hermes-parser']
+        : [['@babel/syntax-typescript', { isTSX: true }], '@babel/syntax-jsx']),
       customBabelPlugin,
     ],
-  });
+  })
   if (result == null || result.code == null) {
-    return source;
+    return source
   }
 
-  return result.code;
+  return result.code
 }

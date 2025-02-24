@@ -1,22 +1,16 @@
-/**
- * @flow strict
- */
+import { describe, expect, test } from 'vitest'
 
-"use strict";
+import { tailwindToStylex } from '../src/index'
 
-import { describe, test, expect } from "vitest";
-
-import { tailwindToStylex } from "../src/index";
-
-describe("tailwind-to-stylex small examples", () => {
-  test("transforms simple example", async () => {
+describe('tailwind-to-stylex small examples', () => {
+  test('transforms simple example', async () => {
     const input = `
     function Component() {
       return <div className="flex bg-green-500 hover:bg-red-500 other" />
     }
-    `;
+    `
 
-    const result = await tailwindToStylex(input);
+    const result = await tailwindToStylex(input)
     expect(result).toMatchInlineSnapshot(`
       "import * as _stylex from "@stylexjs/stylex";
       function Component() {
@@ -34,17 +28,17 @@ describe("tailwind-to-stylex small examples", () => {
           }
         }
       });"
-    `);
-  });
+    `)
+  })
 
-  test("transforms simple example", async () => {
+  test('transforms simple example', async () => {
     const input = `
     function Component() {
       return <div className="relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" />
     }
-    `;
+    `
 
-    const result = await tailwindToStylex(input);
+    const result = await tailwindToStylex(input)
     expect(result).toMatchInlineSnapshot(`
       "import * as _stylex from "@stylexjs/stylex";
       function Component() {
@@ -65,10 +59,10 @@ describe("tailwind-to-stylex small examples", () => {
           }
         }
       });"
-    `);
-  });
+    `)
+  })
 
-  test("transforms tailwind being used and merged on custom components", async () => {
+  test('transforms tailwind being used and merged on custom components', async () => {
     const input = `
       const DrawerContent = ({ className, children, ...props }) => (
         <DrawerPrimitive.Portal>
@@ -86,8 +80,8 @@ describe("tailwind-to-stylex small examples", () => {
           </DrawerPrimitive.Content>
         </DrawerPrimitive.Portal>
       );
-    `;
-    const result = await tailwindToStylex(input);
+    `
+    const result = await tailwindToStylex(input)
     expect(result).toMatchInlineSnapshot(`
       "import * as _stylex from "@stylexjs/stylex";
       const DrawerContent = ({
@@ -129,6 +123,6 @@ describe("tailwind-to-stylex small examples", () => {
           borderRadius: "3.40282e38px"
         }
       });"
-    `);
-  });
-});
+    `)
+  })
+})

@@ -2,40 +2,39 @@
  * @flow strict
  */
 
-import { Features, transform } from "lightningcss";
-import { compile } from "tailwindcss";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { Features, transform } from 'lightningcss'
+import { compile } from 'tailwindcss'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-let filePath = path.join(__dirname, "../theme.css");
-filePath = filePath.replace("file:", "");
+let filePath = path.join(__dirname, '../theme.css')
+filePath = filePath.replace('file:', '')
 
 export async function makeCompiler(
-  theme: string = fs.readFileSync(filePath, "utf-8")
+  theme: string = fs.readFileSync(filePath, 'utf-8'),
 ): Promise<(clases: string | string[]) => string> {
-  let { build } = await compile(`${theme}\n\n@tailwind utilities;`);
+  const { build } = await compile(`${theme}\n\n@tailwind utilities;`)
   return (classes: string | string[]): string => {
-    const candidates =
-      typeof classes === "string" ? classes.split(" ") : classes;
+    const candidates = typeof classes === 'string' ? classes.split(' ') : classes
 
-    const cssLines = optimizeCss(build(candidates));
-    return cssLines;
-  };
+    const cssLines = optimizeCss(build(candidates))
+    return cssLines
+  }
 }
 
 export function optimizeCss(
   input: string,
   {
-    file = "input.css",
+    file = 'input.css',
     minify = false,
   }: {
-    file?: string;
-    minify?: boolean;
-  } = {}
+    file?: string
+    minify?: boolean
+  } = {},
 ): string {
   return transform({
     filename: file,
@@ -54,5 +53,5 @@ export function optimizeCss(
       safari: (16 << 16) | (4 << 8),
     },
     errorRecovery: true,
-  }).code.toString();
+  }).code.toString()
 }

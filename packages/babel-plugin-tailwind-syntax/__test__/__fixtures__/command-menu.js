@@ -1,7 +1,5 @@
 'use client';
 
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
 import { DialogProps } from '@radix-ui/react-alert-dialog';
 import {
   CircleIcon,
@@ -11,6 +9,8 @@ import {
   SunIcon,
 } from '@radix-ui/react-icons';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 import { docsConfig } from '@/config/docs';
 import { cn } from '@/lib/utils';

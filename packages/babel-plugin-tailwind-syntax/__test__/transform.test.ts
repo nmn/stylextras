@@ -1,25 +1,19 @@
-/**
- * @flow strict
- */
+import fs from 'fs'
+import path from 'path'
+import { describe, expect, test } from 'vitest'
 
-"use strict";
+import { tailwindToStylex } from '../src/index'
 
-import { describe, test, expect } from "vitest";
-import fs from "fs";
-import path from "path";
-
-import { tailwindToStylex } from "../src/index";
-
-const fixturesPath = path.join(__dirname, "__fixtures__");
+const fixturesPath = path.join(__dirname, '__fixtures__')
 const fixtures = fs.readdirSync(fixturesPath).map((fixture) => {
-  return [fixture, fs.readFileSync(path.join(fixturesPath, fixture), "utf-8")];
-});
+  return [fixture, fs.readFileSync(path.join(fixturesPath, fixture), 'utf-8')]
+})
 
-describe("tailwind-to-stylex - fixtures", () => {
+describe('tailwind-to-stylex - fixtures', () => {
   fixtures.forEach(([fileName, fixture]) => {
     test(`transforms ${fileName}`, async () => {
-      const result = await tailwindToStylex(fixture);
-      expect(result).toMatchSnapshot();
-    });
-  });
-});
+      const result = await tailwindToStylex(fixture)
+      expect(result).toMatchSnapshot()
+    })
+  })
+})

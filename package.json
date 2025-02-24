@@ -3,13 +3,15 @@
   "devDependencies": {
     "@types/bun": "^1.2.3",
     "vitest": "^3.0.6",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "@biomejs/biome": "^1.9.4"
   },
   "scripts": {
     "build": "bun run --filter '*' build",
-    "test": "bun run --filter '*' test"
+    "test": "bun run --filter '*' test",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "check": "biome check --apply ."
   },
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": ["packages/*"]
 }
