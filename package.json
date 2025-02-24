@@ -9,9 +9,9 @@
   "scripts": {
     "build": "bun run --filter '*' build",
     "test": "bun run --filter '*' test",
-    "format": "biome format --write .",
-    "lint": "biome lint .",
-    "check": "biome check --apply ."
+    "format": "biome format --write ."
   },
-  "workspaces": ["packages/*"]
+  "workspaces": [
+    "packages/*"
+  ]
 }
