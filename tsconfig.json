@@ -1,22 +1,41 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "lib": ["ESNext"],
+    // Modern JavaScript Features
     "target": "ESNext",
+    "lib": ["ESNext"],
     "module": "ESNext",
-    "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
+    "moduleDetection": "force",
+
+    // Type Checking
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Module Resolution
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "noEmit": true,
 
-    /* Linting */
-    "skipLibCheck": true,
-    "strict": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
-  }
+    // Emit Configuration
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    // Project References
+    "composite": true,
+    "incremental": true,
+  },
 }
