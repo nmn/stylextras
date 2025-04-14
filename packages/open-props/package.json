@@ -1,6 +1,6 @@
 {
-  "name": "@stylextras/open-props",
-  "version": "0.11.0",
+  "name": "@derekjwilliams/stylextras-open-props-pr",
+  "version": "0.11.3",
   "description": "A library common values as variables to be used with Stylex.",
   "type": "module",
   "exports": {
@@ -23,7 +23,28 @@
     "./lib/shadows.stylex": "./lib/shadows.stylex.js",
     "./lib/sizes.stylex": "./lib/sizes.stylex.js",
     "./lib/svg.stylex": "./lib/svg.stylex.js",
-    "./lib/zIndex.stylex": "./lib/zIndex.stylex.js"
+    "./lib/zIndex.stylex": "./lib/zIndex.stylex.js",
+    
+    "./animationNames.stylex": "./lib/animationNames.stylex.js",
+    "./colors.stylex": "./lib/colors.stylex.js",
+    "./animations.stylex": "./lib/animations.stylex.js",
+    "./aspects.stylex": "./lib/aspects.stylex.js",
+    "./borders.stylex": "./lib/borders.stylex.js",
+    "./colorsHSL.stylex": "./lib/colorsHSL.stylex.js",
+    "./colorsOKLCH.stylex": "./lib/colorsOKLCH.stylex.js",
+    "./colorsOKLCHHues.stylex": "./lib/colorsOKLCHHues.stylex.js",
+    "./easings.stylex": "./lib/easings.stylex.js",
+    "./fonts.stylex": "./lib/fonts.stylex.js",
+    "./gradients.stylex": "./lib/gradients.stylex.js",
+    "./grayOKLCH.stylex": "./lib/grayOKLCH.stylex.js",
+    "./highlights.stylex": "./lib/highlights.stylex.js",
+    "./layouts.stylex": "./lib/layouts.stylex.js",
+    "./masksCornerCuts.stylex": "./lib/masksCornerCuts.stylex.js",
+    "./masksEdges.stylex": "./lib/masksEdges.stylex.js",
+    "./shadows.stylex": "./lib/shadows.stylex.js",
+    "./sizes.stylex": "./lib/sizes.stylex.js",
+    "./svg.stylex": "./lib/svg.stylex.js",
+    "./zIndex.stylex": "./lib/zIndex.stylex.js"
   },
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
