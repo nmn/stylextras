@@ -1,6 +1,6 @@
 {
   "name": "@derekjwilliams/stylextras-open-props-pr",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "A library common values as variables to be used with Stylex.",
   "type": "module",
   "exports": {
@@ -46,7 +46,7 @@
     "./svg.stylex": "./lib/svg.stylex.js",
     "./zIndex.stylex": "./lib/zIndex.stylex.js"
   },
-  "repository": "https://www.github.com/facebook/stylex",
+  "repository": "https://github.com/derekjwilliams/stylextras",
   "license": "MIT",
   "scripts": {
     "test": "jest",

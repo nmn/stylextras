@@ -5,7 +5,7 @@ This package provides the ability to easily use Open Props with StyleX.
 ### Installation
 
 ```bash
-npm install @stylextras/open-props
+npm install @derekjwilliams/stylextras-open-props-pr
 ```
 
 ## Usage
