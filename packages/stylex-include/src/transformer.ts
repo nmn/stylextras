@@ -280,7 +280,7 @@ export class StyleXIncludeTransformer {
     return null
   }
 
-  transformObjectExpression(path: NodePath<t.ObjectExpression>) {
+  transformObjectExpression = (path: NodePath<t.ObjectExpression>) => {
     const processed = this.maybeProcessStyles(path.node, path.scope)
     if (processed) {
       path.replaceWith(processed)
@@ -290,16 +290,16 @@ export class StyleXIncludeTransformer {
   /**
    * Transforms a file by inlining and merging styles from `stylex.include` usages.
    */
-  transform(ast: t.File) {
+  transformFile = (ast: t.File) => {
     traverse(ast, {
-      ObjectExpression: this.transformObjectExpression.bind(this),
+      ObjectExpression: this.transformObjectExpression,
     })
   }
 
   /**
    * Extracts exported style objects from a file. Does not transform the file.
    */
-  extractExportedStyles(ast: t.File) {
+  extractExportedStyles = (ast: t.File) => {
     const exportedStyles: { [exportName: string]: t.ObjectExpression } = {}
 
     traverse(ast, {

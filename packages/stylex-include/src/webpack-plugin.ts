@@ -38,7 +38,6 @@ export class StyleXIncludeWebpackPlugin {
     this.transformer = new StyleXIncludeTransformer(
       {
         importSources,
-        allowedStyleImports,
         onlyAtBeginning,
       },
       this.resolveImportedStyleObject.bind(this)
@@ -68,7 +67,7 @@ export class StyleXIncludeWebpackPlugin {
           }
 
           // Transform the file
-          this.transformer.transform(ast)
+          this.transformer.transformFile(ast)
 
           // Generate the transformed code
           const { generate } = require('@babel/generator')

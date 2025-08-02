@@ -52,7 +52,7 @@ describe('StyleXIncludeTransformer', () => {
 
     if (!ast) throw new Error('Failed to parse code')
 
-    transformer.transform(ast)
+    transformer.transformFile(ast)
     return ast
   }
 
