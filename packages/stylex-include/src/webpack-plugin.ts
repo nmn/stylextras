@@ -1,4 +1,4 @@
-import type { Compiler, ResolveOptions, Resolver } from 'webpack'
+import type { Compiler } from 'webpack'
 import * as t from '@babel/types'
 import { parseSync } from '@babel/core'
 import * as fs from 'fs'
@@ -26,61 +26,96 @@ export default class StyleXIncludePlugin {
     }
   }
 
+  private parseFile(filePath: string) {
+    const isTypeScriptFile = filePath.endsWith('.ts') || filePath.endsWith('.tsx')
+
+    const code = fs.readFileSync(filePath, 'utf8')
+
+    const ast = parseSync(code, {
+      filename: filePath,
+      presets: ['@babel/preset-env', ...(isTypeScriptFile ? ['@babel/preset-typescript'] : [])],
+    })
+
+    if (!ast || !t.isFile(ast)) {
+      return null
+    }
+
+    return ast
+  }
+
   apply(compiler: Compiler) {
     const resolver = compiler.resolverFactory.get('normal', compiler.options.resolve)
+    const dependencyTransformer = new StyleXIncludeTransformer(this.options)
 
     compiler.hooks.normalModuleFactory.tap(StyleXIncludePlugin.pluginName, (factory) => {
-      factory.hooks.afterResolve.tapAsync(StyleXIncludePlugin.pluginName, async (resolveData, callback) => {
-        const filePath = resolveData.createData?.resource || resolveData.request
+      factory.hooks.afterResolve.tapPromise(StyleXIncludePlugin.pluginName, async (resolveData) => {
+        const moduleFilePath = resolveData.createData?.resource || resolveData.request
 
-        if (!filePath) {
-          return callback()
-        }
-
-        const isTypeScriptFile = filePath.endsWith('.ts') || filePath.endsWith('.tsx')
-
-        if (!isTypeScriptFile || filePath.endsWith('.js')) {
-          return callback()
+        if (!moduleFilePath) {
+          return
         }
 
         try {
-          const code = fs.readFileSync(filePath, 'utf8')
-          
-          const ast = parseSync(code, {
-            filename: filePath,
-            presets: ['@babel/preset-env', ...(isTypeScriptFile ? ['@babel/preset-typescript'] : [])],
-          })
+          const ast = this.parseFile(moduleFilePath)
 
-          if (!ast || !t.isFile(ast)) {
-            return callback()
+          if (!ast) {
+            return
+          }
+
+          const importedStyles = dependencyTransformer.extractImportedStyles(ast)
+          const resolvedImports: { [importPath: string]: { [exportName: string]: t.ObjectExpression } } = {}
+
+          // Load all imported styles that haven't been loaded yet
+          for (const importPath in importedStyles) {
+            resolvedImports[importPath] = {}
+            
+            const resolvedPath = await new Promise<string | null>((resolve, reject) => {
+              resolver.resolve({}, moduleFilePath, importPath, {}, (err, result) => {
+                if (err) {
+                  reject(err)
+                } else {
+                  resolve(result || null)
+                }
+              })
+            })
+
+            if (!resolvedPath) {
+              throw new Error(`Could not resolve import from \`${importPath}\` in file \`${moduleFilePath}\``)
+            }
+
+            if (!this.options.allowedStyleExports.includes(resolvedPath)) {
+              throw new Error(`Import from \`${importPath}\` in file \`${moduleFilePath}\` is not allowed`)
+            }
+
+            if (!this.resolvedStyleObjects[resolvedPath]) {
+              const sourceAst = this.parseFile(resolvedPath)
+              if (!sourceAst) {
+                throw new Error(`Could not parse import source \`${resolvedPath}\``)
+              }
+
+              this.resolvedStyleObjects[resolvedPath] = dependencyTransformer.extractExportedStyles(sourceAst)
+            }
+
+            // Validate that we have all the exports we need
+            for (const importName of importedStyles[importPath]!) {
+              if (!this.resolvedStyleObjects[resolvedPath][importName]) {
+                throw new Error(`Import from \`${importPath}\` in file \`${moduleFilePath}\` is missing export \`${importName}\``)
+              }
+              resolvedImports[importPath][importName] = this.resolvedStyleObjects[resolvedPath]![importName]!
+            }
           }
 
           const transformer = new StyleXIncludeTransformer(this.options, (importPath, exportName) => {
-            const resolvedPath = resolver.resolveSync({}, filePath, importPath)
-
-            if (!resolvedPath) {
-              return null
-            }
-
-            if (this.resolvedStyleObjects[resolvedPath]?.[exportName]) {
-              return this.resolvedStyleObjects[resolvedPath][exportName]
-            }
-
-            return null
+            return resolvedImports[importPath]?.[exportName] ?? null
           })
           transformer.transformFile(ast)
 
-          // Generate the transformed code
           const { generate } = require('@babel/generator')
-          const result = generate(ast, { filename: filePath })
+          const result = generate(ast, { filename: moduleFilePath })
 
-          // Write the transformed code back to the file
-          fs.writeFileSync(filePath, result.code)
-
-          callback()
+          fs.writeFileSync(moduleFilePath, result.code)
         } catch (error) {
-          console.warn(`StyleXIncludePlugin ran into an error while processing ${filePath}:`, error)
-          callback()
+          console.warn(`StyleXIncludePlugin ran into an error while processing ${moduleFilePath}:`, error)
         }
       })
     })
