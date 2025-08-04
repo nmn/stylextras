@@ -5,10 +5,10 @@ export interface StyleXIncludeOptions {
   importSources?: (string | { from: string; as: string })[]
 
   /**
-   * Allow cross-file `stylex.include` calls **only** from these sources. This helps keep this
-   * plugin performant and prevents usages of `stylex.include` from expanding. Default: []
+   * Allow cross-file `stylex.include` usages **only** from these sources. This helps keep things
+   * performant and prevents usages of `stylex.include` from expanding. Default: []
    */
-  allowedStyleImports?: string[]
+  allowedStyleExports?: string[]
 
   /**
    * When set to `true`, `stylex.include` calls are only allowed at the beginning of style objects.

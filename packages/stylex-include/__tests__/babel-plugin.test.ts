@@ -228,7 +228,7 @@ describe('styleXIncludeBabelPlugin', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Could not resolve included styles')
+      }).toThrow('Could not resolve `stylex.include(nonexistent.style)`')
     })
   })
 

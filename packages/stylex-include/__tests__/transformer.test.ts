@@ -8,7 +8,18 @@ import * as path from 'path'
 import { describe, it, expect } from 'vitest'
 
 describe('StyleXIncludeTransformer', () => {
-  const createTransformer = (options: Omit<StyleXIncludeOptions, 'allowedStyleImports'> = {}) => {
+  const parseCode = (code: string) => {
+    const ast = parseSync(code, {
+      filename: 'test.js',
+      presets: ['@babel/preset-env'],
+    })
+
+    if (!ast) throw new Error('Failed to parse code')
+
+    return ast
+  }
+
+  const createTransformer = (options: Omit<StyleXIncludeOptions, 'allowedStyleExports'> = {}) => {
     const transformer = new StyleXIncludeTransformer(
       {
         importSources: ['@stylexjs/stylex'],
@@ -26,12 +37,7 @@ describe('StyleXIncludeTransformer', () => {
         if (expectedExport && exportName === expectedExport) {
           const fixturePath = path.join(__dirname, '__fixtures__', path.basename(importPath))
           const code = fs.readFileSync(fixturePath, 'utf8')
-          const ast = parseSync(code, {
-            filename: fixturePath,
-            presets: ['@babel/preset-env'],
-          })
-          
-          if (!ast) return null
+          const ast = parseCode(code)
           
           const exportedStyles: Record<string, t.ObjectExpression> = transformer.extractExportedStyles(ast)
           return exportedStyles[expectedExport] ?? null
@@ -45,15 +51,21 @@ describe('StyleXIncludeTransformer', () => {
 
   const transform = (code: string, options: StyleXIncludeOptions = {}) => {
     const transformer = createTransformer(options)
-    const ast = parseSync(code, {
-      filename: 'test.js',
-      presets: ['@babel/preset-env'],
-    })
-
-    if (!ast) throw new Error('Failed to parse code')
-
+    const ast = parseCode(code)
     transformer.transformFile(ast)
     return ast
+  }
+
+  const extractExportedStyles = (code: string, options: StyleXIncludeOptions = {}) => {
+    const transformer = createTransformer(options)
+    const ast = parseCode(code)
+    return transformer.extractExportedStyles(ast)
+  }
+
+  const extractImportedStyles = (code: string, options: StyleXIncludeOptions = {}) => {
+    const transformer = createTransformer(options)
+    const ast = parseCode(code)
+    return transformer.extractImportedStyles(ast)
   }
 
   const codeToString = (ast: any) => {
@@ -275,7 +287,7 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Could not resolve included styles')
+      }).toThrow('Could not resolve `stylex.include(nonexistent.style)`')
     })
   })
 
@@ -321,7 +333,7 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Could not resolve included styles')
+      }).toThrow('Could not resolve `stylex.include(unknown.someStyle)`')
     })
 
     it('should handle multiple cross-file includes', () => {
@@ -553,12 +565,7 @@ describe('StyleXIncludeTransformer', () => {
       `
 
       const transformer = createTransformer()
-      const ast = parseSync(input, {
-        filename: 'test.js',
-        presets: ['@babel/preset-env'],
-      })
-
-      if (!ast) throw new Error('Failed to parse code')
+      const ast = parseCode(input)
 
       const exportedStyles = transformer.extractExportedStyles(ast)
 
@@ -581,15 +588,251 @@ describe('StyleXIncludeTransformer', () => {
       `
 
       const transformer = createTransformer()
-      const ast = parseSync(input, {
-        filename: 'test.js',
-        presets: ['@babel/preset-env'],
-      })
-
-      if (!ast) throw new Error('Failed to parse code')
+      const ast = parseCode(input)
 
       const originalCode = codeToString(ast)
       transformer.extractExportedStyles(ast)
+      const afterCode = codeToString(ast)
+
+      // The AST should remain unchanged
+      expect(afterCode).toBe(originalCode)
+    })
+
+    it('should handle multiple exported style objects', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+
+        export const typography = stylex.create({
+          textStrong: {
+            fontWeight: 'bold',
+            fontSize: '16px'
+          },
+          textWeak: {
+            fontWeight: 'normal',
+            fontSize: '14px'
+          }
+        })
+
+        export const colors = stylex.create({
+          primary: {
+            color: 'blue'
+          }
+        })
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const exportedStyles = transformer.extractExportedStyles(ast)
+
+      expect(exportedStyles).toHaveProperty('typography')
+      expect(exportedStyles).toHaveProperty('colors')
+      expect(exportedStyles.typography).toBeDefined()
+      expect(exportedStyles.colors).toBeDefined()
+    })
+
+    it('should handle non-style exports', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+
+        export const typography = stylex.create({
+          textStrong: {
+            fontWeight: 'bold'
+          }
+        })
+
+        export const regularVar = 'not a style'
+        export function regularFunction() {}
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const exportedStyles = transformer.extractExportedStyles(ast)
+
+      expect(exportedStyles).toHaveProperty('typography')
+      expect(exportedStyles).not.toHaveProperty('regularVar')
+      expect(exportedStyles).not.toHaveProperty('regularFunction')
+    })
+
+    it('should handle empty files', () => {
+      const input = `
+        // Empty file with no exports
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const exportedStyles = transformer.extractExportedStyles(ast)
+
+      expect(exportedStyles).toEqual({})
+    })
+  })
+
+  describe('extractImportedStyles', () => {
+    it('should extract imported style references', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+        import { typography } from './typography.js'
+        import { colors } from './colors.js'
+
+        const styles = stylex.create({
+          button: {
+            ...stylex.include(typography.textStrong),
+            ...stylex.include(colors.primary),
+            width: 100
+          },
+          link: {
+            ...stylex.include(typography.textWeak)
+          }
+        })
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const importedStyles = transformer.extractImportedStyles(ast)
+
+      expect(Object.keys(importedStyles)).toEqual(['./typography.js', './colors.js'])
+      expect(importedStyles['./typography.js']).toContain('typography')
+      expect(importedStyles['./colors.js']).toContain('colors')
+    })
+
+    it('should handle local style includes', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+
+        const typography = stylex.create({
+          textStrong: {
+            fontWeight: 'bold'
+          }
+        })
+
+        const styles = stylex.create({
+          button: {
+            ...stylex.include(typography.textStrong),
+            width: 100
+          }
+        })
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const importedStyles = transformer.extractImportedStyles(ast)
+
+      // Local includes should not be included in imported styles
+      expect(importedStyles).toEqual({})
+    })
+
+    it('should handle multiple imports from same module', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+        import { typography, colors } from './styles.js'
+
+        const styles = stylex.create({
+          button: {
+            ...stylex.include(typography.textStrong),
+            ...stylex.include(colors.primary)
+          }
+        })
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const importedStyles = transformer.extractImportedStyles(ast)
+
+      expect(Object.keys(importedStyles)).toEqual(['./styles.js'])
+      expect(importedStyles['./styles.js']).toContain('typography')
+      expect(importedStyles['./styles.js']).toContain('colors')
+    })
+
+    it('should handle empty files', () => {
+      const input = `
+        // Empty file with no includes
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const importedStyles = transformer.extractImportedStyles(ast)
+
+      expect(importedStyles).toEqual({})
+    })
+
+    it('should handle files with non-include spread elements', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+        import { typography } from './typography.js'
+
+        const baseStyles = {
+          margin: 0,
+          padding: 0
+        }
+
+        const styles = stylex.create({
+          button: {
+            ...baseStyles,
+            ...stylex.include(typography.textStrong),
+            width: 100
+          }
+        })
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const importedStyles = transformer.extractImportedStyles(ast)
+
+      expect(Object.keys(importedStyles)).toEqual(['./typography.js'])
+      expect(importedStyles['./typography.js']).toContain('typography')
+    })
+
+    it('should deduplicate import references', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+        import { typography } from './typography.js'
+
+        const styles = stylex.create({
+          button: {
+            ...stylex.include(typography.textStrong),
+            width: 100
+          },
+          link: {
+            ...stylex.include(typography.textStrong), // Same import used twice
+            color: 'blue'
+          }
+        })
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const importedStyles = transformer.extractImportedStyles(ast)
+
+      expect(Object.keys(importedStyles)).toEqual(['./typography.js'])
+      expect(importedStyles['./typography.js']).toEqual(['typography'])
+    })
+
+    it('should not transform the AST when extracting imported styles', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+        import { typography } from './typography.js'
+
+        const styles = stylex.create({
+          button: {
+            ...stylex.include(typography.textStrong),
+            width: 100
+          }
+        })
+      `
+
+      const transformer = createTransformer()
+      const ast = parseCode(input)
+
+      const originalCode = codeToString(ast)
+      transformer.extractImportedStyles(ast)
       const afterCode = codeToString(ast)
 
       // The AST should remain unchanged
@@ -631,7 +874,7 @@ describe('StyleXIncludeTransformer', () => {
         transform(input, {
           importSources: ['@stylexjs/stylex'],
         })
-      }).toThrow('Could not resolve included styles')
+      }).toThrow('Could not resolve `stylex.include(importedStyles.someStyle)`')
     })
   })
 })

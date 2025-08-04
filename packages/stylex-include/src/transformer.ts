@@ -1,4 +1,5 @@
 import * as t from '@babel/types'
+import type { File, ObjectExpression } from '@babel/types'
 import traverse from '@babel/traverse'
 import type { NodePath } from '@babel/traverse'
 import { generate } from '@babel/generator'
@@ -8,7 +9,7 @@ import { pushOrReplaceProperty } from './utils'
 
 export class StyleXIncludeTransformer {
   constructor(
-    private options: Required<Omit<StyleXIncludeOptions, 'allowedStyleImports'>>,
+    private options: Required<Omit<StyleXIncludeOptions, 'allowedStyleExports'>>,
     private resolveImportedStyleObject: (
       importPath: string,
       exportName: string,
@@ -153,14 +154,9 @@ export class StyleXIncludeTransformer {
 
       const spreadArg = prop.argument
       if (this.isStyleXInclude(spreadArg, scope)) {
-        if (spreadArg.arguments.length !== 1 || !t.isExpression(spreadArg.arguments[0])) {
-          throw new Error('Unexpected argument for `stylex.include`')
-        }
-
-        const included = spreadArg.arguments[0]
-        const includedStyles = this.resolveIncludedStyles(included, scope)
+        const includedStyles = this.resolveIncludedStyles(spreadArg, scope)
         if (!includedStyles) {
-          throw new Error(`Could not resolve included styles from \`${generate(included).code}\``)
+          throw new Error(`Could not resolve \`${generate(spreadArg).code}\``)
         } else {
           for (const includedProp of includedStyles.properties) {
             pushOrReplaceProperty(processedProperties, includedProp)
@@ -230,34 +226,62 @@ export class StyleXIncludeTransformer {
     return this.maybeProcessStyleObjectDeclarator(declarators[0]!, expectedExportName)
   }
 
+  private getPathForIncludedStyles(
+    node: t.CallExpression,
+    scope: NodePath['scope'],
+  ): NodePath<t.Node> | null {
+    const args = node.arguments
+
+    if (args.length !== 1 || !t.isExpression(args[0])) {
+      throw new Error('Unexpected argument for `stylex.include`')
+    }
+
+    const included = args[0]
+
+    // Included styles must be member expressions, i.e. in the form `exportName.includedStyles`
+    if (!t.isMemberExpression(included)) {
+      return null
+    }
+    
+   const { object, property } = included
+
+   if (!t.isIdentifier(object) || !t.isIdentifier(property)) {
+    return null
+   }
+
+   const binding = scope.getBinding(object.name)
+   if (!binding) {
+    return null
+   }
+
+   return binding.path
+  }
+
   private resolveIncludedStyles(
-    node: t.Expression,
+    node: t.CallExpression,
     scope: NodePath['scope'],
   ): t.ObjectExpression | null {
-    if (!t.isMemberExpression(node)) {
-      return null
-    }
+    const path = this.getPathForIncludedStyles(node, scope)
 
-    const { object, property } = node
-
-    if (!t.isIdentifier(object) || !t.isIdentifier(property)) {
-      return null
-    }
-
-    const binding = scope.getBinding(object.name)
-
-    if (!binding) {
+    if (!path) {
       return null
     }
 
     // Handle local style objects
-    if (binding.path.isVariableDeclarator()) {
-      return this.maybeProcessStyleObjectDeclarator(binding.path)?.[0] ?? null
+    if (path.isVariableDeclarator()) {
+      return this.maybeProcessStyleObjectDeclarator(path)?.[0] ?? null
     }
 
     // Handle imported style objects
-    if (binding.path.isImportSpecifier() && binding.path.parentPath.isImportDeclaration()) {
-      const importDeclaration = binding.path.parentPath.node
+    if (path.isImportSpecifier() && path.parentPath.isImportDeclaration()) {
+      const included = node.arguments[0]!
+      t.assertMemberExpression(included)
+
+      const { object, property } = included
+      t.assertIdentifier(object)
+      t.assertIdentifier(property)
+
+      const importDeclaration = path.parentPath.node
       const importPath = importDeclaration.source.value
       const importedStyleObject = this.resolveImportedStyleObject(importPath, object.name)
       if (importedStyleObject) {
@@ -280,6 +304,10 @@ export class StyleXIncludeTransformer {
     return null
   }
 
+  /**
+   * Transforms an {@link ObjectExpression} by inlining and merging styles from `stylex.include` 
+   * usages.
+   */
   transformObjectExpression = (path: NodePath<t.ObjectExpression>) => {
     const processed = this.maybeProcessStyles(path.node, path.scope)
     if (processed) {
@@ -288,7 +316,7 @@ export class StyleXIncludeTransformer {
   }
 
   /**
-   * Transforms a file by inlining and merging styles from `stylex.include` usages.
+   * Transforms a {@link File} by inlining and merging styles from `stylex.include` usages.
    */
   transformFile = (ast: t.File) => {
     traverse(ast, {
@@ -314,7 +342,41 @@ export class StyleXIncludeTransformer {
         }
       },
     })
-
     return exportedStyles
+  }
+
+  /**
+   * Extracts all `stylex.include` usages from a file that reference imported style objects. Does
+   * not transform the file.
+   */
+  extractImportedStyles = (ast: t.File) => {
+    const importedStyles: { [importPath: string]: string[] } = {}
+
+    traverse(ast, {
+      SpreadElement: (path: NodePath<t.SpreadElement>) => {
+        const argument = path.get('argument').node
+        if (this.isStyleXInclude(argument, path.scope)) {
+          const bindingPath = this.getPathForIncludedStyles(argument, path.scope)
+          if (bindingPath?.isImportSpecifier() && bindingPath?.parentPath.isImportDeclaration()) {
+            const included = argument.arguments[0]!
+            t.assertMemberExpression(included)
+
+            const { object } = included
+            t.assertIdentifier(object)
+
+            const importDeclaration = bindingPath.parentPath.node
+            const importPath = importDeclaration.source.value
+            importedStyles[importPath] ||= []
+            importedStyles[importPath].push(object.name)
+          }
+        }
+      }
+    })
+
+    for (const importPath in importedStyles) {
+      importedStyles[importPath] = Array.from(new Set(importedStyles[importPath]))
+    }
+
+    return importedStyles
   }
 }
