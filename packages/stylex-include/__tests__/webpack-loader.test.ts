@@ -15,7 +15,9 @@ function resolveTmpPath(filePath: string) {
 
 class WebpackLoaderTester {
   constructor() {
-    fs.writeFileSync(resolveTmpPath('./stylex-mock.js'), `
+    fs.writeFileSync(
+      resolveTmpPath('./stylex-mock.js'),
+      `
       module.exports = {
         create: function(stylesObject) {
           return stylesObject
@@ -24,10 +26,11 @@ class WebpackLoaderTester {
           return styles
         }
       }
-    `)
+    `,
+    )
   }
 
-  async compile(options: StyleXIncludeOptions, sourceFiles: Record<string, string>) {    
+  async compile(options: StyleXIncludeOptions, sourceFiles: Record<string, string>) {
     fs.mkdirSync(resolveTmpPath('./src'))
     Object.entries(sourceFiles).forEach(([filePath, content]) => {
       fs.writeFileSync(resolveTmpPath(`.${filePath}`), content)
@@ -43,9 +46,9 @@ class WebpackLoaderTester {
             use: [
               {
                 loader: resolveTmpPath('./webpack-loader.mjs'),
-                options: options
-              }
-            ]
+                options: options,
+              },
+            ],
           },
           {
             test: /\.(jsx|tsx)$/,
@@ -53,24 +56,27 @@ class WebpackLoaderTester {
               {
                 loader: 'babel-loader',
                 options: {
-                  presets: ['@babel/preset-react']
-                }
-              }
-            ]
+                  presets: ['@babel/preset-react'],
+                },
+              },
+            ],
           },
-        ]
+        ],
       },
-      output: { 
+      output: {
         path: resolveTmpPath('./dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
       },
       mode: 'development',
       infrastructureLogging: { level: 'verbose' },
       resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        alias: options.importSources && options.importSources.length > 0
-          ? Object.fromEntries(options.importSources.map((source) => [source, resolveTmpPath('./stylex-mock.js')]))
-          : { '@stylexjs/stylex': resolveTmpPath('./stylex-mock.js') }
+        alias:
+          options.importSources && options.importSources.length > 0
+            ? Object.fromEntries(
+                options.importSources.map((source) => [source, resolveTmpPath('./stylex-mock.js')]),
+              )
+            : { '@stylexjs/stylex': resolveTmpPath('./stylex-mock.js') },
       },
       devtool: 'source-map',
     })
@@ -90,7 +96,7 @@ class WebpackLoaderTester {
               hasErrors: stats.hasErrors(),
               hasWarnings: stats.hasWarnings(),
               errors: stats.compilation.errors,
-              warnings: stats.compilation.warnings
+              warnings: stats.compilation.warnings,
             })
             resolve({ stats })
           }
@@ -113,7 +119,7 @@ class WebpackLoaderTester {
 
 describe('StyleXIncludeLoader Integration', () => {
   let tester: WebpackLoaderTester
-  
+
   beforeAll(() => {
     tester = new WebpackLoaderTester()
   })
@@ -130,7 +136,7 @@ describe('StyleXIncludeLoader Integration', () => {
     it('should transform cross-file imports in real webpack build', async () => {
       const { stats } = await tester.compile(
         {
-          allowedStyleImports: ['./typography.js']
+          allowedStyleImports: ['./typography.js'],
         },
         {
           '/src/typography.js': `
@@ -162,26 +168,29 @@ describe('StyleXIncludeLoader Integration', () => {
           '/src/entry.js': `
             import './component.js'
           `,
-        }
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
 
     it('should handle multiple imports from the same file', async () => {
       const { stats } = await tester.compile(
         {
-          allowedStyleImports: ['./styles.js']
+          allowedStyleImports: ['./styles.js'],
         },
         {
           '/src/styles.js': `
@@ -214,27 +223,30 @@ describe('StyleXIncludeLoader Integration', () => {
           `,
           '/src/entry.js': `
             import './component.js'
-          `
-        }
+          `,
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
           color: 'blue',
           width: 100
         }
-      `)
+      `,
+      )
     })
 
     it('should handle property overrides in cross-file imports', async () => {
       const { stats } = await tester.compile(
         {
-          allowedStyleImports: ['./typography.js']
+          allowedStyleImports: ['./typography.js'],
         },
         {
           '/src/typography.js': `
@@ -262,27 +274,30 @@ describe('StyleXIncludeLoader Integration', () => {
           `,
           '/src/entry.js': `
             import './component.js'
-          `
-        }
+          `,
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '18px',
           color: 'black',
           width: 100
         }
-      `)
+      `,
+      )
     })
 
     it('should handle multiple files using the same imported styles', async () => {
       const { stats } = await tester.compile(
         {
-          allowedStyleImports: ['./typography.js']
+          allowedStyleImports: ['./typography.js'],
         },
         {
           '/src/typography.js': `
@@ -319,25 +334,31 @@ describe('StyleXIncludeLoader Integration', () => {
           '/src/entry.js': `
             import './component1.js'
             import './component2.js'
-          `
-        }
+          `,
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           fontWeight: 'bold',
           width: 100
         }
-      `)
-      expectToContainCodeSnippet(bundleContent, `
+      `,
+      )
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         link: {
           fontWeight: 'bold',
           color: 'blue'
         }
-      `)
+      `,
+      )
     })
   })
 
@@ -345,7 +366,7 @@ describe('StyleXIncludeLoader Integration', () => {
     it('should handle unresolvable imports gracefully', async () => {
       const { stats } = await tester.compile(
         {
-          allowedStyleImports: ['./nonexistent.js']
+          allowedStyleImports: ['./nonexistent.js'],
         },
         {
           '/src/component.js': `
@@ -361,8 +382,8 @@ describe('StyleXIncludeLoader Integration', () => {
           `,
           '/src/entry.js': `
             import './component.js'
-          `
-        }
+          `,
+        },
       )
 
       expect(stats.hasErrors()).toBe(true)
@@ -371,11 +392,11 @@ describe('StyleXIncludeLoader Integration', () => {
 
     it('should handle disallowed imports', async () => {
       const { stats } = await tester.compile(
-          {
-            allowedStyleImports: [] // No allowed exports
-          },
-          {
-            '/src/typography.js': `
+        {
+          allowedStyleImports: [], // No allowed exports
+        },
+        {
+          '/src/typography.js': `
               import * as stylex from '@stylexjs/stylex'
               
               export const typography = stylex.create({
@@ -384,7 +405,7 @@ describe('StyleXIncludeLoader Integration', () => {
                 }
               })
             `,
-            '/src/component.js': `
+          '/src/component.js': `
               import * as stylex from '@stylexjs/stylex'
               import { typography } from './typography.js'
               
@@ -395,25 +416,27 @@ describe('StyleXIncludeLoader Integration', () => {
                 }
               })
             `,
-            '/src/entry.js': `
+          '/src/entry.js': `
               import './component.js'
-            `
-          }
-        )
+            `,
+        },
+      )
 
       expect(stats.hasErrors()).toBe(true)
       expect(stats.compilation.errors.length).toEqual(1)
-      expect(stats.compilation.errors[0]!.message).toContain("Import from './typography.js' in file")
-      expect(stats.compilation.errors[0]!.message).toContain("is not allowed")
+      expect(stats.compilation.errors[0]!.message).toContain(
+        "Import from './typography.js' in file",
+      )
+      expect(stats.compilation.errors[0]!.message).toContain('is not allowed')
     })
 
     it('should handle missing exports', async () => {
       const { stats } = await tester.compile(
-          {
-            allowedStyleImports: ['./typography.js']
-          },
-          {
-            '/src/typography.js': `
+        {
+          allowedStyleImports: ['./typography.js'],
+        },
+        {
+          '/src/typography.js': `
               import * as stylex from '@stylexjs/stylex'
               
               export const colors = stylex.create({
@@ -422,7 +445,7 @@ describe('StyleXIncludeLoader Integration', () => {
                 }
               })
             `,
-            '/src/component.js': `
+          '/src/component.js': `
               import * as stylex from '@stylexjs/stylex'
               import { typography } from './typography.js'
               
@@ -433,15 +456,15 @@ describe('StyleXIncludeLoader Integration', () => {
                 }
               })
             `,
-            '/src/entry.js': `
+          '/src/entry.js': `
               import './component.js'
-            `
-          }
-        )
+            `,
+        },
+      )
 
       expect(stats.hasErrors()).toBe(true)
       expect(stats.compilation.errors.length).toEqual(1)
-      expect(stats.compilation.errors[0]!.message).toContain("File")
+      expect(stats.compilation.errors[0]!.message).toContain('File')
       expect(stats.compilation.errors[0]!.message).toContain("does not export 'typography'")
     })
   })
@@ -449,12 +472,12 @@ describe('StyleXIncludeLoader Integration', () => {
   describe('loader options', () => {
     it('should respect onlyAtBeginning option', async () => {
       const { stats } = await tester.compile(
-          {
-            allowedStyleImports: ['./typography.js'],
-            onlyAtBeginning: true
-          },
-          {
-            '/src/typography.js': `
+        {
+          allowedStyleImports: ['./typography.js'],
+          onlyAtBeginning: true,
+        },
+        {
+          '/src/typography.js': `
               import * as stylex from '@stylexjs/stylex'
               
               export const typography = stylex.create({
@@ -463,7 +486,7 @@ describe('StyleXIncludeLoader Integration', () => {
                 }
               })
             `,
-            '/src/component.js': `
+          '/src/component.js': `
               import * as stylex from '@stylexjs/stylex'
               import { typography } from './typography.js'
               
@@ -475,22 +498,24 @@ describe('StyleXIncludeLoader Integration', () => {
                 }
               })
             `,
-            '/src/entry.js': `
+          '/src/entry.js': `
               import './component.js'
-            `
-          }
-        )
-        
+            `,
+        },
+      )
+
       expect(stats.hasErrors()).toBe(true)
       expect(stats.compilation.errors.length).toEqual(1)
-      expect(stats.compilation.errors[0]!.message).toContain("All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'")
+      expect(stats.compilation.errors[0]!.message).toContain(
+        "All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'",
+      )
     })
 
     it('should work with custom import sources', async () => {
       const { stats } = await tester.compile(
         {
           importSources: ['custom-stylex'],
-          allowedStyleImports: ['./typography.js']
+          allowedStyleImports: ['./typography.js'],
         },
         {
           '/src/typography.js': `
@@ -515,19 +540,22 @@ describe('StyleXIncludeLoader Integration', () => {
           `,
           '/src/entry.js': `
             import './component.js'
-          `
-        }
+          `,
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           fontWeight: 'bold',
           width: 100
         }
-      `)
+      `,
+      )
     })
   })
 
@@ -548,23 +576,26 @@ describe('StyleXIncludeLoader Integration', () => {
           `,
           '/src/entry.js': `
             import './component.js'
-          `
-        }
+          `,
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
 
     it('should handle files with local includes only', async () => {
-        const { stats } = await tester.compile(
+      const { stats } = await tester.compile(
         {},
         {
           '/src/component.js': `
@@ -585,19 +616,22 @@ describe('StyleXIncludeLoader Integration', () => {
           `,
           '/src/entry.js': `
             import './component.js'
-          `
-        }
+          `,
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
-        const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           fontWeight: 'bold',
           width: 100
         }
-      `)
+      `,
+      )
     })
 
     it('should skip non-JavaScript/TypeScript files', async () => {
@@ -612,25 +646,28 @@ describe('StyleXIncludeLoader Integration', () => {
           `,
           '/src/entry.js': `
             import './component.css'
-          `
-        }
+          `,
+        },
       )
-      
+
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const cssContent = fs.readFileSync(resolveTmpPath('./src/component.css'), 'utf8')
-      expectToContainCodeSnippet(cssContent, `
+      expectToContainCodeSnippet(
+        cssContent,
+        `
         .button {
           width: 100px;
           height: 50px;
         }
-      `)
+      `,
+      )
     })
 
     it.only('should handle TypeScript files', async () => {
       const { stats } = await tester.compile(
         {
-          allowedStyleImports: ['./typography.ts', './colors.js']
+          allowedStyleImports: ['./typography.ts', './colors.js'],
         },
         {
           '/src/entry.js': `
@@ -673,14 +710,16 @@ describe('StyleXIncludeLoader Integration', () => {
             export default function Component() {
               return <div className={styles.button}>Button</div>
             }
-          `
-        }
+          `,
+        },
       )
 
       expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
 
       const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
-      expectToContainCodeSnippet(bundleContent, `
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
@@ -688,7 +727,8 @@ describe('StyleXIncludeLoader Integration', () => {
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
   })
-}) 
+})

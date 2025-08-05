@@ -1,4 +1,4 @@
-import * as t from '@babel/types';
+import * as t from '@babel/types'
 
 /**
  * Resolves the key of an object property for the purposes of comparison and merging overlapping

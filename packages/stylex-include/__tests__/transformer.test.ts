@@ -33,19 +33,20 @@ describe('StyleXIncludeTransformer', () => {
           './typography.js': 'typography',
           './colors.js': 'colors',
         }
-        
+
         const expectedExport = fixtureMap[importPath]
         if (expectedExport && exportName === expectedExport) {
           const fixturePath = path.join(__dirname, '__fixtures__', path.basename(importPath))
           const code = fs.readFileSync(fixturePath, 'utf8')
           const ast = parseCode(code)
-          
-          const exportedStyles: Record<string, t.ObjectExpression> = transformer.extractExportedStyles(ast)
+
+          const exportedStyles: Record<string, t.ObjectExpression> =
+            transformer.extractExportedStyles(ast)
           return exportedStyles[expectedExport] ?? null
         }
 
         return null
-      }
+      },
     )
     return transformer
   }
@@ -73,7 +74,7 @@ describe('StyleXIncludeTransformer', () => {
     return generate(ast, {
       jsescOption: {
         quotes: 'single',
-      }
+      },
     }).code
   }
 
@@ -100,14 +101,17 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
 
     it('should handle recursive includes', () => {
@@ -140,16 +144,21 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         textStrong: {
           padding: '8px',
           margin: '4px',
           fontWeight: 'bold',
           fontSize: '16px'
         }
-      `)
+      `,
+      )
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           padding: '8px',
           margin: '4px',
@@ -158,7 +167,8 @@ describe('StyleXIncludeTransformer', () => {
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
 
     it('should handle property overrides', () => {
@@ -185,7 +195,9 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '18px',
@@ -193,7 +205,8 @@ describe('StyleXIncludeTransformer', () => {
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
   })
 
@@ -248,7 +261,9 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(() => {
         transform(input, { onlyAtBeginning: true })
-      }).toThrow("All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'")
+      }).toThrow(
+        "All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'",
+      )
     })
 
     it('should not throw error when onlyAtBeginning is false', () => {
@@ -329,7 +344,9 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
@@ -337,7 +354,8 @@ describe('StyleXIncludeTransformer', () => {
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
 
     it('should reject cross-file imports when resolver returns null', () => {
@@ -378,7 +396,9 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
@@ -387,7 +407,8 @@ describe('StyleXIncludeTransformer', () => {
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
 
     it('should handle property overrides from cross-file imports', () => {
@@ -440,14 +461,17 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expectToContainCodeSnippet(code, `
+        expectToContainCodeSnippet(
+          code,
+          `
           button: {
             fontWeight: 'bold',
             fontSize: '16px',
             width: 100,
             height: 50
           }
-        `)
+        `,
+        )
       })
 
       it('should work with custom import source', () => {
@@ -474,14 +498,17 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expectToContainCodeSnippet(code, `
+        expectToContainCodeSnippet(
+          code,
+          `
           button: {
             fontWeight: 'bold',
             fontSize: '16px',
             width: 100,
             height: 50
           }
-        `)
+        `,
+        )
       })
 
       it('should work with multiple import sources', () => {
@@ -506,12 +533,15 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expectToContainCodeSnippet(code, `
+        expectToContainCodeSnippet(
+          code,
+          `
           button: {
             fontWeight: 'bold',
             width: 100
           }
-        `)
+        `,
+        )
       })
     })
 
@@ -537,7 +567,9 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expectToContainCodeSnippet(code, `
+        expectToContainCodeSnippet(
+          code,
+          `
           button: {
             fontWeight: 'bold',
             fontSize: '16px',
@@ -546,7 +578,8 @@ describe('StyleXIncludeTransformer', () => {
             width: 100,
             height: 50
           }
-        `)
+        `,
+        )
       })
 
       it('should throw error for mixed includes when onlyAtBeginning is true', () => {
@@ -569,7 +602,9 @@ describe('StyleXIncludeTransformer', () => {
           transform(input, {
             onlyAtBeginning: true,
           })
-        }).toThrow("All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'")
+        }).toThrow(
+          "All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'",
+        )
       })
 
       it('should allow mixed includes when onlyAtBeginning is false', () => {

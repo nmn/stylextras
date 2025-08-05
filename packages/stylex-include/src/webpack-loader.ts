@@ -6,10 +6,14 @@ import { generate } from '@babel/generator'
 import { StyleXIncludeTransformer } from './transformer'
 import type { StyleXIncludeOptions } from './types'
 
-export default function styleXIncludeLoader(this: LoaderContext<StyleXIncludeOptions>, source: string, sourceMap?: string) {
+export default function styleXIncludeLoader(
+  this: LoaderContext<StyleXIncludeOptions>,
+  source: string,
+  sourceMap?: string,
+) {
   const callback = this.async()
   const options = this.getOptions()
-  
+
   const {
     importSources = ['@stylexjs/stylex'],
     allowedStyleImports = [],
@@ -22,7 +26,11 @@ export default function styleXIncludeLoader(this: LoaderContext<StyleXIncludeOpt
 
     const ast = parseSync(code, {
       filename,
-      presets: ['@babel/preset-env', ...(isTypeScriptFile ? ['@babel/preset-typescript'] : []), ...(isReactFile ? ['@babel/preset-react'] : [])],
+      presets: [
+        '@babel/preset-env',
+        ...(isTypeScriptFile ? ['@babel/preset-typescript'] : []),
+        ...(isReactFile ? ['@babel/preset-react'] : []),
+      ],
     })
 
     if (!ast || !t.isFile(ast)) {
@@ -49,30 +57,36 @@ export default function styleXIncludeLoader(this: LoaderContext<StyleXIncludeOpt
       })
 
       const importedStyles = dependencyTransformer.extractImportedStyles(ast)
-      const resolvedImportedStyleObjects: { [importPath: string]: { [exportName: string]: t.ObjectExpression } } = {}
+      const resolvedImportedStyleObjects: {
+        [importPath: string]: { [exportName: string]: t.ObjectExpression }
+      } = {}
 
       for (const importPath in importedStyles) {
         if (!allowedStyleImports.includes(importPath)) {
-          throw new Error(`Import from '${importPath}' in file '${this.resourcePath}' is not allowed`)
+          throw new Error(
+            `Import from '${importPath}' in file '${this.resourcePath}' is not allowed`,
+          )
         }
 
         resolvedImportedStyleObjects[importPath] = {}
-        
-        const [source, filename] = await new Promise<[source: string, path: string]>((resolve, reject) => {
-          this.loadModule(importPath, (err, source, _, module) => {
-            if (err) {
-              reject(err)
-            } else if (!source) {
-              reject(new Error(`Imported module '${importPath}' is empty`))
-            } else if (typeof source !== 'string') {
-              reject(new Error(`Imported module '${importPath}' is binary`))
-            } else if (!(module as NormalModule).resource) {
-              reject(new Error(`Imported module '${importPath}' is not a normal module`))
-            } else {
-              resolve([source, (module as NormalModule).resource])
-            }
-          })
-        })
+
+        const [source, filename] = await new Promise<[source: string, path: string]>(
+          (resolve, reject) => {
+            this.loadModule(importPath, (err, source, _, module) => {
+              if (err) {
+                reject(err)
+              } else if (!source) {
+                reject(new Error(`Imported module '${importPath}' is empty`))
+              } else if (typeof source !== 'string') {
+                reject(new Error(`Imported module '${importPath}' is binary`))
+              } else if (!(module as NormalModule).resource) {
+                reject(new Error(`Imported module '${importPath}' is not a normal module`))
+              } else {
+                resolve([source, (module as NormalModule).resource])
+              }
+            })
+          },
+        )
 
         const importedModuleAst = parseCode(source, filename)
 
@@ -80,7 +94,8 @@ export default function styleXIncludeLoader(this: LoaderContext<StyleXIncludeOpt
           throw new Error(`Could not parse '${filename}'`)
         }
 
-        resolvedImportedStyleObjects[importPath] = dependencyTransformer.extractExportedStyles(importedModuleAst)
+        resolvedImportedStyleObjects[importPath] =
+          dependencyTransformer.extractExportedStyles(importedModuleAst)
 
         for (const importName of importedStyles[importPath]!) {
           if (!resolvedImportedStyleObjects[importPath][importName]) {
@@ -89,13 +104,16 @@ export default function styleXIncludeLoader(this: LoaderContext<StyleXIncludeOpt
         }
       }
 
-      const transformer = new StyleXIncludeTransformer({
-        importSources,
-        onlyAtBeginning,
-      }, (importPath, exportName) => {
-        return resolvedImportedStyleObjects[importPath]?.[exportName] ?? null
-      })
-      
+      const transformer = new StyleXIncludeTransformer(
+        {
+          importSources,
+          onlyAtBeginning,
+        },
+        (importPath, exportName) => {
+          return resolvedImportedStyleObjects[importPath]?.[exportName] ?? null
+        },
+      )
+
       transformer.transformFile(ast)
       const result = generate(ast, { filename: this.resourcePath, sourceMaps: true })
 
@@ -116,9 +134,11 @@ export default function styleXIncludeLoader(this: LoaderContext<StyleXIncludeOpt
     }
   }
 
-  processModule().then(({source, sourceMap}) => {
-    callback(null, source, sourceMap)
-  }).catch((error) => {
-    callback(error)
-  })
+  processModule()
+    .then(({ source, sourceMap }) => {
+      callback(null, source, sourceMap)
+    })
+    .catch((error) => {
+      callback(error)
+    })
 }

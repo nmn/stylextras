@@ -243,19 +243,19 @@ export class StyleXIncludeTransformer {
     if (!t.isMemberExpression(included)) {
       return null
     }
-    
-   const { object, property } = included
 
-   if (!t.isIdentifier(object) || !t.isIdentifier(property)) {
-    return null
-   }
+    const { object, property } = included
 
-   const binding = scope.getBinding(object.name)
-   if (!binding) {
-    return null
-   }
+    if (!t.isIdentifier(object) || !t.isIdentifier(property)) {
+      return null
+    }
 
-   return binding.path
+    const binding = scope.getBinding(object.name)
+    if (!binding) {
+      return null
+    }
+
+    return binding.path
   }
 
   private resolveIncludedStyles(
@@ -290,18 +290,16 @@ export class StyleXIncludeTransformer {
     }
 
     if (styleObject) {
-      const matchingProp = styleObject.properties.find(
-        (prop): prop is t.ObjectProperty => {
-          if (t.isObjectProperty(prop)) {
-            return (
-              t.isIdentifier(prop.key) &&
-              prop.key.name === property.name &&
-              t.isObjectExpression(prop.value)
-            )
-          }
-          return false
-        },
-      )
+      const matchingProp = styleObject.properties.find((prop): prop is t.ObjectProperty => {
+        if (t.isObjectProperty(prop)) {
+          return (
+            t.isIdentifier(prop.key) &&
+            prop.key.name === property.name &&
+            t.isObjectExpression(prop.value)
+          )
+        }
+        return false
+      })
       return t.isObjectExpression(matchingProp?.value) ? matchingProp.value : null
     }
 
@@ -309,7 +307,7 @@ export class StyleXIncludeTransformer {
   }
 
   /**
-   * Transforms an {@link ObjectExpression} by inlining and merging styles from `stylex.include` 
+   * Transforms an {@link ObjectExpression} by inlining and merging styles from `stylex.include`
    * usages.
    */
   transformObjectExpression = (path: NodePath<t.ObjectExpression>) => {
@@ -374,7 +372,7 @@ export class StyleXIncludeTransformer {
             importedStyles[importPath].push(object.name)
           }
         }
-      }
+      },
     })
 
     for (const importPath in importedStyles) {

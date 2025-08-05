@@ -12,7 +12,7 @@ describe('styleXIncludeBabelPlugin', () => {
       presets: [['@babel/preset-env', { modules: false }]], // Preserve ES6 modules
       ast: true, // Return the AST
     })
-    
+
     if (!result) throw new Error('Failed to transform code')
     return result
   }
@@ -24,7 +24,7 @@ describe('styleXIncludeBabelPlugin', () => {
     return generate(result.ast, {
       jsescOption: {
         quotes: 'single',
-      }
+      },
     }).code
   }
 
@@ -52,14 +52,17 @@ describe('styleXIncludeBabelPlugin', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
           width: 100,
           height: 50
         }
-      `)
+      `,
+      )
     })
 
     it('should handle property overrides', () => {
@@ -83,17 +86,20 @@ describe('styleXIncludeBabelPlugin', () => {
         })
       `
 
-      const result = transform(input) 
+      const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '18px',
           color: 'black',
           width: 100
         }
-      `)
+      `,
+      )
     })
   })
 
@@ -120,13 +126,16 @@ describe('styleXIncludeBabelPlugin', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
           width: 100
         }
-      `)
+      `,
+      )
     })
 
     it('should respect onlyAtBeginning option', () => {
@@ -151,7 +160,9 @@ describe('styleXIncludeBabelPlugin', () => {
 
       expect(() => {
         transform(input, { onlyAtBeginning: true })
-      }).toThrow("All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'")
+      }).toThrow(
+        "All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'",
+      )
     })
 
     it('should allow mixed includes when onlyAtBeginning is false', () => {
@@ -198,19 +209,22 @@ describe('styleXIncludeBabelPlugin', () => {
         })
       `
 
-      const result = transform(input, { 
+      const result = transform(input, {
         importSources: ['custom-stylex'],
-        onlyAtBeginning: false 
+        onlyAtBeginning: false,
       })
       const code = codeToString(result)
 
-      expectToContainCodeSnippet(code, `
+      expectToContainCodeSnippet(
+        code,
+        `
         button: {
           fontWeight: 'bold',
           fontSize: '16px',
           width: 100
         }
-      `)
+      `,
+      )
     })
   })
 
@@ -261,4 +275,4 @@ describe('styleXIncludeBabelPlugin', () => {
       expect(typeof plugin.visitor.ObjectExpression).toBe('function')
     })
   })
-}) 
+})
