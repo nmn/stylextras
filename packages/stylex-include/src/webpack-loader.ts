@@ -4,10 +4,10 @@ import { parseSync } from '@babel/core'
 import { generate } from '@babel/generator'
 
 import { StyleXIncludeTransformer } from './transformer'
-import type { StyleXIncludeOptions } from './types'
+import type { StyleXIncludeWebpackLoaderOptions } from './types'
 
 export default function styleXIncludeLoader(
-  this: LoaderContext<StyleXIncludeOptions>,
+  this: LoaderContext<StyleXIncludeWebpackLoaderOptions>,
   source: string,
   sourceMap?: string,
 ) {

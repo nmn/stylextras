@@ -20,7 +20,7 @@ describe('StyleXIncludeTransformer', () => {
     return ast
   }
 
-  const createTransformer = (options: Omit<StyleXIncludeOptions, 'allowedStyleImports'> = {}) => {
+  const createTransformer = (options: StyleXIncludeOptions) => {
     const transformer = new StyleXIncludeTransformer(
       {
         importSources: ['@stylexjs/stylex'],

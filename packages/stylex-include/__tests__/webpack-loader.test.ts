@@ -3,7 +3,7 @@ import webpack from 'webpack'
 import fs from 'node:fs'
 import * as path from 'path'
 
-import type { StyleXIncludeOptions } from '../src'
+import type { StyleXIncludeWebpackLoaderOptions } from '../src'
 import { expectToContainCodeSnippet } from './utils'
 
 const rootPath = path.resolve(__dirname, '../')
@@ -30,7 +30,7 @@ class WebpackLoaderTester {
     )
   }
 
-  async compile(options: StyleXIncludeOptions, sourceFiles: Record<string, string>) {
+  async compile(options: StyleXIncludeWebpackLoaderOptions, sourceFiles: Record<string, string>) {
     fs.mkdirSync(resolveTmpPath('./src'))
     Object.entries(sourceFiles).forEach(([filePath, content]) => {
       fs.writeFileSync(resolveTmpPath(`.${filePath}`), content)
@@ -360,6 +360,64 @@ describe('StyleXIncludeLoader Integration', () => {
       `,
       )
     })
+
+    it('should handle multi-layered cross-file imports', async () => {
+      const { stats } = await tester.compile(
+        {
+          allowedStyleImports: ['./base.js', './typography.js'],
+        },
+        {
+          '/src/base.js': `
+            import * as stylex from '@stylexjs/stylex'
+
+            export const base = stylex.create({
+              base: {
+                fontFamily: 'Arial'
+              }
+            })
+          `,
+          '/src/typography.js': `
+            import * as stylex from '@stylexjs/stylex'
+            import { base } from './base.js'
+
+            export const typography = stylex.create({
+              textStrong: {
+                ...stylex.include(base.base),
+                fontWeight: 'bold'
+              }
+            })
+          `,
+          '/src/component.js': `
+            import * as stylex from '@stylexjs/stylex'
+            import { typography } from './typography.js'
+
+            const styles = stylex.create({
+              button: {
+                ...stylex.include(typography.textStrong),
+                width: 100
+              }
+            })
+          `,
+          '/src/entry.js': `
+            import './component.js'
+          `,
+        },
+      )
+
+      expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
+
+      const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
+        button: {
+          fontFamily: 'Arial',
+          fontWeight: 'bold',
+          width: 100
+        }
+      `,
+      )
+    })
   })
 
   describe('error handling', () => {
@@ -664,7 +722,7 @@ describe('StyleXIncludeLoader Integration', () => {
       )
     })
 
-    it.only('should handle TypeScript files', async () => {
+    it('should handle TypeScript files', async () => {
       const { stats } = await tester.compile(
         {
           allowedStyleImports: ['./typography.ts', './colors.js'],

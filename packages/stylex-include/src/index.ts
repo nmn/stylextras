@@ -1,6 +1,6 @@
 export { StyleXIncludeTransformer as Transformer } from './transformer'
 
-export type { StyleXIncludeOptions } from './types'
+export type { StyleXIncludeOptions, StyleXIncludeWebpackLoaderOptions } from './types'
 
 export { default as babelPlugin } from './babel-plugin'
 

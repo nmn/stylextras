@@ -1,7 +1,7 @@
 {
   "name": "@stylextras/stylex-include",
   "version": "0.1.0",
-  "description": "A set of tools to retroactively support the legacy `stylex.include` API",
+  "description": "A set of utilities to support usages of the removed `stylex.include` API",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "repository": "https://github.com/nmn/stylextras",

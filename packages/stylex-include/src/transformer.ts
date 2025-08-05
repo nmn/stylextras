@@ -10,7 +10,7 @@ const traverse = require('@babel/traverse').default
 
 export class StyleXIncludeTransformer {
   constructor(
-    private options: Required<Omit<StyleXIncludeOptions, 'allowedStyleImports'>>,
+    private options: Required<StyleXIncludeOptions>,
     private resolveImportedStyleObject: (
       importPath: string,
       exportName: string,

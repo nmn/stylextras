@@ -1,139 +1,39 @@
 # @stylextras/stylex-include
 
-A toolkit to retroactively support the legacy `stylex.include` API that was removed in StyleX `0.11.0`. 
+A set of utilities to support usages of `stylex.include`, a legacy API that was removed in StyleX `0.11.0`.
 
-The following utilities are currently provided:
+Exported components:
 - **Babel plugin**: Inlines same-file usages of `stylex.include`
 - **Webpack loader**: Inlines same-file and cross-file usages of `stylex.include`
-- **Transformer**: Reusable Babel-based logic to build your own support with
-
-Run the appropriate plugin before `@stylexjs/babel-plugin` to inline source styles referenced by `stylex.include` into target style objects.
-
-## Installation
-
-```bash
-npm install @stylextras/stylex-include
-```
-
-## Quick Start
-
-### Babel Plugin (Local Includes Only)
-```javascript
-// babel.config.js
-module.exports = {
-  plugins: [
-    ['@stylextras/stylex-include', { onlyAtBeginning: true }]
-  ]
-}
-```
-
-### Webpack Loader (Local + Cross-file Includes)
-```javascript
-// webpack.config.js
-module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx|ts|tsx)$/,
-        use: [
-          {
-            loader: require.resolve('@stylextras/stylex-include/webpack-loader'),
-            options: {
-              allowedStyleExports: ['./src/styles/typography.js'],
-              onlyAtBeginning: true
-            }
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-## Usage Examples
-
-### Babel Plugin with Custom Import Sources
-```javascript
-// babel.config.js
-module.exports = {
-  plugins: [
-    ['@stylextras/stylex-include', {
-      importSources: ['@stylexjs/stylex', 'custom-stylex'],
-      onlyAtBeginning: true
-    }]
-  ]
-}
-```
-
-### Webpack Loader with Custom Module Resolution
-```javascript
-// webpack.config.js
-module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx|ts|tsx)$/,
-        use: [
-          {
-            loader: require.resolve('@stylextras/stylex-include/webpack-loader'),
-            options: {
-              allowedStyleExports: ['@acme/styles'],
-              onlyAtBeginning: true
-            }
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Direct Transformer Usage
-For advanced use cases, you can use the transformer directly:
-
-```javascript
-const { StyleXIncludeTransformer } = require('@stylextras/stylex-include')
-const { parseSync } = require('@babel/core')
-
-const transformer = new StyleXIncludeTransformer(
-  {
-    importSources: ['@stylexjs/stylex'],
-    allowedStyleExports: [],
-    onlyAtBeginning: true
-  },
-  (importPath, exportName) => {
-    // Custom resolution logic here
-    return null
-  }
-)
-
-const code = `
-  const styles = stylex.create({
-    button: {
-      ...stylex.include(typography.textStrong),
-      width: 100
-    }
-  })
-`
-
-const ast = parseSync(code)
-transformer.transform(ast)
-const exportedStyles = transformer.extractExportedStyles(ast)
-```
+- **Transformer**: Babel-based shared lower-level logic for more advanced use-cases
 
 ## Options
 
-### `allowedStyleExports` (optional)
+### `importSources` (shared)
 
-If provided, cross-file `stylex.include` calls are only allowed from these sources. This helps keep legacy API usage contained within your codebase.
+Same as `importSources` in `@stylexjs/babel-plugin`. 
+
+Default: `['@stylexjs/stylex']`.
 
 ```javascript
 {
-  allowedStyleExports: ['@acme/styles/typography', '@acme/styles/colors']
+  importSources: ['@acme/styles']
 }
 ```
 
-### `onlyAtBeginning` (optional)
+### `allowedStyleImports` (Webpack loader only)
+
+If provided, cross-file `stylex.include` calls are allowed *only from listed sources*. This helps keep legacy API usage contained within your codebase. 
+
+Default: `[]`
+
+```javascript
+{
+  allowedStyleImports: ['@acme/styles/typography']
+}
+```
+
+### `onlyAtBeginning`
 
 When set to `true`, `stylex.include` calls are only allowed at the beginning of style objects. This enables easy mechanical migration away from `stylex.include` by replacing style references with arrays of included styles and the style itself. Recommended if your existing `stylex.include` usage already satisfies or is close to satisfying this constraint.
 
@@ -169,8 +69,6 @@ const styles = stylex.create({
 
 ## Mechanical Migration Example
 
-When `onlyAtBeginning` is enabled, you can mechanically convert `stylex.include` usage to separate style arrays. For example:
-
 **Before (with stylex.include):**
 ```javascript
 const styles = stylex.create({
@@ -197,15 +95,6 @@ const styles = stylex.create({
 // Usage - replace single style with array of included and local styles
 <div {...stylex.props([typography.textStrong, styles.button], styles.foo)} />
 ```
-
-This pattern enables gradual migration away from `stylex.include` while preserving the same visual output.
-
-## Migration Strategy
-
-1. **Start with Babel plugin** for local includes only
-2. **Upgrade to Webpack loader** when you need cross-file includes
-3. **Use `onlyAtBeginning: true`** to enable easy mechanical migration later
-4. **Gradually replace includes** with separate style arrays when ready to migrate away
 
 ## License
 
