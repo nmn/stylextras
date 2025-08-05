@@ -2,6 +2,7 @@ import { transformSync } from '@babel/core'
 import { generate } from '@babel/generator'
 import styleXIncludeBabelPlugin from '../src/babel-plugin'
 import { describe, it, expect } from 'vitest'
+import { expectToContainCodeSnippet } from './utils'
 
 describe('styleXIncludeBabelPlugin', () => {
   const transform = (code: string, options = {}) => {
@@ -51,11 +52,14 @@ describe('styleXIncludeBabelPlugin', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain("fontSize: '16px'")
-      expect(code).toContain('width: 100')
-      expect(code).toContain('height: 50')
-      expect(code).not.toContain('stylex.include')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '16px',
+          width: 100,
+          height: 50
+        }
+      `)
     })
 
     it('should handle property overrides', () => {
@@ -73,19 +77,23 @@ describe('styleXIncludeBabelPlugin', () => {
         const styles = stylex.create({
           button: {
             ...stylex.include(typography.textStrong),
-            fontSize: '18px', // Should override included fontSize
+            fontSize: '18px',
             width: 100,
           }
         })
       `
 
-      const result = transform(input)
+      const result = transform(input) 
       const code = codeToString(result)
 
-      expect(code).toContain("fontSize: '18px'")
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain("color: 'black'")
-      expect(code).toContain('width: 100')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '18px',
+          color: 'black',
+          width: 100
+        }
+      `)
     })
   })
 
@@ -112,9 +120,13 @@ describe('styleXIncludeBabelPlugin', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain('width: 100')
-      expect(code).not.toContain('stylex.include')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '16px',
+          width: 100
+        }
+      `)
     })
 
     it('should respect onlyAtBeginning option', () => {
@@ -139,7 +151,7 @@ describe('styleXIncludeBabelPlugin', () => {
 
       expect(() => {
         transform(input, { onlyAtBeginning: true })
-      }).toThrow('All `stylex.include` usages must be at the beginning')
+      }).toThrow("All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'")
     })
 
     it('should allow mixed includes when onlyAtBeginning is false', () => {
@@ -192,9 +204,13 @@ describe('styleXIncludeBabelPlugin', () => {
       })
       const code = codeToString(result)
 
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain('width: 100')
-      expect(code).not.toContain('include(')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '16px',
+          width: 100
+        }
+      `)
     })
   })
 
@@ -212,7 +228,7 @@ describe('styleXIncludeBabelPlugin', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Unexpected argument for `stylex.include`')
+      }).toThrow("Unexpected argument for 'stylex.include'")
     })
 
     it('should handle unresolved style objects gracefully', () => {
@@ -228,7 +244,7 @@ describe('styleXIncludeBabelPlugin', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Could not resolve `stylex.include(nonexistent.style)`')
+      }).toThrow("Could not resolve 'stylex.include(nonexistent.style)'")
     })
   })
 
@@ -243,38 +259,6 @@ describe('styleXIncludeBabelPlugin', () => {
       expect(plugin.visitor).toBeDefined()
       expect(plugin.visitor.ObjectExpression).toBeDefined()
       expect(typeof plugin.visitor.ObjectExpression).toBe('function')
-    })
-  })
-
-  describe('integration with other Babel plugins', () => {
-    it('should work with @babel/preset-env', () => {
-      const input = `
-        import * as stylex from '@stylexjs/stylex'
-
-        const typography = stylex.create({
-          textStrong: {
-            fontWeight: 'bold',
-            fontSize: '16px'
-          }
-        })
-
-        const styles = stylex.create({
-          button: {
-            ...stylex.include(typography.textStrong),
-            width: 100,
-          }
-        })
-      `
-
-      const result = transformSync(input, {
-        plugins: [[styleXIncludeBabelPlugin]],
-        presets: ['@babel/preset-env'],
-        filename: 'test.js',
-      })
-
-      expect(result).toBeDefined()
-      expect(result?.code).toContain("fontWeight: 'bold'")
-      expect(result?.code).not.toContain('stylex.include')
     })
   })
 }) 

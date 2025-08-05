@@ -8,7 +8,7 @@ export interface StyleXIncludeOptions {
    * Allow cross-file `stylex.include` usages **only** from these sources. This helps keep things
    * performant and prevents usages of `stylex.include` from expanding. Default: []
    */
-  allowedStyleExports?: string[]
+  allowedStyleImports?: string[]
 
   /**
    * When set to `true`, `stylex.include` calls are only allowed at the beginning of style objects.

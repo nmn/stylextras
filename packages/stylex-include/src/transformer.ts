@@ -1,15 +1,16 @@
 import * as t from '@babel/types'
 import type { File, ObjectExpression } from '@babel/types'
-import traverse from '@babel/traverse'
 import type { NodePath } from '@babel/traverse'
 import { generate } from '@babel/generator'
 
 import type { StyleXIncludeOptions } from './types'
 import { pushOrReplaceProperty } from './utils'
 
+const traverse = require('@babel/traverse').default
+
 export class StyleXIncludeTransformer {
   constructor(
-    private options: Required<Omit<StyleXIncludeOptions, 'allowedStyleExports'>>,
+    private options: Required<Omit<StyleXIncludeOptions, 'allowedStyleImports'>>,
     private resolveImportedStyleObject: (
       importPath: string,
       exportName: string,
@@ -139,7 +140,7 @@ export class StyleXIncludeTransformer {
         firstNonSpreadElementIndex < lastSpreadElementIndex
       ) {
         throw new Error(
-          'All `stylex.include` usages must be at the beginning of styles when `onlyAtBeginning` is set to `true`',
+          "All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'",
         )
       }
     }
@@ -148,7 +149,7 @@ export class StyleXIncludeTransformer {
 
     for (const prop of node.properties) {
       if (!t.isSpreadElement(prop)) {
-        processedProperties.push(prop)
+        pushOrReplaceProperty(processedProperties, prop)
         continue
       }
 
@@ -156,7 +157,7 @@ export class StyleXIncludeTransformer {
       if (this.isStyleXInclude(spreadArg, scope)) {
         const includedStyles = this.resolveIncludedStyles(spreadArg, scope)
         if (!includedStyles) {
-          throw new Error(`Could not resolve \`${generate(spreadArg).code}\``)
+          throw new Error(`Could not resolve '${generate(spreadArg).code}'`)
         } else {
           for (const includedProp of includedStyles.properties) {
             pushOrReplaceProperty(processedProperties, includedProp)
@@ -233,7 +234,7 @@ export class StyleXIncludeTransformer {
     const args = node.arguments
 
     if (args.length !== 1 || !t.isExpression(args[0])) {
-      throw new Error('Unexpected argument for `stylex.include`')
+      throw new Error("Unexpected argument for 'stylex.include'")
     }
 
     const included = args[0]
@@ -267,38 +268,41 @@ export class StyleXIncludeTransformer {
       return null
     }
 
+    const included = node.arguments[0]!
+    t.assertMemberExpression(included)
+
+    const { object, property } = included
+    t.assertIdentifier(object)
+    t.assertIdentifier(property)
+
+    let styleObject: t.ObjectExpression | null = null
+
     // Handle local style objects
     if (path.isVariableDeclarator()) {
-      return this.maybeProcessStyleObjectDeclarator(path)?.[0] ?? null
+      styleObject = this.maybeProcessStyleObjectDeclarator(path)?.[0] ?? null
     }
 
     // Handle imported style objects
     if (path.isImportSpecifier() && path.parentPath.isImportDeclaration()) {
-      const included = node.arguments[0]!
-      t.assertMemberExpression(included)
-
-      const { object, property } = included
-      t.assertIdentifier(object)
-      t.assertIdentifier(property)
-
       const importDeclaration = path.parentPath.node
       const importPath = importDeclaration.source.value
-      const importedStyleObject = this.resolveImportedStyleObject(importPath, object.name)
-      if (importedStyleObject) {
-        const matchingProp = importedStyleObject.properties.find(
-          (prop): prop is t.ObjectProperty => {
-            if (t.isObjectProperty(prop)) {
-              return (
-                t.isIdentifier(prop.key) &&
-                prop.key.name === property.name &&
-                t.isObjectExpression(prop.value)
-              )
-            }
-            return false
-          },
-        )
-        return t.isObjectExpression(matchingProp?.value) ? matchingProp.value : null
-      }
+      styleObject = this.resolveImportedStyleObject(importPath, object.name)
+    }
+
+    if (styleObject) {
+      const matchingProp = styleObject.properties.find(
+        (prop): prop is t.ObjectProperty => {
+          if (t.isObjectProperty(prop)) {
+            return (
+              t.isIdentifier(prop.key) &&
+              prop.key.name === property.name &&
+              t.isObjectExpression(prop.value)
+            )
+          }
+          return false
+        },
+      )
+      return t.isObjectExpression(matchingProp?.value) ? matchingProp.value : null
     }
 
     return null

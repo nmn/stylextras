@@ -7,19 +7,21 @@
   "repository": "https://github.com/nmn/stylextras",
   "license": "MIT",
   "scripts": {
-    "build": "find ./src -name '*.ts' -exec sh -c 'bun build {} --outfile ./lib/$(basename {} .ts).js --target node --no-bundle' \\;",
-    "test": "vitest"
+    "build": "rm -rf lib && find ./src -name '*.ts' -exec sh -c 'bun build {} --outfile ./lib/$(basename {} .ts).mjs --target node --no-bundle' \\;",
+    "test": "bun build ./src/webpack-loader.ts --outfile ./__tests__/tmp/webpack-loader.mjs --target node --format esm && vitest"
   },
   "dependencies": {
     "@babel/core": "^7.24.0",
     "@babel/generator": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
     "@babel/traverse": "^7.24.0",
     "@babel/types": "^7.24.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.24.0",
-    "@babel/preset-typescript": "^7.27.1",
     "@types/babel__core": "^7.20.5",
+    "babel-loader": "^10.0.0",
     "vitest": "^1.4.0",
     "webpack": "^5.101.0"
   }

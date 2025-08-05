@@ -6,6 +6,7 @@ import { type StyleXIncludeOptions } from '../src/types'
 import * as fs from 'fs'
 import * as path from 'path'
 import { describe, it, expect } from 'vitest'
+import { expectToContainCodeSnippet } from './utils'
 
 describe('StyleXIncludeTransformer', () => {
   const parseCode = (code: string) => {
@@ -19,7 +20,7 @@ describe('StyleXIncludeTransformer', () => {
     return ast
   }
 
-  const createTransformer = (options: Omit<StyleXIncludeOptions, 'allowedStyleExports'> = {}) => {
+  const createTransformer = (options: Omit<StyleXIncludeOptions, 'allowedStyleImports'> = {}) => {
     const transformer = new StyleXIncludeTransformer(
       {
         importSources: ['@stylexjs/stylex'],
@@ -99,11 +100,14 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain("fontSize: '16px'")
-      expect(code).toContain('width: 100')
-      expect(code).toContain('height: 50')
-      expect(code).not.toContain('stylex.include')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '16px',
+          width: 100,
+          height: 50
+        }
+      `)
     })
 
     it('should handle recursive includes', () => {
@@ -136,12 +140,25 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expect(code).toContain("padding: '8px'")
-      expect(code).toContain("margin: '4px'")
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain("fontSize: '16px'")
-      expect(code).toContain('width: 100')
-      expect(code).toContain('height: 50')
+      expectToContainCodeSnippet(code, `
+        textStrong: {
+          padding: '8px',
+          margin: '4px',
+          fontWeight: 'bold',
+          fontSize: '16px'
+        }
+      `)
+
+      expectToContainCodeSnippet(code, `
+        button: {
+          padding: '8px',
+          margin: '4px',
+          fontWeight: 'bold',
+          fontSize: '16px',
+          width: 100,
+          height: 50
+        }
+      `)
     })
 
     it('should handle property overrides', () => {
@@ -159,7 +176,7 @@ describe('StyleXIncludeTransformer', () => {
         const styles = stylex.create({
           button: {
             ...stylex.include(typography.textStrong),
-            fontSize: '18px', // This should override the included fontSize
+            fontSize: '18px',
             width: 100,
             height: 50,
           }
@@ -168,12 +185,15 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      // The fontSize should be overridden to 18px
-      expect(code).toContain("fontSize: '18px'")
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain("color: 'black'")
-      expect(code).toContain('width: 100')
-      expect(code).toContain('height: 50')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '18px',
+          color: 'black',
+          width: 100,
+          height: 50
+        }
+      `)
     })
   })
 
@@ -228,7 +248,7 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(() => {
         transform(input, { onlyAtBeginning: true })
-      }).toThrow('All `stylex.include` usages must be at the beginning')
+      }).toThrow("All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'")
     })
 
     it('should not throw error when onlyAtBeginning is false', () => {
@@ -271,7 +291,7 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Unexpected argument for `stylex.include`')
+      }).toThrow("Unexpected argument for 'stylex.include'")
     })
 
     it('should handle unresolved style objects gracefully', () => {
@@ -287,7 +307,7 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Could not resolve `stylex.include(nonexistent.style)`')
+      }).toThrow("Could not resolve 'stylex.include(nonexistent.style)'")
     })
   })
 
@@ -309,12 +329,15 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain("fontSize: '16px'")
-      expect(code).toContain("color: 'black'")
-      expect(code).toContain('width: 100')
-      expect(code).toContain('height: 50')
-      expect(code).not.toContain('stylex.include')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '16px',
+          color: 'black',
+          width: 100,
+          height: 50
+        }
+      `)
     })
 
     it('should reject cross-file imports when resolver returns null', () => {
@@ -333,7 +356,7 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(() => {
         transform(input)
-      }).toThrow('Could not resolve `stylex.include(unknown.someStyle)`')
+      }).toThrow("Could not resolve 'stylex.include(unknown.someStyle)'")
     })
 
     it('should handle multiple cross-file includes', () => {
@@ -355,12 +378,16 @@ describe('StyleXIncludeTransformer', () => {
       const result = transform(input)
       const code = codeToString(result)
 
-      expect(code).toContain("fontWeight: 'bold'")
-      expect(code).toContain("fontSize: '16px'")
-      expect(code).toContain("backgroundColor: 'blue'")
-      expect(code).toContain("color: 'white'")
-      expect(code).toContain('width: 100')
-      expect(code).toContain('height: 50')
+      expectToContainCodeSnippet(code, `
+        button: {
+          fontWeight: 'bold',
+          fontSize: '16px',
+          color: 'white',
+          backgroundColor: 'blue',
+          width: 100,
+          height: 50
+        }
+      `)
     })
 
     it('should handle property overrides from cross-file imports', () => {
@@ -413,8 +440,14 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expect(code).toContain("fontWeight: 'bold'")
-        expect(code).not.toContain('stylex.include')
+        expectToContainCodeSnippet(code, `
+          button: {
+            fontWeight: 'bold',
+            fontSize: '16px',
+            width: 100,
+            height: 50
+          }
+        `)
       })
 
       it('should work with custom import source', () => {
@@ -441,9 +474,14 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expect(code).toContain("fontWeight: 'bold'")
-        expect(code).toContain('width: 100')
-        expect(code).not.toContain('include(')
+        expectToContainCodeSnippet(code, `
+          button: {
+            fontWeight: 'bold',
+            fontSize: '16px',
+            width: 100,
+            height: 50
+          }
+        `)
       })
 
       it('should work with multiple import sources', () => {
@@ -468,8 +506,12 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expect(code).toContain("fontWeight: 'bold'")
-        expect(code).toContain('width: 100')
+        expectToContainCodeSnippet(code, `
+          button: {
+            fontWeight: 'bold',
+            width: 100
+          }
+        `)
       })
     })
 
@@ -495,9 +537,16 @@ describe('StyleXIncludeTransformer', () => {
         })
         const code = codeToString(result)
 
-        expect(code).toContain("fontWeight: 'bold'")
-        expect(code).toContain("backgroundColor: 'blue'")
-        expect(code).toContain('width: 100')
+        expectToContainCodeSnippet(code, `
+          button: {
+            fontWeight: 'bold',
+            fontSize: '16px',
+            color: 'white',
+            backgroundColor: 'blue',
+            width: 100,
+            height: 50
+          }
+        `)
       })
 
       it('should throw error for mixed includes when onlyAtBeginning is true', () => {
@@ -520,7 +569,7 @@ describe('StyleXIncludeTransformer', () => {
           transform(input, {
             onlyAtBeginning: true,
           })
-        }).toThrow('All `stylex.include` usages must be at the beginning')
+        }).toThrow("All 'stylex.include' usages must be at the beginning of styles when 'onlyAtBeginning' is set to 'true'")
       })
 
       it('should allow mixed includes when onlyAtBeginning is false', () => {
@@ -564,10 +613,7 @@ describe('StyleXIncludeTransformer', () => {
         })
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const exportedStyles = transformer.extractExportedStyles(ast)
+      const exportedStyles = extractExportedStyles(input)
 
       expect(exportedStyles).toHaveProperty('styles')
       expect(exportedStyles.styles).toBeDefined()
@@ -620,10 +666,7 @@ describe('StyleXIncludeTransformer', () => {
         })
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const exportedStyles = transformer.extractExportedStyles(ast)
+      const exportedStyles = extractExportedStyles(input)
 
       expect(exportedStyles).toHaveProperty('typography')
       expect(exportedStyles).toHaveProperty('colors')
@@ -645,10 +688,7 @@ describe('StyleXIncludeTransformer', () => {
         export function regularFunction() {}
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const exportedStyles = transformer.extractExportedStyles(ast)
+      const exportedStyles = extractExportedStyles(input)
 
       expect(exportedStyles).toHaveProperty('typography')
       expect(exportedStyles).not.toHaveProperty('regularVar')
@@ -660,10 +700,7 @@ describe('StyleXIncludeTransformer', () => {
         // Empty file with no exports
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const exportedStyles = transformer.extractExportedStyles(ast)
+      const exportedStyles = extractExportedStyles(input)
 
       expect(exportedStyles).toEqual({})
     })
@@ -688,10 +725,7 @@ describe('StyleXIncludeTransformer', () => {
         })
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const importedStyles = transformer.extractImportedStyles(ast)
+      const importedStyles = extractImportedStyles(input)
 
       expect(Object.keys(importedStyles)).toEqual(['./typography.js', './colors.js'])
       expect(importedStyles['./typography.js']).toContain('typography')
@@ -716,10 +750,7 @@ describe('StyleXIncludeTransformer', () => {
         })
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const importedStyles = transformer.extractImportedStyles(ast)
+      const importedStyles = extractImportedStyles(input)
 
       // Local includes should not be included in imported styles
       expect(importedStyles).toEqual({})
@@ -738,10 +769,7 @@ describe('StyleXIncludeTransformer', () => {
         })
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const importedStyles = transformer.extractImportedStyles(ast)
+      const importedStyles = extractImportedStyles(input)
 
       expect(Object.keys(importedStyles)).toEqual(['./styles.js'])
       expect(importedStyles['./styles.js']).toContain('typography')
@@ -753,10 +781,7 @@ describe('StyleXIncludeTransformer', () => {
         // Empty file with no includes
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const importedStyles = transformer.extractImportedStyles(ast)
+      const importedStyles = extractImportedStyles(input)
 
       expect(importedStyles).toEqual({})
     })
@@ -780,10 +805,7 @@ describe('StyleXIncludeTransformer', () => {
         })
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const importedStyles = transformer.extractImportedStyles(ast)
+      const importedStyles = extractImportedStyles(input)
 
       expect(Object.keys(importedStyles)).toEqual(['./typography.js'])
       expect(importedStyles['./typography.js']).toContain('typography')
@@ -806,10 +828,7 @@ describe('StyleXIncludeTransformer', () => {
         })
       `
 
-      const transformer = createTransformer()
-      const ast = parseCode(input)
-
-      const importedStyles = transformer.extractImportedStyles(ast)
+      const importedStyles = extractImportedStyles(input)
 
       expect(Object.keys(importedStyles)).toEqual(['./typography.js'])
       expect(importedStyles['./typography.js']).toEqual(['typography'])
@@ -856,7 +875,7 @@ describe('StyleXIncludeTransformer', () => {
         transform(input, {
           importSources: ['@stylexjs/stylex'],
         })
-      }).toThrow('Unexpected argument for `stylex.include`')
+      }).toThrow("Unexpected argument for 'stylex.include'")
     })
 
     it('should handle missing import declarations gracefully', () => {
@@ -874,7 +893,7 @@ describe('StyleXIncludeTransformer', () => {
         transform(input, {
           importSources: ['@stylexjs/stylex'],
         })
-      }).toThrow('Could not resolve `stylex.include(importedStyles.someStyle)`')
+      }).toThrow("Could not resolve 'stylex.include(importedStyles.someStyle)'")
     })
   })
 })
