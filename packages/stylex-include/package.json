@@ -1,13 +1,34 @@
 {
   "name": "@stylextras/stylex-include",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A set of utilities to support usages of the removed `stylex.include` API",
   "main": "lib/index.js",
+  "module": "lib/index.mjs",
   "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    },
+    "./babel-plugin": {
+      "import": "./lib/babel-plugin.mjs",
+      "require": "./lib/babel-plugin.js",
+      "types": "./lib/babel-plugin.d.ts"
+    },
+    "./webpack-loader": {
+      "import": "./lib/webpack-loader.mjs",
+      "require": "./lib/webpack-loader.js",
+      "types": "./lib/webpack-loader.d.ts"
+    }
+  },
   "repository": "https://github.com/nmn/stylextras",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf lib && find ./src -name '*.ts' -exec sh -c 'bun build {} --outfile ./lib/$(basename {} .ts).mjs --target node --no-bundle' \\;",
+    "prebuild": "rm -rf lib && (tsc src/*.ts --outDir lib --declaration --emitDeclarationOnly || exit 0)",
+    "build:cjs": "bun build ./src/index.ts ./src/babel-plugin.ts ./src/webpack-loader.ts --outdir ./lib --target node --format cjs",
+    "build:esm": "find ./src -name '*.ts' -exec sh -c 'bun build {} --outfile ./lib/$(basename {} .ts).mjs --target node --format esm --no-bundle' \\;",
+    "build": "bun run build:cjs && bun run build:esm",
     "test": "bun build ./src/webpack-loader.ts --outfile ./__tests__/tmp/webpack-loader.mjs --target node --format esm && vitest"
   },
   "dependencies": {
@@ -24,5 +45,8 @@
     "babel-loader": "^10.0.0",
     "vitest": "^1.4.0",
     "webpack": "^5.101.0"
-  }
+  },
+  "files": [
+    "lib/*"
+  ]
 }
