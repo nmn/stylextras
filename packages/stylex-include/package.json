@@ -40,7 +40,5 @@
     "vitest": "^1.6.1",
     "webpack": "^5.102.0"
   },
-  "files": [
-    "lib/*"
-  ]
+  "files": ["lib/*"]
 }

@@ -90,13 +90,13 @@ export function remapImportPath(
  */
 export function hasIdentifierConflict(ast: t.File, identifierName: string): boolean {
   let hasConflict = false
-  
+
   t.traverseFast(ast, (node) => {
     if (t.isIdentifier(node) && node.name === identifierName) {
       hasConflict = true
     }
   })
-  
+
   return hasConflict
 }
 
@@ -108,11 +108,11 @@ export function hasIdentifierConflict(ast: t.File, identifierName: string): bool
  */
 export function generateNonConflictingName(ast: t.File, originalName: string): string {
   let candidateName = originalName
-  
+
   while (hasIdentifierConflict(ast, candidateName)) {
     candidateName = '_' + candidateName
   }
-  
+
   return candidateName
 }
 
@@ -211,17 +211,13 @@ export function injectImport(
         )
       } else if (t.isImportDefaultSpecifier(specifier)) {
         // Only add if there's no default import already
-        const hasDefault = existingImport.specifiers.some((s) =>
-          t.isImportDefaultSpecifier(s),
-        )
+        const hasDefault = existingImport.specifiers.some((s) => t.isImportDefaultSpecifier(s))
         if (!hasDefault) {
           existingImport.specifiers.unshift(t.importDefaultSpecifier(t.identifier(localName)))
         }
       } else if (t.isImportNamespaceSpecifier(specifier)) {
         // Only add if there's no namespace import already
-        const hasNamespace = existingImport.specifiers.some((s) =>
-          t.isImportNamespaceSpecifier(s),
-        )
+        const hasNamespace = existingImport.specifiers.some((s) => t.isImportNamespaceSpecifier(s))
         if (!hasNamespace) {
           existingImport.specifiers.push(t.importNamespaceSpecifier(t.identifier(localName)))
         }
@@ -242,9 +238,7 @@ export function injectImport(
     const newImport = t.importDeclaration(newSpecifiers, t.stringLiteral(remappedSource))
 
     // Insert at the beginning of the program, after any existing imports
-    const lastImportIndex = ast.program.body.findLastIndex((node) =>
-      t.isImportDeclaration(node),
-    )
+    const lastImportIndex = ast.program.body.findLastIndex((node) => t.isImportDeclaration(node))
     if (lastImportIndex !== -1) {
       ast.program.body.splice(lastImportIndex + 1, 0, newImport)
     } else {

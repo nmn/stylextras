@@ -329,13 +329,15 @@ export class StyleXIncludeTransformer {
    * Extracts exported style objects from a file. Does not transform the file.
    */
   extractExportedStyles = (ast: t.File) => {
-    const exportedStyles: { [exportName: string]: {
-      object: t.ObjectExpression,
-      dependencies: {
-        id: t.Identifier,
-        importDeclaration: t.ImportDeclaration,
-      }[]
-    } } = {}
+    const exportedStyles: {
+      [exportName: string]: {
+        object: t.ObjectExpression
+        dependencies: {
+          id: t.Identifier
+          importDeclaration: t.ImportDeclaration
+        }[]
+      }
+    } = {}
 
     traverse(ast, {
       ExportNamedDeclaration: (path: NodePath<t.ExportNamedDeclaration>) => {
@@ -344,7 +346,7 @@ export class StyleXIncludeTransformer {
           const result = this.maybeProcessStyleObjectDeclaration(declaration)
           if (result) {
             const [object, exportName] = result
-            
+
             // Extract all identifiers from the object expression
             const identifiers = new Set<string>()
             t.traverseFast(object, (node) => {
@@ -352,12 +354,12 @@ export class StyleXIncludeTransformer {
                 identifiers.add(node.name)
               }
             })
-            
+
             const dependencies: {
               id: t.Identifier
               importDeclaration: t.ImportDeclaration
             }[] = []
-            
+
             // Store imported dependencies of the object expression
             for (const identifierName of identifiers) {
               const binding = path.scope.getBinding(identifierName)
@@ -374,7 +376,7 @@ export class StyleXIncludeTransformer {
                 })
               }
             }
-            
+
             exportedStyles[exportName] = {
               object,
               dependencies,

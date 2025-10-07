@@ -40,14 +40,16 @@ describe('StyleXIncludeTransformer', () => {
           const code = fs.readFileSync(fixturePath, 'utf8')
           const ast = parseCode(code)
 
-          const exportedStyles: Record<string, {
-            object: t.ObjectExpression,
-            dependencies: {
-              id: t.Identifier,
-              importDeclaration: t.ImportDeclaration,
-            }[]
-          }> =
-            transformer.extractExportedStyles(ast)
+          const exportedStyles: Record<
+            string,
+            {
+              object: t.ObjectExpression
+              dependencies: {
+                id: t.Identifier
+                importDeclaration: t.ImportDeclaration
+              }[]
+            }
+          > = transformer.extractExportedStyles(ast)
           return exportedStyles[expectedExport]?.object ?? null
         }
 
@@ -682,9 +684,13 @@ describe('StyleXIncludeTransformer', () => {
       expect(exportedStyles.styles).toBeDefined()
       expect(exportedStyles.styles!.dependencies).toHaveLength(2)
       expect(exportedStyles.styles!.dependencies[0]!.id.name).toBe('vars')
-      expect(exportedStyles.styles!.dependencies[0]!.importDeclaration.source.value).toBe('./vars.stylex.js')
+      expect(exportedStyles.styles!.dependencies[0]!.importDeclaration.source.value).toBe(
+        './vars.stylex.js',
+      )
       expect(exportedStyles.styles!.dependencies[1]!.id.name).toBe('colors')
-      expect(exportedStyles.styles!.dependencies[1]!.importDeclaration.source.value).toBe('@acme/tokens.stylex.js')
+      expect(exportedStyles.styles!.dependencies[1]!.importDeclaration.source.value).toBe(
+        '@acme/tokens.stylex.js',
+      )
     })
 
     it('should not transform the AST when extracting styles', () => {
