@@ -1,12 +1,11 @@
 import * as t from '@babel/types'
 import type { File, ObjectExpression } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
+import traverse from '@babel/traverse'
 import { generate } from '@babel/generator'
 
 import type { StyleXIncludeOptions } from './types'
 import { pushOrReplaceProperty } from './utils'
-
-const traverse = require('@babel/traverse').default
 
 export class StyleXIncludeTransformer {
   constructor(
@@ -330,7 +329,13 @@ export class StyleXIncludeTransformer {
    * Extracts exported style objects from a file. Does not transform the file.
    */
   extractExportedStyles = (ast: t.File) => {
-    const exportedStyles: { [exportName: string]: t.ObjectExpression } = {}
+    const exportedStyles: { [exportName: string]: {
+      object: t.ObjectExpression,
+      dependencies: {
+        id: t.Identifier,
+        importDeclaration: t.ImportDeclaration,
+      }[]
+    } } = {}
 
     traverse(ast, {
       ExportNamedDeclaration: (path: NodePath<t.ExportNamedDeclaration>) => {
@@ -339,7 +344,41 @@ export class StyleXIncludeTransformer {
           const result = this.maybeProcessStyleObjectDeclaration(declaration)
           if (result) {
             const [object, exportName] = result
-            exportedStyles[exportName] = object
+            
+            // Extract all identifiers from the object expression
+            const identifiers = new Set<string>()
+            t.traverseFast(object, (node) => {
+              if (t.isIdentifier(node)) {
+                identifiers.add(node.name)
+              }
+            })
+            
+            const dependencies: {
+              id: t.Identifier
+              importDeclaration: t.ImportDeclaration
+            }[] = []
+            
+            // Store imported dependencies of the object expression
+            for (const identifierName of identifiers) {
+              const binding = path.scope.getBinding(identifierName)
+              if (
+                binding &&
+                (binding.path.isImportSpecifier() ||
+                  binding.path.isImportDefaultSpecifier() ||
+                  binding.path.isImportNamespaceSpecifier()) &&
+                binding.path.parentPath.isImportDeclaration()
+              ) {
+                dependencies.push({
+                  id: t.identifier(identifierName),
+                  importDeclaration: binding.path.parentPath.node,
+                })
+              }
+            }
+            
+            exportedStyles[exportName] = {
+              object,
+              dependencies,
+            }
           }
         }
       },
