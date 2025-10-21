@@ -31,9 +31,11 @@ class WebpackLoaderTester {
   }
 
   async compile(options: StyleXIncludeWebpackLoaderOptions, sourceFiles: Record<string, string>) {
-    fs.mkdirSync(resolveTmpPath('./src'))
     Object.entries(sourceFiles).forEach(([filePath, content]) => {
-      fs.writeFileSync(resolveTmpPath(`.${filePath}`), content)
+      const fullPath = resolveTmpPath(`.${filePath}`)
+      const dir = path.dirname(fullPath)
+      fs.mkdirSync(dir, { recursive: true })
+      fs.writeFileSync(fullPath, content)
     })
 
     const compiler = webpack({
@@ -45,7 +47,7 @@ class WebpackLoaderTester {
             test: /\.(js|jsx|ts|tsx)$/,
             use: [
               {
-                loader: resolveTmpPath('./webpack-loader.mjs'),
+                loader: resolveTmpPath('./webpack-loader.js'),
                 options: options,
               },
             ],
@@ -413,6 +415,87 @@ describe('StyleXIncludeLoader Integration', () => {
         button: {
           fontFamily: 'Arial',
           fontWeight: 'bold',
+          width: 100
+        }
+      `,
+      )
+    })
+
+    it.only('should handle multi-layered cross-file imports with variable depedencies', async () => {
+      const { stats } = await tester.compile(
+        {
+          allowedStyleImports: ['./shared/base.js', './typography.js'],
+        },
+        {
+          '/src/shared/tokens.stylex.js': `
+            import * as stylex from '@stylexjs/stylex'
+
+            export const colors = stylex.defineVars({
+              text: 'blue',
+              bg: 'red',
+            })
+          `,
+          '/src/shared/base.js': `
+            import * as stylex from '@stylexjs/stylex'
+
+            import { colors } from './tokens.stylex.js'
+
+            export const base = stylex.create({
+              base: {
+                fontFamily: 'Arial',
+                color: colors.text,
+              }
+            })
+          `,
+          '/src/typography.js': `
+            import * as stylex from '@stylexjs/stylex'
+
+            import { base } from './shared/base.js'
+            import { colors } from './shared/tokens.stylex.js'
+
+            export const typography = stylex.create({
+              textStrong: {
+                ...stylex.include(base.base),
+                fontWeight: 'bold',
+                backgroundColor: colors.bg,
+              }
+            })
+          `,
+          '/src/component.js': `
+            import * as stylex from '@stylexjs/stylex'
+
+            import { typography } from './typography.js'
+
+            export const colors = 'Overlapping local variable'
+
+            const styles = stylex.create({
+              button: {
+                ...stylex.include(typography.textStrong),
+                width: 100
+              }
+            })
+          `,
+          '/src/entry.js': `
+            import './component.js'
+          `,
+        },
+      )
+
+      expect(Object.keys(stats.compilation.assets)).toContain('bundle.js')
+
+      const bundleContent = fs.readFileSync(resolveTmpPath('./dist/bundle.js'), 'utf8')
+      expectToContainCodeSnippet(
+        bundleContent,
+        `var _shared_tokens_stylex_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shared/tokens.stylex.js */ "./shared/tokens.stylex.js")`,
+      )
+      expectToContainCodeSnippet(
+        bundleContent,
+        `
+        button: {
+          fontFamily: 'Arial',
+          color: _shared_tokens_stylex_js__WEBPACK_IMPORTED_MODULE_2__.colors.text,
+          fontWeight: 'bold',
+          backgroundColor: _shared_tokens_stylex_js__WEBPACK_IMPORTED_MODULE_2__.colors.bg,
           width: 100
         }
       `,

@@ -20,7 +20,7 @@ describe('StyleXIncludeTransformer', () => {
     return ast
   }
 
-  const createTransformer = (options: StyleXIncludeOptions) => {
+  const createTransformer = (options: StyleXIncludeOptions = {}) => {
     const transformer = new StyleXIncludeTransformer(
       {
         importSources: ['@stylexjs/stylex'],
@@ -40,9 +40,17 @@ describe('StyleXIncludeTransformer', () => {
           const code = fs.readFileSync(fixturePath, 'utf8')
           const ast = parseCode(code)
 
-          const exportedStyles: Record<string, t.ObjectExpression> =
-            transformer.extractExportedStyles(ast)
-          return exportedStyles[expectedExport] ?? null
+          const exportedStyles: Record<
+            string,
+            {
+              object: t.ObjectExpression
+              dependencies: {
+                id: t.Identifier
+                importDeclaration: t.ImportDeclaration
+              }[]
+            }
+          > = transformer.extractExportedStyles(ast)
+          return exportedStyles[expectedExport]?.object ?? null
         }
 
         return null
@@ -652,6 +660,37 @@ describe('StyleXIncludeTransformer', () => {
 
       expect(exportedStyles).toHaveProperty('styles')
       expect(exportedStyles.styles).toBeDefined()
+    })
+
+    it('should extract exported style objects with dependencies', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+
+        import { colors } from '@acme/tokens.stylex.js'
+        import { vars } from './vars.stylex.js'
+
+        export const styles = stylex.create({
+          button: {
+            height: vars.height,
+            width: 100,
+            backgroundColor: colors.bg,
+          }
+        })
+      `
+
+      const exportedStyles = extractExportedStyles(input)
+
+      expect(exportedStyles).toHaveProperty('styles')
+      expect(exportedStyles.styles).toBeDefined()
+      expect(exportedStyles.styles!.dependencies).toHaveLength(2)
+      expect(exportedStyles.styles!.dependencies[0]!.id.name).toBe('vars')
+      expect(exportedStyles.styles!.dependencies[0]!.importDeclaration.source.value).toBe(
+        './vars.stylex.js',
+      )
+      expect(exportedStyles.styles!.dependencies[1]!.id.name).toBe('colors')
+      expect(exportedStyles.styles!.dependencies[1]!.importDeclaration.source.value).toBe(
+        '@acme/tokens.stylex.js',
+      )
     })
 
     it('should not transform the AST when extracting styles', () => {

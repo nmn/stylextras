@@ -5,6 +5,7 @@ import { generate } from '@babel/generator'
 
 import { StyleXIncludeTransformer } from './transformer'
 import type { StyleXIncludeWebpackLoaderOptions } from './types'
+import { injectImport, generateNonConflictingName, renameIdentifierInObject } from './utils'
 
 export default function styleXIncludeLoader(
   this: LoaderContext<StyleXIncludeWebpackLoaderOptions>,
@@ -58,7 +59,18 @@ export default function styleXIncludeLoader(
 
       const importedStyles = dependencyTransformer.extractImportedStyles(ast)
       const resolvedImportedStyleObjects: {
-        [importPath: string]: { [exportName: string]: t.ObjectExpression }
+        [importPath: string]: {
+          filename: string
+          styles: {
+            [exportName: string]: {
+              object: t.ObjectExpression
+              dependencies: {
+                id: t.Identifier
+                importDeclaration: t.ImportDeclaration
+              }[]
+            }
+          }
+        }
       } = {}
 
       for (const importPath in importedStyles) {
@@ -67,8 +79,6 @@ export default function styleXIncludeLoader(
             `Import from '${importPath}' in file '${this.resourcePath}' is not allowed`,
           )
         }
-
-        resolvedImportedStyleObjects[importPath] = {}
 
         const [source, filename] = await new Promise<[source: string, path: string]>(
           (resolve, reject) => {
@@ -94,12 +104,36 @@ export default function styleXIncludeLoader(
           throw new Error(`Could not parse '${filename}'`)
         }
 
-        resolvedImportedStyleObjects[importPath] =
-          dependencyTransformer.extractExportedStyles(importedModuleAst)
+        resolvedImportedStyleObjects[importPath] = {
+          filename,
+          styles: dependencyTransformer.extractExportedStyles(importedModuleAst),
+        }
 
         for (const importName of importedStyles[importPath]!) {
-          if (!resolvedImportedStyleObjects[importPath][importName]) {
+          if (!resolvedImportedStyleObjects[importPath].styles[importName]) {
             throw new Error(`File '${filename}' does not export '${importName}'`)
+          }
+        }
+      }
+
+      // Inject external dependencies, if any
+      for (const importPath in resolvedImportedStyleObjects) {
+        const { filename, styles } = resolvedImportedStyleObjects[importPath]!
+        for (const exportName in styles) {
+          const styleEntry = styles[exportName]!
+          const dependencies = styleEntry.dependencies ?? []
+
+          for (const { id, importDeclaration } of dependencies) {
+            // Detect if the identifier conflicts with any existing identifier in the file
+            const finalName = generateNonConflictingName(ast, id.name)
+
+            // If the name was changed, rename all occurrences in the object expression
+            if (finalName !== id.name) {
+              renameIdentifierInObject(styleEntry.object, id.name, finalName)
+            }
+
+            // Inject the import with the potentially aliased name
+            injectImport(ast, id, importDeclaration, this.resourcePath, filename, finalName)
           }
         }
       }
@@ -110,7 +144,7 @@ export default function styleXIncludeLoader(
           onlyAtBeginning,
         },
         (importPath, exportName) => {
-          return resolvedImportedStyleObjects[importPath]?.[exportName] ?? null
+          return resolvedImportedStyleObjects[importPath]?.styles[exportName]?.object ?? null
         },
       )
 
