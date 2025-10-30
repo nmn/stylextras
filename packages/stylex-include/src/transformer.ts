@@ -7,13 +7,27 @@ import { generate } from '@babel/generator'
 import type { StyleXIncludeOptions } from './types'
 import { pushOrReplaceProperty } from './utils'
 
+export const STYLE_OBJECT_WITH_EMPTY_STYLES = Symbol('EMPTY_STYLE_OBJECT')
+
+/**
+ * Transformer that encapsulates all logic relevant to extracting exported StyleX styles and
+ * transforming `stylex.include` usages to inline the included styles for a given file.
+ * 
+ * @param options - Options for the transformer.
+ * @param resolveImportedStyleObject - Callback to resolve an imported top-level style object 
+ *   created by `stylex.create`. 
+ *   - Return `null` to indicate that the resolution has failed and this is not acceptable. 
+ *   - Alternatively, return the `STYLE_OBJECT_WITH_EMPTY_STYLES` symbol to have all 
+ *     `stylex.include` usages against this style object resolve to no styles.
+ * @returns A new transformer instance.
+ */
 export class StyleXIncludeTransformer {
   constructor(
     private options: Required<StyleXIncludeOptions>,
     private resolveImportedStyleObject: (
       importPath: string,
       exportName: string,
-    ) => t.ObjectExpression | null = () => null,
+    ) => t.ObjectExpression | typeof STYLE_OBJECT_WITH_EMPTY_STYLES | null = () => null,
   ) {}
 
   private isStyleXImport(
@@ -274,7 +288,7 @@ export class StyleXIncludeTransformer {
     t.assertIdentifier(object)
     t.assertIdentifier(property)
 
-    let styleObject: t.ObjectExpression | null = null
+    let styleObject: t.ObjectExpression | typeof STYLE_OBJECT_WITH_EMPTY_STYLES | null = null
 
     // Handle local style objects
     if (path.isVariableDeclarator()) {
@@ -288,7 +302,9 @@ export class StyleXIncludeTransformer {
       styleObject = this.resolveImportedStyleObject(importPath, object.name)
     }
 
-    if (styleObject) {
+    if (styleObject === STYLE_OBJECT_WITH_EMPTY_STYLES) {
+      return t.objectExpression([])
+    } else if (styleObject) {
       const matchingProp = styleObject.properties.find((prop): prop is t.ObjectProperty => {
         if (t.isObjectProperty(prop)) {
           return (

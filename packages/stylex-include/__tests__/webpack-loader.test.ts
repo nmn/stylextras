@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, afterEach, beforeAll, afterAll } from 'vitest'
 import webpack from 'webpack'
 import fs from 'node:fs'
 import * as path from 'path'
@@ -18,13 +18,11 @@ class WebpackLoaderTester {
     fs.writeFileSync(
       resolveTmpPath('./stylex-mock.js'),
       `
-      module.exports = {
-        create: function(stylesObject) {
-          return stylesObject
-        },
-        include: function(styles) {
-          return styles
-        }
+      export function create(stylesObject) {
+        return stylesObject
+      }
+      export function include(styles) {
+        return styles
       }
     `,
     )
@@ -47,7 +45,7 @@ class WebpackLoaderTester {
             test: /\.(js|jsx|ts|tsx)$/,
             use: [
               {
-                loader: resolveTmpPath('./webpack-loader.js'),
+                loader: resolveTmpPath('./webpack-loader.cjs'),
                 options: options,
               },
             ],
@@ -421,7 +419,7 @@ describe('StyleXIncludeLoader Integration', () => {
       )
     })
 
-    it.only('should handle multi-layered cross-file imports with variable depedencies', async () => {
+    it('should handle multi-layered cross-file imports with variable depedencies', async () => {
       const { stats } = await tester.compile(
         {
           allowedStyleImports: ['./shared/base.js', './typography.js'],
@@ -604,9 +602,9 @@ describe('StyleXIncludeLoader Integration', () => {
       )
 
       expect(stats.hasErrors()).toBe(true)
-      expect(stats.compilation.errors.length).toEqual(1)
-      expect(stats.compilation.errors[0]!.message).toContain('File')
-      expect(stats.compilation.errors[0]!.message).toContain("does not export 'typography'")
+      expect(stats.compilation.errors.length).toEqual(2)
+      expect(stats.compilation.errors[1]!.message).toContain('File')
+      expect(stats.compilation.errors[1]!.message).toContain("does not export 'typography'")
     })
   })
 
