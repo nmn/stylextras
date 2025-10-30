@@ -7,6 +7,11 @@ import { StyleXIncludeTransformer } from './transformer'
 import type { StyleXIncludeWebpackLoaderOptions } from './types'
 import { injectImport, generateNonConflictingName, renameIdentifierInObject } from './utils'
 
+/**
+ * A Webpack loader that uses {@link StyleXIncludeTransformer} to transform files containing
+ * `stylex.include` usages. Cross-file `stylex.include` usages are resolved recursively using the
+ * [`loadModule`](https://webpack.js.org/api/loaders/#thisloadmodule) method of the loader context.
+ */
 export default function styleXIncludeLoader(
   this: LoaderContext<StyleXIncludeWebpackLoaderOptions>,
   source: string,

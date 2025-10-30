@@ -1,4 +1,4 @@
-export { StyleXIncludeTransformer as Transformer } from './transformer'
+export { StyleXIncludeTransformer as Transformer, STYLE_OBJECT_WITH_EMPTY_STYLES as EMPTY_STYLE_OBJECT } from './transformer'
 
 export type { StyleXIncludeOptions, StyleXIncludeWebpackLoaderOptions } from './types'
 

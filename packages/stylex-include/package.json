@@ -1,44 +1,52 @@
 {
   "name": "@stylextras/stylex-include",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "A set of utilities to support usages of the removed `stylex.include` API",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-      "require": "./lib/index.js",
+      "require": "./lib/cjs/index.js",
+      "import": "./lib/esm/index.js",
       "types": "./lib/index.d.ts"
     },
     "./babel-plugin": {
-      "require": "./lib/babel-plugin.js",
+      "require": "./lib/cjs/babel-plugin.js",
+      "import": "./lib/esm/babel-plugin.js",
       "types": "./lib/babel-plugin.d.ts"
     },
     "./webpack-loader": {
-      "require": "./lib/webpack-loader.js",
+      "require": "./lib/cjs/webpack-loader.js",
+      "import": "./lib/esm/webpack-loader.js",
       "types": "./lib/webpack-loader.d.ts"
     }
   },
   "repository": "https://github.com/nmn/stylextras",
   "license": "MIT",
   "scripts": {
-    "prebuild": "rm -rf lib && (tsc src/*.ts --outDir lib --declaration --emitDeclarationOnly || exit 0)",
-    "build": "bun build ./src/index.ts ./src/babel-plugin.ts ./src/webpack-loader.ts --outdir ./lib --target node --format cjs",
-    "test": "bun build ./src/webpack-loader.ts --outfile ./__tests__/tmp/webpack-loader.js --target node --format cjs && vitest"
+    "prebuild": "rm -rf lib && (tsc src/*.ts --outDir lib --declaration --emitDeclarationOnly --incremental false --composite false || exit 0)",
+    "build:cjs": "bun build ./src/index.ts ./src/babel-plugin.ts ./src/webpack-loader.ts --outdir ./lib/cjs --target node --format cjs",
+    "build:esm": "bun build ./src/index.ts ./src/babel-plugin.ts ./src/webpack-loader.ts --outdir ./lib/esm --target node --format esm",
+    "build": "bun run build:cjs && bun run build:esm",
+    "test": "bun build ./src/webpack-loader.ts --outfile ./__tests__/tmp/webpack-loader.cjs --target node --format cjs && vitest run"
   },
   "dependencies": {
-    "@babel/core": "^7.28.4",
-    "@babel/generator": "^7.28.3",
-    "@babel/preset-env": "^7.28.3",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
-    "@babel/traverse": "^7.28.4",
-    "@babel/types": "^7.28.4"
+    "@babel/core": "^7.28.5",
+    "@babel/generator": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@babel/traverse": "^7.28.5",
+    "@babel/types": "^7.28.5"
   },
   "devDependencies": {
+    "@stylexjs/stylex": "^0.16.3",
     "@types/babel__core": "^7.20.5",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.28.0",
     "babel-loader": "^10.0.0",
+    "typescript": "^5.9.3",
     "vitest": "^1.6.1",
-    "webpack": "^5.102.0"
+    "webpack": "^5.102.1"
   },
   "files": ["lib/*"]
 }

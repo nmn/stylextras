@@ -226,6 +226,34 @@ describe('styleXIncludeBabelPlugin', () => {
       `,
       )
     })
+
+    it('should ignore imported styles when ignoreImportedStyles is true', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+        import { importedStyles } from './imported-styles.js'
+
+        const styles = stylex.create({
+          button: {
+            ...stylex.include(importedStyles.someStyle),
+            width: 100,
+            height: 50,
+          }
+        })
+      `
+
+      const result = transform(input, { ignoreImportedStyles: true })
+      const code = codeToString(result)
+      
+      expectToContainCodeSnippet(
+        code,
+        `
+        button: {
+          width: 100,
+          height: 50
+        }
+      `,
+      )
+    })
   })
 
   describe('error handling', () => {
@@ -259,6 +287,25 @@ describe('styleXIncludeBabelPlugin', () => {
       expect(() => {
         transform(input)
       }).toThrow("Could not resolve 'stylex.include(nonexistent.style)'")
+    })
+
+    it('should throw error for imported styles when ignoreImportedStyles is false', () => {
+      const input = `
+        import * as stylex from '@stylexjs/stylex'
+        import { importedStyles } from './imported-styles.js'
+
+        const styles = stylex.create({
+          button: {
+            ...stylex.include(importedStyles.someStyle),
+            width: 100,
+            height: 50,
+          }
+        })
+      `
+
+      expect(() => {
+        transform(input, { ignoreImportedStyles: false })
+      }).toThrow("Could not resolve 'stylex.include(importedStyles.someStyle)'")
     })
   })
 
