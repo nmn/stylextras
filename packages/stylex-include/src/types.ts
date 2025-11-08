@@ -16,6 +16,20 @@ export interface StyleXIncludeOptions {
   onlyAtBeginning?: boolean
 }
 
+export interface StyleXIncludeBabelPluginOptions extends StyleXIncludeOptions {
+  /**
+   * The Babel plugin cannot handle imported styles, and the default behavior is to throw an erorr.
+   * 
+   * If this option is set to `true`, the Babel plugin will ignore imported styles and treat them as
+   * if they are empty.
+   * 
+   * Useful for unit tests where you don't care about the actual styles.
+   * 
+   * Default: `false`
+   */
+  ignoreImportedStyles?: boolean
+}
+
 export interface StyleXIncludeWebpackLoaderOptions extends StyleXIncludeOptions {
   /**
    * Allow cross-file `stylex.include` usages **only** from these sources. This helps keep things
