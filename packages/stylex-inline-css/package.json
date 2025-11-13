@@ -1,0 +1,22 @@
+{
+    "name": "@stylextras/stylex-inline-css",
+    "version": "0.1.0",
+    "description": "A library of inline CSS properties for StyleX",
+    "main": "src/index.js",
+    "exports": {
+        ".": {
+            "require": "./src/index.js",
+            "import": "./src/index.js"
+        },
+        "./properties/*": {
+            "require": "./src/properties/*.js",
+            "import": "./src/properties/*.js"
+        }
+    },
+    "scripts": {
+        "generate": "node scripts/generate-from-tailwind.js"
+    },
+    "dependencies": {
+        "@stylexjs/stylex": "*"
+    }
+}

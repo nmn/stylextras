@@ -1,0 +1,31 @@
+import * as stylex from "@stylexjs/stylex";
+
+export const columns = stylex.create({
+  _1: { columns: "1" },
+  _10: { columns: "10" },
+  _11: { columns: "11" },
+  _12: { columns: "12" },
+  _16rem: { columns: "16rem" },
+  _18rem: { columns: "18rem" },
+  _2: { columns: "2" },
+  _20rem: { columns: "20rem" },
+  _24rem: { columns: "24rem" },
+  _28rem: { columns: "28rem" },
+  _3: { columns: "3" },
+  _32rem: { columns: "32rem" },
+  _36rem: { columns: "36rem" },
+  _4: { columns: "4" },
+  _42rem: { columns: "42rem" },
+  _48rem: { columns: "48rem" },
+  _5: { columns: "5" },
+  _56rem: { columns: "56rem" },
+  _6: { columns: "6" },
+  _64rem: { columns: "64rem" },
+  _7: { columns: "7" },
+  _72rem: { columns: "72rem" },
+  _8: { columns: "8" },
+  _80rem: { columns: "80rem" },
+  _9: { columns: "9" },
+  auto: { columns: "auto" },
+});
+
