@@ -1,0 +1,10 @@
+.DS_Store
+/node_modules/
+
+dist
+.source
+src/pages.gen.ts
+
+!lib/
+
+.vercel

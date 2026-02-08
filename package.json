@@ -12,6 +12,7 @@
     "format": "biome format --write ."
   },
   "workspaces": [
+    "apps/*",
     "tools/*",
     "packages/*"
   ]
