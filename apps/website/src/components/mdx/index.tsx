@@ -28,6 +28,9 @@ import { CodeBlock, Pre } from './CodeBlock';
 import { LLMInstallationFile, LLMStylingFile } from './LLMFiles';
 import { preMarker } from './mdx.stylex';
 import { vars } from '@/theming/vars.stylex';
+import { Button as AriaButton } from '@/components/stylextras/button';
+
+
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -93,6 +96,7 @@ export const mdxComponents = {
   CodeBlock,
   LLMInstallationFile,
   LLMStylingFile,
+  AriaButton,
 };
 
 const styles = stylex.create({

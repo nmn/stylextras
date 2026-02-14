@@ -1,0 +1,12 @@
+{
+  "title": "Content",
+  "pages": [
+    "./avatar.mdx",
+    "./card.mdx",
+    "./flez.mdx",
+    "./empty.mdx",
+    "./kbd.mdx",
+    "./separator.mdx",
+    "./typography.mdx"
+  ]
+}

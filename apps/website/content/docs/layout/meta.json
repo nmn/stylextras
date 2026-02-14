@@ -1,0 +1,8 @@
+{
+  "title": "Layout",
+  "pages": [
+    "./grid.mdx",
+    "./toolbar.mdx",
+    "./window-splitter.mdx"
+  ]
+}

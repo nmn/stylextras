@@ -1,0 +1,11 @@
+{
+  "title": "Overlays",
+  "pages": [
+    "./alert-dialog.mdx",
+    "./dialog.mdx",
+    "./drawer.mdx",
+    "./hover-card.mdx",
+    "./popover.mdx",
+    "./tooltip.mdx"
+  ]
+}

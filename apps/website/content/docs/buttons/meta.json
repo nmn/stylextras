@@ -1,0 +1,11 @@
+{
+  "title": "Buttons",
+  "pages": [
+    "./button.mdx",
+    "./button-group.mdx",
+    "./icon-button.mdx",
+    "./segmented-control.mdx",
+    "./toggle.mdx",
+    "./toggle-group.mdx"
+  ]
+}

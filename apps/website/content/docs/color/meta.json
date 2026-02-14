@@ -1,0 +1,12 @@
+{
+  "title": "Color",
+  "pages": [
+    "./color-area.mdx",
+    "./color-field.mdx",
+    "./color-picker.mdx",
+    "./color-slider.mdx",
+    "./color-swatch.mdx",
+    "./color-swatch-picker.mdx",
+    "./color-wheel.mdx"
+  ]
+}

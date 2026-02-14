@@ -1,0 +1,12 @@
+{
+  "title": "Navigation",
+  "pages": [
+    "./breadcrumb.mdx",
+    "./disclosure.mdx",
+    "./disclosure-group.mdx",
+    "./link.mdx",
+    "./pagination.mdx",
+    "./sidebar.mdx",
+    "./tabs.mdx"
+  ]
+}
