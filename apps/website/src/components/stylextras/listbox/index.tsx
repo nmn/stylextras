@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { ListBox as AriaListBox } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['ListBox']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaListBox>;
 
 export type ListBoxProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const ListBox = ({ style, ...props }: ListBoxProps) => (
-  <aria.ListBox
+  <AriaListBox
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />

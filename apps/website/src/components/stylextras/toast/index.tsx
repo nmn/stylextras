@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { UNSTABLE_Toast as AriaToast } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['UNSTABLE_Toast']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaToast>;
 
 export type ToastProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const Toast = ({ style, ...props }: ToastProps) => (
-  <aria.UNSTABLE_Toast
+  <AriaToast
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />

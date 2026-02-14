@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { RangeCalendar as AriaRangeCalendar } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['RangeCalendar']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaRangeCalendar>;
 
 export type RangeCalendarProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const RangeCalendar = ({ style, ...props }: RangeCalendarProps) => (
-  <aria.RangeCalendar
+  <AriaRangeCalendar
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />

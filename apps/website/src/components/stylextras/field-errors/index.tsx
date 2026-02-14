@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { FieldError as AriaFieldError } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['FieldError']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaFieldError>;
 
 export type FieldErrorsProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const FieldErrors = ({ style, ...props }: FieldErrorsProps) => (
-  <aria.FieldError
+  <AriaFieldError
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />

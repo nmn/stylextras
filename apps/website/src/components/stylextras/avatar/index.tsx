@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { Text as AriaText } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['Text']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaText>;
 
 export type AvatarProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const Avatar = ({ style, ...props }: AvatarProps) => (
-  <aria.Text
+  <AriaText
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />

@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { Separator as AriaSeparator } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['Separator']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaSeparator>;
 
 export type SeparatorProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const Separator = ({ style, ...props }: SeparatorProps) => (
-  <aria.Separator
+  <AriaSeparator
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />

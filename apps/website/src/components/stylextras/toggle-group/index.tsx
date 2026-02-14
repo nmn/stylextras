@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { ToggleButtonGroup as AriaToggleButtonGroup } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['ToggleButtonGroup']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaToggleButtonGroup>;
 
 export type ToggleGroupProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const ToggleGroup = ({ style, ...props }: ToggleGroupProps) => (
-  <aria.ToggleButtonGroup
+  <AriaToggleButtonGroup
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />
