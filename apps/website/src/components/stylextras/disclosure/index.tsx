@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { Disclosure as AriaDisclosure } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['Disclosure']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaDisclosure>;
 
 export type DisclosureProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const Disclosure = ({ style, ...props }: DisclosureProps) => (
-  <aria.Disclosure
+  <AriaDisclosure
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />

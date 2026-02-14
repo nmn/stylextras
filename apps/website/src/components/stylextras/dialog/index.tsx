@@ -1,16 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithoutRef } from 'react';
-import * as aria from 'react-aria-components';
+import { Dialog as AriaDialog } from 'react-aria-components';
 
-type BaseProps = ComponentPropsWithoutRef<(typeof aria)['Dialog']>;
+type BaseProps = ComponentPropsWithoutRef<typeof AriaDialog>;
 
 export type DialogProps = Omit<BaseProps, 'className' | 'style'> & {
   style?: StyleXStyles;
 };
 
 export const Dialog = ({ style, ...props }: DialogProps) => (
-  <aria.Dialog
+  <AriaDialog
     {...(props as BaseProps)}
     {...stylex.props(style)}
   />
