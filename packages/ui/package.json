@@ -1,0 +1,314 @@
+{
+  "name": "@stylextras/ui",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./alert-callout": {
+      "types": "./src/alert-callout/index.tsx",
+      "import": "./src/alert-callout/index.tsx"
+    },
+    "./alert-dialog": {
+      "types": "./src/alert-dialog/index.tsx",
+      "import": "./src/alert-dialog/index.tsx"
+    },
+    "./avatar": {
+      "types": "./src/avatar/index.tsx",
+      "import": "./src/avatar/index.tsx"
+    },
+    "./badge": {
+      "types": "./src/badge/index.tsx",
+      "import": "./src/badge/index.tsx"
+    },
+    "./breadcrumb": {
+      "types": "./src/breadcrumb/index.tsx",
+      "import": "./src/breadcrumb/index.tsx"
+    },
+    "./button": {
+      "types": "./src/button/index.tsx",
+      "import": "./src/button/index.tsx"
+    },
+    "./button-group": {
+      "types": "./src/button-group/index.tsx",
+      "import": "./src/button-group/index.tsx"
+    },
+    "./calendar": {
+      "types": "./src/calendar/index.tsx",
+      "import": "./src/calendar/index.tsx"
+    },
+    "./card": {
+      "types": "./src/card/index.tsx",
+      "import": "./src/card/index.tsx"
+    },
+    "./checkbox": {
+      "types": "./src/checkbox/index.tsx",
+      "import": "./src/checkbox/index.tsx"
+    },
+    "./color-area": {
+      "types": "./src/color-area/index.tsx",
+      "import": "./src/color-area/index.tsx"
+    },
+    "./color-field": {
+      "types": "./src/color-field/index.tsx",
+      "import": "./src/color-field/index.tsx"
+    },
+    "./color-picker": {
+      "types": "./src/color-picker/index.tsx",
+      "import": "./src/color-picker/index.tsx"
+    },
+    "./color-slider": {
+      "types": "./src/color-slider/index.tsx",
+      "import": "./src/color-slider/index.tsx"
+    },
+    "./color-swatch": {
+      "types": "./src/color-swatch/index.tsx",
+      "import": "./src/color-swatch/index.tsx"
+    },
+    "./color-swatch-picker": {
+      "types": "./src/color-swatch-picker/index.tsx",
+      "import": "./src/color-swatch-picker/index.tsx"
+    },
+    "./color-wheel": {
+      "types": "./src/color-wheel/index.tsx",
+      "import": "./src/color-wheel/index.tsx"
+    },
+    "./combobox": {
+      "types": "./src/combobox/index.tsx",
+      "import": "./src/combobox/index.tsx"
+    },
+    "./command": {
+      "types": "./src/command/index.tsx",
+      "import": "./src/command/index.tsx"
+    },
+    "./context-menu": {
+      "types": "./src/context-menu/index.tsx",
+      "import": "./src/context-menu/index.tsx"
+    },
+    "./data-table": {
+      "types": "./src/data-table/index.tsx",
+      "import": "./src/data-table/index.tsx"
+    },
+    "./date-field": {
+      "types": "./src/date-field/index.tsx",
+      "import": "./src/date-field/index.tsx"
+    },
+    "./date-picker": {
+      "types": "./src/date-picker/index.tsx",
+      "import": "./src/date-picker/index.tsx"
+    },
+    "./dialog": {
+      "types": "./src/dialog/index.tsx",
+      "import": "./src/dialog/index.tsx"
+    },
+    "./disclosure": {
+      "types": "./src/disclosure/index.tsx",
+      "import": "./src/disclosure/index.tsx"
+    },
+    "./disclosure-group": {
+      "types": "./src/disclosure-group/index.tsx",
+      "import": "./src/disclosure-group/index.tsx"
+    },
+    "./drawer": {
+      "types": "./src/drawer/index.tsx",
+      "import": "./src/drawer/index.tsx"
+    },
+    "./dropdown-menu": {
+      "types": "./src/dropdown-menu/index.tsx",
+      "import": "./src/dropdown-menu/index.tsx"
+    },
+    "./empty": {
+      "types": "./src/empty/index.tsx",
+      "import": "./src/empty/index.tsx"
+    },
+    "./field-errors": {
+      "types": "./src/field-errors/index.tsx",
+      "import": "./src/field-errors/index.tsx"
+    },
+    "./file-drop-zone": {
+      "types": "./src/file-drop-zone/index.tsx",
+      "import": "./src/file-drop-zone/index.tsx"
+    },
+    "./file-trigger": {
+      "types": "./src/file-trigger/index.tsx",
+      "import": "./src/file-trigger/index.tsx"
+    },
+    "./flez": {
+      "types": "./src/flez/index.tsx",
+      "import": "./src/flez/index.tsx"
+    },
+    "./form": {
+      "types": "./src/form/index.tsx",
+      "import": "./src/form/index.tsx"
+    },
+    "./grid": {
+      "types": "./src/grid/index.tsx",
+      "import": "./src/grid/index.tsx"
+    },
+    "./hover-card": {
+      "types": "./src/hover-card/index.tsx",
+      "import": "./src/hover-card/index.tsx"
+    },
+    "./icon-button": {
+      "types": "./src/icon-button/index.tsx",
+      "import": "./src/icon-button/index.tsx"
+    },
+    "./input-fields": {
+      "types": "./src/input-fields/index.tsx",
+      "import": "./src/input-fields/index.tsx"
+    },
+    "./input-group": {
+      "types": "./src/input-group/index.tsx",
+      "import": "./src/input-group/index.tsx"
+    },
+    "./kbd": {
+      "types": "./src/kbd/index.tsx",
+      "import": "./src/kbd/index.tsx"
+    },
+    "./label": {
+      "types": "./src/label/index.tsx",
+      "import": "./src/label/index.tsx"
+    },
+    "./link": {
+      "types": "./src/link/index.tsx",
+      "import": "./src/link/index.tsx"
+    },
+    "./listbox": {
+      "types": "./src/listbox/index.tsx",
+      "import": "./src/listbox/index.tsx"
+    },
+    "./menubar": {
+      "types": "./src/menubar/index.tsx",
+      "import": "./src/menubar/index.tsx"
+    },
+    "./meter": {
+      "types": "./src/meter/index.tsx",
+      "import": "./src/meter/index.tsx"
+    },
+    "./number-field": {
+      "types": "./src/number-field/index.tsx",
+      "import": "./src/number-field/index.tsx"
+    },
+    "./pagination": {
+      "types": "./src/pagination/index.tsx",
+      "import": "./src/pagination/index.tsx"
+    },
+    "./popover": {
+      "types": "./src/popover/index.tsx",
+      "import": "./src/popover/index.tsx"
+    },
+    "./progress-bar": {
+      "types": "./src/progress-bar/index.tsx",
+      "import": "./src/progress-bar/index.tsx"
+    },
+    "./radio-group": {
+      "types": "./src/radio-group/index.tsx",
+      "import": "./src/radio-group/index.tsx"
+    },
+    "./range-calendar": {
+      "types": "./src/range-calendar/index.tsx",
+      "import": "./src/range-calendar/index.tsx"
+    },
+    "./range-date-picker": {
+      "types": "./src/range-date-picker/index.tsx",
+      "import": "./src/range-date-picker/index.tsx"
+    },
+    "./search-field": {
+      "types": "./src/search-field/index.tsx",
+      "import": "./src/search-field/index.tsx"
+    },
+    "./segmented-control": {
+      "types": "./src/segmented-control/index.tsx",
+      "import": "./src/segmented-control/index.tsx"
+    },
+    "./select": {
+      "types": "./src/select/index.tsx",
+      "import": "./src/select/index.tsx"
+    },
+    "./separator": {
+      "types": "./src/separator/index.tsx",
+      "import": "./src/separator/index.tsx"
+    },
+    "./sidebar": {
+      "types": "./src/sidebar/index.tsx",
+      "import": "./src/sidebar/index.tsx"
+    },
+    "./skeleton": {
+      "types": "./src/skeleton/index.tsx",
+      "import": "./src/skeleton/index.tsx"
+    },
+    "./slider": {
+      "types": "./src/slider/index.tsx",
+      "import": "./src/slider/index.tsx"
+    },
+    "./spinner": {
+      "types": "./src/spinner/index.tsx",
+      "import": "./src/spinner/index.tsx"
+    },
+    "./switch": {
+      "types": "./src/switch/index.tsx",
+      "import": "./src/switch/index.tsx"
+    },
+    "./table": {
+      "types": "./src/table/index.tsx",
+      "import": "./src/table/index.tsx"
+    },
+    "./tabs": {
+      "types": "./src/tabs/index.tsx",
+      "import": "./src/tabs/index.tsx"
+    },
+    "./tag-group": {
+      "types": "./src/tag-group/index.tsx",
+      "import": "./src/tag-group/index.tsx"
+    },
+    "./text-field": {
+      "types": "./src/text-field/index.tsx",
+      "import": "./src/text-field/index.tsx"
+    },
+    "./textarea": {
+      "types": "./src/textarea/index.tsx",
+      "import": "./src/textarea/index.tsx"
+    },
+    "./timefield": {
+      "types": "./src/timefield/index.tsx",
+      "import": "./src/timefield/index.tsx"
+    },
+    "./toast": {
+      "types": "./src/toast/index.tsx",
+      "import": "./src/toast/index.tsx"
+    },
+    "./toggle": {
+      "types": "./src/toggle/index.tsx",
+      "import": "./src/toggle/index.tsx"
+    },
+    "./toggle-group": {
+      "types": "./src/toggle-group/index.tsx",
+      "import": "./src/toggle-group/index.tsx"
+    },
+    "./toolbar": {
+      "types": "./src/toolbar/index.tsx",
+      "import": "./src/toolbar/index.tsx"
+    },
+    "./tooltip": {
+      "types": "./src/tooltip/index.tsx",
+      "import": "./src/tooltip/index.tsx"
+    },
+    "./tree": {
+      "types": "./src/tree/index.tsx",
+      "import": "./src/tree/index.tsx"
+    },
+    "./typography": {
+      "types": "./src/typography/index.tsx",
+      "import": "./src/typography/index.tsx"
+    },
+    "./window-splitter": {
+      "types": "./src/window-splitter/index.tsx",
+      "import": "./src/window-splitter/index.tsx"
+    }
+  },
+  "peerDependencies": {
+    "@stylexjs/stylex": "^0.17.5",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-aria-components": "^1.10.1"
+  }
+}

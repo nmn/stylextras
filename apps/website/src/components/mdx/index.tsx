@@ -28,7 +28,7 @@ import { CodeBlock, Pre } from './CodeBlock';
 import { LLMInstallationFile, LLMStylingFile } from './LLMFiles';
 import { preMarker } from './mdx.stylex';
 import { vars } from '@/theming/vars.stylex';
-import { Button as AriaButton } from '@/components/stylextras/button';
+import { Button as AriaButton } from '@stylextras/ui/button';
 
 
 

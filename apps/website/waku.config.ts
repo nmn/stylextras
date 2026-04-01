@@ -59,6 +59,7 @@ const playgroundDefines = (() => {
 export default defineConfig({
   vite: {
     optimizeDeps: {
+      exclude: ['@stylextras/ui'],
       include: [
         '@stylexjs/babel-plugin',
         '@babel/standalone',
@@ -70,7 +71,11 @@ export default defineConfig({
     },
     ssr: {
       // Force these CJS modules to be bundled during SSR so they work properly
-      noExternal: ['use-query-params', 'serialize-query-params'],
+      noExternal: [
+        '@stylextras/ui',
+        'use-query-params',
+        'serialize-query-params',
+      ],
       optimizeDeps: {
         include: ['use-query-params', 'serialize-query-params'],
       },

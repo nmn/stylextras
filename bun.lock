@@ -26,6 +26,7 @@
         "@radix-ui/react-scroll-area": "^1.2.10",
         "@stylexjs/babel-plugin": "0.17.5",
         "@stylexjs/stylex": "0.17.5",
+        "@stylextras/ui": "workspace:*",
         "algoliasearch": "^5.46.2",
         "feed": "^4.2.2",
         "fumadocs-core": "16.0.11",
@@ -125,6 +126,16 @@
       "version": "0.1.0",
       "dependencies": {
         "@stylexjs/stylex": "*",
+      },
+    },
+    "packages/ui": {
+      "name": "@stylextras/ui",
+      "version": "0.1.0",
+      "peerDependencies": {
+        "@stylexjs/stylex": "^0.17.5",
+        "react": "^19.2.3",
+        "react-aria-components": "^1.10.1",
+        "react-dom": "^19.2.3",
       },
     },
     "tools/scripts": {
@@ -954,6 +965,8 @@
     "@stylextras/stylex-include": ["@stylextras/stylex-include@workspace:packages/stylex-include"],
 
     "@stylextras/stylex-inline-css": ["@stylextras/stylex-inline-css@workspace:packages/stylex-inline-css"],
+
+    "@stylextras/ui": ["@stylextras/ui@workspace:packages/ui"],
 
     "@swc/helpers": ["@swc/helpers@0.5.18", "", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-TXTnIcNJQEKwThMMqBXsZ4VGAza6bvN4pa41Rkqoio6QBKMvo+5lexeTMScGCIxtzgQJzElcvIltani+adC5PQ=="],
 
@@ -2196,6 +2209,8 @@
     "@stylextras/stylex-include/vitest": ["vitest@1.6.1", "", { "dependencies": { "@vitest/expect": "1.6.1", "@vitest/runner": "1.6.1", "@vitest/snapshot": "1.6.1", "@vitest/spy": "1.6.1", "@vitest/utils": "1.6.1", "acorn-walk": "^8.3.2", "chai": "^4.3.10", "debug": "^4.3.4", "execa": "^8.0.1", "local-pkg": "^0.5.0", "magic-string": "^0.30.5", "pathe": "^1.1.1", "picocolors": "^1.0.0", "std-env": "^3.5.0", "strip-literal": "^2.0.0", "tinybench": "^2.5.1", "tinypool": "^0.8.3", "vite": "^5.0.0", "vite-node": "1.6.1", "why-is-node-running": "^2.2.2" }, "peerDependencies": { "@edge-runtime/vm": "*", "@types/node": "^18.0.0 || >=20.0.0", "@vitest/browser": "1.6.1", "@vitest/ui": "1.6.1", "happy-dom": "*", "jsdom": "*" }, "optionalPeers": ["@edge-runtime/vm", "@types/node", "@vitest/browser", "@vitest/ui", "happy-dom", "jsdom"], "bin": { "vitest": "vitest.mjs" } }, "sha512-Ljb1cnSJSivGN0LqXd/zmDbWEM0RNNg2t1QW/XUhYl/qPqyu7CsqeWtqQXHVaJsecLPuDoak2oJcZN2QoRIOag=="],
 
     "@stylextras/stylex-inline-css/@stylexjs/stylex": ["@stylexjs/stylex@0.16.3", "", { "dependencies": { "css-mediaquery": "^0.1.2", "invariant": "^2.2.4", "styleq": "0.2.1" } }, "sha512-tJ3Wck4h391wNr92LxE4om9b3FxKPKFiYQlTcr1omMe+EUk+v14raP8YGy+isM4wHuA+Sg4Ca87og3xYVwLOXQ=="],
+
+    "@stylextras/ui/@stylexjs/stylex": ["@stylexjs/stylex@0.17.5", "", { "dependencies": { "css-mediaquery": "^0.1.2", "invariant": "^2.2.4", "styleq": "0.2.1" } }, "sha512-mV+mIXqj1AsnGHFj/hyno7YOBjBpgRzvD00iif0w/LExeN8mwNb2yTfnTHkx62fLaM7vUtoIEcO/bFHqmiOtpw=="],
 
     "@types/babel__core/@babel/parser": ["@babel/parser@7.28.0", "", { "dependencies": { "@babel/types": "^7.28.0" }, "bin": "./bin/babel-parser.js" }, "sha512-jVZGvOxOuNSsuQuLRTh13nU0AogFlw32w/MT+LV6D3sP5WdbW61E77RnkbaO2dUvmPAYrBDJXGn5gGS6tH4j8g=="],
 

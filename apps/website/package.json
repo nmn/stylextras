@@ -16,6 +16,7 @@
     "algoliasearch": "^5.46.2",
     "@codesandbox/sandpack-client": "^2.19.8",
     "@codesandbox/sandpack-react": "^2.20.0",
+    "@stylextras/ui": "workspace:*",
     "@stylexjs/stylex": "0.17.5",
     "@stylexjs/babel-plugin": "0.17.5",
     "@monaco-editor/react": "^4.7.0",
