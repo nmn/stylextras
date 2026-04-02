@@ -4,6 +4,42 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
+    "./tokens/blur": {
+      "types": "./src/tokens/blur.stylex.ts",
+      "import": "./src/tokens/blur.stylex.ts"
+    },
+    "./tokens/color": {
+      "types": "./src/tokens/color.stylex.ts",
+      "import": "./src/tokens/color.stylex.ts"
+    },
+    "./tokens/components": {
+      "types": "./src/tokens/components.stylex.ts",
+      "import": "./src/tokens/components.stylex.ts"
+    },
+    "./tokens/elevation": {
+      "types": "./src/tokens/elevation.stylex.ts",
+      "import": "./src/tokens/elevation.stylex.ts"
+    },
+    "./tokens/motion": {
+      "types": "./src/tokens/motion.stylex.ts",
+      "import": "./src/tokens/motion.stylex.ts"
+    },
+    "./tokens/radius": {
+      "types": "./src/tokens/radius.stylex.ts",
+      "import": "./src/tokens/radius.stylex.ts"
+    },
+    "./tokens/spacing": {
+      "types": "./src/tokens/spacing.stylex.ts",
+      "import": "./src/tokens/spacing.stylex.ts"
+    },
+    "./tokens/stroke": {
+      "types": "./src/tokens/stroke.stylex.ts",
+      "import": "./src/tokens/stroke.stylex.ts"
+    },
+    "./tokens/typography": {
+      "types": "./src/tokens/typography.stylex.ts",
+      "import": "./src/tokens/typography.stylex.ts"
+    },
     "./alert-callout": {
       "types": "./src/alert-callout/index.tsx",
       "import": "./src/alert-callout/index.tsx"
