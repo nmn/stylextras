@@ -35,11 +35,11 @@ export default function Home() {
           </p>
           <div {...stylex.props(styles.ctaSpacer)} />
           <section {...stylex.props(styles.ctaSection)}>
-            <CtaButton color="pink" to="/docs/learn/">
-              Get Started
+            <CtaButton color="pink" to="/docs">
+              Docs
             </CtaButton>
-            <CtaButton color="blue" to="/docs/learn/thinking-in-stylex/">
-              Thinking in StyleX
+            <CtaButton color="blue" to="/docs/get-started">
+              Get Started
             </CtaButton>
           </section>
           <div {...stylex.props(styles.ctaSpacer)} />

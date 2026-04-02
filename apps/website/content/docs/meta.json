@@ -1,7 +1,6 @@
 {
-  "title": "Components",
   "pages": [
-    "./index.mdx",
+    "./get-started.mdx",
     "./buttons",
     "./collections",
     "./color",
