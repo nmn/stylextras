@@ -1,18 +1,43 @@
 ---
 title: Card
-description: Stylextras wrapper component.
+description: A simple surface primitive for grouping related content.
 ---
 
-Wraps `aria.Group` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { CardExample } from '@stylextras/ui/card/example';
 
-## Demo
-```tsx
-import { Card } from '@stylextras/ui/card';
+`Card` is a thin wrapper around a native `div` with token-driven surface styling. It is useful for panels, settings groups, summaries, and other contained blocks of content.
 
-<Card />
-```
+## Example
+
+<CardExample />
+
+## Notes
+
+- Renders a native `div`.
+- Accepts all standard `div` props except `className` and `style`.
+- Use `sx` for additional StyleX styles.
+- Use `elevation` to switch between token-defined shadow levels.
 
 ## Props
-```ts
-import type { CardProps } from '@stylextras/ui/card';
+
+- `elevation?: 'flat' | 'sm' | 'md' | 'lg'`
+- `sx?: StyleXStyles`
+- Native `div` props such as `id`, `role`, `aria-*`, and event handlers
+
+## Usage
+
+```tsx
+import { Card } from '@stylextras/ui/card';
+import { Typography } from '@stylextras/ui/typography';
+
+export function Example() {
+  return (
+    <Card elevation="sm">
+      <Typography scale="title">Project summary</Typography>
+      <Typography tone="muted">
+        Shared components should be simple by default and themeable from tokens.
+      </Typography>
+    </Card>
+  );
+}
 ```

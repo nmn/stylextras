@@ -1,18 +1,24 @@
 ---
 title: Popover
-description: Stylextras wrapper component.
+description: A thin wrapper around the native popover platform feature.
 ---
 
-Wraps `aria.Popover` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { PopoverExample } from '@stylextras/ui/popover/example';
 
-## Demo
-```tsx
-import { Popover } from '@stylextras/ui/popover';
+`Popover` renders a native element with the `popover` attribute. It works directly with browser-level trigger attributes like `popovertarget`.
 
-<Popover />
-```
+## Example
+
+<PopoverExample />
+
+## Notes
+
+- Renders a native `div` with `popover="auto"` by default
+- Supports both `auto` and `manual` popover behaviors
+- Works with standard trigger buttons using `popovertarget`
 
 ## Props
-```ts
-import type { PopoverProps } from '@stylextras/ui/popover';
-```
+
+- `size?: 'sm' | 'md' | 'lg'`
+- `behavior?: 'auto' | 'manual'`
+- `sx?: StyleXStyles`

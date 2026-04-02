@@ -1,22 +1,20 @@
 import * as stylex from "@stylexjs/stylex";
 
-const round = (value: number, precision = 2) =>
-  Number(value.toFixed(precision));
+const round = (value: number) => Math.floor(value * 100) / 100;
 
 const lightDark = (light: string, dark: string) =>
   `light-dark(${light}, ${dark})`;
 
-const mix = (base: string, blend: string, weight = 50, colorSpace = "oklab") =>
-  `color-mix(in ${colorSpace}, ${base} ${round(weight)}%, ${blend})`;
+const mix = (base: string, blend: string, weight?: number) =>
+  `color-mix(in oklab, ${base} ${round(weight ?? 50)}%, ${blend})`;
 
-const alpha = (color: string, opacity: number, colorSpace = "oklab") =>
-  `color-mix(in ${colorSpace}, ${color} ${round(opacity * 100)}%, transparent)`;
+const alpha = (color: string, opacity: number) =>
+  `color-mix(in oklab, ${color} ${round(opacity * 100)}%, transparent)`;
 
 export const color_core = stylex.defineVars({
   bg: lightDark("oklch(99% 0.004 286)", "oklch(17% 0.01 286)"),
   fg: lightDark("oklch(21% 0.01 286)", "oklch(97% 0.004 286)"),
 
-  // this could default to `fg`
   tone: lightDark("oklch(56% 0.02 286)", "oklch(78% 0.025 286)"),
   fgOnBrand: lightDark("#ffffff", "#0a0a0b"),
   brand: lightDark("oklch(63% 0.19 292)", "oklch(74% 0.16 292)"),

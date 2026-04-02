@@ -1,17 +1,59 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { Separator as AriaSeparator } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { colors } from "../tokens/color.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { stroke } from "../tokens/stroke.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaSeparator>;
+type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type SeparatorProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
+export type SeparatorOrientation = "horizontal" | "vertical";
+export type SeparatorEmphasis = "subtle" | "strong";
+
+export type SeparatorProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  orientation?: SeparatorOrientation;
+  emphasis?: SeparatorEmphasis;
+  decorative?: boolean;
 };
 
-export const Separator = ({ style, ...props }: SeparatorProps) => (
-  <AriaSeparator
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
+export const Separator = ({
+  decorative = true,
+  emphasis = "subtle",
+  orientation = "horizontal",
+  sx,
+  ...props
+}: SeparatorProps) => (
+  <div
+    {...props}
+    aria-hidden={decorative || undefined}
+    aria-orientation={decorative ? undefined : orientation}
+    role={decorative ? undefined : "separator"}
+    {...stylex.props(styles.base, styles[orientation], styles[emphasis], sx)}
   />
 );
+
+const styles = stylex.create({
+  base: {
+    display: "block",
+    flexShrink: 0,
+    backgroundColor: colors.border,
+  },
+  horizontal: {
+    width: "100%",
+    height: stroke.thin,
+    marginBlock: spacing.md,
+  },
+  vertical: {
+    width: stroke.thin,
+    height: "100%",
+    minHeight: spacing["3xl"],
+    marginInline: spacing.md,
+  },
+  subtle: {
+    backgroundColor: colors.border,
+  },
+  strong: {
+    backgroundColor: colors.borderStrong,
+  },
+});

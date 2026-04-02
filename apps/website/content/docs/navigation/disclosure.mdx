@@ -1,18 +1,41 @@
 ---
 title: Disclosure
-description: Stylextras wrapper component.
+description: A minimal disclosure built on native details and summary.
 ---
 
-Wraps `aria.Disclosure` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { DisclosureExample } from '@stylextras/ui/disclosure/example';
 
-## Demo
+`Disclosure` styles the native `details` element instead of relying on a third-party state abstraction. The summary stays clickable and keyboard accessible because the browser already provides that behavior.
+
+## Example
+
+<DisclosureExample />
+
+## Notes
+
+- Renders a native `details` element with a native `summary`
+- Accepts `open` and `defaultOpen` through standard element props
+- Use `summary` to provide the clickable heading
+- Use `sx`, `summarySx`, and `contentSx` for additional StyleX styling
+
+## Props
+
+- `summary: ReactNode`
+- `size?: 'md' | 'lg'`
+- `sx?: StyleXStyles`
+- `summarySx?: StyleXStyles`
+- `contentSx?: StyleXStyles`
+
+## Usage
+
 ```tsx
 import { Disclosure } from '@stylextras/ui/disclosure';
 
-<Disclosure />
-```
-
-## Props
-```ts
-import type { DisclosureProps } from '@stylextras/ui/disclosure';
+export function Example() {
+  return (
+    <Disclosure summary="Implementation details">
+      This content is hidden until the disclosure is expanded.
+    </Disclosure>
+  );
+}
 ```

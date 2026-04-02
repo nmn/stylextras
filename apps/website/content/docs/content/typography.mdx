@@ -1,18 +1,48 @@
 ---
 title: Typography
-description: Stylextras wrapper component.
+description: A basic text primitive for scale, tone, and element control.
 ---
 
-Wraps `aria.Text` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { TypographyExample } from '@stylextras/ui/typography/example';
 
-## Demo
+`Typography` is a thin text primitive built on native HTML elements. It exposes a small set of scale and tone variants, while keeping the actual values derived from the token system.
+
+## Example
+
+<TypographyExample />
+
+## Notes
+
+- Renders as `p` by default.
+- Use `as` to change the underlying element.
+- Use `scale` to select a token-driven type step.
+- Use `tone` to select a token-driven foreground treatment.
+- Use `mono` for code-like text treatment.
+- Accepts all standard text element props except `className` and `style`.
+
+## Props
+
+- `as?: ElementType`
+- `scale?: 'label' | 'body' | 'title' | 'display'`
+- `tone?: 'default' | 'soft' | 'muted' | 'brand' | 'info' | 'success' | 'warning' | 'danger'`
+- `mono?: boolean`
+- `sx?: StyleXStyles`
+
+## Usage
+
 ```tsx
 import { Typography } from '@stylextras/ui/typography';
 
-<Typography />
-```
-
-## Props
-```ts
-import type { TypographyProps } from '@stylextras/ui/typography';
+export function Example() {
+  return (
+    <>
+      <Typography as="h1" scale="display">
+        New token system
+      </Typography>
+      <Typography tone="muted">
+        Values are derived from a small set of core theme variables.
+      </Typography>
+    </>
+  );
+}
 ```

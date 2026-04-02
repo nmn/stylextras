@@ -1,17 +1,52 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { Keyboard as AriaKeyboard } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { colors } from "../tokens/color.stylex";
+import { radius } from "../tokens/radius.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { stroke } from "../tokens/stroke.stylex";
+import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaKeyboard>;
+type BaseProps = ComponentPropsWithoutRef<"kbd">;
 
-export type KbdProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
+export type KbdSize = "sm" | "md";
+
+export type KbdProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  size?: KbdSize;
 };
 
-export const Kbd = ({ style, ...props }: KbdProps) => (
-  <AriaKeyboard
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
-  />
+export const Kbd = ({ size = "md", sx, ...props }: KbdProps) => (
+  <kbd {...props} {...stylex.props(styles.base, styles[size], sx)} />
 );
+
+const styles = stylex.create({
+  base: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: spacing.lg,
+    paddingInline: spacing.xs,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    borderColor: colors.borderStrong,
+    borderRadius: radius.sm,
+    backgroundColor: colors.bgInset,
+    color: colors.fgSoft,
+    fontFamily: typography.fontMono,
+    fontWeight: typography.weightMedium,
+    whiteSpace: "nowrap",
+  },
+  sm: {
+    minHeight: spacing.lg,
+    paddingBlock: spacing["3xs"],
+    fontSize: typography.stepMinus2,
+    lineHeight: typography.lineHeightSnug,
+  },
+  md: {
+    minHeight: spacing.xl,
+    paddingBlock: spacing["2xs"],
+    fontSize: typography.stepMinus1,
+    lineHeight: typography.lineHeightSnug,
+  },
+});

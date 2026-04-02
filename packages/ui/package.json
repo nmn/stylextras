@@ -44,6 +44,10 @@
       "types": "./src/alert-callout/index.tsx",
       "import": "./src/alert-callout/index.tsx"
     },
+    "./alert-callout/example": {
+      "types": "./src/alert-callout/example.tsx",
+      "import": "./src/alert-callout/example.tsx"
+    },
     "./alert-dialog": {
       "types": "./src/alert-dialog/index.tsx",
       "import": "./src/alert-dialog/index.tsx"
@@ -55,6 +59,10 @@
     "./badge": {
       "types": "./src/badge/index.tsx",
       "import": "./src/badge/index.tsx"
+    },
+    "./badge/example": {
+      "types": "./src/badge/example.tsx",
+      "import": "./src/badge/example.tsx"
     },
     "./breadcrumb": {
       "types": "./src/breadcrumb/index.tsx",
@@ -75,6 +83,10 @@
     "./card": {
       "types": "./src/card/index.tsx",
       "import": "./src/card/index.tsx"
+    },
+    "./card/example": {
+      "types": "./src/card/example.tsx",
+      "import": "./src/card/example.tsx"
     },
     "./checkbox": {
       "types": "./src/checkbox/index.tsx",
@@ -136,9 +148,17 @@
       "types": "./src/dialog/index.tsx",
       "import": "./src/dialog/index.tsx"
     },
+    "./dialog/example": {
+      "types": "./src/dialog/example.tsx",
+      "import": "./src/dialog/example.tsx"
+    },
     "./disclosure": {
       "types": "./src/disclosure/index.tsx",
       "import": "./src/disclosure/index.tsx"
+    },
+    "./disclosure/example": {
+      "types": "./src/disclosure/example.tsx",
+      "import": "./src/disclosure/example.tsx"
     },
     "./disclosure-group": {
       "types": "./src/disclosure-group/index.tsx",
@@ -200,6 +220,10 @@
       "types": "./src/kbd/index.tsx",
       "import": "./src/kbd/index.tsx"
     },
+    "./kbd/example": {
+      "types": "./src/kbd/example.tsx",
+      "import": "./src/kbd/example.tsx"
+    },
     "./label": {
       "types": "./src/label/index.tsx",
       "import": "./src/label/index.tsx"
@@ -232,6 +256,10 @@
       "types": "./src/popover/index.tsx",
       "import": "./src/popover/index.tsx"
     },
+    "./popover/example": {
+      "types": "./src/popover/example.tsx",
+      "import": "./src/popover/example.tsx"
+    },
     "./progress-bar": {
       "types": "./src/progress-bar/index.tsx",
       "import": "./src/progress-bar/index.tsx"
@@ -263,6 +291,10 @@
     "./separator": {
       "types": "./src/separator/index.tsx",
       "import": "./src/separator/index.tsx"
+    },
+    "./separator/example": {
+      "types": "./src/separator/example.tsx",
+      "import": "./src/separator/example.tsx"
     },
     "./sidebar": {
       "types": "./src/sidebar/index.tsx",
@@ -335,6 +367,10 @@
     "./typography": {
       "types": "./src/typography/index.tsx",
       "import": "./src/typography/index.tsx"
+    },
+    "./typography/example": {
+      "types": "./src/typography/example.tsx",
+      "import": "./src/typography/example.tsx"
     },
     "./window-splitter": {
       "types": "./src/window-splitter/index.tsx",

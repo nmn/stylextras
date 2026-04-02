@@ -1,18 +1,24 @@
 ---
 title: Badge
-description: Stylextras wrapper component.
+description: A compact status label for small bits of metadata.
 ---
 
-Wraps `aria.Text` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { BadgeExample } from '@stylextras/ui/badge/example';
 
-## Demo
-```tsx
-import { Badge } from '@stylextras/ui/badge';
+`Badge` renders a native `span` with token-driven padding, radius, typography, and semantic color variants.
 
-<Badge />
-```
+## Example
+
+<BadgeExample />
+
+## Notes
+
+- Renders a native `span`
+- Useful for status chips, labels, and small metadata
+- Keeps the API minimal: size, variant, and `sx`
 
 ## Props
-```ts
-import type { BadgeProps } from '@stylextras/ui/badge';
-```
+
+- `size?: 'sm' | 'md'`
+- `variant?: 'neutral' | 'brand' | 'info' | 'success' | 'warning' | 'danger'`
+- `sx?: StyleXStyles`

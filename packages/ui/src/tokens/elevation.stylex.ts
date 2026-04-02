@@ -1,19 +1,15 @@
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from "@stylexjs/stylex";
 
-const round = (value: number, precision = 2) =>
-  Number(value.toFixed(precision));
+const round = (value: number) => Math.floor(value * 100) / 100;
 
 const lightDark = (light: string, dark: string) =>
   `light-dark(${light}, ${dark})`;
 
-const alpha = (color: string, opacity: number, colorSpace = 'oklab') =>
-  `color-mix(in ${colorSpace}, ${color} ${round(opacity * 100)}%, transparent)`;
+const alpha = (color: string, opacity: number) =>
+  `color-mix(in oklab, ${color} ${round(opacity * 100)}%, transparent)`;
 
 export const elevation_core = stylex.defineVars({
-  shadowColor: lightDark(
-    'rgba(15, 23, 42, 0.18)',
-    'rgba(0, 0, 0, 0.42)',
-  ),
+  shadowColor: lightDark("rgba(15, 23, 42, 0.18)", "rgba(0, 0, 0, 0.42)"),
 });
 
 export const elevation_derived = stylex.defineVars({

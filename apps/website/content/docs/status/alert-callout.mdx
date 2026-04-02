@@ -1,18 +1,44 @@
 ---
 title: Alert / Callout
-description: Stylextras wrapper component.
+description: A lightweight status block for inline feedback and messaging.
 ---
 
-Wraps `aria.Text` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { AlertExample } from '@stylextras/ui/alert-callout/example';
 
-## Demo
-```tsx
-import { Alert } from '@stylextras/ui/alert-callout';
+`Alert` is a token-styled wrapper around a native `div`. Use it for notices, confirmations, warnings, and other inline messaging where a full dialog would be excessive.
 
-<Alert />
-```
+## Example
+
+<AlertExample />
+
+## Notes
+
+- Renders a native `div`.
+- Defaults `role` to `status`.
+- Accepts all standard `div` props except `className` and `style`.
+- Use `sx` for additional StyleX styles.
 
 ## Props
-```ts
-import type { AlertProps } from '@stylextras/ui/alert-callout';
+
+- `variant?: 'neutral' | 'info' | 'success' | 'warning' | 'danger'`
+- `sx?: StyleXStyles`
+- `role?: string`
+- Native `div` props such as `id`, `aria-*`, and event handlers
+
+## Usage
+
+```tsx
+import { Alert } from '@stylextras/ui/alert-callout';
+import { Typography } from '@stylextras/ui/typography';
+
+export function Example() {
+  return (
+    <Alert variant="warning">
+      <Typography scale="title">Changes not saved</Typography>
+      <Typography>
+        Review the form before leaving this page.
+      </Typography>
+    </Alert>
+  );
+}
 ```

@@ -1,17 +1,55 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { Group as AriaGroup } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { blur } from "../tokens/blur.stylex";
+import { colors } from "../tokens/color.stylex";
+import { elevation as tokenElevation } from "../tokens/elevation.stylex";
+import { radius } from "../tokens/radius.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { stroke } from "../tokens/stroke.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaGroup>;
+type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type CardProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
+export type CardElevation = "flat" | "sm" | "md" | "lg";
+
+export type CardProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  elevation?: CardElevation;
 };
 
-export const Card = ({ style, ...props }: CardProps) => (
-  <AriaGroup
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
-  />
+export const Card = ({
+  elevation = "md",
+  sx,
+  ...props
+}: CardProps) => (
+  <div {...props} {...stylex.props(styles.base, styles[elevation], sx)} />
 );
+
+const styles = stylex.create({
+  base: {
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    gap: spacing.sm,
+    padding: spacing.lg,
+    color: colors.fg,
+    backgroundColor: colors.bgRaised,
+    borderColor: colors.border,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    borderRadius: radius.lg,
+    backdropFilter: `blur(${blur.xs})`,
+  },
+  flat: {
+    boxShadow: tokenElevation.none,
+  },
+  sm: {
+    boxShadow: tokenElevation.sm,
+  },
+  md: {
+    boxShadow: tokenElevation.md,
+  },
+  lg: {
+    boxShadow: tokenElevation.lg,
+  },
+});

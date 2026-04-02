@@ -1,18 +1,23 @@
 ---
 title: Kbd
-description: Stylextras wrapper component.
+description: Inline keyboard key styling based on the native kbd element.
 ---
 
-Wraps `aria.Keyboard` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { KbdExample } from '@stylextras/ui/kbd/example';
 
-## Demo
-```tsx
-import { Kbd } from '@stylextras/ui/kbd';
+`Kbd` is a native `kbd` wrapper for rendering keyboard shortcuts and key hints with shared tokens.
 
-<Kbd />
-```
+## Example
+
+<KbdExample />
+
+## Notes
+
+- Renders a native `kbd`
+- Useful for command hints, shortcuts, and input references
+- Supports a small size scale and `sx` overrides
 
 ## Props
-```ts
-import type { KbdProps } from '@stylextras/ui/kbd';
-```
+
+- `size?: 'sm' | 'md'`
+- `sx?: StyleXStyles`

@@ -1,18 +1,25 @@
 ---
 title: Separator
-description: Stylextras wrapper component.
+description: A visual divider for separating related content.
 ---
 
-Wraps `aria.Separator` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { SeparatorExample } from '@stylextras/ui/separator/example';
 
-## Demo
-```tsx
-import { Separator } from '@stylextras/ui/separator';
+`Separator` is a minimal divider built from a styled block element. It supports horizontal and vertical orientations and can be either decorative or semantic.
 
-<Separator />
-```
+## Example
+
+<SeparatorExample />
+
+## Notes
+
+- Supports `horizontal` and `vertical` orientations
+- Use `decorative={false}` when the separator should be announced semantically
+- Use `emphasis` to choose between quieter and stronger dividers
 
 ## Props
-```ts
-import type { SeparatorProps } from '@stylextras/ui/separator';
-```
+
+- `orientation?: 'horizontal' | 'vertical'`
+- `emphasis?: 'subtle' | 'strong'`
+- `decorative?: boolean`
+- `sx?: StyleXStyles`

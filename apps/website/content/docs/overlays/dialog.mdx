@@ -1,18 +1,48 @@
 ---
 title: Dialog
-description: Stylextras wrapper component.
+description: A thin wrapper around the native dialog element.
 ---
 
-Wraps `aria.Dialog` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { DialogExample } from '@stylextras/ui/dialog/example';
 
-## Demo
-```tsx
-import { Dialog } from '@stylextras/ui/dialog';
+`Dialog` styles the platform `dialog` element and forwards a ref to it. Consumers can call the native `show()`, `showModal()`, and `close()` methods directly.
 
-<Dialog />
-```
+## Example
+
+<DialogExample />
+
+## Notes
+
+- Renders a native `dialog`
+- Forwards a ref to `HTMLDialogElement`
+- Use the browser's native dialog API to open and close it
+- Accepts all standard `dialog` props except `className` and `style`
 
 ## Props
-```ts
-import type { DialogProps } from '@stylextras/ui/dialog';
+
+- `size?: 'sm' | 'md' | 'lg'`
+- `sx?: StyleXStyles`
+
+## Usage
+
+```tsx
+import { useRef } from 'react';
+import { Dialog } from '@stylextras/ui/dialog';
+
+export function Example() {
+  const ref = useRef<HTMLDialogElement>(null);
+
+  return (
+    <>
+      <button onClick={() => ref.current?.showModal()} type="button">
+        Open
+      </button>
+      <Dialog ref={ref}>
+        <form method="dialog">
+          <button type="submit">Close</button>
+        </form>
+      </Dialog>
+    </>
+  );
+}
 ```

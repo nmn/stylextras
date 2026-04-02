@@ -1,12 +1,12 @@
-import * as stylex from '@stylexjs/stylex';
-import { blur } from './blur.stylex';
-import { colors } from './color.stylex';
-import { elevation } from './elevation.stylex';
-import { motion } from './motion.stylex';
-import { radius } from './radius.stylex';
-import { spacing } from './spacing.stylex';
-import { stroke } from './stroke.stylex';
-import { typography } from './typography.stylex';
+import * as stylex from "@stylexjs/stylex";
+import { blur } from "./blur.stylex";
+import { colors } from "./color.stylex";
+import { elevation } from "./elevation.stylex";
+import { motion } from "./motion.stylex";
+import { radius } from "./radius.stylex";
+import { spacing } from "./spacing.stylex";
+import { stroke } from "./stroke.stylex";
+import { typography } from "./typography.stylex";
 
 export const componentTokens = stylex.defineConsts({
   controlHeightSm: `calc(${spacing.base} * 8)`,
@@ -53,8 +53,6 @@ export const componentTokens = stylex.defineConsts({
   focusRingWidth: stroke.thick,
   focusRingDuration: motion.durationFast,
   focusRingEasing: motion.easeStandard,
-  textBodyFamily: typography.fontSans,
-  textDisplayFamily: typography.fontDisplay,
   textBody: typography.step0,
   textLabel: typography.stepMinus1,
   textTitle: typography.step1,
