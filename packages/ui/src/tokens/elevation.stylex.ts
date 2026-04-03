@@ -10,18 +10,22 @@ const alpha = (color: string, opacity: number) =>
 
 export const elevation_core = stylex.defineVars({
   shadowColor: lightDark("rgba(15, 23, 42, 0.18)", "rgba(0, 0, 0, 0.42)"),
+  offset: "2px",
+  blur: "2px",
 });
 
 export const elevation_derived = stylex.defineVars({
-  xs: `0 1px 2px 0 ${alpha(elevation_core.shadowColor, 0.45)}`,
-  sm: `0 1px 3px 0 ${alpha(elevation_core.shadowColor, 0.55)}, 0 1px 2px -1px ${alpha(elevation_core.shadowColor, 0.4)}`,
-  md: `0 4px 6px -1px ${alpha(elevation_core.shadowColor, 0.5)}, 0 2px 4px -2px ${alpha(elevation_core.shadowColor, 0.35)}`,
-  lg: `0 10px 15px -3px ${alpha(elevation_core.shadowColor, 0.52)}, 0 4px 6px -4px ${alpha(elevation_core.shadowColor, 0.34)}`,
-  xl: `0 20px 25px -5px ${alpha(elevation_core.shadowColor, 0.56)}, 0 8px 10px -6px ${alpha(elevation_core.shadowColor, 0.3)}`,
+  xs: `0 calc(${elevation_core.offset} * 0.5) calc(${elevation_core.blur} * 1) 0 ${alpha(elevation_core.shadowColor, 0.45)}`,
+  sm: `0 calc(${elevation_core.offset} * 1) calc(${elevation_core.blur} * 1.5) 0 ${alpha(elevation_core.shadowColor, 0.55)}, 0 calc(${elevation_core.offset} * 0.5) calc(${elevation_core.blur} * 1) calc(${elevation_core.offset} * -0.5) ${alpha(elevation_core.shadowColor, 0.4)}`,
+  md: `0 calc(${elevation_core.offset} * 2) calc(${elevation_core.blur} * 3) calc(${elevation_core.offset} * -0.5) ${alpha(elevation_core.shadowColor, 0.5)}, 0 calc(${elevation_core.offset} * 1) calc(${elevation_core.blur} * 2) calc(${elevation_core.offset} * -1) ${alpha(elevation_core.shadowColor, 0.35)}`,
+  lg: `0 calc(${elevation_core.offset} * 4) calc(${elevation_core.blur} * 5) calc(${elevation_core.offset} * -1) ${alpha(elevation_core.shadowColor, 0.52)}, 0 calc(${elevation_core.offset} * 2) calc(${elevation_core.blur} * 3) calc(${elevation_core.offset} * -2) ${alpha(elevation_core.shadowColor, 0.34)}`,
+  xl: `0 calc(${elevation_core.offset} * 8) calc(${elevation_core.blur} * 8) calc(${elevation_core.offset} * -2) ${alpha(elevation_core.shadowColor, 0.56)}, 0 calc(${elevation_core.offset} * 4) calc(${elevation_core.blur} * 4) calc(${elevation_core.offset} * -3) ${alpha(elevation_core.shadowColor, 0.3)}`,
 });
 
 export const elevation = stylex.defineConsts({
   shadowColor: elevation_core.shadowColor,
+  offset: elevation_core.offset,
+  blur: elevation_core.blur,
   xs: elevation_derived.xs,
   sm: elevation_derived.sm,
   md: elevation_derived.md,

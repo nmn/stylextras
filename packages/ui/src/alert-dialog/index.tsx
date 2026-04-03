@@ -9,7 +9,9 @@ import { stroke } from "../tokens/stroke.stylex";
 
 type BaseProps = ComponentPropsWithRef<"dialog">;
 
-export type AlertDialogProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type AlertDialogProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders an alert-focused modal surface using the native dialog element.
@@ -21,7 +23,26 @@ export type AlertDialogProps = Omit<BaseProps, "className" | "style"> & { sx?: S
  * - Does not add a custom focus trap, trigger restore, or stacked dialog management layer.
  */
 export function AlertDialog({ ref, sx, ...props }: AlertDialogProps) {
-  return <dialog ref={ref} role="alertdialog" {...props} {...stylex.props(styles.base, sx)} />;
+  return (
+    <dialog
+      ref={ref}
+      role="alertdialog"
+      {...props}
+      {...stylex.props(styles.base, sx)}
+    />
+  );
 }
 
-const styles = stylex.create({ base: { margin: "auto", padding: spacing.lg, borderStyle: "solid", borderWidth: stroke.thin, borderColor: colors.danger, borderRadius: radius.xl, backgroundColor: colors.bgRaised, color: colors.fg, boxShadow: elevation.lg } });
+const styles = stylex.create({
+  base: {
+    margin: "auto",
+    padding: spacing.lg,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    borderColor: colors.danger,
+    borderRadius: radius.xl,
+    backgroundColor: colors.bgRaised,
+    color: colors.fg,
+    boxShadow: elevation.lg,
+  },
+});

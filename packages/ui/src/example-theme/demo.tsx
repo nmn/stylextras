@@ -3,8 +3,10 @@
 import * as React from "react";
 import * as stylex from "@stylexjs/stylex";
 import { colorThemes, type ColorThemeName } from "../color-themes";
-import { spacingThemes, type SpacingThemeName } from "../spacing-themes";
+import { elevationThemes, type ElevationThemeName } from "../elevation-themes";
 import { radiusThemes, type RadiusThemeName } from "../radius-themes";
+import { spacingThemes, type SpacingThemeName } from "../spacing-themes";
+import { strokeThemes, type StrokeThemeName } from "../stroke-themes";
 import {
   typographyThemes,
   type TypographyThemeName,
@@ -33,6 +35,17 @@ type DemoFrameProps = {
 type DemoChildrenProps = {
   children: React.ReactNode;
 };
+
+const colorThemeOptions = Object.keys(colorThemes) as ColorThemeName[];
+const spacingThemeOptions = Object.keys(spacingThemes) as SpacingThemeName[];
+const radiusThemeOptions = Object.keys(radiusThemes) as RadiusThemeName[];
+const strokeThemeOptions = Object.keys(strokeThemes) as StrokeThemeName[];
+const elevationThemeOptions = Object.keys(
+  elevationThemes,
+) as ElevationThemeName[];
+const typographyThemeOptions = Object.keys(
+  typographyThemes,
+) as TypographyThemeName[];
 
 const styles = stylex.create({
   shell: {
@@ -121,7 +134,7 @@ const styles = stylex.create({
     padding: spacing.md,
     borderStyle: "solid",
     borderWidth: stroke.thin,
-    borderColor: colors.borderSubtle,
+    borderColor: colors.border,
     borderRadius: radius.lg,
     backgroundColor: colors.bg,
   },
@@ -151,6 +164,9 @@ export function DemoFrame({
   const [spacingTheme, setSpacingTheme] =
     React.useState<SpacingThemeName>("base");
   const [radiusTheme, setRadiusTheme] = React.useState<RadiusThemeName>("base");
+  const [strokeTheme, setStrokeTheme] = React.useState<StrokeThemeName>("base");
+  const [elevationTheme, setElevationTheme] =
+    React.useState<ElevationThemeName>("base");
   const [typeTheme, setTypeTheme] = React.useState<TypographyThemeName>("ui");
 
   return (
@@ -160,6 +176,8 @@ export function DemoFrame({
         ...colorThemes[colorTheme],
         ...spacingThemes[spacingTheme],
         ...radiusThemes[radiusTheme],
+        ...strokeThemes[strokeTheme],
+        ...elevationThemes[elevationTheme],
         ...typographyThemes[typeTheme],
       )}
     >
@@ -176,25 +194,37 @@ export function DemoFrame({
             label="Color"
             value={colorTheme}
             onChange={setColorTheme}
-            options={["base", "mono", "ocean", "sunset", "danger"]}
+            options={colorThemeOptions}
           />
           <ThemeField
             label="Spacing"
             value={spacingTheme}
             onChange={setSpacingTheme}
-            options={["base", "compact", "cozy", "roomy", "poster"]}
+            options={spacingThemeOptions}
           />
           <ThemeField
             label="Radius"
             value={radiusTheme}
             onChange={setRadiusTheme}
-            options={["base", "sharp", "rounded", "soft", "pill"]}
+            options={radiusThemeOptions}
+          />
+          <ThemeField
+            label="Stroke"
+            value={strokeTheme}
+            onChange={setStrokeTheme}
+            options={strokeThemeOptions}
+          />
+          <ThemeField
+            label="Shadow"
+            value={elevationTheme}
+            onChange={setElevationTheme}
+            options={elevationThemeOptions}
           />
           <ThemeField
             label="Typography"
             value={typeTheme}
             onChange={setTypeTheme}
-            options={["ui", "editorial", "mono", "industrial"]}
+            options={typographyThemeOptions}
           />
         </div>
       ) : null}
@@ -215,7 +245,10 @@ function ThemeField<T extends string>({
       <span {...stylex.props(styles.fieldLabel)}>{label}</span>
       <select
         value={value}
-        onChange={(event) => onChange(event.currentTarget.value as T)}
+        onChange={(event) =>
+          // @ts-expect-error - value is not a property of HTMLSelectElement
+          onChange((event.currentTarget as HTMLSelectElement).value as T)
+        }
         {...stylex.props(styles.select)}
       >
         {options.map((option) => (

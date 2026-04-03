@@ -5,6 +5,13 @@ const baseTheme_core = stylex.createTheme(spacing_core, {});
 const baseTheme_derived = stylex.createTheme(spacing_derived, {});
 export const baseTheme = [baseTheme_core, baseTheme_derived] as const;
 
+const tightTheme_core = stylex.createTheme(spacing_core, {
+  base: "2px",
+});
+const tightTheme_derived = stylex.createTheme(spacing_derived, {});
+export const tightTheme = [tightTheme_core, tightTheme_derived] as const;
+export const microTheme = tightTheme;
+
 const compactTheme_core = stylex.createTheme(spacing_core, {
   base: "3px",
 });
@@ -31,6 +38,7 @@ export const posterTheme = [posterTheme_core, posterTheme_derived] as const;
 
 export const spacingThemes = {
   base: baseTheme,
+  tight: tightTheme,
   compact: compactTheme,
   cozy: cozyTheme,
   roomy: roomyTheme,

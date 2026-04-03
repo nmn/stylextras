@@ -835,6 +835,14 @@
     "./window-splitter/example": {
       "types": "./src/window-splitter/example.tsx",
       "import": "./src/window-splitter/example.tsx"
+    },
+    "./stroke-themes": {
+      "types": "./src/stroke-themes/index.ts",
+      "import": "./src/stroke-themes/index.ts"
+    },
+    "./elevation-themes": {
+      "types": "./src/elevation-themes/index.ts",
+      "import": "./src/elevation-themes/index.ts"
     }
   },
   "peerDependencies": {
