@@ -12,10 +12,7 @@ type BaseProps = ComponentPropsWithoutRef<"input">;
 
 export type TextFieldSize = "sm" | "md";
 
-export type TextFieldProps = Omit<
-  BaseProps,
-  "className" | "style" | "size"
-> & {
+export type TextFieldProps = Omit<BaseProps, "className" | "style" | "size"> & {
   sx?: StyleXStyles;
   inputSx?: StyleXStyles;
   labelSx?: StyleXStyles;
@@ -28,7 +25,16 @@ export type TextFieldProps = Omit<
   size?: TextFieldSize;
 };
 
-export const TextField = ({
+/**
+ * Renders a token-styled text input control.
+ *
+ * Search aliases: text field, input, text input, field.
+ *
+ * A11y notes:
+ * - Uses native input semantics.
+ * - Label, description, and error relationships must be composed by the caller.
+ */
+export function TextField({
   description,
   descriptionSx,
   disabled,
@@ -43,12 +49,13 @@ export const TextField = ({
   sx,
   type = "text",
   ...props
-}: TextFieldProps) => {
+}: TextFieldProps) {
   const generatedId = useId();
   const id = idProp ?? generatedId;
   const descriptionId = description ? `${id}-description` : undefined;
   const errorId = error ? `${id}-error` : undefined;
-  const describedBy = [descriptionId, errorId].filter(Boolean).join(" ") || undefined;
+  const describedBy =
+    [descriptionId, errorId].filter(Boolean).join(" ") || undefined;
 
   return (
     <label {...stylex.props(rootStyles.root, sx)}>
@@ -85,7 +92,7 @@ export const TextField = ({
       ) : null}
     </label>
   );
-};
+}
 
 const rootStyles = stylex.create({
   root: {

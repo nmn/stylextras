@@ -2,21 +2,17 @@
   "title": "Form",
   "pages": [
     "./checkbox.mdx",
-    "./combobox.mdx",
+    "./combo-box.mdx",
     "./file-drop-zone.mdx",
-    "./file-trigger.mdx",
-    "./field-errors.mdx",
     "./form.mdx",
-    "./input-fields.mdx",
-    "./input-group.mdx",
     "./label.mdx",
     "./number-field.mdx",
-    "./radio-group.mdx",
+    "./radio.mdx",
     "./search-field.mdx",
     "./select.mdx",
     "./slider.mdx",
     "./switch.mdx",
-    "./textarea.mdx",
+    "./text-area.mdx",
     "./text-field.mdx"
   ]
 }

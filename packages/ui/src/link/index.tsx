@@ -1,17 +1,26 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { Link as AriaLink } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { colors } from "../tokens/color.stylex";
+import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaLink>;
+type BaseProps = ComponentPropsWithoutRef<"a">;
 
-export type LinkProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
+export type LinkProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
 };
 
-export const Link = ({ style, ...props }: LinkProps) => (
-  <AriaLink
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
-  />
-);
+/**
+ * Renders a token-styled anchor element.
+ *
+ * Search aliases: link, anchor, text link, navigation link.
+ *
+ * A11y notes:
+ * - Uses native anchor semantics.
+ * - The caller must provide meaningful link text and destination behavior.
+ */
+export function Link({ sx, ...props }: LinkProps) {
+  return <a {...props} {...stylex.props(styles.base, sx)} />;
+}
+
+const styles = stylex.create({ base: { color: colors.brand, fontFamily: typography.fontSans, fontSize: typography.step0, textDecoration: "underline" } });

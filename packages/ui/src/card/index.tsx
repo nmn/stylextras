@@ -17,16 +17,27 @@ export type CardProps = Omit<BaseProps, "className" | "style"> & {
   elevation?: CardElevation;
 };
 
-export const Card = ({
+/**
+ * Renders a token-driven surface for grouping related content.
+ *
+ * Search aliases: card, panel, surface, container.
+ *
+ * A11y notes:
+ * - Provides visual grouping only.
+ * - Landmark or region semantics must be supplied by the caller when needed.
+ */
+export function Card({
   elevation = "md",
   sx,
   ...props
-}: CardProps) => (
-  <div
-    {...props}
-    {...stylex.props(baseStyles.base, elevationStyles[elevation], sx)}
-  />
-);
+}: CardProps) {
+  return (
+    <div
+      {...props}
+      {...stylex.props(baseStyles.base, elevationStyles[elevation], sx)}
+    />
+  );
+}
 
 const baseStyles = stylex.create({
   base: {

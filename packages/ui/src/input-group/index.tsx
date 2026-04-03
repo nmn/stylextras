@@ -1,17 +1,25 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { Group as AriaGroup } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaGroup>;
+type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type InputGroupProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
+export type InputGroupProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
 };
 
-export const InputGroup = ({ style, ...props }: InputGroupProps) => (
-  <AriaGroup
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
-  />
-);
+/**
+ * Renders a layout wrapper for grouped inputs and controls.
+ *
+ * Search aliases: input group, field group, control group, input cluster.
+ *
+ * A11y notes:
+ * - Provides grouping layout only.
+ * - Does not automatically apply fieldset, legend, or describedby relationships.
+ */
+export function InputGroup({ sx, ...props }: InputGroupProps) {
+  return <div {...props} {...stylex.props(styles.base, sx)} />;
+}
+
+const styles = stylex.create({ base: { display: "flex", alignItems: "stretch", gap: spacing.xs, width: "100%" } });

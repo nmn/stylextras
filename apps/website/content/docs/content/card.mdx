@@ -1,43 +1,23 @@
 ---
 title: Card
-description: A simple surface primitive for grouping related content.
+description: Live example and usage notes for the Card component.
 ---
 
-import { CardExample } from '@stylextras/ui/card/example';
+import Example from "@stylextras/ui/card/example";
 
-`Card` is a thin wrapper around a native `div` with token-driven surface styling. It is useful for panels, settings groups, summaries, and other contained blocks of content.
+# Card
 
 ## Example
 
-<CardExample />
+<Example />
+
+## Import
+
+```tsx
+import { Card } from "@stylextras/ui/card";
+```
 
 ## Notes
 
-- Renders a native `div`.
-- Accepts all standard `div` props except `className` and `style`.
-- Use `sx` for additional StyleX styles.
-- Use `elevation` to switch between token-defined shadow levels.
+This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
 
-## Props
-
-- `elevation?: 'flat' | 'sm' | 'md' | 'lg'`
-- `sx?: StyleXStyles`
-- Native `div` props such as `id`, `role`, `aria-*`, and event handlers
-
-## Usage
-
-```tsx
-import { Card } from '@stylextras/ui/card';
-import { Typography } from '@stylextras/ui/typography';
-
-export function Example() {
-  return (
-    <Card elevation="sm">
-      <Typography scale="title">Project summary</Typography>
-      <Typography tone="muted">
-        Shared components should be simple by default and themeable from tokens.
-      </Typography>
-    </Card>
-  );
-}
-```

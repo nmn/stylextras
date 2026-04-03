@@ -11,29 +11,55 @@ type BaseProps = ComponentPropsWithoutRef<"div">;
 
 export type PopoverSize = "sm" | "md" | "lg";
 export type PopoverBehavior = "auto" | "manual";
+export type PopoverPlacement = "bottom" | "top" | "right" | "left";
 
 export type PopoverProps = Omit<BaseProps, "className" | "style" | "popover"> & {
-  sx?: StyleXStyles;
-  size?: PopoverSize;
   behavior?: PopoverBehavior;
+  placement?: PopoverPlacement;
+  size?: PopoverSize;
+  sx?: StyleXStyles;
 };
 
-export const Popover = ({
+const bottomFallback = stylex.positionTry({ positionArea: "top" });
+const topFallback = stylex.positionTry({ positionArea: "bottom" });
+const rightFallback = stylex.positionTry({ positionArea: "left" });
+const leftFallback = stylex.positionTry({ positionArea: "right" });
+
+/**
+ * Renders a floating surface using the native popover attribute and CSS anchor positioning.
+ *
+ * Search aliases: popover, popup, floating panel, anchored overlay.
+ *
+ * A11y notes:
+ * - Focus and trigger behavior are not fully managed by the component.
+ * - The caller is responsible for opening, closing, and announcing the relationship to its trigger.
+ */
+export function Popover({
   behavior = "auto",
+  placement = "bottom",
   size = "md",
   sx,
   ...props
-}: PopoverProps) => (
-  <div
-    {...props}
-    popover={behavior}
-    {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
-  />
-);
+}: PopoverProps) {
+  return (
+    <div
+      {...props}
+      popover={behavior}
+      {...stylex.props(
+        baseStyles.base,
+        placementStyles[placement],
+        fallbackStyles[placement],
+        sizeStyles[size],
+        sx,
+      )}
+    />
+  );
+}
 
 const baseStyles = stylex.create({
   base: {
-    margin: spacing.md,
+    position: "fixed",
+    margin: 0,
     padding: spacing.md,
     borderStyle: "solid",
     borderWidth: stroke.thin,
@@ -42,6 +68,42 @@ const baseStyles = stylex.create({
     backgroundColor: colors.bgRaised,
     color: colors.fg,
     boxShadow: elevation.md,
+    // eslint-disable-next-line @stylexjs/valid-styles
+    positionAnchor: "auto",
+  },
+});
+
+const placementStyles = stylex.create({
+  bottom: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    positionArea: "bottom",
+  },
+  top: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    positionArea: "top",
+  },
+  right: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    positionArea: "right",
+  },
+  left: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    positionArea: "left",
+  },
+});
+
+const fallbackStyles = stylex.create({
+  bottom: {
+    positionTryFallbacks: bottomFallback,
+  },
+  top: {
+    positionTryFallbacks: topFallback,
+  },
+  right: {
+    positionTryFallbacks: rightFallback,
+  },
+  left: {
+    positionTryFallbacks: leftFallback,
   },
 });
 

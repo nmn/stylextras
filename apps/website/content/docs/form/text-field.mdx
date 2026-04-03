@@ -1,43 +1,23 @@
 ---
 title: Text Field
-description: A minimal labeled text input built from native HTML elements.
+description: Live example and usage notes for the Text Field component.
 ---
 
-import { TextFieldExample } from '@stylextras/ui/text-field/example';
+import Example from "@stylextras/ui/text-field/example";
 
-`TextField` composes a native `label`, `input`, and optional description or error text. The styling stays token-driven and the component surface stays small.
+# Text Field
 
 ## Example
 
-<TextFieldExample />
+<Example />
+
+## Import
+
+```tsx
+import { TextField } from "@stylextras/ui/text-field";
+```
 
 ## Notes
 
-- Renders a native `input` inside a wrapping `label`
-- Supports `label`, `description`, `error`, and `invalid`
-- Accepts all standard input props except `className`, `style`, and the native `size`
+This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
 
-## Props
-
-- `label?: ReactNode`
-- `description?: ReactNode`
-- `error?: ReactNode`
-- `invalid?: boolean`
-- `size?: 'sm' | 'md'`
-- `sx?: StyleXStyles`
-- `inputSx?: StyleXStyles`
-
-```ts
-import { TextField } from '@stylextras/ui/text-field';
-import type { TextFieldProps } from '@stylextras/ui/text-field';
-
-export function Example() {
-  return (
-    <TextField
-      label="Project name"
-      description="Use a short internal title."
-      placeholder="Stylextras UI"
-    />
-  );
-}
-```

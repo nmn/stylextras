@@ -1,17 +1,24 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { ColorPicker as AriaColorPicker } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { spacing } from "../tokens/spacing.stylex";
+import { ColorField } from "../color-field";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaColorPicker>;
+type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type ColorPickerProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
-};
+export type ColorPickerProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
 
-export const ColorPicker = ({ style, ...props }: ColorPickerProps) => (
-  <AriaColorPicker
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
-  />
-);
+/**
+ * Renders a token-styled native color picker input.
+ *
+ * Search aliases: color picker, color input, swatch input, color chooser.
+ *
+ * A11y notes:
+ * - Uses browser-native color input behavior.
+ * - The exact accessibility experience varies by browser and platform.
+ */
+export function ColorPicker({ sx, ...props }: ColorPickerProps) {
+  return <div {...props} {...stylex.props(styles.base, sx)}><ColorField /></div>;
+}
+
+const styles = stylex.create({ base: { display: "inline-flex", alignItems: "center", gap: spacing.xs } });

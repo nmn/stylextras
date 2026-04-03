@@ -1,17 +1,19 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { Table as AriaTable } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { Table } from "../table";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaTable>;
+type BaseProps = ComponentPropsWithoutRef<typeof Table>;
 
-export type DataTableProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
-};
+export type DataTableProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
 
-export const DataTable = ({ style, ...props }: DataTableProps) => (
-  <AriaTable
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
-  />
-);
+/**
+ * Renders a simplified data-table wrapper.
+ *
+ * Search aliases: data table, table, grid table, tabular data.
+ *
+ * A11y notes:
+ * - Provides basic table semantics only.
+ * - Sorting, selection, grid navigation, and virtualization semantics are not implemented.
+ */
+export function DataTable({ sx, ...props }: DataTableProps) { return <Table {...props} sx={sx} />; }

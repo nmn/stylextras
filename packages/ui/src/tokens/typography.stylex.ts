@@ -1,40 +1,30 @@
 import * as stylex from '@stylexjs/stylex';
 
-const VIEWPORT_MIN_PX = 360;
-const VIEWPORT_MAX_PX = 1240;
-const ROOT_FONT_SIZE_PX = 16;
+const stepValue = (base: string, scale: string, step: number) =>
+  step === -2
+    ? `calc(${base} / ${scale} / ${scale})`
+    : step === -1
+      ? `calc(${base} / ${scale})`
+      : step === 0
+        ? base
+        : step === 1
+          ? `calc(${base} * ${scale})`
+          : step === 2
+            ? `calc(${base} * ${scale} * ${scale})`
+            : step === 3
+              ? `calc(${base} * ${scale} * ${scale} * ${scale})`
+              : step === 4
+                ? `calc(${base} * ${scale} * ${scale} * ${scale} * ${scale})`
+                : `calc(${base} * ${scale} * ${scale} * ${scale} * ${scale} * ${scale})`;
 
-const round = (value: number, precision = 4) =>
-  Math.floor(value * 10 ** precision) / 10 ** precision;
-
-const toRem = (px: number) => `${round(px / ROOT_FONT_SIZE_PX)}rem`;
-
-const fluidTypeClamp = (
-  minBasePx: number,
-  maxBasePx: number,
-  minScale: number,
-  maxScale: number,
-  step: number,
-) =>
-  `clamp(${toRem(minBasePx * minScale ** step)}, ${toRem(
-    minBasePx * minScale ** step -
-      ((maxBasePx * maxScale ** step - minBasePx * minScale ** step) /
-        (VIEWPORT_MAX_PX - VIEWPORT_MIN_PX)) *
-        VIEWPORT_MIN_PX,
-  )} + ${round(
-    ((maxBasePx * maxScale ** step - minBasePx * minScale ** step) /
-      (VIEWPORT_MAX_PX - VIEWPORT_MIN_PX)) *
-      100,
-  )}vw, ${toRem(maxBasePx * maxScale ** step)})`;
-
-const TYPE_CONFIG = {
-  minBasePx: 18,
-  maxBasePx: 20,
-  minScale: 1.2,
-  maxScale: 1.25,
-} as const;
+const fluidTypeClamp = (minValue: string, maxValue: string) =>
+  `clamp(${minValue}, calc(${minValue} - ((${maxValue} - ${minValue}) / 880px) * 360px + (((${maxValue} - ${minValue}) / 880px) * 100) * 1vw), ${maxValue})`;
 
 export const typography_core = stylex.defineVars({
+  fontSizeMin: '18px',
+  fontSizeMax: '20px',
+  scaleMin: '1.2',
+  scaleMax: '1.25',
   fontSans: [
     'InterVariable',
     'Inter',
@@ -78,64 +68,44 @@ export const typography_core = stylex.defineVars({
 
 export const typography_derived = stylex.defineVars({
   stepMinus2: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    -2,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, -2),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, -2),
   ),
   stepMinus1: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    -1,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, -1),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, -1),
   ),
   step0: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    0,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, 0),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, 0),
   ),
   step1: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    1,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, 1),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, 1),
   ),
   step2: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    2,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, 2),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, 2),
   ),
   step3: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    3,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, 3),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, 3),
   ),
   step4: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    4,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, 4),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, 4),
   ),
   step5: fluidTypeClamp(
-    TYPE_CONFIG.minBasePx,
-    TYPE_CONFIG.maxBasePx,
-    TYPE_CONFIG.minScale,
-    TYPE_CONFIG.maxScale,
-    5,
+    stepValue(typography_core.fontSizeMin, typography_core.scaleMin, 5),
+    stepValue(typography_core.fontSizeMax, typography_core.scaleMax, 5),
   ),
 });
 
 export const typography = stylex.defineConsts({
+  fontSizeMin: typography_core.fontSizeMin,
+  fontSizeMax: typography_core.fontSizeMax,
+  scaleMin: typography_core.scaleMin,
+  scaleMax: typography_core.scaleMax,
   fontSans: typography_core.fontSans,
   fontDisplay: typography_core.fontDisplay,
   fontMono: typography_core.fontMono,
@@ -160,8 +130,8 @@ export const typography = stylex.defineConsts({
 });
 
 export const typographyScaleConfig = stylex.defineConsts({
-  minBasePx: `${TYPE_CONFIG.minBasePx}px`,
-  maxBasePx: `${TYPE_CONFIG.maxBasePx}px`,
-  minScale: String(TYPE_CONFIG.minScale),
-  maxScale: String(TYPE_CONFIG.maxScale),
+  minBasePx: typography_core.fontSizeMin,
+  maxBasePx: typography_core.fontSizeMax,
+  minScale: typography_core.scaleMin,
+  maxScale: typography_core.scaleMax,
 });

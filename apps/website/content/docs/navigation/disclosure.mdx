@@ -1,41 +1,23 @@
 ---
 title: Disclosure
-description: A minimal disclosure built on native details and summary.
+description: Live example and usage notes for the Disclosure component.
 ---
 
-import { DisclosureExample } from '@stylextras/ui/disclosure/example';
+import Example from "@stylextras/ui/disclosure/example";
 
-`Disclosure` styles the native `details` element instead of relying on a third-party state abstraction. The summary stays clickable and keyboard accessible because the browser already provides that behavior.
+# Disclosure
 
 ## Example
 
-<DisclosureExample />
+<Example />
+
+## Import
+
+```tsx
+import { Disclosure } from "@stylextras/ui/disclosure";
+```
 
 ## Notes
 
-- Renders a native `details` element with a native `summary`
-- Accepts `open` and `defaultOpen` through standard element props
-- Use `summary` to provide the clickable heading
-- Use `sx`, `summarySx`, and `contentSx` for additional StyleX styling
+This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
 
-## Props
-
-- `summary: ReactNode`
-- `size?: 'md' | 'lg'`
-- `sx?: StyleXStyles`
-- `summarySx?: StyleXStyles`
-- `contentSx?: StyleXStyles`
-
-## Usage
-
-```tsx
-import { Disclosure } from '@stylextras/ui/disclosure';
-
-export function Example() {
-  return (
-    <Disclosure summary="Implementation details">
-      This content is hidden until the disclosure is expanded.
-    </Disclosure>
-  );
-}
-```

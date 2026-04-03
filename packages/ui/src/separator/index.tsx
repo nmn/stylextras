@@ -17,26 +17,37 @@ export type SeparatorProps = Omit<BaseProps, "className" | "style"> & {
   decorative?: boolean;
 };
 
-export const Separator = ({
+/**
+ * Renders a horizontal or vertical separator.
+ *
+ * Search aliases: separator, divider, rule, line.
+ *
+ * A11y notes:
+ * - Can render as decorative or semantic.
+ * - The caller must opt into semantic separator behavior when it conveys structure.
+ */
+export function Separator({
   decorative = true,
   emphasis = "subtle",
   orientation = "horizontal",
   sx,
   ...props
-}: SeparatorProps) => (
-  <div
-    {...props}
-    aria-hidden={decorative || undefined}
-    aria-orientation={decorative ? undefined : orientation}
-    role={decorative ? undefined : "separator"}
-    {...stylex.props(
-      baseStyles.base,
-      orientationStyles[orientation],
-      emphasisStyles[emphasis],
-      sx,
-    )}
-  />
-);
+}: SeparatorProps) {
+  return (
+    <div
+      {...props}
+      aria-hidden={decorative || undefined}
+      aria-orientation={decorative ? undefined : orientation}
+      role={decorative ? undefined : "separator"}
+      {...stylex.props(
+        baseStyles.base,
+        orientationStyles[orientation],
+        emphasisStyles[emphasis],
+        sx,
+      )}
+    />
+  );
+}
 
 const baseStyles = stylex.create({
   base: {

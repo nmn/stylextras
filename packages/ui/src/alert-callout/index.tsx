@@ -20,6 +20,15 @@ export type AlertProps = Omit<BaseProps, "className" | "style"> & {
   variant?: AlertVariant;
 };
 
+/**
+ * Renders a token-driven status message surface for inline feedback.
+ *
+ * Search aliases: alert, callout, notice, message.
+ *
+ * A11y notes:
+ * - Uses native container semantics only.
+ * - Does not manage live-region priority beyond the provided role prop.
+ */
 export function Alert({
   role = "status",
   sx,

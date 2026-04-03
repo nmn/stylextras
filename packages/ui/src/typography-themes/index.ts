@@ -6,6 +6,10 @@ const uiTheme_derived = stylex.createTheme(typography_derived, {});
 export const uiTheme = [uiTheme_core, uiTheme_derived] as const;
 
 const editorialTheme_core = stylex.createTheme(typography_core, {
+  fontSizeMin: '19px',
+  fontSizeMax: '21px',
+  scaleMin: '1.18',
+  scaleMax: '1.24',
   fontSans: `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif`,
   fontDisplay: `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif`,
   lineHeightTight: "1.1",
@@ -19,6 +23,10 @@ const editorialTheme_derived = stylex.createTheme(typography_derived, {});
 export const editorialTheme = [editorialTheme_core, editorialTheme_derived] as const;
 
 const monoTheme_core = stylex.createTheme(typography_core, {
+  fontSizeMin: '17px',
+  fontSizeMax: '19px',
+  scaleMin: '1.14',
+  scaleMax: '1.18',
   fontSans: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
   fontDisplay: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
   fontMono: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
@@ -33,6 +41,10 @@ const monoTheme_derived = stylex.createTheme(typography_derived, {});
 export const monoTheme = [monoTheme_core, monoTheme_derived] as const;
 
 const industrialTheme_core = stylex.createTheme(typography_core, {
+  fontSizeMin: '18px',
+  fontSizeMax: '22px',
+  scaleMin: '1.24',
+  scaleMax: '1.32',
   fontSans: `"Arial Narrow", "Helvetica Neue", Arial, sans-serif`,
   fontDisplay: `"Arial Narrow", "Helvetica Neue", Arial, sans-serif`,
   lineHeightTight: "1.05",

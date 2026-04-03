@@ -1,24 +1,23 @@
 ---
 title: Badge
-description: A compact status label for small bits of metadata.
+description: Live example and usage notes for the Badge component.
 ---
 
-import { BadgeExample } from '@stylextras/ui/badge/example';
+import Example from "@stylextras/ui/badge/example";
 
-`Badge` renders a native `span` with token-driven padding, radius, typography, and semantic color variants.
+# Badge
 
 ## Example
 
-<BadgeExample />
+<Example />
+
+## Import
+
+```tsx
+import { Badge } from "@stylextras/ui/badge";
+```
 
 ## Notes
 
-- Renders a native `span`
-- Useful for status chips, labels, and small metadata
-- Keeps the API minimal: size, variant, and `sx`
+This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
 
-## Props
-
-- `size?: 'sm' | 'md'`
-- `variant?: 'neutral' | 'brand' | 'info' | 'success' | 'warning' | 'danger'`
-- `sx?: StyleXStyles`

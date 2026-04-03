@@ -19,7 +19,16 @@ export type DisclosureProps = Omit<BaseProps, "className" | "style"> & {
   size?: DisclosureSize;
 };
 
-export const Disclosure = ({
+/**
+ * Renders a disclosure using native details and summary elements.
+ *
+ * Search aliases: disclosure, accordion item, expandable section, details.
+ *
+ * A11y notes:
+ * - Uses native <details>/<summary> semantics.
+ * - Does not add single-open accordion constraints unless composed externally.
+ */
+export function Disclosure({
   children,
   contentSx,
   size = "md",
@@ -27,14 +36,16 @@ export const Disclosure = ({
   summarySx,
   sx,
   ...props
-}: DisclosureProps) => (
-  <details {...props} {...stylex.props(baseStyles.base, sx)}>
-    <summary {...stylex.props(summaryStyles.base, sizeStyles[size], summarySx)}>
-      {summary}
-    </summary>
-    <div {...stylex.props(contentStyles.base, contentSx)}>{children}</div>
-  </details>
-);
+}: DisclosureProps) {
+  return (
+    <details {...props} {...stylex.props(baseStyles.base, sx)}>
+      <summary {...stylex.props(summaryStyles.base, sizeStyles[size], summarySx)}>
+        {summary}
+      </summary>
+      <div {...stylex.props(contentStyles.base, contentSx)}>{children}</div>
+    </details>
+  );
+}
 
 const baseStyles = stylex.create({
   base: {

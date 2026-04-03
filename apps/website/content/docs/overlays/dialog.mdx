@@ -1,48 +1,23 @@
 ---
 title: Dialog
-description: A thin wrapper around the native dialog element.
+description: Live example and usage notes for the Dialog component.
 ---
 
-import { DialogExample } from '@stylextras/ui/dialog/example';
+import Example from "@stylextras/ui/dialog/example";
 
-`Dialog` styles the platform `dialog` element and forwards a ref to it. Consumers can call the native `show()`, `showModal()`, and `close()` methods directly.
+# Dialog
 
 ## Example
 
-<DialogExample />
+<Example />
+
+## Import
+
+```tsx
+import { Dialog } from "@stylextras/ui/dialog";
+```
 
 ## Notes
 
-- Renders a native `dialog`
-- Forwards a ref to `HTMLDialogElement`
-- Use the browser's native dialog API to open and close it
-- Accepts all standard `dialog` props except `className` and `style`
+This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
 
-## Props
-
-- `size?: 'sm' | 'md' | 'lg'`
-- `sx?: StyleXStyles`
-
-## Usage
-
-```tsx
-import { useRef } from 'react';
-import { Dialog } from '@stylextras/ui/dialog';
-
-export function Example() {
-  const ref = useRef<HTMLDialogElement>(null);
-
-  return (
-    <>
-      <button onClick={() => ref.current?.showModal()} type="button">
-        Open
-      </button>
-      <Dialog ref={ref}>
-        <form method="dialog">
-          <button type="submit">Close</button>
-        </form>
-      </Dialog>
-    </>
-  );
-}
-```

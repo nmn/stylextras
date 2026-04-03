@@ -17,7 +17,16 @@ export type SliderProps = Omit<BaseProps, "className" | "style" | "type"> & {
   size?: SliderSize;
 };
 
-export const Slider = ({
+/**
+ * Renders a token-styled native range input.
+ *
+ * Search aliases: slider, range input, track control, value slider.
+ *
+ * A11y notes:
+ * - Uses native range input semantics.
+ * - Value text, units, and marks need to be supplied externally where required.
+ */
+export function Slider({
   disabled,
   inputSx,
   label,
@@ -25,24 +34,26 @@ export const Slider = ({
   size = "md",
   sx,
   ...props
-}: SliderProps) => (
-  <label {...stylex.props(rootStyles.root, sx)}>
-    {label ? (
-      <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span>
-    ) : null}
-    <input
-      {...props}
-      disabled={disabled}
-      type="range"
-      {...stylex.props(
-        inputStyles.base,
-        sizeStyles[size],
-        disabled && stateStyles.disabled,
-        inputSx,
-      )}
-    />
-  </label>
-);
+}: SliderProps) {
+  return (
+    <label {...stylex.props(rootStyles.root, sx)}>
+      {label ? (
+        <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span>
+      ) : null}
+      <input
+        {...props}
+        disabled={disabled}
+        type="range"
+        {...stylex.props(
+          inputStyles.base,
+          sizeStyles[size],
+          disabled && stateStyles.disabled,
+          inputSx,
+        )}
+      />
+    </label>
+  );
+}
 
 const rootStyles = stylex.create({
   root: {

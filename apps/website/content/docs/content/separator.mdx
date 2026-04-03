@@ -1,25 +1,23 @@
 ---
 title: Separator
-description: A visual divider for separating related content.
+description: Live example and usage notes for the Separator component.
 ---
 
-import { SeparatorExample } from '@stylextras/ui/separator/example';
+import Example from "@stylextras/ui/separator/example";
 
-`Separator` is a minimal divider built from a styled block element. It supports horizontal and vertical orientations and can be either decorative or semantic.
+# Separator
 
 ## Example
 
-<SeparatorExample />
+<Example />
+
+## Import
+
+```tsx
+import { Separator } from "@stylextras/ui/separator";
+```
 
 ## Notes
 
-- Supports `horizontal` and `vertical` orientations
-- Use `decorative={false}` when the separator should be announced semantically
-- Use `emphasis` to choose between quieter and stronger dividers
+This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
 
-## Props
-
-- `orientation?: 'horizontal' | 'vertical'`
-- `emphasis?: 'subtle' | 'strong'`
-- `decorative?: boolean`
-- `sx?: StyleXStyles`

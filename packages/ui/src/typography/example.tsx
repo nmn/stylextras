@@ -1,70 +1,42 @@
 "use client";
 
-import { useState } from "react";
-import { ExampleThemeFrame } from "../example-theme/index";
-import { Typography, type TypographyScale, type TypographyTone } from "./index";
+import { Badge } from "../badge";
+import { Card } from "../card";
+import { DemoEyebrow, DemoFrame, DemoGrid, DemoMuted, DemoSection, DemoStack } from "../example-theme/demo";
+import { Typography } from "./index";
 
-const controlRowStyle = {
-  display: "flex",
-  flexWrap: "wrap" as const,
-  gap: "12px",
-  alignItems: "center",
-  marginBottom: "16px",
-};
-
-export function TypographyExample() {
-  const [scale, setScale] = useState<TypographyScale>("body");
-  const [tone, setTone] = useState<TypographyTone>("default");
-  const [mono, setMono] = useState(false);
-
+export default function Example() {
   return (
-    <div>
-      <div style={controlRowStyle}>
-        <label>
-          Scale{" "}
-          <select
-            value={scale}
-            onChange={(event) => setScale(event.target.value as TypographyScale)}
-          >
-            <option value="label">label</option>
-            <option value="body">body</option>
-            <option value="title">title</option>
-            <option value="display">display</option>
-          </select>
-        </label>
+    <DemoFrame title="Typography" description="Typography examples should show hierarchy and rhythm, not just a list of token names. These examples use the type scale inside small editorial and product surfaces.">
+      <DemoSection title="Editorial hierarchy" description="A good type system demo shows how display, title, body, and supporting text work together inside the same composition.">
+        <Card elevation="flat">
+          <DemoStack>
+            <DemoEyebrow>Release notes</DemoEyebrow>
+            <Typography as="h1" scale="display">Native-first overlays and token-driven examples</Typography>
+            <Typography as="p" scale="body">The updated component demos now use real interface compositions, theme toggles, and supporting copy so the examples behave more like product surfaces than isolated specimens.</Typography>
+            <DemoMuted>Published April 2026</DemoMuted>
+          </DemoStack>
+        </Card>
+      </DemoSection>
 
-        <label>
-          Tone{" "}
-          <select
-            value={tone}
-            onChange={(event) => setTone(event.target.value as TypographyTone)}
-          >
-            <option value="default">default</option>
-            <option value="soft">soft</option>
-            <option value="muted">muted</option>
-            <option value="brand">brand</option>
-            <option value="info">info</option>
-            <option value="success">success</option>
-            <option value="warning">warning</option>
-            <option value="danger">danger</option>
-          </select>
-        </label>
-
-        <label>
-          <input
-            checked={mono}
-            onChange={(event) => setMono(event.target.checked)}
-            type="checkbox"
-          />{" "}
-          Mono
-        </label>
-      </div>
-
-      <ExampleThemeFrame>
-        <Typography mono={mono} scale={scale} tone={tone}>
-          The quick brown fox jumps over the lazy dog.
-        </Typography>
-      </ExampleThemeFrame>
-    </div>
+      <DemoSection title="Product usage" description="The same type scale should also work inside denser UI such as cards, metadata rows, and compact status surfaces.">
+        <DemoGrid>
+          <Card elevation="sm">
+            <DemoStack>
+              <Badge>Stable</Badge>
+              <Typography as="h3" scale="title">Button</Typography>
+              <Typography as="p" scale="body">Use for clear, direct actions that move the user toward the next step.</Typography>
+            </DemoStack>
+          </Card>
+          <Card elevation="sm">
+            <DemoStack>
+              <Badge>Experimental</Badge>
+              <Typography as="h3" scale="title">Command</Typography>
+              <Typography as="p" scale="body">A lightweight dialog shell for quick navigation and action palettes.</Typography>
+            </DemoStack>
+          </Card>
+        </DemoGrid>
+      </DemoSection>
+    </DemoFrame>
   );
 }

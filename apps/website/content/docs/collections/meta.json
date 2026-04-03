@@ -4,10 +4,9 @@
     "./command.mdx",
     "./context-menu.mdx",
     "./listbox.mdx",
-    "./dropdown-menu.mdx",
+    "./menu.mdx",
     "./menubar.mdx",
     "./table.mdx",
-    "./data-table.mdx",
     "./tag-group.mdx",
     "./tree.mdx"
   ]

@@ -1,6 +1,7 @@
 {
   "title": "Layout",
   "pages": [
+    "./flex.mdx",
     "./grid.mdx",
     "./toolbar.mdx",
     "./window-splitter.mdx"

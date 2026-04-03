@@ -25,17 +25,28 @@ export type BadgeProps = Omit<BaseProps, "className" | "style"> & {
   variant?: BadgeVariant;
 };
 
-export const Badge = ({
+/**
+ * Renders a compact token-driven status or metadata label.
+ *
+ * Search aliases: badge, pill, tag, status chip.
+ *
+ * A11y notes:
+ * - Acts as static text by default.
+ * - Does not expose live updates or status announcements automatically.
+ */
+export function Badge({
   size = "md",
   sx,
   variant = "neutral",
   ...props
-}: BadgeProps) => (
-  <span
-    {...props}
-    {...stylex.props(baseStyles.base, sizeStyles[size], variantStyles[variant], sx)}
-  />
-);
+}: BadgeProps) {
+  return (
+    <span
+      {...props}
+      {...stylex.props(baseStyles.base, sizeStyles[size], variantStyles[variant], sx)}
+    />
+  );
+}
 
 const baseStyles = stylex.create({
   base: {

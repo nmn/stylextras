@@ -26,27 +26,38 @@ export type ButtonProps = Omit<BaseProps, "className" | "style"> & {
   size?: ButtonSize;
 };
 
-export const Button = ({
+/**
+ * Renders a token-driven native button element.
+ *
+ * Search aliases: button, action button, cta, push button.
+ *
+ * A11y notes:
+ * - Uses native button semantics.
+ * - Does not provide loading announcements, async busy state, or keyboard shortcut affordances on its own.
+ */
+export function Button({
   disabled,
   size = "md",
   sx,
   type = "button",
   variant = "primary",
   ...props
-}: ButtonProps) => (
-  <button
-    {...props}
-    disabled={disabled}
-    type={type}
-    {...stylex.props(
-      baseStyles.base,
-      sizeStyles[size],
-      variantStyles[variant],
-      disabled && stateStyles.disabled,
-      sx,
-    )}
-  />
-);
+}: ButtonProps) {
+  return (
+    <button
+      {...props}
+      disabled={disabled}
+      type={type}
+      {...stylex.props(
+        baseStyles.base,
+        sizeStyles[size],
+        variantStyles[variant],
+        disabled && stateStyles.disabled,
+        sx,
+      )}
+    />
+  );
+}
 
 const baseStyles = stylex.create({
   base: {

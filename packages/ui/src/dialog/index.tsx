@@ -1,14 +1,13 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import { forwardRef } from "react";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { elevation } from "../tokens/elevation.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"dialog">;
+type BaseProps = ComponentPropsWithRef<"dialog">;
 
 export type DialogSize = "sm" | "md" | "lg";
 
@@ -17,10 +16,16 @@ export type DialogProps = Omit<BaseProps, "className" | "style"> & {
   size?: DialogSize;
 };
 
-export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(function Dialog(
-  { size = "md", sx, ...props },
-  ref,
-) {
+/**
+ * Renders a modal or non-modal surface using the native dialog element.
+ *
+ * Search aliases: dialog, modal, modal dialog, popup dialog.
+ *
+ * A11y notes:
+ * - Relies on native <dialog> behavior for focus and modality.
+ * - Does not add custom focus restoration, layered dismissal, or inert polyfills.
+ */
+export function Dialog({ ref, size = "md", sx, ...props }: DialogProps) {
   return (
     <dialog
       ref={ref}
@@ -28,7 +33,7 @@ export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(function Dialog
       {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
     />
   );
-});
+}
 
 const baseStyles = stylex.create({
   base: {

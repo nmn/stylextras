@@ -4,8 +4,8 @@
     "./calendar.mdx",
     "./date-field.mdx",
     "./date-picker.mdx",
-    "./range-date-picker.mdx",
+    "./date-range-picker.mdx",
     "./range-calendar.mdx",
-    "./timefield.mdx"
+    "./time-field.mdx"
   ]
 }

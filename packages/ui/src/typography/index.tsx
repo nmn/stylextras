@@ -26,25 +26,36 @@ export type TypographyProps = Omit<BaseProps, "className" | "style"> & {
   mono?: boolean;
 };
 
-export const Typography = ({
+/**
+ * Renders token-driven type styles across body, title, label, and display scales.
+ *
+ * Search aliases: typography, type, text styles, heading text.
+ *
+ * A11y notes:
+ * - Inherits semantics from the chosen underlying element.
+ * - The caller must choose an appropriate element for headings, paragraphs, and document structure.
+ */
+export function Typography({
   as: Component = "p",
   mono = false,
   scale = "body",
   sx,
   tone = "default",
   ...props
-}: TypographyProps) => (
-  <Component
-    {...props}
-    {...stylex.props(
-      baseStyles.base,
-      scaleStyles[scale],
-      toneStyles[tone],
-      mono && fontStyles.mono,
-      sx,
-    )}
-  />
-);
+}: TypographyProps) {
+  return (
+    <Component
+      {...props}
+      {...stylex.props(
+        baseStyles.base,
+        scaleStyles[scale],
+        toneStyles[tone],
+        mono && fontStyles.mono,
+        sx,
+      )}
+    />
+  );
+}
 
 const baseStyles = stylex.create({
   base: {

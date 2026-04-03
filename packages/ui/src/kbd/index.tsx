@@ -16,9 +16,18 @@ export type KbdProps = Omit<BaseProps, "className" | "style"> & {
   size?: KbdSize;
 };
 
-export const Kbd = ({ size = "md", sx, ...props }: KbdProps) => (
-  <kbd {...props} {...stylex.props(baseStyles.base, sizeStyles[size], sx)} />
-);
+/**
+ * Renders a token-styled keyboard key annotation.
+ *
+ * Search aliases: kbd, keycap, keyboard hint, shortcut key.
+ *
+ * A11y notes:
+ * - Acts as static inline content.
+ * - Shortcut meaning and interaction context must be described by nearby text.
+ */
+export function Kbd({ size = "md", sx, ...props }: KbdProps) {
+  return <kbd {...props} {...stylex.props(baseStyles.base, sizeStyles[size], sx)} />;
+}
 
 const baseStyles = stylex.create({
   base: {

@@ -1,17 +1,25 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { ToggleButtonGroup as AriaToggleButtonGroup } from 'react-aria-components';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<typeof AriaToggleButtonGroup>;
+type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type ToggleGroupProps = Omit<BaseProps, 'className' | 'style'> & {
-  style?: StyleXStyles;
+export type ToggleGroupProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
 };
 
-export const ToggleGroup = ({ style, ...props }: ToggleGroupProps) => (
-  <AriaToggleButtonGroup
-    {...(props as BaseProps)}
-    {...stylex.props(style)}
-  />
-);
+/**
+ * Renders a group of toggle controls.
+ *
+ * Search aliases: toggle group, toggle buttons, pressed group, option toggles.
+ *
+ * A11y notes:
+ * - Provides grouping layout only.
+ * - It does not yet implement a full composite widget keyboard model.
+ */
+export function ToggleGroup({ sx, ...props }: ToggleGroupProps) {
+  return <div {...props} role="group" {...stylex.props(styles.base, sx)} />;
+}
+
+const styles = stylex.create({ base: { display: "inline-flex", alignItems: "center", gap: spacing.xs, flexWrap: "wrap" } });

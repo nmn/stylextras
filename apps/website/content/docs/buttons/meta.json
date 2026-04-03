@@ -3,6 +3,7 @@
   "pages": [
     "./button.mdx",
     "./button-group.mdx",
+    "./copy-to-clipboard-button.mdx",
     "./icon-button.mdx",
     "./segmented-control.mdx",
     "./toggle.mdx",

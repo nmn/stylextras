@@ -1,24 +1,23 @@
 ---
 title: Popover
-description: A thin wrapper around the native popover platform feature.
+description: Live example and usage notes for the Popover component.
 ---
 
-import { PopoverExample } from '@stylextras/ui/popover/example';
+import Example from "@stylextras/ui/popover/example";
 
-`Popover` renders a native element with the `popover` attribute. It works directly with browser-level trigger attributes like `popovertarget`.
+# Popover
 
 ## Example
 
-<PopoverExample />
+<Example />
+
+## Import
+
+```tsx
+import { Popover } from "@stylextras/ui/popover";
+```
 
 ## Notes
 
-- Renders a native `div` with `popover="auto"` by default
-- Supports both `auto` and `manual` popover behaviors
-- Works with standard trigger buttons using `popovertarget`
+This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
 
-## Props
-
-- `size?: 'sm' | 'md' | 'lg'`
-- `behavior?: 'auto' | 'manual'`
-- `sx?: StyleXStyles`

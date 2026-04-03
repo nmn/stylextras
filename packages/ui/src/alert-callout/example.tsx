@@ -1,48 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { ExampleThemeFrame } from "../example-theme/index";
-import { Typography } from "../typography/index";
-import { Alert, type AlertVariant } from "./index";
+import { AlertCallout } from "./index";
+import { Button } from "../button";
+import { ButtonGroup } from "../button-group";
+import { Card } from "../card";
+import { DemoFrame, DemoGrid, DemoMuted, DemoSection, DemoStack } from "../example-theme/demo";
+import { Typography } from "../typography";
 
-const controlRowStyle = {
-  display: "flex",
-  flexWrap: "wrap" as const,
-  gap: "12px",
-  alignItems: "center",
-  marginBottom: "16px",
-};
-
-export function AlertExample() {
-  const [variant, setVariant] = useState<AlertVariant>("neutral");
-
+export default function Example() {
   return (
-    <div>
-      <div style={controlRowStyle}>
-        <label>
-          Variant{" "}
-          <select
-            value={variant}
-            onChange={(event) => setVariant(event.target.value as AlertVariant)}
-          >
-            <option value="neutral">neutral</option>
-            <option value="info">info</option>
-            <option value="success">success</option>
-            <option value="warning">warning</option>
-            <option value="danger">danger</option>
-          </select>
-        </label>
-      </div>
+    <DemoFrame title="Alert Callout" description="Alerts are most convincing when they are placed inside the kind of workflow that would actually produce them. These examples focus on message tone and the next action.">
+      <DemoSection title="Operational states" description="Keep alert copy short and action-oriented. The user should know what happened and what to do next in one scan.">
+        <DemoGrid>
+          <AlertCallout variant="neutral">
+            <DemoStack>
+              <Typography as="strong" scale="label">Preview build queued</Typography>
+              <DemoMuted>A new preview deployment will be available in a minute.</DemoMuted>
+            </DemoStack>
+          </AlertCallout>
+          <AlertCallout variant="success">
+            <DemoStack>
+              <Typography as="strong" scale="label">Theme saved</Typography>
+              <DemoMuted>The new radius and spacing settings are already applied in the docs preview.</DemoMuted>
+            </DemoStack>
+          </AlertCallout>
+          <AlertCallout variant="warning">
+            <DemoStack>
+              <Typography as="strong" scale="label">Missing docs coverage</Typography>
+              <DemoMuted>Several new components ship without narrative guidance yet.</DemoMuted>
+            </DemoStack>
+          </AlertCallout>
+          <AlertCallout variant="danger">
+            <DemoStack>
+              <Typography as="strong" scale="label">Breaking export change</Typography>
+              <DemoMuted>An alias path was removed and downstream imports may fail until they are updated.</DemoMuted>
+            </DemoStack>
+          </AlertCallout>
+        </DemoGrid>
+      </DemoSection>
 
-      <ExampleThemeFrame>
-        <Alert variant={variant}>
-          <Typography scale="title">Build status</Typography>
-          <Typography tone="soft">
-            This example swaps only the semantic variant prop while the spacing,
-            border, and radius stay token-driven.
-          </Typography>
-        </Alert>
-      </ExampleThemeFrame>
-    </div>
+      <DemoSection title="Callout with follow-up actions" description="The alert surface becomes more useful when it is tied directly to the action the user is expected to take next.">
+        <Card elevation="flat">
+          <DemoStack>
+            <AlertCallout variant="info">
+              <DemoStack>
+                <Typography as="strong" scale="label">Token migration required</Typography>
+                <DemoMuted>The spacing foundation changed, and two example pages still need to be reviewed for visual regressions.</DemoMuted>
+              </DemoStack>
+            </AlertCallout>
+            <ButtonGroup>
+              <Button type="button">Open affected pages</Button>
+              <Button type="button">Dismiss for now</Button>
+            </ButtonGroup>
+          </DemoStack>
+        </Card>
+      </DemoSection>
+    </DemoFrame>
   );
 }

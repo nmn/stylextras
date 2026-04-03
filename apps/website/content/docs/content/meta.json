@@ -1,12 +1,16 @@
 {
   "title": "Content",
   "pages": [
+    "./aspect-ratio.mdx",
     "./avatar.mdx",
     "./card.mdx",
-    "./flez.mdx",
-    "./empty.mdx",
+    "./content.mdx",
+    "./editable-text.mdx",
+    "./empty-state.mdx",
+    "./image-cropper.mdx",
     "./kbd.mdx",
     "./separator.mdx",
+    "./text.mdx",
     "./typography.mdx"
   ]
 }
