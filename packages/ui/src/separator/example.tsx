@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import {
   Separator,
   type SeparatorEmphasis,
@@ -48,19 +49,21 @@ export function SeparatorExample() {
         </label>
       </div>
 
-      {orientation === "horizontal" ? (
-        <div>
-          <div>Above</div>
-          <Separator emphasis={emphasis} orientation={orientation} />
-          <div>Below</div>
-        </div>
-      ) : (
-        <div style={{ display: "flex", alignItems: "stretch", height: "72px" }}>
-          <div>Left</div>
-          <Separator emphasis={emphasis} orientation={orientation} />
-          <div>Right</div>
-        </div>
-      )}
+      <ExampleThemeFrame>
+        {orientation === "horizontal" ? (
+          <div>
+            <div>Above</div>
+            <Separator emphasis={emphasis} orientation={orientation} />
+            <div>Below</div>
+          </div>
+        ) : (
+          <div style={{ display: "flex", alignItems: "stretch", height: "72px" }}>
+            <div>Left</div>
+            <Separator emphasis={emphasis} orientation={orientation} />
+            <div>Right</div>
+          </div>
+        )}
+      </ExampleThemeFrame>
     </div>
   );
 }

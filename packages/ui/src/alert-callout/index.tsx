@@ -30,12 +30,12 @@ export function Alert({
     <div
       {...props}
       role={role}
-      {...stylex.props(styles.base, styles[variant], sx)}
+      {...stylex.props(baseStyles.base, variantStyles[variant], sx)}
     />
   );
 }
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     display: "flex",
     flexDirection: "column",
@@ -45,6 +45,9 @@ const styles = stylex.create({
     borderWidth: stroke.thin,
     borderRadius: radius.md,
   },
+});
+
+const variantStyles = stylex.create({
   neutral: {
     color: colors.fg,
     backgroundColor: colors.bgSubtle,

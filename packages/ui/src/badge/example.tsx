@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Badge, type BadgeSize, type BadgeVariant } from "./index";
 
 const controlRowStyle = {
@@ -45,9 +46,11 @@ export function BadgeExample() {
         </label>
       </div>
 
-      <Badge size={size} variant={variant}>
-        Stable
-      </Badge>
+      <ExampleThemeFrame>
+        <Badge size={size} variant={variant}>
+          Stable
+        </Badge>
+      </ExampleThemeFrame>
     </div>
   );
 }

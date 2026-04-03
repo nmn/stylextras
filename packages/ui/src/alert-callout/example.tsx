@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Typography } from "../typography/index";
 import { Alert, type AlertVariant } from "./index";
 
@@ -33,13 +34,15 @@ export function AlertExample() {
         </label>
       </div>
 
-      <Alert variant={variant}>
-        <Typography scale="title">Build status</Typography>
-        <Typography tone="soft">
-          This example swaps only the semantic variant prop while the spacing,
-          border, and radius stay token-driven.
-        </Typography>
-      </Alert>
+      <ExampleThemeFrame>
+        <Alert variant={variant}>
+          <Typography scale="title">Build status</Typography>
+          <Typography tone="soft">
+            This example swaps only the semantic variant prop while the spacing,
+            border, and radius stay token-driven.
+          </Typography>
+        </Alert>
+      </ExampleThemeFrame>
     </div>
   );
 }

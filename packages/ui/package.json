@@ -72,6 +72,10 @@
       "types": "./src/button/index.tsx",
       "import": "./src/button/index.tsx"
     },
+    "./button/example": {
+      "types": "./src/button/example.tsx",
+      "import": "./src/button/example.tsx"
+    },
     "./button-group": {
       "types": "./src/button-group/index.tsx",
       "import": "./src/button-group/index.tsx"
@@ -115,6 +119,10 @@
     "./color-swatch-picker": {
       "types": "./src/color-swatch-picker/index.tsx",
       "import": "./src/color-swatch-picker/index.tsx"
+    },
+    "./color-themes": {
+      "types": "./src/color-themes/index.ts",
+      "import": "./src/color-themes/index.ts"
     },
     "./color-wheel": {
       "types": "./src/color-wheel/index.tsx",
@@ -175,6 +183,10 @@
     "./empty": {
       "types": "./src/empty/index.tsx",
       "import": "./src/empty/index.tsx"
+    },
+    "./example-theme": {
+      "types": "./src/example-theme/index.tsx",
+      "import": "./src/example-theme/index.tsx"
     },
     "./field-errors": {
       "types": "./src/field-errors/index.tsx",
@@ -268,6 +280,10 @@
       "types": "./src/radio-group/index.tsx",
       "import": "./src/radio-group/index.tsx"
     },
+    "./radius-themes": {
+      "types": "./src/radius-themes/index.ts",
+      "import": "./src/radius-themes/index.ts"
+    },
     "./range-calendar": {
       "types": "./src/range-calendar/index.tsx",
       "import": "./src/range-calendar/index.tsx"
@@ -308,6 +324,14 @@
       "types": "./src/slider/index.tsx",
       "import": "./src/slider/index.tsx"
     },
+    "./slider/example": {
+      "types": "./src/slider/example.tsx",
+      "import": "./src/slider/example.tsx"
+    },
+    "./spacing-themes": {
+      "types": "./src/spacing-themes/index.ts",
+      "import": "./src/spacing-themes/index.ts"
+    },
     "./spinner": {
       "types": "./src/spinner/index.tsx",
       "import": "./src/spinner/index.tsx"
@@ -331,6 +355,10 @@
     "./text-field": {
       "types": "./src/text-field/index.tsx",
       "import": "./src/text-field/index.tsx"
+    },
+    "./text-field/example": {
+      "types": "./src/text-field/example.tsx",
+      "import": "./src/text-field/example.tsx"
     },
     "./textarea": {
       "types": "./src/textarea/index.tsx",
@@ -371,6 +399,10 @@
     "./typography/example": {
       "types": "./src/typography/example.tsx",
       "import": "./src/typography/example.tsx"
+    },
+    "./typography-themes": {
+      "types": "./src/typography-themes/index.ts",
+      "import": "./src/typography-themes/index.ts"
     },
     "./window-splitter": {
       "types": "./src/window-splitter/index.tsx",

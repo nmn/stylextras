@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Typography, type TypographyScale, type TypographyTone } from "./index";
 
 const controlRowStyle = {
@@ -59,9 +60,11 @@ export function TypographyExample() {
         </label>
       </div>
 
-      <Typography mono={mono} scale={scale} tone={tone}>
-        The quick brown fox jumps over the lazy dog.
-      </Typography>
+      <ExampleThemeFrame>
+        <Typography mono={mono} scale={scale} tone={tone}>
+          The quick brown fox jumps over the lazy dog.
+        </Typography>
+      </ExampleThemeFrame>
     </div>
   );
 }

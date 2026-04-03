@@ -17,10 +17,10 @@ export type KbdProps = Omit<BaseProps, "className" | "style"> & {
 };
 
 export const Kbd = ({ size = "md", sx, ...props }: KbdProps) => (
-  <kbd {...props} {...stylex.props(styles.base, styles[size], sx)} />
+  <kbd {...props} {...stylex.props(baseStyles.base, sizeStyles[size], sx)} />
 );
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     display: "inline-flex",
     alignItems: "center",
@@ -37,6 +37,9 @@ const styles = stylex.create({
     fontWeight: typography.weightMedium,
     whiteSpace: "nowrap",
   },
+});
+
+const sizeStyles = stylex.create({
   sm: {
     minHeight: spacing.lg,
     paddingBlock: spacing["3xs"],

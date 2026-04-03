@@ -22,10 +22,13 @@ export const Card = ({
   sx,
   ...props
 }: CardProps) => (
-  <div {...props} {...stylex.props(styles.base, styles[elevation], sx)} />
+  <div
+    {...props}
+    {...stylex.props(baseStyles.base, elevationStyles[elevation], sx)}
+  />
 );
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     position: "relative",
     display: "flex",
@@ -40,6 +43,9 @@ const styles = stylex.create({
     borderRadius: radius.lg,
     backdropFilter: `blur(${blur.xs})`,
   },
+});
+
+const elevationStyles = stylex.create({
   flat: {
     boxShadow: tokenElevation.none,
   },

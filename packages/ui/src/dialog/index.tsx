@@ -25,12 +25,12 @@ export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(function Dialog
     <dialog
       ref={ref}
       {...props}
-      {...stylex.props(styles.base, styles[size], sx)}
+      {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
     />
   );
 });
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     margin: "auto",
     padding: spacing.lg,
@@ -42,6 +42,9 @@ const styles = stylex.create({
     color: colors.fg,
     boxShadow: elevation.lg,
   },
+});
+
+const sizeStyles = stylex.create({
   sm: {
     width: "min(360px, calc(100vw - 32px))",
   },

@@ -29,16 +29,24 @@ export const Separator = ({
     aria-hidden={decorative || undefined}
     aria-orientation={decorative ? undefined : orientation}
     role={decorative ? undefined : "separator"}
-    {...stylex.props(styles.base, styles[orientation], styles[emphasis], sx)}
+    {...stylex.props(
+      baseStyles.base,
+      orientationStyles[orientation],
+      emphasisStyles[emphasis],
+      sx,
+    )}
   />
 );
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     display: "block",
     flexShrink: 0,
     backgroundColor: colors.border,
   },
+});
+
+const orientationStyles = stylex.create({
   horizontal: {
     width: "100%",
     height: stroke.thin,
@@ -50,6 +58,9 @@ const styles = stylex.create({
     minHeight: spacing["3xl"],
     marginInline: spacing.md,
   },
+});
+
+const emphasisStyles = stylex.create({
   subtle: {
     backgroundColor: colors.border,
   },

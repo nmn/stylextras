@@ -1,18 +1,34 @@
 ---
 title: Slider
-description: Stylextras wrapper component.
+description: A basic range input with optional label text.
 ---
 
-Wraps `aria.Slider` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { SliderExample } from '@stylextras/ui/slider/example';
 
-## Demo
-```tsx
-import { Slider } from '@stylextras/ui/slider';
+`Slider` is a thin wrapper around a native `input type="range"` with token-driven sizing and label styling.
 
-<Slider />
-```
+## Example
+
+<SliderExample />
+
+## Notes
+
+- Renders a native `input` with `type="range"`
+- Uses `accent-color` for a simple standards-based appearance
+- Accepts all standard range input props except `className`, `style`, and `type`
 
 ## Props
+
+- `label?: ReactNode`
+- `size?: 'sm' | 'md'`
+- `sx?: StyleXStyles`
+- `inputSx?: StyleXStyles`
+
 ```ts
+import { Slider } from '@stylextras/ui/slider';
 import type { SliderProps } from '@stylextras/ui/slider';
+
+export function Example() {
+  return <Slider label="Volume" defaultValue={40} max={100} min={0} />;
+}
 ```

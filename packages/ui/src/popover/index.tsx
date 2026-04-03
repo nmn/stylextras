@@ -27,11 +27,11 @@ export const Popover = ({
   <div
     {...props}
     popover={behavior}
-    {...stylex.props(styles.base, styles[size], sx)}
+    {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
   />
 );
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     margin: spacing.md,
     padding: spacing.md,
@@ -43,6 +43,9 @@ const styles = stylex.create({
     color: colors.fg,
     boxShadow: elevation.md,
   },
+});
+
+const sizeStyles = stylex.create({
   sm: {
     width: "min(240px, calc(100vw - 32px))",
   },

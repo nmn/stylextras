@@ -1,21 +1,34 @@
 ---
 title: Button
-description: Stylextras wrapper component.
+description: A minimal native button styled directly from the token system.
 ---
 
-Wraps `aria.Button` from `react-aria-components`, omitting `className` and `style` and adding `style?: StyleXStyles`.
+import { ButtonExample } from '@stylextras/ui/button/example';
 
-## Demo
+`Button` renders a native `button` with a deliberately small API surface: size, variant, and `sx`.
 
-<AriaButton> Click me </AriaButton>
+## Example
 
-```tsx
-import { Button } from '@stylextras/ui/button';
+<ButtonExample />
 
-<Button />
-```
+## Notes
+
+- Renders a native `button`
+- Defaults `type` to `button`
+- Accepts all standard button props except `className` and `style`
+- Variants stay token-driven so they respond to theme changes
 
 ## Props
+
+- `variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'`
+- `size?: 'sm' | 'md' | 'lg'`
+- `sx?: StyleXStyles`
+
 ```ts
+import { Button } from '@stylextras/ui/button';
 import type { ButtonProps } from '@stylextras/ui/button';
+
+export function Example() {
+  return <Button variant="primary">Continue</Button>;
+}
 ```

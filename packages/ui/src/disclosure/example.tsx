@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Disclosure, type DisclosureSize } from "./index";
 
 const controlRowStyle = {
@@ -39,14 +40,16 @@ export function DisclosureExample() {
         </label>
       </div>
 
-      <Disclosure
-        open={open}
-        size={size}
-        summary="What makes this implementation different?"
-      >
-        This uses native details and summary elements instead of a custom state
-        machine, while still applying the shared token system.
-      </Disclosure>
+      <ExampleThemeFrame>
+        <Disclosure
+          open={open}
+          size={size}
+          summary="What makes this implementation different?"
+        >
+          This uses native details and summary elements instead of a custom
+          state machine, while still applying the shared token system.
+        </Disclosure>
+      </ExampleThemeFrame>
     </div>
   );
 }

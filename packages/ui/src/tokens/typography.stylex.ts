@@ -5,7 +5,7 @@ const VIEWPORT_MAX_PX = 1240;
 const ROOT_FONT_SIZE_PX = 16;
 
 const round = (value: number, precision = 4) =>
-  Number(value.toFixed(precision));
+  Math.floor(value * 10 ** precision) / 10 ** precision;
 
 const toRem = (px: number) => `${round(px / ROOT_FONT_SIZE_PX)}rem`;
 

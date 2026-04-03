@@ -31,10 +31,13 @@ export const Badge = ({
   variant = "neutral",
   ...props
 }: BadgeProps) => (
-  <span {...props} {...stylex.props(styles.base, styles[size], styles[variant], sx)} />
+  <span
+    {...props}
+    {...stylex.props(baseStyles.base, sizeStyles[size], variantStyles[variant], sx)}
+  />
 );
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     display: "inline-flex",
     alignItems: "center",
@@ -49,6 +52,9 @@ const styles = stylex.create({
     lineHeight: typography.lineHeightSnug,
     whiteSpace: "nowrap",
   },
+});
+
+const sizeStyles = stylex.create({
   sm: {
     paddingInline: spacing.xs,
     paddingBlock: spacing["3xs"],
@@ -59,6 +65,9 @@ const styles = stylex.create({
     paddingBlock: spacing["2xs"],
     fontSize: typography.stepMinus1,
   },
+});
+
+const variantStyles = stylex.create({
   neutral: {
     color: colors.fgSoft,
     backgroundColor: colors.bgSubtle,

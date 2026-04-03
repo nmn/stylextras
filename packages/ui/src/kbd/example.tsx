@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Kbd, type KbdSize } from "./index";
 
 const controlRowStyle = {
@@ -29,11 +30,13 @@ export function KbdExample() {
         </label>
       </div>
 
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-        <Kbd size={size}>⌘</Kbd>
-        <Kbd size={size}>K</Kbd>
-        <span>Open command menu</span>
-      </div>
+      <ExampleThemeFrame>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <Kbd size={size}>⌘</Kbd>
+          <Kbd size={size}>K</Kbd>
+          <span>Open command menu</span>
+        </div>
+      </ExampleThemeFrame>
     </div>
   );
 }

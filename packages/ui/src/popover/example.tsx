@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Popover, type PopoverBehavior, type PopoverSize } from "./index";
 
 const controlRowStyle = {
@@ -47,10 +48,16 @@ export function PopoverExample() {
         </button>
       </div>
 
-      <Popover behavior={behavior} id={popoverId} size={size}>
-        Native popovers can be connected directly to triggers through the
-        `popovertarget` attribute.
-      </Popover>
+      <ExampleThemeFrame>
+        <button popoverTarget={popoverId} type="button">
+          Toggle popover
+        </button>
+
+        <Popover behavior={behavior} id={popoverId} size={size}>
+          Native popovers can be connected directly to triggers through the
+          `popovertarget` attribute.
+        </Popover>
+      </ExampleThemeFrame>
     </div>
   );
 }

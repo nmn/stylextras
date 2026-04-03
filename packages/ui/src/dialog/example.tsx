@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Dialog, type DialogSize } from "./index";
 
 const controlRowStyle = {
@@ -39,16 +40,31 @@ export function DialogExample() {
         </button>
       </div>
 
-      <Dialog ref={dialogRef} size={size}>
-        <h2 style={{ marginTop: 0 }}>Native dialog</h2>
-        <p>
-          This component styles the platform dialog element instead of wrapping a
-          third-party abstraction.
-        </p>
-        <form method="dialog" style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button type="submit">Close</button>
-        </form>
-      </Dialog>
+      <ExampleThemeFrame>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button onClick={() => dialogRef.current?.showModal()} type="button">
+            Open modal
+          </button>
+
+          <button onClick={() => dialogRef.current?.show()} type="button">
+            Open non-modal
+          </button>
+        </div>
+
+        <Dialog ref={dialogRef} size={size}>
+          <h2 style={{ marginTop: 0 }}>Native dialog</h2>
+          <p>
+            This component styles the platform dialog element instead of wrapping
+            a third-party abstraction.
+          </p>
+          <form
+            method="dialog"
+            style={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <button type="submit">Close</button>
+          </form>
+        </Dialog>
+      </ExampleThemeFrame>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExampleThemeFrame } from "../example-theme/index";
 import { Typography } from "../typography/index";
 import { Card, type CardElevation } from "./index";
 
@@ -32,13 +33,15 @@ export function CardExample() {
         </label>
       </div>
 
-      <Card elevation={elevation}>
-        <Typography scale="title">Project overview</Typography>
-        <Typography tone="muted">
-          This card uses the package tokens directly for surface, spacing, radius,
-          border, blur, and elevation.
-        </Typography>
-      </Card>
+      <ExampleThemeFrame>
+        <Card elevation={elevation}>
+          <Typography scale="title">Project overview</Typography>
+          <Typography tone="muted">
+            This card uses the package tokens directly for surface, spacing,
+            radius, border, blur, and elevation.
+          </Typography>
+        </Card>
+      </ExampleThemeFrame>
     </div>
   );
 }

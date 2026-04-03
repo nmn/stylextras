@@ -28,15 +28,15 @@ export const Disclosure = ({
   sx,
   ...props
 }: DisclosureProps) => (
-  <details {...props} {...stylex.props(styles.base, sx)}>
-    <summary {...stylex.props(styles.summary, styles[size], summarySx)}>
+  <details {...props} {...stylex.props(baseStyles.base, sx)}>
+    <summary {...stylex.props(summaryStyles.base, sizeStyles[size], summarySx)}>
       {summary}
     </summary>
-    <div {...stylex.props(styles.content, contentSx)}>{children}</div>
+    <div {...stylex.props(contentStyles.base, contentSx)}>{children}</div>
   </details>
 );
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     width: "100%",
     padding: spacing.md,
@@ -47,13 +47,19 @@ const styles = stylex.create({
     backgroundColor: colors.bgRaised,
     color: colors.fg,
   },
-  summary: {
+});
+
+const summaryStyles = stylex.create({
+  base: {
     cursor: "pointer",
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontWeight: typography.weightSemibold,
     listStyle: "revert",
   },
+});
+
+const sizeStyles = stylex.create({
   md: {
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
@@ -62,7 +68,10 @@ const styles = stylex.create({
     fontSize: typography.step1,
     lineHeight: typography.lineHeightTight,
   },
-  content: {
+});
+
+const contentStyles = stylex.create({
+  base: {
     paddingTop: spacing.md,
     color: colors.fgSoft,
   },

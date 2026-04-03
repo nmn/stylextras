@@ -37,16 +37,16 @@ export const Typography = ({
   <Component
     {...props}
     {...stylex.props(
-      styles.base,
-      styles[scale],
-      styles[tone],
-      mono && styles.mono,
+      baseStyles.base,
+      scaleStyles[scale],
+      toneStyles[tone],
+      mono && fontStyles.mono,
       sx,
     )}
   />
 );
 
-const styles = stylex.create({
+const baseStyles = stylex.create({
   base: {
     margin: 0,
     color: colors.fg,
@@ -55,9 +55,15 @@ const styles = stylex.create({
     lineHeight: typography.lineHeightBody,
     letterSpacing: typography.trackingNormal,
   },
+});
+
+const fontStyles = stylex.create({
   mono: {
     fontFamily: typography.fontMono,
   },
+});
+
+const toneStyles = stylex.create({
   default: {
     color: colors.fg,
   },
@@ -82,6 +88,9 @@ const styles = stylex.create({
   danger: {
     color: colors.danger,
   },
+});
+
+const scaleStyles = stylex.create({
   label: {
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
