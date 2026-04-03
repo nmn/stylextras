@@ -1,23 +1,19 @@
 "use client";
 
 import { Grid } from "./index";
-import { Card } from "../card";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoPanel, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Grid" description="Use Grid for repeated cards and dashboard surfaces that need stable column rhythm.">
-      <DemoSection title="Three-column dashboard" description="The primitive keeps the API small while still being good enough for card collections and settings pages.">
-        <Grid cols={3}>
-          <Card>Analytics</Card>
-          <Card>Releases</Card>
-          <Card>Tokens</Card>
-          <Card>Accessibility</Card>
-          <Card>Components</Card>
-          <Card>Deployments</Card>
-        </Grid>
-      </DemoSection>
-    </DemoFrame>
+    <>
+      <DemoFrame title="Columns" description="Grid should show column presets directly.">
+        <DemoStack>
+          <Grid cols={2}><DemoPanel>One</DemoPanel><DemoPanel>Two</DemoPanel></Grid>
+          <Grid cols={3}><DemoPanel>One</DemoPanel><DemoPanel>Two</DemoPanel><DemoPanel>Three</DemoPanel></Grid>
+          <Grid cols={4}><DemoPanel>One</DemoPanel><DemoPanel>Two</DemoPanel><DemoPanel>Three</DemoPanel><DemoPanel>Four</DemoPanel></Grid>
+        </DemoStack>
+      </DemoFrame>
+    </>
   );
 }
 

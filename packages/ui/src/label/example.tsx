@@ -1,19 +1,18 @@
 "use client";
 
 import { Label } from "./index";
-import { TextField } from "../text-field";
-import { DemoFrame, DemoSection, DemoStack } from "../example-theme/demo";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Label" description="Use Label for compact field associations and standalone metadata chips.">
-      <DemoSection title="Field labeling" description="Keep labels close to the control and make the wording specific to the task.">
+    <>
+      <DemoFrame title="Labels" description="Label should be shown as direct field labels.">
         <DemoStack>
-          <Label htmlFor="project-name-label-demo">Project name</Label>
-          <TextField id="project-name-label-demo" label="Project name" placeholder="Apollo" />
+          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="slug">Slug</Label>
         </DemoStack>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

@@ -1,19 +1,19 @@
 "use client";
 
 import { Toggle } from "./index";
-import { DemoFrame, DemoRow, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Toggle" description="Use toggles for individual pressed states such as editor controls or persistent filter chips.">
-      <DemoSection title="Formatting tools" description="Pressed state should clearly communicate whether the action is currently active or inactive.">
+    <>
+      <DemoFrame title="Pressed states" description="Toggle should show pressed and unpressed forms side by side.">
         <DemoRow>
-          <Toggle type="button" pressed>Bold</Toggle>
-          <Toggle type="button">Italic</Toggle>
-          <Toggle type="button">Code</Toggle>
+          <Toggle pressed>Bold</Toggle>
+          <Toggle>Italic</Toggle>
+          <Toggle>Code</Toggle>
         </DemoRow>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

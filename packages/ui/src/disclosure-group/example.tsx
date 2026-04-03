@@ -2,18 +2,18 @@
 
 import { Disclosure } from "../disclosure";
 import { DisclosureGroup } from "./index";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Disclosure Group" description="Use grouped disclosures for short FAQs, changelog notes, and setup checklists.">
-      <DemoSection title="Frequently asked questions" description="Keep the summary text specific so the user knows what is hidden inside each section.">
+    <>
+      <DemoFrame title="Grouped disclosures" description="Disclosure Group is best shown as a short FAQ-like set.">
         <DisclosureGroup>
-          <Disclosure summary="What ships in the starter?">Base tokens, native-first components, and the docs website.</Disclosure>
-          <Disclosure summary="How much is themeable?">Colors, spacing, radius, and typography can all be changed through StyleX themes.</Disclosure>
+          <Disclosure summary="What ships in the starter?">Tokens, components, and the docs site.</Disclosure>
+          <Disclosure summary="How much is themeable?">Color, spacing, radius, and typography are themeable.</Disclosure>
         </DisclosureGroup>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

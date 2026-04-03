@@ -1,18 +1,18 @@
 "use client";
 
 import { Calendar } from "./index";
-import { DemoFrame, DemoRow, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Calendar" description="The current implementation uses the native date input to keep the interaction model small and predictable.">
-      <DemoSection title="Choose a launch date" description="Native date controls are a good baseline for lightweight admin flows.">
+    <>
+      <DemoFrame title="Native date inputs" description="Calendar is currently a lightweight date-input wrapper.">
         <DemoRow>
-          <Calendar aria-label="Launch date" defaultValue="2026-04-15" />
-          <Calendar aria-label="Review date" defaultValue="2026-04-22" />
+          <Calendar aria-label="Start date" defaultValue="2026-04-10" />
+          <Calendar aria-label="Review date" defaultValue="2026-04-18" />
         </DemoRow>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

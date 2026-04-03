@@ -1,21 +1,20 @@
 "use client";
 
 import { Footer } from "./index";
+import { DemoFrame } from "../example-theme/demo";
 import { Link } from "../link";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Footer" description="Footers hold low-frequency navigation, legal context, and secondary site information.">
-      <DemoSection title="Site footer" description="Keep the footer useful, but avoid turning it into a duplicate of the primary navigation.">
+    <>
+      <DemoFrame title="Footer" description="Footer should be shown as a simple strip of secondary links.">
         <Footer>
           <Link href="#docs">Docs</Link>
           <Link href="#components">Components</Link>
           <Link href="#themes">Themes</Link>
-          <Link href="#github">GitHub</Link>
         </Footer>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

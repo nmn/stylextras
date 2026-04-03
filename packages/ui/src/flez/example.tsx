@@ -1,19 +1,18 @@
 "use client";
 
 import { Flez } from "./index";
-import { Badge } from "../badge";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoPanel, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Flez" description="The legacy compatibility layout primitive kept for older integrations.">
-      <DemoSection title="Compatibility layout" description="Prefer Flex for new code. Keep Flez only where a stable legacy export is still useful.">
-        <Flez>
-          <Badge>Legacy</Badge>
-          <span>Used in an older settings surface</span>
-        </Flez>
-      </DemoSection>
-    </DemoFrame>
+    <>
+      <DemoFrame title="Legacy flex alias" description="Flez is a compatibility layout primitive.">
+        <DemoStack>
+          <Flez><DemoPanel>One</DemoPanel><DemoPanel>Two</DemoPanel></Flez>
+          <Flez direction="column"><DemoPanel>One</DemoPanel><DemoPanel>Two</DemoPanel></Flez>
+        </DemoStack>
+      </DemoFrame>
+    </>
   );
 }
 

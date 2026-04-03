@@ -5,7 +5,10 @@ import * as stylex from "@stylexjs/stylex";
 import { colorThemes, type ColorThemeName } from "../color-themes";
 import { spacingThemes, type SpacingThemeName } from "../spacing-themes";
 import { radiusThemes, type RadiusThemeName } from "../radius-themes";
-import { typographyThemes, type TypographyThemeName } from "../typography-themes";
+import {
+  typographyThemes,
+  type TypographyThemeName,
+} from "../typography-themes";
 import { colors } from "../tokens/color.stylex";
 import { elevation } from "../tokens/elevation.stylex";
 import { radius } from "../tokens/radius.stylex";
@@ -23,12 +26,7 @@ type ThemeFieldProps<T extends string> = {
 type DemoFrameProps = {
   children: React.ReactNode;
   description?: React.ReactNode;
-  title: React.ReactNode;
-};
-
-type DemoSectionProps = {
-  children: React.ReactNode;
-  description?: React.ReactNode;
+  showThemes?: boolean;
   title: React.ReactNode;
 };
 
@@ -39,7 +37,7 @@ type DemoChildrenProps = {
 const styles = stylex.create({
   shell: {
     display: "grid",
-    gap: spacing.lg,
+    gap: spacing.md,
     width: "100%",
     padding: spacing.lg,
     borderStyle: "solid",
@@ -52,11 +50,11 @@ const styles = stylex.create({
   },
   header: {
     display: "grid",
-    gap: spacing.sm,
+    gap: spacing.xs,
   },
   title: {
     fontFamily: typography.fontDisplay,
-    fontSize: typography.step3,
+    fontSize: typography.step2,
     fontWeight: typography.weightBold,
     letterSpacing: typography.trackingTight,
     lineHeight: typography.lineHeightSnug,
@@ -75,7 +73,7 @@ const styles = stylex.create({
     padding: spacing.md,
     borderStyle: "solid",
     borderWidth: stroke.thin,
-    borderColor: colors.borderSubtle,
+    borderColor: colors.border,
     borderRadius: radius.lg,
     backgroundColor: colors.bg,
   },
@@ -102,33 +100,6 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
   },
-  section: {
-    display: "grid",
-    gap: spacing.md,
-    padding: spacing.md,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
-    borderColor: colors.borderSubtle,
-    borderRadius: radius.lg,
-    backgroundColor: colors.bgRaised,
-  },
-  sectionHeader: {
-    display: "grid",
-    gap: spacing["2xs"],
-  },
-  sectionTitle: {
-    fontFamily: typography.fontSans,
-    fontSize: typography.step1,
-    fontWeight: typography.weightSemibold,
-    lineHeight: typography.lineHeightSnug,
-  },
-  sectionDescription: {
-    maxWidth: "68ch",
-    color: colors.fgMuted,
-    fontFamily: typography.fontSans,
-    fontSize: typography.stepMinus1,
-    lineHeight: typography.lineHeightBody,
-  },
   row: {
     display: "flex",
     flexWrap: "wrap",
@@ -154,16 +125,6 @@ const styles = stylex.create({
     borderRadius: radius.lg,
     backgroundColor: colors.bg,
   },
-  inset: {
-    display: "grid",
-    gap: spacing.sm,
-    padding: spacing.sm,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
-    borderColor: colors.borderSubtle,
-    borderRadius: radius.md,
-    backgroundColor: colors.bgSubtle,
-  },
   muted: {
     color: colors.fgMuted,
     fontFamily: typography.fontSans,
@@ -180,9 +141,15 @@ const styles = stylex.create({
   },
 });
 
-export function DemoFrame({ children, description, title }: DemoFrameProps) {
+export function DemoFrame({
+  children,
+  description,
+  showThemes = true,
+  title,
+}: DemoFrameProps) {
   const [colorTheme, setColorTheme] = React.useState<ColorThemeName>("base");
-  const [spacingTheme, setSpacingTheme] = React.useState<SpacingThemeName>("base");
+  const [spacingTheme, setSpacingTheme] =
+    React.useState<SpacingThemeName>("base");
   const [radiusTheme, setRadiusTheme] = React.useState<RadiusThemeName>("base");
   const [typeTheme, setTypeTheme] = React.useState<TypographyThemeName>("ui");
 
@@ -198,26 +165,59 @@ export function DemoFrame({ children, description, title }: DemoFrameProps) {
     >
       <div {...stylex.props(styles.header)}>
         <div {...stylex.props(styles.title)}>{title}</div>
-        {description ? <div {...stylex.props(styles.description)}>{description}</div> : null}
+        {description ? (
+          <div {...stylex.props(styles.description)}>{description}</div>
+        ) : null}
       </div>
 
-      <div {...stylex.props(styles.controls)}>
-        <ThemeField label="Color" value={colorTheme} onChange={setColorTheme} options={["base", "mono", "ocean", "sunset", "danger"]} />
-        <ThemeField label="Spacing" value={spacingTheme} onChange={setSpacingTheme} options={["base", "compact", "cozy", "roomy", "poster"]} />
-        <ThemeField label="Radius" value={radiusTheme} onChange={setRadiusTheme} options={["base", "sharp", "rounded", "soft", "pill"]} />
-        <ThemeField label="Typography" value={typeTheme} onChange={setTypeTheme} options={["ui", "editorial", "mono", "industrial"]} />
-      </div>
+      {showThemes ? (
+        <div {...stylex.props(styles.controls)}>
+          <ThemeField
+            label="Color"
+            value={colorTheme}
+            onChange={setColorTheme}
+            options={["base", "mono", "ocean", "sunset", "danger"]}
+          />
+          <ThemeField
+            label="Spacing"
+            value={spacingTheme}
+            onChange={setSpacingTheme}
+            options={["base", "compact", "cozy", "roomy", "poster"]}
+          />
+          <ThemeField
+            label="Radius"
+            value={radiusTheme}
+            onChange={setRadiusTheme}
+            options={["base", "sharp", "rounded", "soft", "pill"]}
+          />
+          <ThemeField
+            label="Typography"
+            value={typeTheme}
+            onChange={setTypeTheme}
+            options={["ui", "editorial", "mono", "industrial"]}
+          />
+        </div>
+      ) : null}
 
       {children}
     </div>
   );
 }
 
-function ThemeField<T extends string>({ label, onChange, options, value }: ThemeFieldProps<T>) {
+function ThemeField<T extends string>({
+  label,
+  onChange,
+  options,
+  value,
+}: ThemeFieldProps<T>) {
   return (
     <label {...stylex.props(styles.field)}>
       <span {...stylex.props(styles.fieldLabel)}>{label}</span>
-      <select value={value} onChange={(event) => onChange(event.currentTarget.value as T)} {...stylex.props(styles.select)}>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.currentTarget.value as T)}
+        {...stylex.props(styles.select)}
+      >
         {options.map((option) => (
           <option key={option} value={option}>
             {option}
@@ -225,18 +225,6 @@ function ThemeField<T extends string>({ label, onChange, options, value }: Theme
         ))}
       </select>
     </label>
-  );
-}
-
-export function DemoSection({ children, description, title }: DemoSectionProps) {
-  return (
-    <section {...stylex.props(styles.section)}>
-      <div {...stylex.props(styles.sectionHeader)}>
-        <div {...stylex.props(styles.sectionTitle)}>{title}</div>
-        {description ? <div {...stylex.props(styles.sectionDescription)}>{description}</div> : null}
-      </div>
-      {children}
-    </section>
   );
 }
 
@@ -254,10 +242,6 @@ export function DemoGrid({ children }: DemoChildrenProps) {
 
 export function DemoPanel({ children }: DemoChildrenProps) {
   return <div {...stylex.props(styles.panel)}>{children}</div>;
-}
-
-export function DemoInset({ children }: DemoChildrenProps) {
-  return <div {...stylex.props(styles.inset)}>{children}</div>;
 }
 
 export function DemoMuted({ children }: DemoChildrenProps) {

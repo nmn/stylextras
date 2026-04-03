@@ -1,19 +1,19 @@
 "use client";
 
 import { Link } from "./index";
-import { DemoFrame, DemoSection, DemoStack } from "../example-theme/demo";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Link" description="Links should describe the destination, not the interaction itself.">
-      <DemoSection title="Editorial links" description="Keep link text meaningful even when it is read out of surrounding context.">
+    <>
+      <DemoFrame title="Link forms" description="Link should show common text-link usage directly.">
         <DemoStack>
-          <Link href="#tokens">View token documentation</Link>
-          <Link href="#components">Browse component examples</Link>
-          <Link href="#themes">Open theme presets</Link>
+          <Link href="#docs">View docs</Link>
+          <Link href="#components">Browse components</Link>
+          <Link href="#themes">Open themes</Link>
         </DemoStack>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

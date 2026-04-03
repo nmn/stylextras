@@ -1,21 +1,21 @@
 "use client";
 
 import { HeaderLayout } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 import { Button } from "../button";
-import { DemoFrame, DemoSection, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Header Layout" description="A simple page shell that keeps a header region distinct from the scrolling content below it.">
-      <DemoSection title="Docs shell" description="Use the layout when the header carries navigation, context, or actions that should stay visually separate.">
-        <HeaderLayout header={<Button type="button">Back to docs</Button>}>
+    <>
+      <DemoFrame title="Header and content" description="Header Layout is best shown as a shell with a simple header and body.">
+        <HeaderLayout header={<Button>Back</Button>}>
           <DemoStack>
-            <strong>Token foundations</strong>
-            <span>Start with a small set of themeable variables and derive the rest from them.</span>
+            <strong>Page content</strong>
+            <span>This layout keeps the header visually separate from the main content.</span>
           </DemoStack>
         </HeaderLayout>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

@@ -1,18 +1,18 @@
 "use client";
 
 import { DateField } from "./index";
-import { DemoFrame, DemoRow, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Date Field" description="A small native date field wrapper for forms and admin tooling.">
-      <DemoSection title="Publishing window" description="Pair start and end dates when the user is setting a bounded range.">
+    <>
+      <DemoFrame title="Date fields" description="Date Field is best shown as a pair of simple date inputs.">
         <DemoRow>
-          <DateField aria-label="Publish date" defaultValue="2026-05-01" />
-          <DateField aria-label="Archive date" defaultValue="2026-06-01" />
+          <DateField aria-label="Start date" defaultValue="2026-04-10" />
+          <DateField aria-label="End date" defaultValue="2026-04-18" />
         </DemoRow>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

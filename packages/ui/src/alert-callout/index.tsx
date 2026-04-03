@@ -29,7 +29,7 @@ export type AlertProps = Omit<BaseProps, "className" | "style"> & {
  * - Uses native container semantics only.
  * - Does not manage live-region priority beyond the provided role prop.
  */
-export function Alert({
+export function AlertCallout({
   role = "status",
   sx,
   variant = "neutral",

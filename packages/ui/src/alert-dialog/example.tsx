@@ -3,24 +3,25 @@
 import { AlertDialog } from "./index";
 import { Button } from "../button";
 import { ButtonGroup } from "../button-group";
-import { DemoFrame, DemoSection, DemoStack } from "../example-theme/demo";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Typography } from "../typography";
 
 export default function Example() {
   return (
-    <DemoFrame title="Alert Dialog" description="A native dialog surface used for higher-friction confirmation states.">
-      <DemoSection title="Destructive confirmation" description="Keep the content concise and pair the action with clear next steps.">
+    <>
+      <DemoFrame title="Confirmation" description="Alert Dialog is easiest to evaluate as a direct confirmation surface.">
         <AlertDialog open>
           <DemoStack>
-            <strong>Delete project</strong>
-            <p>This action removes the workspace, preview data, and saved invites.</p>
+            <Typography as="h3" scale="title">Delete draft?</Typography>
+            <span>This action cannot be undone.</span>
             <ButtonGroup>
               <Button type="button">Cancel</Button>
-              <Button type="button">Delete project</Button>
+              <Button type="button">Delete</Button>
             </ButtonGroup>
           </DemoStack>
         </AlertDialog>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

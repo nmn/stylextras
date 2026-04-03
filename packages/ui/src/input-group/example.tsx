@@ -1,20 +1,20 @@
 "use client";
 
 import { InputGroup } from "./index";
-import { Button } from "../button";
+import { DemoFrame } from "../example-theme/demo";
 import { TextField } from "../text-field";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
+import { Button } from "../button";
 
 export default function Example() {
   return (
-    <DemoFrame title="Input Group" description="Use an input group when several controls form one compact task, such as search or invite entry.">
-      <DemoSection title="Invite by email" description="The layout wrapper keeps related fields visually connected without imposing extra semantics.">
+    <>
+      <DemoFrame title="Grouped input" description="Input Group is another case where minimal composition is the point of the component.">
         <InputGroup>
           <TextField label="Invite email" placeholder="teammate@example.com" />
-          <Button type="button">Invite</Button>
+          <Button>Invite</Button>
         </InputGroup>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

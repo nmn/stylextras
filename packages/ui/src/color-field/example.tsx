@@ -1,18 +1,19 @@
 "use client";
 
 import { ColorField } from "./index";
-import { DemoFrame, DemoRow, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Color Field" description="A token-styled native color input for simple accent picking.">
-      <DemoSection title="Direct input" description="Use the native color field when you want immediate, low-friction selection.">
+    <>
+      <DemoFrame title="Color Field" description="Color Field is simplest when shown as a row of native color inputs.">
         <DemoRow>
-          <ColorField aria-label="Primary accent" defaultValue="#2563eb" />
-          <ColorField aria-label="Secondary accent" defaultValue="#ec4899" />
+          <ColorField aria-label="Blue" defaultValue="#2563eb" />
+          <ColorField aria-label="Pink" defaultValue="#ec4899" />
+          <ColorField aria-label="Orange" defaultValue="#ea580c" />
         </DemoRow>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

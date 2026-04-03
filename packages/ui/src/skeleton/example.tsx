@@ -1,19 +1,19 @@
 "use client";
 
 import { Skeleton } from "./index";
-import { DemoFrame, DemoSection, DemoStack } from "../example-theme/demo";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Skeleton" description="Skeletons are for short-lived loading placeholders that preserve layout and rhythm.">
-      <DemoSection title="Card loading state" description="Mirror the final content shape closely enough that the page does not jump when real data arrives.">
+    <>
+      <DemoFrame title="Placeholder lines" description="Skeleton should be shown as repeated placeholders, not as a full mock app.">
         <DemoStack>
           <Skeleton aria-label="Loading title" />
-          <Skeleton aria-label="Loading first paragraph" />
-          <Skeleton aria-label="Loading second paragraph" />
+          <Skeleton aria-label="Loading paragraph one" />
+          <Skeleton aria-label="Loading paragraph two" />
         </DemoStack>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

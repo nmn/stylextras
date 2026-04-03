@@ -1,21 +1,21 @@
 "use client";
 
 import { Content } from "./index";
-import { Text } from "../text";
+import { DemoFrame } from "../example-theme/demo";
 import { Typography } from "../typography";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
+import { Text } from "../text";
 
 export default function Example() {
   return (
-    <DemoFrame title="Content" description="A readable content wrapper for long-form sections, guides, and editorial surfaces.">
-      <DemoSection title="Long-form layout" description="Use Content to constrain line length and keep prose blocks visually stable.">
+    <>
+      <DemoFrame title="Readable content" description="Content should be shown as a simple readable column, not as a feature demo.">
         <Content>
-          <Typography as="h2" scale="title">Building a smaller component foundation</Typography>
-          <Text>Start with tokens that are easy to theme, keep primitives close to native HTML, and only add custom behavior where the platform does not cover the interaction.</Text>
-          <Text>This approach keeps the API surface smaller, the styling model clearer, and the accessibility baseline easier to reason about.</Text>
+          <Typography as="h2" scale="title">Content wrapper</Typography>
+          <Text>Use Content to constrain long-form copy into a readable column width.</Text>
+          <Text>It works best for guides, articles, and documentation sections where line length matters more than interactive chrome.</Text>
         </Content>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

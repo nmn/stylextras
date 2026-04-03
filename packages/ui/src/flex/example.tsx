@@ -1,23 +1,24 @@
 "use client";
 
 import { Flex } from "./index";
-import { Badge } from "../badge";
-import { Button } from "../button";
-import { DemoFrame, DemoPanel, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoPanel, DemoRow, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Flex" description="A small flexbox layout primitive for building rows, stacks, and responsive clusters.">
-      <DemoSection title="Inline composition" description="Flex is good for aligning small units of UI without introducing a heavier layout abstraction.">
-        <DemoPanel>
-          <Flex align="center" justify="between" gap="md" wrap>
-            <Badge>Design system</Badge>
-            <span>Ready for review</span>
-            <Button type="button">Open preview</Button>
-          </Flex>
-        </DemoPanel>
-      </DemoSection>
-    </DemoFrame>
+    <>
+      <DemoFrame title="Directions" description="Flex should show row and column forms directly.">
+        <DemoStack>
+          <Flex gap="md"><DemoPanel>One</DemoPanel><DemoPanel>Two</DemoPanel><DemoPanel>Three</DemoPanel></Flex>
+          <Flex direction="column" gap="md"><DemoPanel>One</DemoPanel><DemoPanel>Two</DemoPanel><DemoPanel>Three</DemoPanel></Flex>
+        </DemoStack>
+      </DemoFrame>
+      <DemoFrame title="Alignment" description="A second frame shows different alignment and distribution options." showThemes={false}>
+        <DemoRow>
+          <Flex align="center" gap="sm"><DemoPanel>A</DemoPanel><DemoPanel>B</DemoPanel></Flex>
+          <Flex justify="between" gap="sm"><DemoPanel>A</DemoPanel><DemoPanel>B</DemoPanel></Flex>
+        </DemoRow>
+      </DemoFrame>
+    </>
   );
 }
 

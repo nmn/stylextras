@@ -2,19 +2,19 @@
 
 import { Toggle } from "../toggle";
 import { ToggleGroup } from "./index";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Toggle Group" description="A toggle group works well for dense filters and editor controls that can be combined.">
-      <DemoSection title="Visible columns" description="Unlike segmented controls, toggles in a group do not need to be mutually exclusive.">
+    <>
+      <DemoFrame title="Grouped toggles" description="Toggle Group is best shown as a short cluster of pressed states.">
         <ToggleGroup>
-          <Toggle type="button" pressed>Color</Toggle>
-          <Toggle type="button" pressed>Spacing</Toggle>
-          <Toggle type="button">Motion</Toggle>
+          <Toggle pressed>Color</Toggle>
+          <Toggle pressed>Spacing</Toggle>
+          <Toggle>Motion</Toggle>
         </ToggleGroup>
-      </DemoSection>
-    </DemoFrame>
+      </DemoFrame>
+    </>
   );
 }
 

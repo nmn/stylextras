@@ -1,25 +1,25 @@
 "use client";
 
 import { Avatar } from "./index";
-import { DemoFrame, DemoRow, DemoSection, DemoStack } from "../example-theme/demo";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Avatar" description="Use avatars for profile identity, assignee chips, and presence-heavy interfaces.">
-      <DemoSection title="Fallbacks and sizes" description="Fallbacks should still be meaningful when an image is absent.">
-        <DemoStack>
-          <DemoRow>
-            <Avatar fallback="NM" size="sm" />
-            <Avatar fallback="NM" size="md" />
-            <Avatar fallback="NM" size="lg" />
-          </DemoRow>
-          <DemoRow>
-            <Avatar fallback="JD" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&h=240&fit=crop&crop=faces" alt="Jordan Doe" />
-            <span>Assignee: Jordan Doe</span>
-          </DemoRow>
-        </DemoStack>
-      </DemoSection>
-    </DemoFrame>
+    <>
+      <DemoFrame title="Sizes" description="Avatar should show size and fallback differences directly.">
+        <DemoRow>
+          <Avatar fallback="SX" size="sm" />
+          <Avatar fallback="SX" size="md" />
+          <Avatar fallback="SX" size="lg" />
+        </DemoRow>
+      </DemoFrame>
+      <DemoFrame title="Image and fallback" description="A second frame compares image-backed and fallback avatars." showThemes={false}>
+        <DemoRow>
+          <Avatar alt="Profile" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&h=240&fit=crop&crop=faces" />
+          <Avatar fallback="JP" />
+        </DemoRow>
+      </DemoFrame>
+    </>
   );
 }
 

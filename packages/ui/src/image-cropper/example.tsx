@@ -1,17 +1,21 @@
 "use client";
 
 import { ImageCropper } from "./index";
-import { DemoFrame, DemoSection } from "../example-theme/demo";
+import { DemoFrame, DemoGrid } from "../example-theme/demo";
 
 const image = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ccircle cx='250' cy='240' r='120' fill='rgba(255,255,255,0.28)'/%3E%3Ccircle cx='520' cy='320' r='160' fill='rgba(255,255,255,0.2)'/%3E%3C/svg%3E";
 
 export default function Example() {
   return (
-    <DemoFrame title="Image Cropper" description="The current implementation is deliberately small and works as a framed image crop preview.">
-      <DemoSection title="Hero crop" description="Use it for simple art direction and placeholder previews, not for advanced editing workflows.">
-        <ImageCropper src={image} alt="Gradient placeholder" ratio="landscape" />
-      </DemoSection>
-    </DemoFrame>
+    <>
+      <DemoFrame title="Ratios" description="Image Cropper should show ratio and position changes directly.">
+        <DemoGrid>
+          <ImageCropper src={image} alt="Gradient" ratio="square" position="center" />
+          <ImageCropper src={image} alt="Gradient" ratio="landscape" position="top" />
+          <ImageCropper src={image} alt="Gradient" ratio="portrait" position="right" />
+        </DemoGrid>
+      </DemoFrame>
+    </>
   );
 }
 
