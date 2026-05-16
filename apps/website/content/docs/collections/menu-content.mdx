@@ -1,0 +1,201 @@
+---
+title: Menu Content
+description: "Menu Content provides a collection primitive for item and data interfaces."
+---
+
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/menu/menu-content/example"),
+);
+
+# Menu Content
+
+Use Menu Content to present related items, actions, or records while keeping structure and styling separate from application state.
+
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
+
+## Import
+
+```tsx
+import {
+  MenuContent,
+  MenuSection,
+  MenuSectionTitle,
+  MenuButton,
+  MenuIconButtonGroup,
+  MenuItemList,
+  MenuItem,
+} from "@stylextras/ui/menu/menu-content";
+```
+
+## Basic usage
+
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
+
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import {
+  MenuContent,
+  MenuSection,
+  MenuSectionTitle,
+  MenuButton,
+  MenuIconButtonGroup,
+  MenuItemList,
+  MenuItem,
+} from "@stylextras/ui/menu/menu-content";
+
+<MenuContent>Example</MenuContent>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/menu/menu-content`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type MenuContentProps = Omit<DivProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+
+export type MenuSectionProps = Omit<DivProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+
+export type MenuSectionTitleProps = Omit<DivProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+
+export type MenuButtonProps = Omit<ButtonProps, "className" | "style"> & {
+  endIcon?: ReactNode;
+  icon?: ReactNode;
+  sx?: StyleXStyles;
+};
+
+export type MenuIconButtonGroupProps = Omit<DivProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+
+export type MenuItemListProps = Omit<DivProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+
+export type MenuItemProps = Omit<ButtonProps, "className" | "style"> & {
+  description?: ReactNode;
+  endIcon?: ReactNode;
+  icon?: ReactNode;
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import {
+  MenuContent,
+  MenuSection,
+  MenuSectionTitle,
+  MenuButton,
+  MenuIconButtonGroup,
+  MenuItemList,
+  MenuItem,
+} from "@stylextras/ui/menu/menu-content";
+
+<MenuContent sx={styles.emphasis}>Example</MenuContent>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import {
+  MenuButton,
+  MenuContent,
+  MenuIconButtonGroup,
+  MenuItem,
+  MenuItemList,
+  MenuSection,
+  MenuSectionTitle,
+} from "@stylextras/ui/menu/menu-content";
+import { IconButton } from "@stylextras/ui/icon-button";
+
+function MenuContentExample() {
+  return (
+    <MenuContent>
+      <MenuSection>
+        <MenuSectionTitle>Document</MenuSectionTitle>
+        <MenuItemList>
+          <MenuItem description="Update the visible name">Rename</MenuItem>
+          <MenuItem description="Create a second copy">Duplicate</MenuItem>
+        </MenuItemList>
+      </MenuSection>
+      <MenuIconButtonGroup>
+        <IconButton label="Pin">P</IconButton>
+        <IconButton label="Share">S</IconButton>
+      </MenuIconButtonGroup>
+      <MenuButton endIcon="⌘K">Command palette</MenuButton>
+    </MenuContent>
+  );
+}
+```
+
+## Grouped menu content
+
+Group related menu rows when the actions share a task or object.
+
+```tsx
+import {
+  MenuContent,
+  MenuSection,
+  MenuSectionTitle,
+  MenuItem,
+  MenuItemList,
+} from "@stylextras/ui/menu/menu-content";
+
+<MenuContent>
+  <MenuSection>
+    <MenuSectionTitle>Actions</MenuSectionTitle>
+    <MenuItemList>
+      <MenuItem>Rename</MenuItem>
+      <MenuItem>Duplicate</MenuItem>
+    </MenuItemList>
+  </MenuSection>
+</MenuContent>;
+```
+
+## Icon action row
+
+Use compact icon actions for secondary operations, and keep each icon button labelled.
+
+```tsx
+import { MenuIconButtonGroup } from "@stylextras/ui/menu/menu-content";
+
+<MenuIconButtonGroup>
+  <IconButton label="Pin">📌</IconButton>
+  <IconButton label="Share">↗</IconButton>
+</MenuIconButtonGroup>;
+```
+
+## Accessibility notes
+
+Provide meaningful item text, headings, and native roles where the surrounding product owns richer selection or keyboard behavior.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/menu/menu-content.tsx`.

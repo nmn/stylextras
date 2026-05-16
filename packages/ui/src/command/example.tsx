@@ -2,28 +2,48 @@
 
 import { Button } from "../button";
 import { ButtonGroup } from "../button-group";
-import { Command } from "./index";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
 import { SearchField } from "../search-field";
 import { Typography } from "../typography";
+import {
+  CommandContent,
+  type CommandContentProps,
+  CommandTrigger,
+} from "./index";
 
-export default function Example() {
+function CommandExampleContent(props: CommandContentProps) {
   return (
-    <>
-      <DemoFrame title="Quick jump" description="Command is easiest to read as a direct command sheet.">
-        <Command open>
-          <DemoStack>
-            <Typography as="h3" scale="title">Quick jump</Typography>
-            <SearchField label="Search" placeholder="button, tokens, examples" />
-            <ButtonGroup>
-              <Button>Open button docs</Button>
-              <Button variant="secondary">Jump to tokens</Button>
-              <Button variant="outline">Open get started</Button>
-            </ButtonGroup>
-          </DemoStack>
-        </Command>
-      </DemoFrame>
-    </>
+    <CommandContent {...props}>
+      <DemoStack>
+        <Typography as="h3" scale="title">
+          Quick jump
+        </Typography>
+        <SearchField label="Search" placeholder="button, tokens, examples" />
+        <form method="dialog">
+          <ButtonGroup>
+            <Button type="button">Open button docs</Button>
+            <Button type="button" variant="secondary">
+              Jump to tokens
+            </Button>
+            <Button type="submit" variant="outline">
+              Close
+            </Button>
+          </ButtonGroup>
+        </form>
+      </DemoStack>
+    </CommandContent>
   );
 }
 
+export default function Example() {
+  return (
+    <DemoFrame
+      title="Quick jump"
+      description="Click the trigger to open the command surface."
+    >
+      <CommandTrigger content={() => Promise.resolve(CommandExampleContent)}>
+        Open command menu
+      </CommandTrigger>
+    </DemoFrame>
+  );
+}

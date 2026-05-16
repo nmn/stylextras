@@ -1,15 +1,26 @@
 ---
 title: Avatar
-description: Live example and usage notes for the Avatar component.
+description: "Avatar provides a content primitive for content surfaces."
 ---
 
-import Example from "@stylextras/ui/avatar/example";
+import { lazy, Suspense } from "react";
+
+export const AvatarSizesDemo = lazy(() =>
+  import("@stylextras/ui/avatar/example").then((module) => ({
+    default: module.AvatarSizesDemo,
+  })),
+);
+export const AvatarImageDemo = lazy(() =>
+  import("@stylextras/ui/avatar/example").then((module) => ({
+    default: module.AvatarImageDemo,
+  })),
+);
 
 # Avatar
 
-## Example
+Use Avatar to shape reusable content blocks while keeping typography, spacing, and surface styling token-driven.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +28,75 @@ import Example from "@stylextras/ui/avatar/example";
 import { Avatar } from "@stylextras/ui/avatar";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Use a fallback when no image is available. Size should come from the surface density instead of from arbitrary image dimensions.
 
+<Suspense fallback={null}>
+  <AvatarSizesDemo />
+</Suspense>
+
+```tsx
+import { Avatar } from "@stylextras/ui/avatar";
+
+<Avatar fallback="SX" size="sm" />
+<Avatar fallback="SX" size="md" />
+<Avatar fallback="SX" size="lg" />
+```
+
+## Image and fallback
+
+Provide `alt` when the image identifies a person or object. Keep a fallback so the layout remains stable when the image is unavailable.
+
+<Suspense fallback={null}>
+  <AvatarImageDemo />
+</Suspense>
+
+```tsx
+<Avatar
+  alt="Profile"
+  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&h=240&fit=crop&crop=faces"
+/>
+<Avatar fallback="JP" />
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/avatar`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type AvatarProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  fallback?: string;
+  size?: AvatarSize;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Avatar } from "@stylextras/ui/avatar";
+
+<Avatar sx={styles.emphasis}>Example</Avatar>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Accessibility notes
+
+Choose semantic children and heading levels based on the page structure around the component.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/avatar/index.tsx`.

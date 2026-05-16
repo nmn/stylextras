@@ -1,15 +1,31 @@
 ---
 title: Segmented Control
-description: Live example and usage notes for the Segmented Control component.
+description: "Segmented Control provides an action primitive for button and control interfaces."
 ---
 
-import Example from "@stylextras/ui/segmented-control/example";
+import { lazy, Suspense } from "react";
+
+export const BasicSegmentedControlDemo = lazy(() =>
+  import("@stylextras/ui/segmented-control/example").then((module) => ({
+    default: module.BasicSegmentedControlDemo,
+  })),
+);
+export const DensitySegmentedControlDemo = lazy(() =>
+  import("@stylextras/ui/segmented-control/example").then((module) => ({
+    default: module.DensitySegmentedControlDemo,
+  })),
+);
+export const DescriptiveSegmentedControlDemo = lazy(() =>
+  import("@stylextras/ui/segmented-control/example").then((module) => ({
+    default: module.DescriptiveSegmentedControlDemo,
+  })),
+);
 
 # Segmented Control
 
-## Example
+Use Segmented Control when an interface needs a clear, keyboard-accessible control for taking action. The component keeps native button behavior and moves visual decisions into token variables.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +33,148 @@ import Example from "@stylextras/ui/segmented-control/example";
 import { SegmentedControl } from "@stylextras/ui/segmented-control";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start with a compact set of short, mutually exclusive choices. The component uses native radio inputs, so a visible `legend` gives the group an accessible name.
 
+<Suspense fallback={null}>
+  <BasicSegmentedControlDemo />
+</Suspense>
+
+```tsx
+import { SegmentedControl } from "@stylextras/ui/segmented-control";
+
+<SegmentedControl
+  defaultValue="preview"
+  legend="View"
+  options={[
+    { label: "Preview", value: "preview" },
+    { label: "Code", value: "code" },
+    { label: "Tokens", value: "tokens" },
+  ]}
+/>;
+```
+
+## Dense choices
+
+Use this form in toolbars, filters, and other compact control areas. Keep labels short so the control can wrap cleanly on narrow screens.
+
+<Suspense fallback={null}>
+  <DensitySegmentedControlDemo />
+</Suspense>
+
+```tsx
+<SegmentedControl
+  defaultValue="week"
+  legend="Range"
+  options={[
+    { label: "Day", value: "day" },
+    { label: "Week", value: "week" },
+    { label: "Month", value: "month" },
+    { label: "Quarter", value: "quarter" },
+  ]}
+/>
+```
+
+## Descriptive choices
+
+Descriptions are useful when labels alone are ambiguous. Use them sparingly because each segment becomes taller and needs more horizontal space.
+
+<Suspense fallback={null}>
+  <DescriptiveSegmentedControlDemo />
+</Suspense>
+
+```tsx
+<SegmentedControl
+  defaultValue="balanced"
+  legend="Processing mode"
+  options={[
+    {
+      label: "Fast",
+      value: "fast",
+      description: "Lower latency",
+    },
+    {
+      label: "Balanced",
+      value: "balanced",
+      description: "Recommended",
+    },
+    {
+      label: "Detailed",
+      value: "detailed",
+      description: "More depth",
+    },
+  ]}
+/>
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/segmented-control`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type SegmentedControlProps = Omit<BaseProps, "className" | "style"> & {
+  legend?: ReactNode;
+  name?: string;
+  onValueChange?: (value: string) => void;
+  options?: SegmentOption[];
+  sx?: StyleXStyles;
+  value?: string;
+  defaultValue?: string;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { SegmentedControl } from "@stylextras/ui/segmented-control";
+
+<SegmentedControl sx={styles.emphasis}>Example</SegmentedControl>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Controlled value
+
+Control the value when the selected segment needs to update application state or drive another view.
+
+```tsx
+import { useState } from "react";
+import { SegmentedControl } from "@stylextras/ui/segmented-control";
+
+function SegmentedControlExample() {
+  const [view, setView] = useState("preview");
+
+  return (
+    <SegmentedControl
+      value={view}
+      onValueChange={setView}
+      legend="View"
+      options={[
+        { label: "Preview", value: "preview" },
+        { label: "Code", value: "code" },
+        { label: "Tokens", value: "tokens" },
+      ]}
+    />
+  );
+}
+```
+
+## Accessibility notes
+
+Use a `legend` for every control so the native radio group has a clear accessible name. Keep segment labels concise, and use descriptions only when the extra text changes the user's decision.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/segmented-control/index.tsx`.

@@ -1,15 +1,17 @@
 ---
 title: Menubar
-description: Live example and usage notes for the Menubar component.
+description: "Menubar provides a collection primitive for item and data interfaces."
 ---
 
-import Example from "@stylextras/ui/menubar/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/menubar/example"));
 
 # Menubar
 
-## Example
+Use Menubar to present related items, actions, or records while keeping structure and styling separate from application state.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,113 @@ import Example from "@stylextras/ui/menubar/example";
 import { Menubar } from "@stylextras/ui/menubar";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Use Menubar as a horizontal container for top-level menu triggers. Each trigger should open a real menu surface.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Menubar } from "@stylextras/ui/menubar";
+import { MenuTrigger } from "@stylextras/ui/menu";
+
+<Menubar>
+  <MenuTrigger content={() => Promise.resolve(FileMenuContent)} variant="ghost">
+    File
+  </MenuTrigger>
+  <MenuTrigger content={() => Promise.resolve(EditMenuContent)} variant="ghost">
+    Edit
+  </MenuTrigger>
+</Menubar>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/menubar`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type MenubarProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Menubar } from "@stylextras/ui/menubar";
+
+<Menubar sx={styles.emphasis}>Example</Menubar>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Menubar } from "@stylextras/ui/menubar";
+import {
+  MenuContent,
+  type MenuContentProps,
+  MenuTrigger,
+} from "@stylextras/ui/menu";
+import {
+  MenuContent as MenuPanel,
+  MenuItem,
+  MenuSection,
+  MenuSectionTitle,
+} from "@stylextras/ui/menu/menu-content";
+
+function FileMenuContent(props: MenuContentProps) {
+  return (
+    <MenuContent {...props}>
+      <MenuPanel>
+        <MenuSection>
+          <MenuSectionTitle>File</MenuSectionTitle>
+          <MenuItem endIcon="⌘N" type="button">
+            New file
+          </MenuItem>
+          <MenuItem endIcon="⌘S" type="button">
+            Save
+          </MenuItem>
+        </MenuSection>
+      </MenuPanel>
+    </MenuContent>
+  );
+}
+
+function MenubarExample() {
+  return (
+    <Menubar>
+      <MenuTrigger
+        content={() => Promise.resolve(FileMenuContent)}
+        variant="ghost"
+      >
+        File
+      </MenuTrigger>
+    </Menubar>
+  );
+}
+```
+
+## Accessibility notes
+
+Provide meaningful item text, headings, and native roles where the surrounding product owns richer selection or keyboard behavior.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/menubar/index.tsx`.

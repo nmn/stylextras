@@ -7,7 +7,7 @@ Token-driven UI primitives built with StyleX and native HTML/CSS features.
 - All requested component entrypoints are present and exported.
 - The package does not depend on `react-aria-components`.
 - Components accept `sx?: StyleXStyles` and intentionally do not expose `className` or `style`.
-- Overlay primitives use native `<dialog>` or the `popover` attribute.
+- Popup primitives use native `<dialog>` or the `popover` attribute.
 - Floating popovers/tooltips/menus use CSS anchor positioning through StyleX.
 
 ## Installation
@@ -65,168 +65,168 @@ Theme exports:
 
 ## Named variant / option types
 
-| Type | Values |
-| --- | --- |
-| `ButtonVariant` | `primary | secondary | outline | ghost | danger` |
-| `ButtonSize` | `sm | md | lg` |
-| `CardElevation` | `flat | sm | md | lg` |
-| `TypographyScale` | `label | body | title | display` |
-| `TypographyTone` | `default | soft | muted | brand | info | success | warning | danger` |
-| `PopoverBehavior` | `auto | manual` |
-| `PopoverPlacement` | `bottom | top | right | left` |
-| `PopoverSize` | `sm | md | lg` |
-| `DropdownMenuBehavior` | `auto | manual` |
-| `DropdownMenuPlacement` | `bottom | top | right | left` |
-| `ContextMenuBehavior` | `auto | manual` |
-| `ContextMenuPlacement` | `bottom | top | right | left` |
-| `TooltipPlacement` | `bottom | top | right | left` |
-| `HoverCardPlacement` | `bottom | top | right | left` |
-| `DialogSize` | `sm | md | lg` |
-| `DrawerSide` | `left | right` |
-| `AspectRatioValue` | `square | video | portrait | landscape` |
-| `ImageCropperRatio` | `square | video | portrait | landscape` |
-| `ImageCropperPosition` | `center | top | bottom | left | right` |
-| `SeparatorOrientation` | `horizontal | vertical` |
-| `SeparatorEmphasis` | `subtle | strong` |
-| `FlexDirection` | `row | column` |
-| `FlexAlign` | `start | center | end | stretch` |
-| `FlexJustify` | `start | center | end | between` |
-| `FlexGap` | `sm | md | lg` |
-| `GridCols` | `1 | 2 | 3 | 4` |
-| `ProgressCircleSize` | `sm | md | lg` |
+| Type                    | Values      |
+| ----------------------- | ----------- | --------- | -------- | ---------- | ------- | ------- | ------- | ------- |
+| `ButtonVariant`         | `primary    | secondary | outline  | ghost      | danger` |
+| `ButtonSize`            | `sm         | md        | lg`      |
+| `CardElevation`         | `flat       | sm        | md       | lg`        |
+| `TypographyScale`       | `label      | body      | title    | display`   |
+| `TypographyTone`        | `default    | soft      | muted    | brand      | info    | success | warning | danger` |
+| `PopoverBehavior`       | `auto       | manual`   |
+| `PopoverPlacement`      | `bottom     | top       | right    | left`      |
+| `PopoverSize`           | `sm         | md        | lg`      |
+| `DropdownMenuBehavior`  | `auto       | manual`   |
+| `DropdownMenuPlacement` | `bottom     | top       | right    | left`      |
+| `ContextMenuBehavior`   | `auto       | manual`   |
+| `ContextMenuPlacement`  | `bottom     | top       | right    | left`      |
+| `TooltipPlacement`      | `bottom     | top       | right    | left`      |
+| `HoverCardPlacement`    | `bottom     | top       | right    | left`      |
+| `DialogSize`            | `sm         | md        | lg`      |
+| `DrawerSide`            | `left       | right`    |
+| `AspectRatioValue`      | `square     | video     | portrait | landscape` |
+| `ImageCropperRatio`     | `square     | video     | portrait | landscape` |
+| `ImageCropperPosition`  | `center     | top       | bottom   | left       | right`  |
+| `SeparatorOrientation`  | `horizontal | vertical` |
+| `SeparatorEmphasis`     | `subtle     | strong`   |
+| `FlexDirection`         | `row        | column`   |
+| `FlexAlign`             | `start      | center    | end      | stretch`   |
+| `FlexJustify`           | `start      | center    | end      | between`   |
+| `FlexGap`               | `sm         | md        | lg`      |
+| `GridCols`              | `1          | 2         | 3        | 4`         |
+| `ProgressCircleSize`    | `sm         | md        | lg`      |
 
 ## Component index
 
 ### Buttons
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Button | `@stylextras/ui/button` | `ButtonProps` | `variant`, `size` |
-| Button Group | `@stylextras/ui/button-group` | `ButtonGroupProps` | layout wrapper for grouped buttons |
-| CopyToClipboardButton | `@stylextras/ui/copy-to-clipboard-button` | `CopyToClipboardButtonProps` | clipboard wrapper around `Button` |
-| Icon Button | `@stylextras/ui/icon-button` | `IconButtonProps` | `size` variant for square icon controls |
-| Segmented Control | `@stylextras/ui/segmented-control` | `SegmentedControlProps` | single-row segmented selector |
-| Toggle Button | `@stylextras/ui/toggle` | `ToggleProps` | pressed-state button primitive |
-| Toggle Button Group | `@stylextras/ui/toggle-group` | `ToggleGroupProps` | grouped toggle controls |
+| Component             | Import                                    | Props type                   | Notes                                   |
+| --------------------- | ----------------------------------------- | ---------------------------- | --------------------------------------- |
+| Button                | `@stylextras/ui/button`                   | `ButtonProps`                | `variant`, `size`                       |
+| Button Group          | `@stylextras/ui/button-group`             | `ButtonGroupProps`           | layout wrapper for grouped buttons      |
+| CopyToClipboardButton | `@stylextras/ui/copy-to-clipboard-button` | `CopyToClipboardButtonProps` | clipboard wrapper around `Button`       |
+| Icon Button           | `@stylextras/ui/icon-button`              | `IconButtonProps`            | `size` variant for square icon controls |
+| Segmented Control     | `@stylextras/ui/segmented-control`        | `SegmentedControlProps`      | single-row segmented selector           |
+| Toggle Button         | `@stylextras/ui/toggle`                   | `ToggleProps`                | pressed-state button primitive          |
+| Toggle Button Group   | `@stylextras/ui/toggle-group`             | `ToggleGroupProps`           | grouped toggle controls                 |
 
 ### Collections
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Command Menu | `@stylextras/ui/command` | `CommandProps` | native `<dialog>` command surface |
-| Context Menu | `@stylextras/ui/context-menu` | `ContextMenuProps` | `popover` + anchor positioning |
-| List Box | `@stylextras/ui/listbox` | `ListboxProps` | styled list container |
-| Menu | `@stylextras/ui/menu` | `MenuProps` | alias of `DropdownMenu` |
-| Menubar | `@stylextras/ui/menubar` | `MenubarProps` | horizontal menu row |
-| Table | `@stylextras/ui/table` | `TableProps` | styled semantic table |
-| Tag Group | `@stylextras/ui/tag-group` | `TagGroupProps` | tag collection wrapper |
-| Tree | `@stylextras/ui/tree` | `TreeProps` | styled hierarchical list wrapper |
+| Component    | Import                        | Props type         | Notes                             |
+| ------------ | ----------------------------- | ------------------ | --------------------------------- |
+| Command Menu | `@stylextras/ui/command`      | `CommandProps`     | native `<dialog>` command surface |
+| Context Menu | `@stylextras/ui/context-menu` | `ContextMenuProps` | `popover` + anchor positioning    |
+| List Box     | `@stylextras/ui/listbox`      | `ListboxProps`     | styled list container             |
+| Menu         | `@stylextras/ui/menu`         | `MenuProps`        | alias of `DropdownMenu`           |
+| Menubar      | `@stylextras/ui/menubar`      | `MenubarProps`     | horizontal menu row               |
+| Table        | `@stylextras/ui/table`        | `TableProps`       | styled semantic table             |
+| Tag Group    | `@stylextras/ui/tag-group`    | `TagGroupProps`    | tag collection wrapper            |
+| Tree         | `@stylextras/ui/tree`         | `TreeProps`        | styled hierarchical list wrapper  |
 
 ### Color
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Color Area | `@stylextras/ui/color-area` | `ColorAreaProps` | simplified color-selection surface |
-| Color Field | `@stylextras/ui/color-field` | `ColorFieldProps` | native color/text field wrapper |
-| Color Picker | `@stylextras/ui/color-picker` | `ColorPickerProps` | native color input wrapper |
-| Color Slider | `@stylextras/ui/color-slider` | `ColorSliderProps` | range-based color channel control |
-| Color Swatch | `@stylextras/ui/color-swatch` | `ColorSwatchProps` | visual swatch block |
-| Color Swatch Picker | `@stylextras/ui/color-swatch-picker` | `ColorSwatchPickerProps` | swatch selection group |
-| Color Wheel | `@stylextras/ui/color-wheel` | `ColorWheelProps` | simplified wheel-style control |
+| Component           | Import                               | Props type               | Notes                              |
+| ------------------- | ------------------------------------ | ------------------------ | ---------------------------------- |
+| Color Area          | `@stylextras/ui/color-area`          | `ColorAreaProps`         | simplified color-selection surface |
+| Color Field         | `@stylextras/ui/color-field`         | `ColorFieldProps`        | native color/text field wrapper    |
+| Color Picker        | `@stylextras/ui/color-picker`        | `ColorPickerProps`       | native color input wrapper         |
+| Color Slider        | `@stylextras/ui/color-slider`        | `ColorSliderProps`       | range-based color channel control  |
+| Color Swatch        | `@stylextras/ui/color-swatch`        | `ColorSwatchProps`       | visual swatch block                |
+| Color Swatch Picker | `@stylextras/ui/color-swatch-picker` | `ColorSwatchPickerProps` | swatch selection group             |
+| Color Wheel         | `@stylextras/ui/color-wheel`         | `ColorWheelProps`        | simplified wheel-style control     |
 
 ### Content
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Aspect Ratio | `@stylextras/ui/aspect-ratio` | `AspectRatioProps` | `ratio` presets |
-| Avatar | `@stylextras/ui/avatar` | `AvatarProps` | `size` presets |
-| Card | `@stylextras/ui/card` | `CardProps` | `elevation` presets |
-| Content | `@stylextras/ui/content` | `ContentProps` | readable long-form wrapper |
-| Editable Text | `@stylextras/ui/editable-text` | `EditableTextProps` | content-editable primitive |
-| Empty State | `@stylextras/ui/empty-state` | `EmptyStateProps` | alias of `Empty` |
-| ImageCropper | `@stylextras/ui/image-cropper` | `ImageCropperProps` | `ratio` and `position` presets |
-| Kbd | `@stylextras/ui/kbd` | `KbdProps` | `size` presets |
-| Separator | `@stylextras/ui/separator` | `SeparatorProps` | `orientation`, `emphasis` |
-| Text | `@stylextras/ui/text` | `TextProps` | body-scale wrapper around `Typography` |
-| Typography | `@stylextras/ui/typography` | `TypographyProps` | `scale`, `tone`, `mono`, `as` |
+| Component     | Import                         | Props type          | Notes                                  |
+| ------------- | ------------------------------ | ------------------- | -------------------------------------- |
+| Aspect Ratio  | `@stylextras/ui/aspect-ratio`  | `AspectRatioProps`  | `ratio` presets                        |
+| Avatar        | `@stylextras/ui/avatar`        | `AvatarProps`       | `size` presets                         |
+| Card          | `@stylextras/ui/card`          | `CardProps`         | `elevation` presets                    |
+| Content       | `@stylextras/ui/content`       | `ContentProps`      | readable long-form wrapper             |
+| Editable Text | `@stylextras/ui/editable-text` | `EditableTextProps` | content-editable primitive             |
+| Empty State   | `@stylextras/ui/empty-state`   | `EmptyStateProps`   | alias of `Empty`                       |
+| ImageCropper  | `@stylextras/ui/image-cropper` | `ImageCropperProps` | `ratio` and `position` presets         |
+| Kbd           | `@stylextras/ui/kbd`           | `KbdProps`          | `size` presets                         |
+| Separator     | `@stylextras/ui/separator`     | `SeparatorProps`    | `orientation`, `emphasis`              |
+| Text          | `@stylextras/ui/text`          | `TextProps`         | body-scale wrapper around `Typography` |
+| Typography    | `@stylextras/ui/typography`    | `TypographyProps`   | `scale`, `tone`, `mono`, `as`          |
 
 ### Date and time
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Calendar | `@stylextras/ui/calendar` | `CalendarProps` | native date-oriented primitive |
-| Date Field | `@stylextras/ui/date-field` | `DateFieldProps` | native date input wrapper |
-| Date Picker | `@stylextras/ui/date-picker` | `DatePickerProps` | token-styled date control |
-| Date Range Picker | `@stylextras/ui/date-range-picker` | `DateRangePickerProps` | alias of `RangeDatePicker` |
-| Range Calendar | `@stylextras/ui/range-calendar` | `RangeCalendarProps` | simplified range calendar |
-| Time Field | `@stylextras/ui/time-field` | `TimeFieldProps` | alias of `timefield` export |
+| Component         | Import                             | Props type             | Notes                          |
+| ----------------- | ---------------------------------- | ---------------------- | ------------------------------ |
+| Calendar          | `@stylextras/ui/calendar`          | `CalendarProps`        | native date-oriented primitive |
+| Date Field        | `@stylextras/ui/date-field`        | `DateFieldProps`       | native date input wrapper      |
+| Date Picker       | `@stylextras/ui/date-picker`       | `DatePickerProps`      | token-styled date control      |
+| Date Range Picker | `@stylextras/ui/date-range-picker` | `DateRangePickerProps` | alias of `RangeDatePicker`     |
+| Range Calendar    | `@stylextras/ui/range-calendar`    | `RangeCalendarProps`   | simplified range calendar      |
+| Time Field        | `@stylextras/ui/time-field`        | `TimeFieldProps`       | alias of `timefield` export    |
 
 ### Form
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Checkbox | `@stylextras/ui/checkbox` | `CheckboxProps` | `size` presets |
-| Combo Box | `@stylextras/ui/combo-box` | `ComboBoxProps` | alias of `combobox` export |
-| File Drop Zone | `@stylextras/ui/file-drop-zone` | `FileDropZoneProps` | native drop target shell |
-| Form | `@stylextras/ui/form` | `FormProps` | semantic form wrapper |
-| Label | `@stylextras/ui/label` | `LabelProps` | styled label element |
-| Number Field | `@stylextras/ui/number-field` | `NumberFieldProps` | `size` presets |
-| Radio | `@stylextras/ui/radio` | `RadioProps` | single radio control |
-| Search Field | `@stylextras/ui/search-field` | `SearchFieldProps` | search input wrapper |
-| Select | `@stylextras/ui/select` | `SelectProps` | `size` presets |
-| Slider | `@stylextras/ui/slider` | `SliderProps` | `size` presets |
-| Switch | `@stylextras/ui/switch` | `SwitchProps` | `size` presets |
-| Text Area | `@stylextras/ui/text-area` | `TextAreaProps` | alias of `textarea` export |
-| Text Field | `@stylextras/ui/text-field` | `TextFieldProps` | `size` presets |
+| Component      | Import                          | Props type          | Notes                      |
+| -------------- | ------------------------------- | ------------------- | -------------------------- |
+| Checkbox       | `@stylextras/ui/checkbox`       | `CheckboxProps`     | `size` presets             |
+| Combo Box      | `@stylextras/ui/combo-box`      | `ComboBoxProps`     | alias of `combobox` export |
+| File Drop Zone | `@stylextras/ui/file-drop-zone` | `FileDropZoneProps` | native drop target shell   |
+| Form           | `@stylextras/ui/form`           | `FormProps`         | semantic form wrapper      |
+| Label          | `@stylextras/ui/label`          | `LabelProps`        | styled label element       |
+| Number Field   | `@stylextras/ui/number-field`   | `NumberFieldProps`  | `size` presets             |
+| Radio          | `@stylextras/ui/radio`          | `RadioProps`        | single radio control       |
+| Search Field   | `@stylextras/ui/search-field`   | `SearchFieldProps`  | search input wrapper       |
+| Select         | `@stylextras/ui/select`         | `SelectProps`       | `size` presets             |
+| Slider         | `@stylextras/ui/slider`         | `SliderProps`       | `size` presets             |
+| Switch         | `@stylextras/ui/switch`         | `SwitchProps`       | `size` presets             |
+| Text Area      | `@stylextras/ui/text-area`      | `TextAreaProps`     | alias of `textarea` export |
+| Text Field     | `@stylextras/ui/text-field`     | `TextFieldProps`    | `size` presets             |
 
 ### Layout
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Flex | `@stylextras/ui/flex` | `FlexProps` | `direction`, `align`, `justify`, `gap`, `wrap` |
-| Grid | `@stylextras/ui/grid` | `GridProps` | `cols` presets |
-| Toolbar | `@stylextras/ui/toolbar` | `ToolbarProps` | toolbar row wrapper |
-| Window Splitter | `@stylextras/ui/window-splitter` | `WindowSplitterProps` | `orientation` |
+| Component       | Import                           | Props type            | Notes                                          |
+| --------------- | -------------------------------- | --------------------- | ---------------------------------------------- |
+| Flex            | `@stylextras/ui/flex`            | `FlexProps`           | `direction`, `align`, `justify`, `gap`, `wrap` |
+| Grid            | `@stylextras/ui/grid`            | `GridProps`           | `cols` presets                                 |
+| Toolbar         | `@stylextras/ui/toolbar`         | `ToolbarProps`        | toolbar row wrapper                            |
+| Window Splitter | `@stylextras/ui/window-splitter` | `WindowSplitterProps` | `orientation`                                  |
 
 ### Navigation
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Breadcrumbs | `@stylextras/ui/breadcrumbs` | `BreadcrumbsProps` | alias of `breadcrumb` export |
-| Disclosure | `@stylextras/ui/disclosure` | `DisclosureProps` | native `<details>` primitive |
-| Disclosure Group | `@stylextras/ui/disclosure-group` | `DisclosureGroupProps` | group wrapper for disclosures |
-| Footer | `@stylextras/ui/footer` | `FooterProps` | page/footer layout shell |
-| HeaderLayout | `@stylextras/ui/header-layout` | `HeaderLayoutProps` | header + main layout composition |
-| Link | `@stylextras/ui/link` | `LinkProps` | styled anchor |
-| Navbar | `@stylextras/ui/navbar` | `NavbarProps` | top navigation row |
-| Pagination | `@stylextras/ui/pagination` | `PaginationProps` | simple page navigation shell |
-| Sidebar | `@stylextras/ui/sidebar` | `SidebarProps` | aside/navigation shell |
-| SidebarLayout | `@stylextras/ui/sidebar-layout` | `SidebarLayoutProps` | sidebar + main layout composition |
-| TableOfContents | `@stylextras/ui/table-of-contents` | `TableOfContentsProps` | anchor list navigation |
-| Tabs | `@stylextras/ui/tabs` | `TabsProps` | minimal tabs primitive |
+| Component        | Import                             | Props type             | Notes                             |
+| ---------------- | ---------------------------------- | ---------------------- | --------------------------------- |
+| Breadcrumbs      | `@stylextras/ui/breadcrumbs`       | `BreadcrumbsProps`     | alias of `breadcrumb` export      |
+| Disclosure       | `@stylextras/ui/disclosure`        | `DisclosureProps`      | native `<details>` primitive      |
+| Disclosure Group | `@stylextras/ui/disclosure-group`  | `DisclosureGroupProps` | group wrapper for disclosures     |
+| Footer           | `@stylextras/ui/footer`            | `FooterProps`          | page/footer layout shell          |
+| HeaderLayout     | `@stylextras/ui/header-layout`     | `HeaderLayoutProps`    | header + main layout composition  |
+| Link             | `@stylextras/ui/link`              | `LinkProps`            | styled anchor                     |
+| Navbar           | `@stylextras/ui/navbar`            | `NavbarProps`          | top navigation row                |
+| Pagination       | `@stylextras/ui/pagination`        | `PaginationProps`      | simple page navigation shell      |
+| Sidebar          | `@stylextras/ui/sidebar`           | `SidebarProps`         | aside/navigation shell            |
+| SidebarLayout    | `@stylextras/ui/sidebar-layout`    | `SidebarLayoutProps`   | sidebar + main layout composition |
+| TableOfContents  | `@stylextras/ui/table-of-contents` | `TableOfContentsProps` | anchor list navigation            |
+| Tabs             | `@stylextras/ui/tabs`              | `TabsProps`            | minimal tabs primitive            |
 
-### Overlays
+### Popups
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Alert Dialog | `@stylextras/ui/alert-dialog` | `AlertDialogProps` | native `<dialog>` alert surface |
-| Dialog | `@stylextras/ui/dialog` | `DialogProps` | `size` presets, native `<dialog>` |
-| Drawer | `@stylextras/ui/drawer` | `DrawerProps` | `side` presets, native `<dialog>` |
-| Hover Card | `@stylextras/ui/hover-card` | `HoverCardProps` | `popover` + anchor positioning |
-| Popover | `@stylextras/ui/popover` | `PopoverProps` | `behavior`, `placement`, `size` |
-| Tooltip | `@stylextras/ui/tooltip` | `TooltipProps` | `popover="manual"` + anchor positioning |
+| Component    | Import                        | Props type         | Notes                                   |
+| ------------ | ----------------------------- | ------------------ | --------------------------------------- |
+| Alert Dialog | `@stylextras/ui/alert-dialog` | `AlertDialogProps` | native `<dialog>` alert surface         |
+| Dialog       | `@stylextras/ui/dialog`       | `DialogProps`      | `size` presets, native `<dialog>`       |
+| Drawer       | `@stylextras/ui/drawer`       | `DrawerProps`      | `side` presets, native `<dialog>`       |
+| Hover Card   | `@stylextras/ui/hover-card`   | `HoverCardProps`   | `popover` + anchor positioning          |
+| Popover      | `@stylextras/ui/popover`      | `PopoverProps`     | `behavior`, `placement`, `size`         |
+| Tooltip      | `@stylextras/ui/tooltip`      | `TooltipProps`     | `popover="manual"` + anchor positioning |
 
 ### Status
 
-| Component | Import | Props type | Notes |
-| --- | --- | --- | --- |
-| Alert | `@stylextras/ui/alert` | `AlertProps` | alias of `alert-callout` export |
-| Badge | `@stylextras/ui/badge` | `BadgeProps` | `variant`, `size` |
-| Meter | `@stylextras/ui/meter` | `MeterProps` | styled native meter |
-| Progress Bar | `@stylextras/ui/progress-bar` | `ProgressBarProps` | styled native progress |
-| Progress Circle | `@stylextras/ui/progress-circle` | `ProgressCircleProps` | `size`, `showValue` |
-| Skeleton | `@stylextras/ui/skeleton` | `SkeletonProps` | placeholder block |
-| Toast | `@stylextras/ui/toast` | `ToastProps` | static toast surface |
+| Component       | Import                           | Props type            | Notes                           |
+| --------------- | -------------------------------- | --------------------- | ------------------------------- |
+| Alert           | `@stylextras/ui/alert`           | `AlertProps`          | alias of `alert-callout` export |
+| Badge           | `@stylextras/ui/badge`           | `BadgeProps`          | `variant`, `size`               |
+| Meter           | `@stylextras/ui/meter`           | `MeterProps`          | styled native meter             |
+| Progress Bar    | `@stylextras/ui/progress-bar`    | `ProgressBarProps`    | styled native progress          |
+| Progress Circle | `@stylextras/ui/progress-circle` | `ProgressCircleProps` | `size`, `showValue`             |
+| Skeleton        | `@stylextras/ui/skeleton`        | `SkeletonProps`       | placeholder block               |
+| Toast           | `@stylextras/ui/toast`           | `ToastProps`          | static toast surface            |
 
 ## Additional exports
 
@@ -256,7 +256,7 @@ These are not part of the main requested component set but are still exported:
 ## Missing or deferred features
 
 - Full WAI-ARIA interaction parity for tabs, menus, comboboxes, listboxes, radio groups, and trees
-- Portal-free but fully managed overlay helpers for trigger wiring, focus return, escape handling, outside click handling, and collision-aware placement
+- Portal-free popup helpers for trigger wiring, focus return, escape handling, outside click handling, and collision-aware placement
 - Rich date/time selection model beyond native controls
 - Rich color model beyond native inputs and simplified slider/swatch/wheel controls
 - Async loading, virtualization, and large-data ergonomics for table/tree/list primitives
@@ -267,5 +267,5 @@ These are not part of the main requested component set but are still exported:
 - Keep new components token-driven and prefer direct use of core token consts over unnecessary component-level indirection.
 - Use function declarations for component exports.
 - Prefer native platform elements and browser features first.
-- Do not introduce portals for overlay primitives.
+- Do not introduce portals for popup primitives.
 - Use StyleX anchor-positioning APIs for floating surfaces.

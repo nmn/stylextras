@@ -1,15 +1,26 @@
 ---
 title: Button
-description: Live example and usage notes for the Button component.
+description: "Button provides an action primitive for button and control interfaces."
 ---
 
-import Example from "@stylextras/ui/button/example";
+import { lazy, Suspense } from "react";
+
+export const ButtonVariantsDemo = lazy(() =>
+  import("@stylextras/ui/button/example").then((module) => ({
+    default: module.ButtonVariantsDemo,
+  })),
+);
+export const ButtonSizesDemo = lazy(() =>
+  import("@stylextras/ui/button/example").then((module) => ({
+    default: module.ButtonSizesDemo,
+  })),
+);
 
 # Button
 
-## Example
+Use Button when an interface needs a clear, keyboard-accessible control for taking action. The component keeps native button behavior and moves visual decisions into token variables.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +28,100 @@ import Example from "@stylextras/ui/button/example";
 import { Button } from "@stylextras/ui/button";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start with a semantic button and choose a variant that matches the action's priority. Group the visual variants in one example because they are easiest to compare side by side.
 
+<Suspense fallback={null}>
+  <ButtonVariantsDemo />
+</Suspense>
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="danger">Danger</Button>
+```
+
+## Sizes and states
+
+Use sizes to fit the surrounding density. Disabled buttons remain visible but are removed from normal interaction.
+
+<Suspense fallback={null}>
+  <ButtonSizesDemo />
+</Suspense>
+
+```tsx
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+<Button disabled>Disabled</Button>
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/button`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type ButtonProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Button } from "@stylextras/ui/button";
+
+<Button sx={styles.emphasis}>Example</Button>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Variants
+
+Use variants when the same component needs different visual priority or intent.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="danger">Danger</Button>
+```
+
+## Sizes
+
+Use sizes to fit the control into dense or spacious layouts without changing semantics.
+
+```tsx
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+```
+
+## Accessibility notes
+
+Prefer explicit visible text for actions. For icon-only controls, use the component props that require an accessible label instead of relying on the icon alone.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/button/index.tsx`.

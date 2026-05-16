@@ -1,13 +1,16 @@
-"use client";
+'use client'
 
-import { Footer } from "./index";
-import { DemoFrame } from "../example-theme/demo";
-import { Link } from "../link";
+import { Footer } from './index'
+import { DemoFrame } from '../example-theme/demo'
+import { Link } from '../link'
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Footer" description="Footer should be shown as a simple strip of secondary links.">
+      <DemoFrame
+        title="Footer"
+        description="Footer should be shown as a simple strip of secondary links."
+      >
         <Footer>
           <Link href="#docs">Docs</Link>
           <Link href="#components">Components</Link>
@@ -15,6 +18,5 @@ export default function Example() {
         </Footer>
       </DemoFrame>
     </>
-  );
+  )
 }
-

@@ -1,11 +1,13 @@
 {
-  "title": "Date-and-time",
+  "title": "Date and time",
   "pages": [
     "./calendar.mdx",
     "./date-field.mdx",
     "./date-picker.mdx",
     "./date-range-picker.mdx",
     "./range-calendar.mdx",
-    "./time-field.mdx"
+    "./range-date-picker.mdx",
+    "./time-field.mdx",
+    "./timefield.mdx"
   ]
 }

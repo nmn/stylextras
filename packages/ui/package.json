@@ -512,6 +512,14 @@
       "types": "./src/menu/index.tsx",
       "import": "./src/menu/index.tsx"
     },
+    "./menu/menu-content": {
+      "types": "./src/menu/menu-content.tsx",
+      "import": "./src/menu/menu-content.tsx"
+    },
+    "./menu/menu-content/example": {
+      "types": "./src/menu/menu-content.example.tsx",
+      "import": "./src/menu/menu-content.example.tsx"
+    },
     "./menu/example": {
       "types": "./src/menu/example.tsx",
       "import": "./src/menu/example.tsx"

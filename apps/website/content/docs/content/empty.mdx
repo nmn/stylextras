@@ -1,15 +1,17 @@
 ---
 title: Empty
-description: Live example and usage notes for the Empty component.
+description: "Empty provides a content primitive for content surfaces."
 ---
 
-import Example from "@stylextras/ui/empty/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/empty/example"));
 
 # Empty
 
-## Example
+Use Empty to shape reusable content blocks while keeping typography, spacing, and surface styling token-driven.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,76 @@ import Example from "@stylextras/ui/empty/example";
 import { Empty } from "@stylextras/ui/empty";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Empty } from "@stylextras/ui/empty";
+
+<Empty>Example</Empty>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/empty`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type EmptyProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Empty } from "@stylextras/ui/empty";
+
+<Empty sx={styles.emphasis}>Example</Empty>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Empty } from "@stylextras/ui/empty";
+
+function EmptyExample() {
+  return (
+    <>
+      <Empty>
+        <div>
+          <strong>No items yet</strong>
+          <span>Create the first item to populate this view.</span>
+        </div>
+      </Empty>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Choose semantic children and heading levels based on the page structure around the component.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/empty/index.tsx`.

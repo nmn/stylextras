@@ -1,15 +1,26 @@
 ---
 title: Card
-description: Live example and usage notes for the Card component.
+description: "Card provides a content primitive for content surfaces."
 ---
 
-import Example from "@stylextras/ui/card/example";
+import { lazy, Suspense } from "react";
+
+export const CardElevationsDemo = lazy(() =>
+  import("@stylextras/ui/card/example").then((module) => ({
+    default: module.CardElevationsDemo,
+  })),
+);
+export const CardCompositionDemo = lazy(() =>
+  import("@stylextras/ui/card/example").then((module) => ({
+    default: module.CardCompositionDemo,
+  })),
+);
 
 # Card
 
-## Example
+Use Card to shape reusable content blocks while keeping typography, spacing, and surface styling token-driven.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +28,79 @@ import Example from "@stylextras/ui/card/example";
 import { Card } from "@stylextras/ui/card";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Use elevation to set how much separation a card needs from the surface behind it. Keep elevations together here so their visual weight is easy to compare.
 
+<Suspense fallback={null}>
+  <CardElevationsDemo />
+</Suspense>
+
+```tsx
+import { Card } from "@stylextras/ui/card";
+
+<Card elevation="flat">Flat card</Card>
+<Card elevation="sm">Small card</Card>
+<Card elevation="md">Medium card</Card>
+<Card elevation="lg">Large card</Card>
+```
+
+## Composed content
+
+Cards should be composed from semantic content and controls. The component supplies the surface, spacing, radius, and elevation; the children supply the meaning.
+
+<Suspense fallback={null}>
+  <CardCompositionDemo />
+</Suspense>
+
+```tsx
+<Card elevation="sm">
+  <AspectRatio ratio="video">Preview</AspectRatio>
+  <Badge>Experimental</Badge>
+  <Typography as="h3" scale="title">
+    Native popups
+  </Typography>
+  <p>Use card composition to group related content.</p>
+  <Button>Read more</Button>
+</Card>
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/card`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type CardProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  elevation?: CardElevation;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Card } from "@stylextras/ui/card";
+
+<Card sx={styles.emphasis}>Example</Card>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Accessibility notes
+
+Choose semantic children and heading levels based on the page structure around the component.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/card/index.tsx`.

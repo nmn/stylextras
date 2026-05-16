@@ -1,15 +1,19 @@
 ---
 title: Sidebar Layout
-description: Live example and usage notes for the Sidebar Layout component.
+description: "Sidebar Layout provides a navigation primitive for navigation interfaces."
 ---
 
-import Example from "@stylextras/ui/sidebar-layout/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/sidebar-layout/example"),
+);
 
 # Sidebar Layout
 
-## Example
+Use Sidebar Layout for navigation patterns that need predictable structure, token-driven spacing, and clear focus behavior.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +21,91 @@ import Example from "@stylextras/ui/sidebar-layout/example";
 import { SidebarLayout } from "@stylextras/ui/sidebar-layout";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { SidebarLayout } from "@stylextras/ui/sidebar-layout";
+
+<SidebarLayout>Example</SidebarLayout>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/sidebar-layout`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type SidebarLayoutProps = Omit<BaseProps, "className" | "style"> & {
+  mainSx?: StyleXStyles;
+  sidebar: ReactNode;
+  sidebarSx?: StyleXStyles;
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { SidebarLayout } from "@stylextras/ui/sidebar-layout";
+
+<SidebarLayout sx={styles.emphasis}>Example</SidebarLayout>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Sidebar } from "@stylextras/ui/sidebar";
+import { SidebarLayout } from "@stylextras/ui/sidebar-layout";
+import { Link } from "@stylextras/ui/link";
+
+function SidebarLayoutExample() {
+  return (
+    <>
+      <SidebarLayout
+        sidebar={
+          <Sidebar>
+            <Link href="#intro">Introduction</Link>
+            <Link href="#api">API</Link>
+            <Link href="#examples">Examples</Link>
+          </Sidebar>
+        }
+      >
+        <div>
+          <strong>Button</strong>
+          <span>
+            The button primitive is intentionally small and native-first.
+          </span>
+        </div>
+      </SidebarLayout>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Use real links for navigation, mark the current location where appropriate, and keep focus order consistent with visual order.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/sidebar-layout/index.tsx`.

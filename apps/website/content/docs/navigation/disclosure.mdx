@@ -1,15 +1,17 @@
 ---
 title: Disclosure
-description: Live example and usage notes for the Disclosure component.
+description: "Disclosure provides a navigation primitive for navigation interfaces."
 ---
 
-import Example from "@stylextras/ui/disclosure/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/disclosure/example"));
 
 # Disclosure
 
-## Example
+Use Disclosure for navigation patterns that need predictable structure, token-driven spacing, and clear focus behavior.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,83 @@ import Example from "@stylextras/ui/disclosure/example";
 import { Disclosure } from "@stylextras/ui/disclosure";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Disclosure } from "@stylextras/ui/disclosure";
+
+<Disclosure>Example</Disclosure>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/disclosure`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type DisclosureProps = Omit<BaseProps, "className" | "style"> & {
+  summary: ReactNode;
+  sx?: StyleXStyles;
+  summarySx?: StyleXStyles;
+  contentSx?: StyleXStyles;
+  size?: DisclosureSize;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Disclosure } from "@stylextras/ui/disclosure";
+
+<Disclosure sx={styles.emphasis}>Example</Disclosure>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Disclosure } from "@stylextras/ui/disclosure";
+
+function DisclosureExample() {
+  return (
+    <>
+      <div>
+        <Disclosure summary="Why use popover here?">
+          It keeps the surfaced content local to the trigger.
+        </Disclosure>
+        <Disclosure open summary="When should this become a dialog?">
+          Use a dialog once the content becomes task-focused or needs stronger
+          interruption.
+        </Disclosure>
+      </div>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Use real links for navigation, mark the current location where appropriate, and keep focus order consistent with visual order.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/disclosure/index.tsx`.

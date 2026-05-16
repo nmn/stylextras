@@ -1,15 +1,19 @@
 ---
 title: Image Cropper
-description: Live example and usage notes for the Image Cropper component.
+description: "Image Cropper provides a content primitive for content surfaces."
 ---
 
-import Example from "@stylextras/ui/image-cropper/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/image-cropper/example"),
+);
 
 # Image Cropper
 
-## Example
+Use Image Cropper to shape reusable content blocks while keeping typography, spacing, and surface styling token-driven.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +21,99 @@ import Example from "@stylextras/ui/image-cropper/example";
 import { ImageCropper } from "@stylextras/ui/image-cropper";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { ImageCropper } from "@stylextras/ui/image-cropper";
+
+<ImageCropper>Example</ImageCropper>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/image-cropper`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type ImageCropperProps = Omit<
+  ComponentPropsWithoutRef<"img">,
+  "className" | "style"
+> & {
+  frameSx?: StyleXStyles;
+  position?: ImageCropperPosition;
+  ratio?: ImageCropperRatio;
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { ImageCropper } from "@stylextras/ui/image-cropper";
+
+<ImageCropper sx={styles.emphasis}>Example</ImageCropper>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { ImageCropper } from "@stylextras/ui/image-cropper";
+
+const image =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ccircle cx='250' cy='240' r='120' fill='rgba(255,255,255,0.28)'/%3E%3Ccircle cx='520' cy='320' r='160' fill='rgba(255,255,255,0.2)'/%3E%3C/svg%3E";
+
+function ImageCropperExample() {
+  return (
+    <>
+      <div>
+        <ImageCropper
+          src={image}
+          alt="Gradient"
+          ratio="square"
+          position="center"
+        />
+        <ImageCropper
+          src={image}
+          alt="Gradient"
+          ratio="landscape"
+          position="top"
+        />
+        <ImageCropper
+          src={image}
+          alt="Gradient"
+          ratio="portrait"
+          position="right"
+        />
+      </div>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Choose semantic children and heading levels based on the page structure around the component.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/image-cropper/index.tsx`.

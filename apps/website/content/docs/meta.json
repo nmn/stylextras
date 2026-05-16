@@ -9,7 +9,7 @@
     "./form",
     "./layout",
     "./navigation",
-    "./overlays",
+    "./popups",
     "./status"
   ]
 }

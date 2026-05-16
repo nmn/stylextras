@@ -1,15 +1,17 @@
 ---
 title: Meter
-description: Live example and usage notes for the Meter component.
+description: "Meter provides a status primitive for feedback surfaces."
 ---
 
-import Example from "@stylextras/ui/meter/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/meter/example"));
 
 # Meter
 
-## Example
+Use Meter to communicate state, progress, or feedback in a compact token-driven surface.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,76 @@ import Example from "@stylextras/ui/meter/example";
 import { Meter } from "@stylextras/ui/meter";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Meter } from "@stylextras/ui/meter";
+
+<Meter aria-label="Storage used" min={0} max={100} value={72} />;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/meter`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type MeterProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  label?: ReactNode;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Meter } from "@stylextras/ui/meter";
+
+<Meter label="Label" sx={styles.emphasis} />;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Meter } from "@stylextras/ui/meter";
+
+function MeterExample() {
+  return (
+    <>
+      <div>
+        <Meter label="Coverage" min={0} max={100} value={25} />
+        <Meter label="Coverage" min={0} max={100} value={50} />
+        <Meter label="Coverage" min={0} max={100} value={80} />
+      </div>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Make status text explicit. Use live regions only for updates that need to be announced immediately.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/meter/index.tsx`.

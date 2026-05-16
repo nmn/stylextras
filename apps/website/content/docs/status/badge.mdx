@@ -1,15 +1,26 @@
 ---
 title: Badge
-description: Live example and usage notes for the Badge component.
+description: "Badge provides a status primitive for feedback surfaces."
 ---
 
-import Example from "@stylextras/ui/badge/example";
+import { lazy, Suspense } from "react";
+
+export const BadgeVariantsDemo = lazy(() =>
+  import("@stylextras/ui/badge/example").then((module) => ({
+    default: module.BadgeVariantsDemo,
+  })),
+);
+export const BadgeSizesDemo = lazy(() =>
+  import("@stylextras/ui/badge/example").then((module) => ({
+    default: module.BadgeSizesDemo,
+  })),
+);
 
 # Badge
 
-## Example
+Use Badge to communicate state, progress, or feedback in a compact token-driven surface.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +28,98 @@ import Example from "@stylextras/ui/badge/example";
 import { Badge } from "@stylextras/ui/badge";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Use Badge for short status text. Keep all status tones together in this example so the differences in intent are easy to scan.
 
+<Suspense fallback={null}>
+  <BadgeVariantsDemo />
+</Suspense>
+
+```tsx
+import { Badge } from "@stylextras/ui/badge";
+
+<Badge variant="neutral">Neutral</Badge>
+<Badge variant="brand">Brand</Badge>
+<Badge variant="info">Info</Badge>
+<Badge variant="success">Success</Badge>
+<Badge variant="warning">Warning</Badge>
+<Badge variant="danger">Danger</Badge>
+```
+
+## Sizing
+
+Use `sm` when the badge sits inside dense metadata and `md` when it needs to stand beside controls or headings.
+
+<Suspense fallback={null}>
+  <BadgeSizesDemo />
+</Suspense>
+
+```tsx
+<Badge size="sm">Small</Badge>
+<Badge size="md">Medium</Badge>
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/badge`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type BadgeProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  size?: BadgeSize;
+  variant?: BadgeVariant;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Badge } from "@stylextras/ui/badge";
+
+<Badge sx={styles.emphasis}>Example</Badge>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Status tones
+
+This pattern shows another common way to compose the component.
+
+```tsx
+import { Badge } from "@stylextras/ui/badge";
+
+<Badge variant="neutral">Neutral</Badge>
+<Badge variant="info">Info</Badge>
+<Badge variant="success">Success</Badge>
+<Badge variant="warning">Warning</Badge>
+<Badge variant="danger">Danger</Badge>
+```
+
+## Sizing
+
+This pattern shows another common way to compose the component.
+
+```tsx
+<Badge size="sm">Small</Badge>
+<Badge size="md">Medium</Badge>
+```
+
+## Accessibility notes
+
+Make status text explicit. Use live regions only for updates that need to be announced immediately.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/badge/index.tsx`.

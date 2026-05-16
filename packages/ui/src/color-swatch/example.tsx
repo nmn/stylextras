@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { ColorSwatch } from "./index";
-import { DemoFrame, DemoRow } from "../example-theme/demo";
+import { ColorSwatch } from './index'
+import { DemoFrame, DemoRow } from '../example-theme/demo'
 
 export default function Example() {
   return (
@@ -15,6 +15,5 @@ export default function Example() {
         </DemoRow>
       </DemoFrame>
     </>
-  );
+  )
 }
-

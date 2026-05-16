@@ -1,15 +1,17 @@
 ---
 title: Alert
-description: Live example and usage notes for the Alert component.
+description: "Alert provides a status primitive for feedback surfaces."
 ---
 
-import Example from "@stylextras/ui/alert/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/alert/example"));
 
 # Alert
 
-## Example
+Use Alert to communicate state, progress, or feedback in a compact token-driven surface.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,67 @@ import Example from "@stylextras/ui/alert/example";
 import { Alert } from "@stylextras/ui/alert";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Alert } from "@stylextras/ui/alert";
+
+<Alert variant="info">Settings saved.</Alert>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/alert`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type AlertProps = import("@stylextras/ui/alert-callout").AlertProps;
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Alert } from "@stylextras/ui/alert";
+
+function AlertExample() {
+  return (
+    <>
+      <div>
+        <Alert variant="neutral">Neutral message</Alert>
+        <Alert variant="info">Info message</Alert>
+        <Alert variant="success">Success message</Alert>
+        <Alert variant="warning">Warning message</Alert>
+        <Alert variant="danger">Danger message</Alert>
+      </div>
+    </>
+  );
+}
+```
+
+## Announced status
+
+This pattern shows another common way to compose the component.
+
+```tsx
+import { Alert } from "@stylextras/ui/alert";
+
+<Alert role="status" variant="success">
+  Profile saved.
+</Alert>;
+```
+
+## Accessibility notes
+
+Make status text explicit. Use live regions only for updates that need to be announced immediately.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/alert/index.tsx`.

@@ -1,15 +1,19 @@
 ---
 title: Range Calendar
-description: Live example and usage notes for the Range Calendar component.
+description: "Range Calendar provides a date and time primitive for date and time workflows."
 ---
 
-import Example from "@stylextras/ui/range-calendar/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/range-calendar/example"),
+);
 
 # Range Calendar
 
-## Example
+Use Range Calendar for date or time entry flows that can lean on native form controls and browser validation.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +21,71 @@ import Example from "@stylextras/ui/range-calendar/example";
 import { RangeCalendar } from "@stylextras/ui/range-calendar";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { RangeCalendar } from "@stylextras/ui/range-calendar";
+
+<RangeCalendar>Example</RangeCalendar>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/range-calendar`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type RangeCalendarProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { RangeCalendar } from "@stylextras/ui/range-calendar";
+
+<RangeCalendar aria-label="Example" sx={styles.emphasis} />;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { RangeCalendar } from "@stylextras/ui/range-calendar";
+
+function RangeCalendarExample() {
+  return (
+    <>
+      <RangeCalendar />
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Provide an accessible label and keep helper or validation text close to the field that it describes.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/range-calendar/index.tsx`.

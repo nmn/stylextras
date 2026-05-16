@@ -1,12 +1,15 @@
-"use client";
+'use client'
 
-import { Empty } from "./index";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Empty } from './index'
+import { DemoFrame, DemoStack } from '../example-theme/demo'
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Empty state" description="Empty is a presentation container, so the example should stay simple.">
+      <DemoFrame
+        title="Empty state"
+        description="Empty is a presentation container, so the example should stay simple."
+      >
         <Empty>
           <DemoStack>
             <strong>No items yet</strong>
@@ -15,6 +18,5 @@ export default function Example() {
         </Empty>
       </DemoFrame>
     </>
-  );
+  )
 }
-

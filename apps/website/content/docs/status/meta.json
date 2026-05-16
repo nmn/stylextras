@@ -1,12 +1,14 @@
 {
   "title": "Status",
   "pages": [
+    "./alert-callout.mdx",
     "./alert.mdx",
     "./badge.mdx",
     "./meter.mdx",
     "./progress-bar.mdx",
     "./progress-circle.mdx",
     "./skeleton.mdx",
+    "./spinner.mdx",
     "./toast.mdx"
   ]
 }

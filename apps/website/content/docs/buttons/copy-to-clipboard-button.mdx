@@ -1,15 +1,19 @@
 ---
 title: Copy To Clipboard Button
-description: Live example and usage notes for the Copy To Clipboard Button component.
+description: "Copy To Clipboard Button provides an action primitive for button and control interfaces."
 ---
 
-import Example from "@stylextras/ui/copy-to-clipboard-button/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/copy-to-clipboard-button/example"),
+);
 
 # Copy To Clipboard Button
 
-## Example
+Use Copy To Clipboard Button when an interface needs a clear, keyboard-accessible control for taking action. The component keeps native button behavior and moves visual decisions into token variables.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +21,79 @@ import Example from "@stylextras/ui/copy-to-clipboard-button/example";
 import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
+
+<CopyToClipboardButton>Example</CopyToClipboardButton>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/copy-to-clipboard-button`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type CopyToClipboardButtonProps = Omit<
+  IconButtonProps,
+  "children" | "label"
+> & {
+  copiedText?: ReactNode;
+  icon?: ReactNode;
+  label?: string;
+  onCopy?: (value: string) => void;
+  resetAfterMs?: number;
+  value: string;
+};
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
+
+function CopyToClipboardButtonExample() {
+  return (
+    <div>
+      <CopyToClipboardButton
+        label="Copy install command"
+        value="npx create-stylextras app"
+      />
+      <CopyToClipboardButton
+        label="Copy package name"
+        copiedText="Package copied!"
+        value="@stylextras/ui"
+      />
+    </div>
+  );
+}
+```
+
+## Alternate copy values
+
+This pattern shows another common way to compose the component.
+
+```tsx
+import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
+
+<CopyToClipboardButton value="https://example.com/share">
+  Copy share link
+</CopyToClipboardButton>;
+```
+
+## Accessibility notes
+
+Prefer explicit visible text for actions. For icon-only controls, use the component props that require an accessible label instead of relying on the icon alone.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/copy-to-clipboard-button/index.tsx`.

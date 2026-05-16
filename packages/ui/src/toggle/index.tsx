@@ -1,41 +1,116 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"button">;
+type BaseProps = ComponentPropsWithoutRef<'input'>
 
-export type ToggleProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  pressed?: boolean;
-};
+export type ToggleSize = 'sm' | 'md' | 'lg'
 
-/**
- * Renders a pressed-state button primitive.
- *
- * Search aliases: toggle, toggle button, pressed button, stateful button.
- *
- * A11y notes:
- * - Uses simplified pressed-state behavior.
- * - The caller must provide correct pressed state and accessible naming.
- */
-export function Toggle({ pressed = false, sx, type = "button", ...props }: ToggleProps) {
-  return (
-    <button
-      {...props}
-      aria-pressed={pressed}
-      type={type}
-      {...stylex.props(baseStyles.base, pressed ? stateStyles.on : stateStyles.off, sx)}
-    />
-  );
+export type ToggleProps = Omit<BaseProps, 'children' | 'className' | 'style' | 'type' | 'size'> & {
+  children?: ReactNode
+  sx?: StyleXStyles
+  inputSx?: StyleXStyles
+  size?: ToggleSize
 }
 
-const baseStyles = stylex.create({ base: { display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: spacing["3xl"], paddingInline: spacing.md, paddingBlock: spacing.sm, borderStyle: "solid", borderWidth: stroke.thin, borderRadius: radius.md, fontFamily: typography.fontSans, fontSize: typography.step0, fontWeight: typography.weightMedium } });
+/**
+ * Renders a checkbox-backed toggle button with a button-like surface.
+ *
+ * Search aliases: toggle, toggle button, checkbox button, on off control.
+ *
+ * A11y notes:
+ * - Uses native checkbox semantics instead of aria-pressed button semantics.
+ * - The caller is responsible for grouping and higher-level selection rules when multiple toggles are related.
+ */
+export function Toggle({ children, disabled, inputSx, size = 'md', sx, ...props }: ToggleProps) {
+  return (
+    <label
+      {...stylex.props(rootStyles.base, sizeStyles[size], disabled && stateStyles.disabled, sx)}
+    >
+      <input
+        {...props}
+        disabled={disabled}
+        type="checkbox"
+        {...stylex.props(inputStyles.base, inputSx)}
+      />
+      {children ? <span {...stylex.props(labelStyles.base)}>{children}</span> : null}
+    </label>
+  )
+}
+
+const rootStyles = stylex.create({
+  base: {
+    position: 'relative',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    borderRadius: radius.md,
+    color: {
+      default: colors.fg,
+      ':has(input:checked)': colors.primaryForeground,
+    },
+    backgroundColor: {
+      default: colors.bg,
+      ':has(input:checked)': colors.primary,
+    },
+    borderColor: {
+      default: colors.border,
+      ':has(input:checked)': colors.primary,
+    },
+    cursor: 'pointer',
+    userSelect: 'none',
+    whiteSpace: 'nowrap',
+  },
+})
+
+const sizeStyles = stylex.create({
+  sm: {
+    minHeight: spacing.xl,
+    paddingInline: spacing.sm,
+    paddingBlock: spacing['2xs'],
+  },
+  md: {
+    minHeight: spacing['2xl'],
+    paddingInline: spacing.md,
+    paddingBlock: spacing.xs,
+  },
+  lg: {
+    minHeight: spacing['3xl'],
+    paddingInline: spacing.lg,
+    paddingBlock: spacing.sm,
+  },
+})
+
 const stateStyles = stylex.create({
-  on: { color: colors.primaryForeground, backgroundColor: colors.primary, borderColor: colors.primary },
-  off: { color: colors.fg, backgroundColor: colors.bg, borderColor: colors.border },
-});
+  disabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+})
+
+const inputStyles = stylex.create({
+  base: {
+    position: 'absolute',
+    inset: 0,
+    margin: 0,
+    opacity: 0,
+    cursor: 'inherit',
+  },
+})
+
+const labelStyles = stylex.create({
+  base: {
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    fontWeight: typography.weightMedium,
+    lineHeight: typography.lineHeightSnug,
+  },
+})

@@ -1,23 +1,210 @@
 ---
 title: Command
-description: Live example and usage notes for the Command component.
+description: "Command provides a collection primitive for item and data interfaces."
 ---
 
-import Example from "@stylextras/ui/command/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/command/example"));
 
 # Command
 
-## Example
+Use Command to present related items, actions, or records while keeping structure and styling separate from application state.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
 ```tsx
-import { Command } from "@stylextras/ui/command";
+import {
+  CommandContent,
+  CommandTrigger,
+  CommandProgrammatic,
+} from "@stylextras/ui/command";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import {
+  CommandContent,
+  CommandTrigger,
+  CommandProgrammatic,
+} from "@stylextras/ui/command";
+
+<CommandContent>Example</CommandContent>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/command`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type CommandProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+
+export type CommandContentProps = CommandProps;
+
+export type CommandTriggerProps = Omit<
+  ButtonProps,
+  "className" | "content" | "style"
+> & {
+  content: LazyComponentLoader<CommandContentProps>;
+  contentProps?: Omit<CommandContentProps, "ref">;
+  fallback?: React.ReactNode;
+};
+
+export type CommandProgrammaticProps =
+  DialogProgrammaticProps<CommandContentProps>;
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import {
+  CommandContent,
+  CommandTrigger,
+  CommandProgrammatic,
+} from "@stylextras/ui/command";
+
+<CommandContent sx={styles.emphasis}>Example</CommandContent>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+import { ButtonGroup } from "@stylextras/ui/button-group";
+import { SearchField } from "@stylextras/ui/search-field";
+import { Typography } from "@stylextras/ui/typography";
+import {
+  CommandContent,
+  type CommandContentProps,
+  CommandTrigger,
+} from "@stylextras/ui/command";
+
+function CommandExampleContent(props: CommandContentProps) {
+  return (
+    <CommandContent {...props}>
+      <div>
+        <Typography as="h3" scale="title">
+          Quick jump
+        </Typography>
+        <SearchField label="Search" placeholder="button, tokens, examples" />
+        <form method="dialog">
+          <ButtonGroup>
+            <Button type="button">Open button docs</Button>
+            <Button type="button" variant="secondary">
+              Jump to tokens
+            </Button>
+            <Button type="submit" variant="outline">
+              Close
+            </Button>
+          </ButtonGroup>
+        </form>
+      </div>
+    </CommandContent>
+  );
+}
+
+function CommandExample() {
+  return (
+    <CommandTrigger content={() => Promise.resolve(CommandExampleContent)}>
+      Open command menu
+    </CommandTrigger>
+  );
+}
+```
+
+## Lazy trigger and content
+
+Pass a content loader to the trigger so the popup body can be prefetched and rendered only when needed.
+
+```tsx
+import {
+  CommandTrigger,
+  CommandContent,
+  type CommandContentProps,
+} from "@stylextras/ui/command";
+
+function DetailsContent(props: CommandContentProps) {
+  return (
+    <CommandContent {...props}>
+      <h2>Details</h2>
+      <p>Render the content only after the trigger is activated.</p>
+    </CommandContent>
+  );
+}
+
+<CommandTrigger content={() => Promise.resolve(DetailsContent)}>
+  Open Command
+</CommandTrigger>;
+```
+
+## Content rendered directly
+
+Render the content component directly when another controller owns the open state.
+
+```tsx
+import { CommandContent } from "@stylextras/ui/command";
+
+<CommandContent>
+  Content can still be rendered directly when another controller owns opening.
+</CommandContent>;
+```
+
+## Programmatic control
+
+Use the programmatic component when open state belongs to application state rather than a trigger.
+
+```tsx
+import {
+  CommandProgrammatic,
+  CommandContent,
+  type CommandContentProps,
+} from "@stylextras/ui/command";
+
+function ProgrammaticExample({ open, onOpenChange }) {
+  return (
+    <CommandProgrammatic
+      open={open}
+      onOpenChange={onOpenChange}
+      content={() =>
+        Promise.resolve((props: CommandContentProps) => (
+          <CommandContent {...props}>Controlled content</CommandContent>
+        ))
+      }
+    />
+  );
+}
+```
+
+## Accessibility notes
+
+Provide meaningful item text, headings, and native roles where the surrounding product owns richer selection or keyboard behavior.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/command/index.tsx`.

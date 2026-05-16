@@ -1,5 +1,5 @@
 {
-  "title": "Overlays",
+  "title": "Popups",
   "pages": [
     "./alert-dialog.mdx",
     "./dialog.mdx",

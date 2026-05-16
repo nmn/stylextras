@@ -1,19 +1,19 @@
 {
   "name": "stylextras",
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@stylexjs/eslint-plugin": "0.17.5",
     "@types/bun": "^1.2.3",
-    "vitest": "^3.0.6",
+    "@typescript-eslint/parser": "7.2.0",
+    "eslint": "8.57.1",
     "typescript": "^5.7.3",
-    "@biomejs/biome": "^1.9.4"
+    "vitest": "^3.0.6"
   },
   "scripts": {
     "build": "bun run --filter '*' build",
+    "lint:stylex": "eslint \"packages/ui/src/**/*.{ts,tsx}\"",
     "test": "bun run --filter '*' test",
     "format": "biome format --write ."
   },
-  "workspaces": [
-    "apps/*",
-    "tools/*",
-    "packages/*"
-  ]
+  "workspaces": ["apps/*", "tools/*", "packages/*"]
 }

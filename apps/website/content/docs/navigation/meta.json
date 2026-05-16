@@ -1,16 +1,17 @@
 {
   "title": "Navigation",
   "pages": [
+    "./breadcrumb.mdx",
     "./breadcrumbs.mdx",
-    "./disclosure.mdx",
     "./disclosure-group.mdx",
+    "./disclosure.mdx",
     "./footer.mdx",
     "./header-layout.mdx",
     "./link.mdx",
     "./navbar.mdx",
     "./pagination.mdx",
-    "./sidebar.mdx",
     "./sidebar-layout.mdx",
+    "./sidebar.mdx",
     "./table-of-contents.mdx",
     "./tabs.mdx"
   ]

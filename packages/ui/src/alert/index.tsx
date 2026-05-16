@@ -1,6 +1,6 @@
-import { Alert as BaseAlert, type AlertProps } from "../alert-callout/index";
+import { AlertCallout, type AlertProps } from '../alert-callout/index';
 
-export type { AlertProps } from "../alert-callout/index";
+export type { AlertProps } from '../alert-callout/index';
 
 /**
  * Renders a token-driven status message surface for inline feedback.
@@ -12,5 +12,5 @@ export type { AlertProps } from "../alert-callout/index";
  * - Does not manage live-region priority beyond the provided role prop.
  */
 export function Alert(props: AlertProps) {
-  return <BaseAlert {...props} />;
+  return <AlertCallout {...props} />;
 }

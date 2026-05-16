@@ -1,19 +1,31 @@
 "use client";
 
-import { Tooltip } from "./index";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
-import { Button } from "../button";
+import {
+  TooltipContent,
+  type TooltipContentProps,
+  TooltipTrigger,
+} from "./index";
 
-export default function Example() {
+function TooltipExampleContent(props: TooltipContentProps) {
   return (
-    <>
-      <DemoFrame title="Tooltip surface" description="Tooltip needs only a simple trigger and short hint text.">
-        <DemoStack>
-          <Button popoverTarget="tooltip-demo">Export token snapshot</Button>
-          <Tooltip id="tooltip-demo">Creates a static JSON snapshot of the current theme.</Tooltip>
-        </DemoStack>
-      </DemoFrame>
-    </>
+    <TooltipContent {...props}>
+      Creates a static JSON snapshot of the current theme.
+    </TooltipContent>
   );
 }
 
+export default function Example() {
+  return (
+    <DemoFrame
+      title="Tooltip surface"
+      description="Hover or focus the trigger to show the tooltip."
+    >
+      <DemoStack>
+        <TooltipTrigger content={() => Promise.resolve(TooltipExampleContent)}>
+          Export token snapshot
+        </TooltipTrigger>
+      </DemoStack>
+    </DemoFrame>
+  );
+}

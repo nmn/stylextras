@@ -1,2 +1,1 @@
-export { default } from "../alert-callout/example";
-
+export { default } from '../alert-callout/example'

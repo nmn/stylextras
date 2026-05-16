@@ -1,6 +1,7 @@
-import { TimeField, type TimeFieldProps } from "../timefield/index";
+import { Timefield, type TimefieldProps } from '../timefield/index'
 
-export type TimeFieldFieldProps = TimeFieldProps;
+export type TimeFieldProps = TimefieldProps
+export type TimeFieldFieldProps = TimeFieldProps
 
 /**
  * Renders the time-field primitive under the spaced alias export.
@@ -12,8 +13,9 @@ export type TimeFieldFieldProps = TimeFieldProps;
  * - Accessibility behavior varies with native browser time input support.
  */
 export function TimeFieldField(props: TimeFieldFieldProps) {
-  return <TimeField {...props} />;
+  return <TimeField {...props} />
 }
 
-export { TimeField } from "../timefield/index";
-export type { TimeFieldProps } from "../timefield/index";
+export function TimeField(props: TimeFieldProps) {
+  return <Timefield {...props} />
+}

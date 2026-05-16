@@ -1,23 +1,34 @@
 "use client";
 
-import { HoverCard } from "./index";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
+import {
+  HoverCardContent,
+  type HoverCardContentProps,
+  HoverCardTrigger,
+} from "./index";
 
-export default function Example() {
+function HoverCardExampleContent(props: HoverCardContentProps) {
   return (
-    <>
-      <DemoFrame title="Preview surface" description="Hover Card should show a simple trigger and compact preview.">
-        <DemoStack>
-          <button popoverTarget="hover-card-demo" type="button">Open preview</button>
-          <HoverCard id="hover-card-demo">
-            <DemoStack>
-              <strong>Package preview</strong>
-              <span>Lightweight summary content belongs here.</span>
-            </DemoStack>
-          </HoverCard>
-        </DemoStack>
-      </DemoFrame>
-    </>
+    <HoverCardContent {...props}>
+      <DemoStack>
+        <strong>Package preview</strong>
+        <span>Lightweight summary content belongs here.</span>
+      </DemoStack>
+    </HoverCardContent>
   );
 }
 
+export default function Example() {
+  return (
+    <DemoFrame
+      title="Preview surface"
+      description="Hover or focus the trigger to open the hover card."
+    >
+      <HoverCardTrigger
+        content={() => Promise.resolve(HoverCardExampleContent)}
+      >
+        Open preview
+      </HoverCardTrigger>
+    </DemoFrame>
+  );
+}

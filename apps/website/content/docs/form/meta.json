@@ -3,16 +3,23 @@
   "pages": [
     "./checkbox.mdx",
     "./combo-box.mdx",
+    "./combobox.mdx",
+    "./field-errors.mdx",
     "./file-drop-zone.mdx",
+    "./file-trigger.mdx",
     "./form.mdx",
+    "./input-fields.mdx",
+    "./input-group.mdx",
     "./label.mdx",
     "./number-field.mdx",
+    "./radio-group.mdx",
     "./radio.mdx",
     "./search-field.mdx",
     "./select.mdx",
     "./slider.mdx",
     "./switch.mdx",
     "./text-area.mdx",
-    "./text-field.mdx"
+    "./text-field.mdx",
+    "./textarea.mdx"
   ]
 }

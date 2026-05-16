@@ -5,8 +5,8 @@
     "./color-field.mdx",
     "./color-picker.mdx",
     "./color-slider.mdx",
-    "./color-swatch.mdx",
     "./color-swatch-picker.mdx",
+    "./color-swatch.mdx",
     "./color-wheel.mdx"
   ]
 }

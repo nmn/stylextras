@@ -1,15 +1,17 @@
 ---
 title: Icon Button
-description: Live example and usage notes for the Icon Button component.
+description: "Icon Button provides an action primitive for button and control interfaces."
 ---
 
-import Example from "@stylextras/ui/icon-button/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/icon-button/example"));
 
 # Icon Button
 
-## Example
+Use Icon Button when an interface needs a clear, keyboard-accessible control for taking action. The component keeps native button behavior and moves visual decisions into token variables.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,110 @@ import Example from "@stylextras/ui/icon-button/example";
 import { IconButton } from "@stylextras/ui/icon-button";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { IconButton } from "@stylextras/ui/icon-button";
+
+<IconButton label="Search">⌕</IconButton>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/icon-button`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type IconButtonProps = Omit<
+  BaseProps,
+  "aria-label" | "className" | "style"
+> & {
+  label: string;
+  sx?: StyleXStyles;
+  size?: IconButtonSize;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { IconButton } from "@stylextras/ui/icon-button";
+
+<IconButton label="Label" sx={styles.emphasis} />;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { IconButton } from "@stylextras/ui/icon-button";
+
+function IconButtonExample() {
+  return (
+    <>
+      <div>
+        <IconButton label="Search" size="sm">
+          S
+        </IconButton>
+        <IconButton label="Search" size="md">
+          S
+        </IconButton>
+        <IconButton label="Search" size="lg">
+          S
+        </IconButton>
+        <IconButton label="Disabled" disabled>
+          D
+        </IconButton>
+      </div>
+    </>
+  );
+}
+```
+
+## Accessible icon action
+
+This pattern shows another common way to compose the component.
+
+```tsx
+import { IconButton } from "@stylextras/ui/icon-button";
+
+<IconButton label="Search">⌕</IconButton>
+<IconButton label="Delete" disabled>×</IconButton>
+```
+
+## Sizes
+
+Use sizes to fit the control into dense or spacious layouts without changing semantics.
+
+```tsx
+<IconButton label="Small" size="sm">S</IconButton>
+<IconButton label="Medium" size="md">M</IconButton>
+<IconButton label="Large" size="lg">L</IconButton>
+```
+
+## Accessibility notes
+
+Prefer explicit visible text for actions. For icon-only controls, use the component props that require an accessible label instead of relying on the icon alone.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/icon-button/index.tsx`.

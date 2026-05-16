@@ -1,15 +1,26 @@
 ---
 title: Disclosure Group
-description: Live example and usage notes for the Disclosure Group component.
+description: "Disclosure Group provides a navigation primitive for navigation interfaces."
 ---
 
-import Example from "@stylextras/ui/disclosure-group/example";
+import { lazy, Suspense } from "react";
+
+export const DisclosureGroupBasicDemo = lazy(() =>
+  import("@stylextras/ui/disclosure-group/example").then((module) => ({
+    default: module.DisclosureGroupBasicDemo,
+  })),
+);
+export const DisclosureGroupExclusiveDemo = lazy(() =>
+  import("@stylextras/ui/disclosure-group/example").then((module) => ({
+    default: module.DisclosureGroupExclusiveDemo,
+  })),
+);
 
 # Disclosure Group
 
-## Example
+Use Disclosure Group for navigation patterns that need predictable structure, token-driven spacing, and clear focus behavior.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +28,84 @@ import Example from "@stylextras/ui/disclosure-group/example";
 import { DisclosureGroup } from "@stylextras/ui/disclosure-group";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Use a regular group when multiple disclosures can stay open. This is the best default for FAQs and settings groups where users compare sections.
 
+<Suspense fallback={null}>
+  <DisclosureGroupBasicDemo />
+</Suspense>
+
+```tsx
+import { Disclosure } from "@stylextras/ui/disclosure";
+import { DisclosureGroup } from "@stylextras/ui/disclosure-group";
+
+<DisclosureGroup>
+  <Disclosure summary="What ships in the starter?">
+    Tokens, components, and the docs site.
+  </Disclosure>
+  <Disclosure summary="How much is themeable?">
+    Color, spacing, radius, and typography are themeable.
+  </Disclosure>
+</DisclosureGroup>;
+```
+
+## Exclusive accordion
+
+Use `exclusive` when the group should behave like an accordion and keep only one section open at a time.
+
+<Suspense fallback={null}>
+  <DisclosureGroupExclusiveDemo />
+</Suspense>
+
+```tsx
+<DisclosureGroup exclusive>
+  <Disclosure summary="Design tokens">
+    Keep the token layer small and derive the rest from core values.
+  </Disclosure>
+  <Disclosure summary="Native primitives">
+    Prefer details, dialog, popover, and real form controls.
+  </Disclosure>
+</DisclosureGroup>
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/disclosure-group`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type DisclosureGroupProps = Omit<BaseProps, "className" | "style"> & {
+  exclusive?: boolean;
+  name?: string;
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { DisclosureGroup } from "@stylextras/ui/disclosure-group";
+
+<DisclosureGroup sx={styles.emphasis}>Example</DisclosureGroup>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Accessibility notes
+
+Use real links for navigation, mark the current location where appropriate, and keep focus order consistent with visual order.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/disclosure-group/index.tsx`.

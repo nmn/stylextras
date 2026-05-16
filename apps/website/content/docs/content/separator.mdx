@@ -1,15 +1,26 @@
 ---
 title: Separator
-description: Live example and usage notes for the Separator component.
+description: "Separator provides a content primitive for content surfaces."
 ---
 
-import Example from "@stylextras/ui/separator/example";
+import { lazy, Suspense } from "react";
+
+export const HorizontalSeparatorDemo = lazy(() =>
+  import("@stylextras/ui/separator/example").then((module) => ({
+    default: module.HorizontalSeparatorDemo,
+  })),
+);
+export const VerticalSeparatorDemo = lazy(() =>
+  import("@stylextras/ui/separator/example").then((module) => ({
+    default: module.VerticalSeparatorDemo,
+  })),
+);
 
 # Separator
 
-## Example
+Use Separator to shape reusable content blocks while keeping typography, spacing, and surface styling token-driven.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +28,74 @@ import Example from "@stylextras/ui/separator/example";
 import { Separator } from "@stylextras/ui/separator";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Use the default horizontal orientation between stacked pieces of content. Add an accessible label only when the separator carries meaning.
 
+<Suspense fallback={null}>
+  <HorizontalSeparatorDemo />
+</Suspense>
+
+```tsx
+import { Separator } from "@stylextras/ui/separator";
+
+<span>Above</span>
+<Separator />
+<span>Below</span>
+```
+
+## Vertical orientation
+
+Use a vertical separator inside inline control groups or metadata rows where the visual divider follows the reading order.
+
+<Suspense fallback={null}>
+  <VerticalSeparatorDemo />
+</Suspense>
+
+```tsx
+<span>Left</span>
+<Separator orientation="vertical" />
+<span>Right</span>
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/separator`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type SeparatorProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  orientation?: SeparatorOrientation;
+  emphasis?: SeparatorEmphasis;
+  decorative?: boolean;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Separator } from "@stylextras/ui/separator";
+
+<Separator aria-label="Example" sx={styles.emphasis} />;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Accessibility notes
+
+Choose semantic children and heading levels based on the page structure around the component.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/separator/index.tsx`.

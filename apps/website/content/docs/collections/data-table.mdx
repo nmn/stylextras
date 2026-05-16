@@ -1,15 +1,17 @@
 ---
 title: Data Table
-description: Live example and usage notes for the Data Table component.
+description: "Data Table provides a collection primitive for item and data interfaces."
 ---
 
-import Example from "@stylextras/ui/data-table/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/data-table/example"));
 
 # Data Table
 
-## Example
+Use Data Table to present related items, actions, or records while keeping structure and styling separate from application state.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,102 @@ import Example from "@stylextras/ui/data-table/example";
 import { DataTable } from "@stylextras/ui/data-table";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { DataTable } from "@stylextras/ui/data-table";
+
+<DataTable>
+  <tbody>
+    <tr>
+      <td>Example</td>
+    </tr>
+  </tbody>
+</DataTable>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/data-table`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type DataTableProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { DataTable } from "@stylextras/ui/data-table";
+
+<DataTable sx={styles.emphasis}>Example</DataTable>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { DataTable } from "@stylextras/ui/data-table";
+
+function DataTableExample() {
+  return (
+    <>
+      <DataTable>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>color.brand</td>
+            <td>color</td>
+            <td>Buttons, accents</td>
+          </tr>
+          <tr>
+            <td>spacing.base</td>
+            <td>length</td>
+            <td>Layout scale</td>
+          </tr>
+          <tr>
+            <td>radius.base</td>
+            <td>length</td>
+            <td>Surface shape</td>
+          </tr>
+        </tbody>
+      </DataTable>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Provide meaningful item text, headings, and native roles where the surrounding product owns richer selection or keyboard behavior.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/data-table/index.tsx`.

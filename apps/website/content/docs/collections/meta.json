@@ -3,7 +3,10 @@
   "pages": [
     "./command.mdx",
     "./context-menu.mdx",
+    "./data-table.mdx",
+    "./dropdown-menu.mdx",
     "./listbox.mdx",
+    "./menu-content.mdx",
     "./menu.mdx",
     "./menubar.mdx",
     "./table.mdx",

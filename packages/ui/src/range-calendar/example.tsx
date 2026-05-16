@@ -1,15 +1,17 @@
-"use client";
+'use client'
 
-import { RangeCalendar } from "./index";
-import { DemoFrame } from "../example-theme/demo";
+import { RangeCalendar } from './index'
+import { DemoFrame } from '../example-theme/demo'
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Range inputs" description="Range Calendar is currently a simple paired-date control.">
+      <DemoFrame
+        title="Range inputs"
+        description="Range Calendar is currently a simple paired-date control."
+      >
         <RangeCalendar />
       </DemoFrame>
     </>
-  );
+  )
 }
-

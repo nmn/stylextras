@@ -1,23 +1,222 @@
 ---
 title: Context Menu
-description: Live example and usage notes for the Context Menu component.
+description: "Context Menu provides a collection primitive for item and data interfaces."
 ---
 
-import Example from "@stylextras/ui/context-menu/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/context-menu/example"),
+);
 
 # Context Menu
 
-## Example
+Use Context Menu to present related items, actions, or records while keeping structure and styling separate from application state.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
 ```tsx
-import { ContextMenu } from "@stylextras/ui/context-menu";
+import {
+  ContextMenuContent,
+  ContextMenuTrigger,
+} from "@stylextras/ui/context-menu";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import {
+  ContextMenuContent,
+  ContextMenuTrigger,
+} from "@stylextras/ui/context-menu";
+
+<ContextMenuContent>Example</ContextMenuContent>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/context-menu`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type ContextMenuProps = Omit<
+  BaseProps,
+  "className" | "style" | "popover"
+> & {
+  behavior?: ContextMenuBehavior;
+  placement?: ContextMenuPlacement;
+  sx?: StyleXStyles;
+};
+
+export type ContextMenuContentProps = ContextMenuProps;
+
+export type ContextMenuTriggerProps = Omit<
+  ButtonProps,
+  "className" | "content" | "style"
+> & {
+  content: LazyComponentLoader<ContextMenuContentProps>;
+  contentProps?: Omit<ContextMenuContentProps, "ref">;
+  fallback?: React.ReactNode;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import {
+  ContextMenuContent,
+  ContextMenuTrigger,
+} from "@stylextras/ui/context-menu";
+
+<ContextMenuContent sx={styles.emphasis}>Example</ContextMenuContent>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { IconButton } from "@stylextras/ui/icon-button";
+import {
+  MenuButton,
+  MenuContent,
+  MenuIconButtonGroup,
+  MenuItem,
+  MenuItemList,
+  MenuSection,
+  MenuSectionTitle,
+} from "@stylextras/ui/menu/menu-content";
+import {
+  ContextMenuContent,
+  type ContextMenuContentProps,
+  ContextMenuTrigger,
+} from "@stylextras/ui/context-menu";
+
+function ContextMenuExampleContent(props: ContextMenuContentProps) {
+  return (
+    <ContextMenuContent behavior="auto" {...props}>
+      <MenuContent>
+        <MenuSection>
+          <MenuButton endIcon="↗" icon="★" type="button">
+            Open project
+          </MenuButton>
+        </MenuSection>
+
+        <MenuSection>
+          <MenuSectionTitle>Quick actions</MenuSectionTitle>
+          <MenuIconButtonGroup>
+            <IconButton label="Pin item" size="sm" type="button">
+              📌
+            </IconButton>
+            <IconButton label="Share item" size="sm" type="button">
+              ↗
+            </IconButton>
+            <IconButton label="Delete item" size="sm" type="button">
+              ✕
+            </IconButton>
+          </MenuIconButtonGroup>
+        </MenuSection>
+
+        <MenuSection>
+          <MenuSectionTitle>More</MenuSectionTitle>
+          <MenuItemList>
+            <MenuItem
+              description="Edit the current page title"
+              icon="✎"
+              type="button"
+            >
+              Rename
+            </MenuItem>
+            <MenuItem description="Create a second copy" icon="⧉" type="button">
+              Duplicate
+            </MenuItem>
+            <MenuItem
+              description="Move it out of the active list"
+              icon="🗄"
+              type="button"
+            >
+              Archive
+            </MenuItem>
+          </MenuItemList>
+        </MenuSection>
+      </MenuContent>
+    </ContextMenuContent>
+  );
+}
+
+function ContextMenuExample() {
+  return (
+    <ContextMenuTrigger
+      content={() => Promise.resolve(ContextMenuExampleContent)}
+      variant="outline"
+    >
+      Open actions
+    </ContextMenuTrigger>
+  );
+}
+```
+
+## Lazy trigger and content
+
+Pass a content loader to the trigger so the popup body can be prefetched and rendered only when needed.
+
+```tsx
+import {
+  ContextMenuTrigger,
+  ContextMenuContent,
+  type ContextMenuContentProps,
+} from "@stylextras/ui/context-menu";
+
+function DetailsContent(props: ContextMenuContentProps) {
+  return (
+    <ContextMenuContent {...props}>
+      <h2>Details</h2>
+      <p>Render the content only after the trigger is activated.</p>
+    </ContextMenuContent>
+  );
+}
+
+<ContextMenuTrigger content={() => Promise.resolve(DetailsContent)}>
+  Open Context Menu
+</ContextMenuTrigger>;
+```
+
+## Content rendered directly
+
+Render the content component directly when another controller owns the open state.
+
+```tsx
+import { ContextMenuContent } from "@stylextras/ui/context-menu";
+
+<ContextMenuContent>
+  Content can still be rendered directly when another controller owns opening.
+</ContextMenuContent>;
+```
+
+## Accessibility notes
+
+Provide meaningful item text, headings, and native roles where the surrounding product owns richer selection or keyboard behavior.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/context-menu/index.tsx`.

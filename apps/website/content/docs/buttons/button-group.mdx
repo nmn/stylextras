@@ -1,15 +1,19 @@
 ---
 title: Button Group
-description: Live example and usage notes for the Button Group component.
+description: "Button Group provides an action primitive for button and control interfaces."
 ---
 
-import Example from "@stylextras/ui/button-group/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/button-group/example"),
+);
 
 # Button Group
 
-## Example
+Use Button Group when an interface needs a clear, keyboard-accessible control for taking action. The component keeps native button behavior and moves visual decisions into token variables.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +21,91 @@ import Example from "@stylextras/ui/button-group/example";
 import { ButtonGroup } from "@stylextras/ui/button-group";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { ButtonGroup } from "@stylextras/ui/button-group";
+
+<ButtonGroup>Example</ButtonGroup>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/button-group`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type ButtonGroupProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { ButtonGroup } from "@stylextras/ui/button-group";
+
+<ButtonGroup sx={styles.emphasis}>Example</ButtonGroup>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+import { ButtonGroup } from "@stylextras/ui/button-group";
+
+function ButtonGroupExample() {
+  return (
+    <>
+      <div>
+        <ButtonGroup>
+          <Button>Approve</Button>
+          <Button variant="secondary">Comment</Button>
+          <Button variant="outline">Request changes</Button>
+        </ButtonGroup>
+      </div>
+    </>
+  );
+}
+```
+
+## Grouped composition
+
+Group related items when the collection should scan as a single unit.
+
+```tsx
+import { ButtonGroup } from "@stylextras/ui/button-group";
+
+<ButtonGroup>
+  <Button>One</Button>
+  <Button variant="secondary">Two</Button>
+</ButtonGroup>;
+```
+
+## Accessibility notes
+
+Prefer explicit visible text for actions. For icon-only controls, use the component props that require an accessible label instead of relying on the icon alone.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/button-group/index.tsx`.

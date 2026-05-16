@@ -1,15 +1,17 @@
 ---
 title: Toggle
-description: Live example and usage notes for the Toggle component.
+description: "Toggle provides an action primitive for button and control interfaces."
 ---
 
-import Example from "@stylextras/ui/toggle/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/toggle/example"));
 
 # Toggle
 
-## Example
+Use Toggle when an interface needs a clear, keyboard-accessible control for taking action. The component keeps native button behavior and moves visual decisions into token variables.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,82 @@ import Example from "@stylextras/ui/toggle/example";
 import { Toggle } from "@stylextras/ui/toggle";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Toggle } from "@stylextras/ui/toggle";
+
+<Toggle>Example</Toggle>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/toggle`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type ToggleProps = Omit<
+  BaseProps,
+  "children" | "className" | "style" | "type" | "size"
+> & {
+  children?: ReactNode;
+  sx?: StyleXStyles;
+  inputSx?: StyleXStyles;
+  size?: ToggleSize;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Toggle } from "@stylextras/ui/toggle";
+
+<Toggle sx={styles.emphasis}>Example</Toggle>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Toggle } from "@stylextras/ui/toggle";
+
+function ToggleExample() {
+  return (
+    <div>
+      <Toggle defaultChecked>Bold</Toggle>
+      <Toggle>Italic</Toggle>
+      <Toggle>Code</Toggle>
+      <Toggle disabled defaultChecked>
+        Locked
+      </Toggle>
+    </div>
+  );
+}
+```
+
+## Accessibility notes
+
+Prefer explicit visible text for actions. For icon-only controls, use the component props that require an accessible label instead of relying on the icon alone.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/toggle/index.tsx`.

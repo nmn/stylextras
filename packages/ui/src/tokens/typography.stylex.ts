@@ -21,10 +21,10 @@ const fluidTypeClamp = (minValue: string, maxValue: string) =>
   `clamp(${minValue}, calc(${minValue} - ((${maxValue} - ${minValue}) / 880px) * 360px + (((${maxValue} - ${minValue}) / 880px) * 100) * 1vw), ${maxValue})`;
 
 export const typography_core = stylex.defineVars({
-  fontSizeMin: '18px',
-  fontSizeMax: '20px',
-  scaleMin: '1.2',
-  scaleMax: '1.25',
+  fontSizeMin: '16px',
+  fontSizeMax: '18px',
+  scaleMin: '1.25',
+  scaleMax: '1.414',
   fontSans: [
     'InterVariable',
     'Inter',

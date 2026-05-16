@@ -1,12 +1,12 @@
 {
   "title": "Buttons",
   "pages": [
-    "./button.mdx",
     "./button-group.mdx",
+    "./button.mdx",
     "./copy-to-clipboard-button.mdx",
     "./icon-button.mdx",
     "./segmented-control.mdx",
-    "./toggle.mdx",
-    "./toggle-group.mdx"
+    "./toggle-group.mdx",
+    "./toggle.mdx"
   ]
 }

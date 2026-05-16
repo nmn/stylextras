@@ -1,19 +1,31 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import * as React from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { useId } from "react";
+import { Button } from "../button";
+import type { ButtonProps } from "../button";
+import {
+  type LazyComponentLoader,
+  type ReactComponent,
+  showPopoverWithSource,
+  useLazyComponent,
+} from "../lazy-component";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type DropdownMenuPlacement = "bottom" | "top" | "right" | "left";
 export type DropdownMenuBehavior = "auto" | "manual";
 
-export type DropdownMenuProps = Omit<BaseProps, "className" | "style" | "popover"> & {
+export type DropdownMenuProps = Omit<
+  BaseProps,
+  "className" | "style" | "popover"
+> & {
   behavior?: DropdownMenuBehavior;
   label?: ReactNode;
   menuSx?: StyleXStyles;
@@ -21,6 +33,26 @@ export type DropdownMenuProps = Omit<BaseProps, "className" | "style" | "popover
   sx?: StyleXStyles;
   triggerSx?: StyleXStyles;
 };
+
+export type DropdownMenuContentProps = Omit<
+  BaseProps,
+  "className" | "style" | "popover"
+> & {
+  behavior?: DropdownMenuBehavior;
+  placement?: DropdownMenuPlacement;
+  sx?: StyleXStyles;
+};
+
+export type DropdownMenuTriggerProps = Omit<
+  ButtonProps,
+  "className" | "content" | "style"
+> & {
+  content: LazyComponentLoader<DropdownMenuContentProps>;
+  contentProps?: Omit<DropdownMenuContentProps, "ref">;
+  fallback?: React.ReactNode;
+};
+
+export type DropdownMenuComponent = ReactComponent<DropdownMenuContentProps>;
 
 const bottomFallback = stylex.positionTry({ positionArea: "top" });
 const topFallback = stylex.positionTry({ positionArea: "bottom" });
@@ -50,9 +82,15 @@ export function DropdownMenu({
 
   return (
     <div {...props} {...stylex.props(rootStyles.base, sx)}>
-      <button popoverTarget={popoverId} type="button" {...stylex.props(triggerStyles.base, triggerSx)}>
+      <Button
+        popoverTarget={popoverId}
+        size="sm"
+        type="button"
+        variant="outline"
+        sx={triggerSx}
+      >
         {label}
-      </button>
+      </Button>
       <div
         id={popoverId}
         popover={behavior}
@@ -66,10 +104,18 @@ export function DropdownMenu({
       >
         {children ?? (
           <>
-            <button role="menuitem" type="button" {...stylex.props(itemStyles.base)}>
+            <button
+              role="menuitem"
+              type="button"
+              {...stylex.props(itemStyles.base)}
+            >
               Item one
             </button>
-            <button role="menuitem" type="button" {...stylex.props(itemStyles.base)}>
+            <button
+              role="menuitem"
+              type="button"
+              {...stylex.props(itemStyles.base)}
+            >
               Item two
             </button>
           </>
@@ -79,25 +125,129 @@ export function DropdownMenu({
   );
 }
 
+export function DropdownMenuContent({
+  behavior = "auto",
+  children,
+  placement = "bottom",
+  ref,
+  sx,
+  ...props
+}: DropdownMenuContentProps) {
+  return (
+    <div
+      ref={ref}
+      {...props}
+      popover={behavior}
+      role="menu"
+      {...stylex.props(
+        menuStyles.base,
+        placementStyles[placement],
+        fallbackStyles[placement],
+        sx,
+      )}
+    >
+      {children ?? (
+        <>
+          <button
+            role="menuitem"
+            type="button"
+            {...stylex.props(itemStyles.base)}
+          >
+            Item one
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            {...stylex.props(itemStyles.base)}
+          >
+            Item two
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+export function DropdownMenuTrigger({
+  children,
+  content,
+  contentProps,
+  fallback = null,
+  onClick,
+  onFocus,
+  onPointerEnter,
+  type = "button",
+  ...props
+}: DropdownMenuTriggerProps) {
+  const [mounted, setMounted] = React.useState(false);
+  const triggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const menuRef = React.useRef<HTMLDivElement | null>(null);
+  const shouldOpenRef = React.useRef(false);
+  const { LazyContent, preload } = useLazyComponent(content);
+
+  const openMenu = React.useCallback(() => {
+    shouldOpenRef.current = true;
+    setMounted(true);
+
+    const menu = menuRef.current;
+    if (menu && !menu.matches(":popover-open")) {
+      showPopoverWithSource(menu, triggerRef.current);
+      shouldOpenRef.current = false;
+    }
+  }, []);
+
+  const setMenuRef = React.useCallback((node: HTMLDivElement | null) => {
+    menuRef.current = node;
+
+    if (node && shouldOpenRef.current && !node.matches(":popover-open")) {
+      showPopoverWithSource(node, triggerRef.current);
+      shouldOpenRef.current = false;
+    }
+
+    return () => {
+      if (menuRef.current === node) {
+        menuRef.current = null;
+      }
+    };
+  }, []);
+
+  return (
+    <>
+      <Button
+        {...props}
+        aria-haspopup="menu"
+        data-menu-keep-open="true"
+        onClick={(event) => {
+          onClick?.(event);
+          if (!event.defaultPrevented) {
+            openMenu();
+          }
+        }}
+        onFocus={(event) => {
+          onFocus?.(event);
+          void preload();
+        }}
+        onPointerEnter={(event) => {
+          onPointerEnter?.(event);
+          void preload();
+        }}
+        ref={triggerRef}
+        type={type}
+      >
+        {children}
+      </Button>
+      {mounted ? (
+        <React.Suspense fallback={fallback}>
+          <LazyContent {...contentProps} ref={setMenuRef} />
+        </React.Suspense>
+      ) : null}
+    </>
+  );
+}
+
 const rootStyles = stylex.create({
   base: {
     display: "inline-grid",
-  },
-});
-
-const triggerStyles = stylex.create({
-  base: {
-    cursor: "pointer",
-    paddingInline: spacing.sm,
-    paddingBlock: spacing.xs,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    backgroundColor: colors.bg,
-    color: colors.fg,
-    fontFamily: typography.fontSans,
-    fontSize: typography.step0,
   },
 });
 
@@ -105,10 +255,7 @@ const menuStyles = stylex.create({
   base: {
     position: "fixed",
     margin: 0,
-    display: "grid",
-    gap: spacing["3xs"],
     minWidth: spacing["4xl"],
-    padding: spacing.sm,
     borderStyle: "solid",
     borderWidth: stroke.thin,
     borderColor: colors.border,
@@ -117,6 +264,10 @@ const menuStyles = stylex.create({
     color: colors.fg,
     // eslint-disable-next-line @stylexjs/valid-styles
     positionAnchor: "auto",
+    display: {
+      default: null,
+      ":popover-open": "grid",
+    },
   },
 });
 

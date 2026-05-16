@@ -1,2 +1,1 @@
-export { default } from "../textarea/example";
-
+export { default } from '../textarea/example'

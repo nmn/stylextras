@@ -1,13 +1,16 @@
-"use client";
+'use client'
 
-import { Navbar } from "./index";
-import { DemoFrame } from "../example-theme/demo";
-import { Link } from "../link";
+import { Navbar } from './index'
+import { DemoFrame } from '../example-theme/demo'
+import { Link } from '../link'
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Navigation bar" description="Navbar should show a straightforward set of primary links.">
+      <DemoFrame
+        title="Navigation bar"
+        description="Navbar should show a straightforward set of primary links."
+      >
         <Navbar>
           <Link href="#docs">Docs</Link>
           <Link href="#components">Components</Link>
@@ -15,6 +18,5 @@ export default function Example() {
         </Navbar>
       </DemoFrame>
     </>
-  );
+  )
 }
-

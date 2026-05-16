@@ -1,15 +1,26 @@
 ---
 title: Flex
-description: Live example and usage notes for the Flex component.
+description: "Flex provides a layout primitive for layout composition."
 ---
 
-import Example from "@stylextras/ui/flex/example";
+import { lazy, Suspense } from "react";
+
+export const FlexDirectionsDemo = lazy(() =>
+  import("@stylextras/ui/flex/example").then((module) => ({
+    default: module.FlexDirectionsDemo,
+  })),
+);
+export const FlexAlignmentDemo = lazy(() =>
+  import("@stylextras/ui/flex/example").then((module) => ({
+    default: module.FlexAlignmentDemo,
+  })),
+);
 
 # Flex
 
-## Example
+Use Flex to compose page structure without leaking layout-specific CSS into feature components.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +28,103 @@ import Example from "@stylextras/ui/flex/example";
 import { Flex } from "@stylextras/ui/flex";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Use Flex for local layout when row and column composition are part of the component API, not an incidental wrapper.
 
+<Suspense fallback={null}>
+  <FlexDirectionsDemo />
+</Suspense>
+
+```tsx
+import { Flex } from "@stylextras/ui/flex";
+
+<Flex gap="md">
+  <div>One</div>
+  <div>Two</div>
+  <div>Three</div>
+</Flex>
+
+<Flex direction="column" gap="md">
+  <div>One</div>
+  <div>Two</div>
+  <div>Three</div>
+</Flex>
+```
+
+## Alignment
+
+Set alignment and distribution on the component instead of pushing those rules into child elements.
+
+<Suspense fallback={null}>
+  <FlexAlignmentDemo />
+</Suspense>
+
+```tsx
+<Flex align="center" gap="sm">
+  <div>A</div>
+  <div>B</div>
+</Flex>
+
+<Flex justify="between" gap="sm">
+  <div>A</div>
+  <div>B</div>
+</Flex>
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/flex`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type FlexProps = Omit<BaseProps, "className" | "style"> & {
+  align?: FlexAlign;
+  direction?: FlexDirection;
+  gap?: FlexGap;
+  justify?: FlexJustify;
+  sx?: StyleXStyles;
+  wrap?: boolean;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Flex } from "@stylextras/ui/flex";
+
+<Flex sx={styles.emphasis}>Example</Flex>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Grouped composition
+
+Group related items when the collection should scan as a single unit.
+
+```tsx
+import { Flex } from "@stylextras/ui/flex";
+
+<Flex>
+  <Button>One</Button>
+  <Button variant="secondary">Two</Button>
+</Flex>;
+```
+
+## Accessibility notes
+
+Layout components should not replace semantic landmarks. Use nav, main, aside, section, and heading elements where they describe the content.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/flex/index.tsx`.

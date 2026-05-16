@@ -1,12 +1,15 @@
-"use client";
+'use client'
 
-import { Checkbox } from "./index";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Checkbox } from './index'
+import { DemoFrame, DemoStack } from '../example-theme/demo'
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Checkbox states" description="Checkbox should show checked, unchecked, disabled, and size differences directly.">
+      <DemoFrame
+        title="Checkbox states"
+        description="Checkbox should show checked, unchecked, disabled, and size differences directly."
+      >
         <DemoStack>
           <Checkbox defaultChecked label="Checked" />
           <Checkbox label="Unchecked" />
@@ -15,6 +18,5 @@ export default function Example() {
         </DemoStack>
       </DemoFrame>
     </>
-  );
+  )
 }
-

@@ -5,36 +5,34 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Tabs, TabItem } from './Tabs';
-import Dial from '../Dial';
-import { DevInstallExample } from './PackageInstall';
-import { Card as WhenDemo } from './WhenDemo';
-import { Card, Cards } from './Cards';
-import Heading from './Heading';
-import type { HTMLAttributes, ComponentProps } from 'react';
-import { StyleXStyles } from '@stylexjs/stylex';
-import MDXLink from './Link';
-import * as stylex from '@stylexjs/stylex';
-import { Accordion, Accordions, Details, Summary } from './Details';
+import { Tabs, TabItem } from "./Tabs";
+import Dial from "../Dial";
+import { DevInstallExample } from "./PackageInstall";
+import { Card as WhenDemo } from "./WhenDemo";
+import { Card, Cards } from "./Cards";
+import Heading from "./Heading";
+import type { HTMLAttributes, ComponentProps } from "react";
+import { StyleXStyles } from "@stylexjs/stylex";
+import MDXLink from "./Link";
+import * as stylex from "@stylexjs/stylex";
+import { Accordion, Accordions, Details, Summary } from "./Details";
 import {
   Callout,
   CalloutContainer,
   CalloutTitle,
   CalloutDescription,
-} from './Callout';
-import { Li, Ol, P, Ul } from './core';
-import Image from './Image';
-import { CodeBlock, Pre } from './CodeBlock';
-import { LLMInstallationFile, LLMStylingFile } from './LLMFiles';
-import { preMarker } from './mdx.stylex';
-import { vars } from '@/theming/vars.stylex';
-import { Button as AriaButton } from '@stylextras/ui/button';
-
-
+} from "./Callout";
+import { Li, Ol, P, Ul } from "./core";
+import Image from "./Image";
+import { CodeBlock, Pre } from "./CodeBlock";
+import { LLMInstallationFile, LLMStylingFile } from "./LLMFiles";
+import { preMarker } from "./mdx.stylex";
+import { vars } from "@/theming/vars.stylex";
+import { Button as AriaButton } from "@stylextras/ui/button";
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
-  'className' | 'style'
+  "className" | "style"
 > & {
   xstyle?: StyleXStyles;
 };
@@ -88,7 +86,7 @@ export const mdxComponents = {
   CalloutTitle,
   CalloutDescription,
   img: Image,
-  pre: (props: ComponentProps<'pre'>) => (
+  pre: (props: ComponentProps<"pre">) => (
     <CodeBlock {...props}>
       <Pre>{props.children}</Pre>
     </CodeBlock>
@@ -103,33 +101,33 @@ const styles = stylex.create({
   code: {
     paddingBlock: {
       default: 3,
-      [stylex.when.ancestor(':where(pre)')]: 8,
+      [stylex.when.ancestor(":where(pre)")]: 8,
     },
     paddingInline: {
       default: 3,
-      [stylex.when.ancestor(':where(pre)')]: 16,
+      [stylex.when.ancestor(":where(pre)")]: 16,
     },
     fontSize: {
       default: `${13 / 16}rem`,
-      [stylex.when.ancestor(':where(h1)')]: '1.5rem',
-      [stylex.when.ancestor(':where(h2)')]: '0.875em',
-      [stylex.when.ancestor(':where(h3)')]: '0.9em',
+      [stylex.when.ancestor(":where(h1)")]: "1.5rem",
+      [stylex.when.ancestor(":where(h2)")]: "0.875em",
+      [stylex.when.ancestor(":where(h3)")]: "0.9em",
     },
-    fontWeight: 'inherit',
+    fontWeight: "inherit",
     lineHeight: {
       default: null,
-      [stylex.when.ancestor(':where(pre)')]: 1.5,
+      [stylex.when.ancestor(":where(pre)")]: 1.5,
     },
     // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
-    color: vars['--color-code-green'],
+    color: vars["--color-code-green"],
     backgroundColor: {
-      default: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
-      [stylex.when.ancestor(':where(pre)', preMarker)]: 'transparent',
+      default: `color-mix(in oklab, ${vars["--color-fd-muted"]} 95%, currentColor)`,
+      [stylex.when.ancestor(":where(pre)", preMarker)]: "transparent",
     },
-    borderColor: vars['--color-fd-border'],
+    borderColor: vars["--color-fd-border"],
     borderStyle: {
-      default: 'solid',
-      [stylex.when.ancestor(':where(pre)', preMarker)]: 'none',
+      default: "solid",
+      [stylex.when.ancestor(":where(pre)", preMarker)]: "none",
     },
     borderWidth: 1,
     borderRadius: 5,

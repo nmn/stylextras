@@ -1,0 +1,176 @@
+---
+title: Popover
+description: "Popover provides a popup primitive for popup interactions."
+---
+
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/popover/example"));
+
+# Popover
+
+Use Popover for portal-free popup interactions built from trigger and content components. These docs show lazy content loading and direct content composition.
+
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
+
+## Import
+
+```tsx
+import {
+  PopoverContent,
+  type PopoverContentProps,
+  PopoverTrigger,
+} from "@stylextras/ui/popover";
+```
+
+## Basic usage
+
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
+
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import {
+  PopoverContent,
+  type PopoverContentProps,
+  PopoverTrigger,
+} from "@stylextras/ui/popover";
+
+function PopoverExampleContent(props: PopoverContentProps) {
+  return <PopoverContent {...props}>Details</PopoverContent>;
+}
+
+<PopoverTrigger content={() => Promise.resolve(PopoverExampleContent)}>
+  Open Popover
+</PopoverTrigger>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/popover`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type PopoverProps = Omit<
+  BaseProps,
+  "className" | "style" | "popover"
+> & {
+  behavior?: PopoverBehavior;
+  placement?: PopoverPlacement;
+  size?: PopoverSize;
+  sx?: StyleXStyles;
+};
+
+export type PopoverContentProps = PopoverProps;
+
+export type PopoverTriggerProps = Omit<
+  ButtonProps,
+  "className" | "content" | "style"
+> & {
+  content: LazyComponentLoader<PopoverContentProps>;
+  contentProps?: Omit<PopoverContentProps, "ref">;
+  fallback?: React.ReactNode;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import {
+  PopoverContent,
+  type PopoverContentProps,
+  PopoverTrigger,
+} from "@stylextras/ui/popover";
+
+<PopoverContent sx={styles.emphasis}>Example</PopoverContent>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import {
+  PopoverContent,
+  type PopoverContentProps,
+  PopoverTrigger,
+} from "@stylextras/ui/popover";
+
+function PopoverExampleContent(props: PopoverContentProps) {
+  return (
+    <PopoverContent {...props}>
+      <div>
+        <strong>Quick details</strong>
+        <span>Short supporting content belongs here.</span>
+      </div>
+    </PopoverContent>
+  );
+}
+
+function PopoverExample() {
+  return (
+    <PopoverTrigger content={() => Promise.resolve(PopoverExampleContent)}>
+      Open popover
+    </PopoverTrigger>
+  );
+}
+```
+
+## Lazy trigger and content
+
+Pass a content loader to the trigger so the popup body can be prefetched and rendered only when needed.
+
+```tsx
+import {
+  PopoverTrigger,
+  PopoverContent,
+  type PopoverContentProps,
+} from "@stylextras/ui/popover";
+
+function DetailsContent(props: PopoverContentProps) {
+  return (
+    <PopoverContent {...props}>
+      <h2>Details</h2>
+      <p>Render the content only after the trigger is activated.</p>
+    </PopoverContent>
+  );
+}
+
+<PopoverTrigger content={() => Promise.resolve(DetailsContent)}>
+  Open Popover
+</PopoverTrigger>;
+```
+
+## Content rendered directly
+
+Render the content component directly when another controller owns the open state.
+
+```tsx
+import { PopoverContent } from "@stylextras/ui/popover";
+
+<PopoverContent>
+  Content can still be rendered directly when another controller owns opening.
+</PopoverContent>;
+```
+
+## Accessibility notes
+
+Keep trigger text specific, label the popup content when it has a title, and prefer the platform dialog or popover behavior before adding custom focus management.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/popover/index.tsx`.

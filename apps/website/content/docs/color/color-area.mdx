@@ -1,15 +1,17 @@
 ---
 title: Color Area
-description: Live example and usage notes for the Color Area component.
+description: "Color Area provides a color primitive for color workflows."
 ---
 
-import Example from "@stylextras/ui/color-area/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/color-area/example"));
 
 # Color Area
 
-## Example
+Use Color Area when a workflow needs color selection or color presentation without replacing native input semantics.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,74 @@ import Example from "@stylextras/ui/color-area/example";
 import { ColorArea } from "@stylextras/ui/color-area";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { ColorArea } from "@stylextras/ui/color-area";
+
+<ColorArea aria-label="Accent color" defaultValue="#4f46e5" />;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/color-area`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type ColorAreaProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { ColorArea } from "@stylextras/ui/color-area";
+
+<ColorArea aria-label="Example" sx={styles.emphasis} />;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { ColorArea } from "@stylextras/ui/color-area";
+
+function ColorAreaExample() {
+  return (
+    <>
+      <div>
+        <ColorArea aria-label="Accent" defaultValue="#4f46e5" />
+        <ColorArea aria-label="Secondary accent" defaultValue="#0f766e" />
+      </div>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Always provide an accessible name for color controls, and do not rely on color alone to communicate state.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/color-area/index.tsx`.

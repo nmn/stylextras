@@ -1,12 +1,15 @@
-"use client";
+'use client'
 
-import { AlertCallout } from "./index";
-import { DemoFrame, DemoRow, DemoStack } from "../example-theme/demo";
+import { AlertCallout } from './index'
+import { DemoFrame, DemoStack } from '../example-theme/demo'
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Variants" description="Alert Callout is most useful when you can compare tone and emphasis at a glance.">
+      <DemoFrame
+        title="Variants"
+        description="Alert Callout is most useful when you can compare tone and emphasis at a glance."
+      >
         <DemoStack>
           <AlertCallout variant="neutral">Neutral message</AlertCallout>
           <AlertCallout variant="info">Info message</AlertCallout>
@@ -16,6 +19,5 @@ export default function Example() {
         </DemoStack>
       </DemoFrame>
     </>
-  );
+  )
 }
-

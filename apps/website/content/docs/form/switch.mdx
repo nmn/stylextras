@@ -1,15 +1,17 @@
 ---
 title: Switch
-description: Live example and usage notes for the Switch component.
+description: "Switch provides a form primitive for form interfaces."
 ---
 
-import Example from "@stylextras/ui/switch/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/switch/example"));
 
 # Switch
 
-## Example
+Use Switch inside forms where native input behavior, labeling, validation, and token-driven styling need to stay aligned.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,100 @@ import Example from "@stylextras/ui/switch/example";
 import { Switch } from "@stylextras/ui/switch";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Switch } from "@stylextras/ui/switch";
+
+<Switch label="Notifications" defaultChecked />;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/switch`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type SwitchProps = Omit<
+  BaseProps,
+  "className" | "style" | "type" | "size"
+> & {
+  sx?: StyleXStyles;
+  inputSx?: StyleXStyles;
+  labelSx?: StyleXStyles;
+  label?: ReactNode;
+  size?: SwitchSize;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Switch } from "@stylextras/ui/switch";
+
+<Switch label="Label" sx={styles.emphasis} />;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Switch } from "@stylextras/ui/switch";
+
+function SwitchExample() {
+  return (
+    <>
+      <div>
+        <Switch defaultChecked label="Enabled" />
+        <Switch label="Disabled" />
+        <Switch size="sm" defaultChecked label="Small switch" />
+      </div>
+    </>
+  );
+}
+```
+
+## Basic field
+
+This pattern shows another common way to compose the component.
+
+```tsx
+import { Switch } from "@stylextras/ui/switch";
+
+<Switch label="Label" />;
+```
+
+## With native props
+
+This pattern shows another common way to compose the component.
+
+```tsx
+<Switch label="Required field" required disabled={false} />
+```
+
+## Accessibility notes
+
+Every interactive form control should have a label or accessible name. Preserve native attributes such as required, disabled, min, max, and aria-describedby when they apply.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/switch/index.tsx`.

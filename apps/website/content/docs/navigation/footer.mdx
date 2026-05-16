@@ -1,15 +1,17 @@
 ---
 title: Footer
-description: Live example and usage notes for the Footer component.
+description: "Footer provides a navigation primitive for navigation interfaces."
 ---
 
-import Example from "@stylextras/ui/footer/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(() => import("@stylextras/ui/footer/example"));
 
 # Footer
 
-## Example
+Use Footer for navigation patterns that need predictable structure, token-driven spacing, and clear focus behavior.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +19,76 @@ import Example from "@stylextras/ui/footer/example";
 import { Footer } from "@stylextras/ui/footer";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { Footer } from "@stylextras/ui/footer";
+
+<Footer>Example</Footer>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/footer`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type FooterProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Footer } from "@stylextras/ui/footer";
+
+<Footer sx={styles.emphasis}>Example</Footer>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { Footer } from "@stylextras/ui/footer";
+import { Link } from "@stylextras/ui/link";
+
+function FooterExample() {
+  return (
+    <>
+      <Footer>
+        <Link href="#docs">Docs</Link>
+        <Link href="#components">Components</Link>
+        <Link href="#themes">Themes</Link>
+      </Footer>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Use real links for navigation, mark the current location where appropriate, and keep focus order consistent with visual order.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/footer/index.tsx`.

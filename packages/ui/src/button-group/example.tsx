@@ -1,13 +1,16 @@
-"use client";
+'use client'
 
-import { Button } from "../button";
-import { ButtonGroup } from "./index";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Button } from '../button'
+import { ButtonGroup } from './index'
+import { DemoFrame, DemoStack } from '../example-theme/demo'
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Grouped actions" description="Button Group only needs a simple grouped specimen.">
+      <DemoFrame
+        title="Grouped actions"
+        description="Button Group only needs a simple grouped specimen."
+      >
         <DemoStack>
           <ButtonGroup>
             <Button>Approve</Button>
@@ -17,6 +20,5 @@ export default function Example() {
         </DemoStack>
       </DemoFrame>
     </>
-  );
+  )
 }
-

@@ -1,28 +1,28 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"fieldset">;
+type BaseProps = ComponentPropsWithoutRef<'fieldset'>
 
-type RadioOption = { label: string; value: string };
+type RadioOption = string | { label: string; value: string }
 
-export type RadioGroupProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  legendSx?: StyleXStyles;
-  optionSx?: StyleXStyles;
-  legend?: ReactNode;
-  name?: string;
-  options?: RadioOption[];
-};
+export type RadioGroupProps = Omit<BaseProps, 'className' | 'style'> & {
+  sx?: StyleXStyles
+  legendSx?: StyleXStyles
+  optionSx?: StyleXStyles
+  legend?: ReactNode
+  name?: string
+  options?: RadioOption[]
+}
 
 const defaultOptions = [
-  { label: "Small", value: "small" },
-  { label: "Medium", value: "medium" },
-  { label: "Large", value: "large" },
-];
+  { label: 'Small', value: 'small' },
+  { label: 'Medium', value: 'medium' },
+  { label: 'Large', value: 'large' },
+]
 
 /**
  * Renders a grouped set of native radio controls.
@@ -35,9 +35,9 @@ const defaultOptions = [
  */
 export function RadioGroup({
   children,
-  legend = "Options",
+  legend = 'Options',
   legendSx,
-  name = "radio-group",
+  name = 'radio-group',
   optionSx,
   options = defaultOptions,
   sx,
@@ -46,16 +46,49 @@ export function RadioGroup({
   return (
     <fieldset {...props} {...stylex.props(rootStyles.base, sx)}>
       <legend {...stylex.props(legendStyles.base, legendSx)}>{legend}</legend>
-      {children ?? options.map((option) => (
-        <label key={option.value} {...stylex.props(optionStyles.base, optionSx)}>
-          <input name={name} type="radio" value={option.value} />
-          <span>{option.label}</span>
-        </label>
-      ))}
+      {children ??
+        options.map((option) => {
+          const normalizedOption =
+            typeof option === 'string' ? { label: option, value: option } : option
+
+          return (
+            <label key={normalizedOption.value} {...stylex.props(optionStyles.base, optionSx)}>
+              <input name={name} type="radio" value={normalizedOption.value} />
+              <span>{normalizedOption.label}</span>
+            </label>
+          )
+        })}
     </fieldset>
-  );
+  )
 }
 
-const rootStyles = stylex.create({ base: { display: "grid", gap: spacing.xs, border: "none", padding: 0, margin: 0 } });
-const legendStyles = stylex.create({ base: { color: colors.fgSoft, fontFamily: typography.fontSans, fontSize: typography.stepMinus1, fontWeight: typography.weightMedium, marginBottom: spacing.xs } });
-const optionStyles = stylex.create({ base: { display: "inline-flex", alignItems: "center", gap: spacing.xs, fontFamily: typography.fontSans, fontSize: typography.step0, lineHeight: typography.lineHeightBody } });
+const rootStyles = stylex.create({
+  base: {
+    display: 'grid',
+    gap: spacing.xs,
+    borderStyle: 'solid',
+    borderWidth: 0,
+    borderColor: 'transparent',
+    padding: 0,
+    margin: 0,
+  },
+})
+const legendStyles = stylex.create({
+  base: {
+    color: colors.fgSoft,
+    fontFamily: typography.fontSans,
+    fontSize: typography.stepMinus1,
+    fontWeight: typography.weightMedium,
+    marginBottom: spacing.xs,
+  },
+})
+const optionStyles = stylex.create({
+  base: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: spacing.xs,
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    lineHeight: typography.lineHeightBody,
+  },
+})

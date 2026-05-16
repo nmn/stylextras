@@ -1,15 +1,19 @@
 ---
 title: Editable Text
-description: Live example and usage notes for the Editable Text component.
+description: "Editable Text provides a content primitive for content surfaces."
 ---
 
-import Example from "@stylextras/ui/editable-text/example";
+import { lazy, Suspense } from "react";
+
+export const Example = lazy(
+  () => import("@stylextras/ui/editable-text/example"),
+);
 
 # Editable Text
 
-## Example
+Use Editable Text to shape reusable content blocks while keeping typography, spacing, and surface styling token-driven.
 
-<Example />
+The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
@@ -17,7 +21,86 @@ import Example from "@stylextras/ui/editable-text/example";
 import { EditableText } from "@stylextras/ui/editable-text";
 ```
 
-## Notes
+## Basic usage
 
-This page reflects the current native-first `@stylextras/ui` implementation. The live example above is the recommended starting point for composition and theming.
+Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
 
+<Suspense fallback={null}>
+  <Example />
+</Suspense>
+
+```tsx
+import { EditableText } from "@stylextras/ui/editable-text";
+
+<EditableText>Example</EditableText>;
+```
+
+## Props
+
+The public prop types are exported from `@stylextras/ui/editable-text`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
+
+```tsx
+export type EditableTextProps = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "className" | "style" | "children"
+> & {
+  as?: EditableTextElement;
+  children?: ReactNode;
+  defaultValue?: string;
+  multiline?: boolean;
+  onValueChange?: (value: string) => void;
+  sx?: StyleXStyles;
+};
+```
+
+## Customize styles
+
+Use the `sx` prop to compose custom styles with the component's token-driven defaults.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+import { EditableText } from "@stylextras/ui/editable-text";
+
+<EditableText sx={styles.emphasis}>Example</EditableText>;
+
+const styles = stylex.create({
+  emphasis: {
+    backgroundColor: colors.bgSubtle,
+    padding: spacing.md,
+  },
+});
+```
+
+## Complete example
+
+This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+
+```tsx
+import { EditableText } from "@stylextras/ui/editable-text";
+
+function EditableTextExample() {
+  return (
+    <>
+      <div>
+        <EditableText defaultValue="Editable title" />
+        <EditableText
+          as="div"
+          multiline
+          defaultValue="Editable multiline body copy."
+        />
+      </div>
+    </>
+  );
+}
+```
+
+## Accessibility notes
+
+Choose semantic children and heading levels based on the page structure around the component.
+
+## Implementation notes
+
+- Styles use token variables from `@stylextras/ui/tokens/*`.
+- The implementation lives in `packages/ui/src/editable-text/index.tsx`.
