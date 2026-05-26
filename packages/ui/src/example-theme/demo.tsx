@@ -1,64 +1,78 @@
-'use client'
+"use client";
 
-import * as React from 'react'
-import * as stylex from '@stylexjs/stylex'
-import { colorThemes, type ColorThemeName } from '../color-themes'
-import { elevationThemes, type ElevationThemeName } from '../elevation-themes'
-import { radiusThemes, type RadiusThemeName } from '../radius-themes'
-import { spacingThemes, type SpacingThemeName } from '../spacing-themes'
-import { strokeThemes, type StrokeThemeName } from '../stroke-themes'
-import { typographyThemes, type TypographyThemeName } from '../typography-themes'
-import { colors } from '../tokens/color.stylex'
-import { elevation } from '../tokens/elevation.stylex'
-import { radius } from '../tokens/radius.stylex'
-import { spacing } from '../tokens/spacing.stylex'
-import { stroke } from '../tokens/stroke.stylex'
-import { typography } from '../tokens/typography.stylex'
-import { Typography } from '../typography'
+import * as stylex from "@stylexjs/stylex";
+import { useState } from "react";
+import type { ReactNode } from "react";
+import { colorThemes, type ColorThemeName } from "../color-themes";
+import { elevationThemes, type ElevationThemeName } from "../elevation-themes";
+import { radiusThemes, type RadiusThemeName } from "../radius-themes";
+import { spacingThemes, type SpacingThemeName } from "../spacing-themes";
+import { strokeThemes, type StrokeThemeName } from "../stroke-themes";
+import {
+  typographyThemes,
+  type TypographyThemeName,
+} from "../typography-themes";
+import { colors } from "../tokens/color.stylex";
+import { elevation } from "../tokens/elevation.stylex";
+import { radius } from "../tokens/radius.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { stroke } from "../tokens/stroke.stylex";
+import { typography } from "../tokens/typography.stylex";
+import { Typography } from "../typography";
 
 type ThemeFieldProps<T extends string> = {
-  label: string
-  onChange: (value: T) => void
-  options: readonly T[]
-  value: T
-}
+  label: string;
+  onChange: (value: T) => void;
+  options: readonly T[];
+  value: T;
+};
 
 type DemoFrameProps = {
-  children: React.ReactNode
-  description?: React.ReactNode
-  showThemes?: boolean
-  title: React.ReactNode
-}
+  children: ReactNode;
+  description?: ReactNode;
+  showThemes?: boolean;
+  title: ReactNode;
+};
 
 type DemoChildrenProps = {
-  children: React.ReactNode
-}
+  children: ReactNode;
+};
 
-const colorThemeOptions = Object.keys(colorThemes) as ColorThemeName[]
-const spacingThemeOptions = Object.keys(spacingThemes) as SpacingThemeName[]
-const radiusThemeOptions = Object.keys(radiusThemes) as RadiusThemeName[]
-const strokeThemeOptions = Object.keys(strokeThemes) as StrokeThemeName[]
-const elevationThemeOptions = Object.keys(elevationThemes) as ElevationThemeName[]
-const typographyThemeOptions = Object.keys(typographyThemes) as TypographyThemeName[]
+const colorThemeOptions = Object.keys(colorThemes) as ColorThemeName[];
+const spacingThemeOptions = Object.keys(spacingThemes) as SpacingThemeName[];
+const radiusThemeOptions = Object.keys(radiusThemes) as RadiusThemeName[];
+const strokeThemeOptions = Object.keys(strokeThemes) as StrokeThemeName[];
+const elevationThemeOptions = Object.keys(
+  elevationThemes,
+) as ElevationThemeName[];
+const typographyThemeOptions = Object.keys(
+  typographyThemes,
+) as TypographyThemeName[];
 
-export function DemoFrame({ children, description, showThemes = true, title }: DemoFrameProps) {
-  const [colorTheme, setColorTheme] = React.useState<ColorThemeName>('base')
-  const [spacingTheme, setSpacingTheme] = React.useState<SpacingThemeName>('base')
-  const [radiusTheme, setRadiusTheme] = React.useState<RadiusThemeName>('base')
-  const [strokeTheme, setStrokeTheme] = React.useState<StrokeThemeName>('base')
-  const [elevationTheme, setElevationTheme] = React.useState<ElevationThemeName>('base')
-  const [typeTheme, setTypeTheme] = React.useState<TypographyThemeName>('ui')
+export function DemoFrame({
+  children,
+  description,
+  showThemes = true,
+  title,
+}: DemoFrameProps) {
+  const [colorTheme, setColorTheme] = useState<ColorThemeName>("base");
+  const [spacingTheme, setSpacingTheme] = useState<SpacingThemeName>("base");
+  const [radiusTheme, setRadiusTheme] = useState<RadiusThemeName>("base");
+  const [strokeTheme, setStrokeTheme] = useState<StrokeThemeName>("base");
+  const [elevationTheme, setElevationTheme] =
+    useState<ElevationThemeName>("base");
+  const [typeTheme, setTypeTheme] = useState<TypographyThemeName>("ui");
 
   return (
     <div
       {...stylex.props(
         styles.shell,
-        ...colorThemes[colorTheme],
-        ...spacingThemes[spacingTheme],
-        ...radiusThemes[radiusTheme],
-        ...strokeThemes[strokeTheme],
-        ...elevationThemes[elevationTheme],
-        ...typographyThemes[typeTheme],
+        colorThemes[colorTheme],
+        spacingThemes[spacingTheme],
+        radiusThemes[radiusTheme],
+        strokeThemes[strokeTheme],
+        elevationThemes[elevationTheme],
+        typographyThemes[typeTheme],
       )}
     >
       <div {...stylex.props(styles.header)}>
@@ -116,10 +130,15 @@ export function DemoFrame({ children, description, showThemes = true, title }: D
 
       {children}
     </div>
-  )
+  );
 }
 
-function ThemeField<T extends string>({ label, onChange, options, value }: ThemeFieldProps<T>) {
+function ThemeField<T extends string>({
+  label,
+  onChange,
+  options,
+  value,
+}: ThemeFieldProps<T>) {
   return (
     <label {...stylex.props(styles.field)}>
       <span {...stylex.props(styles.fieldLabel)}>{label}</span>
@@ -135,69 +154,69 @@ function ThemeField<T extends string>({ label, onChange, options, value }: Theme
         ))}
       </select>
     </label>
-  )
+  );
 }
 
 export function DemoRow({ children }: DemoChildrenProps) {
-  return <div {...stylex.props(styles.row)}>{children}</div>
+  return <div {...stylex.props(styles.row)}>{children}</div>;
 }
 
 export function DemoStack({ children }: DemoChildrenProps) {
-  return <div {...stylex.props(styles.stack)}>{children}</div>
+  return <div {...stylex.props(styles.stack)}>{children}</div>;
 }
 
 export function DemoGrid({ children }: DemoChildrenProps) {
-  return <div {...stylex.props(styles.grid)}>{children}</div>
+  return <div {...stylex.props(styles.grid)}>{children}</div>;
 }
 
 export function DemoPanel({ children }: DemoChildrenProps) {
-  return <div {...stylex.props(styles.panel)}>{children}</div>
+  return <div {...stylex.props(styles.panel)}>{children}</div>;
 }
 
 export function DemoMuted({ children }: DemoChildrenProps) {
-  return <div {...stylex.props(styles.muted)}>{children}</div>
+  return <div {...stylex.props(styles.muted)}>{children}</div>;
 }
 
 export function DemoEyebrow({ children }: DemoChildrenProps) {
-  return <div {...stylex.props(styles.eyebrow)}>{children}</div>
+  return <div {...stylex.props(styles.eyebrow)}>{children}</div>;
 }
 
 const styles = stylex.create({
   shell: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: spacing.md,
-    width: '100%',
     padding: spacing.lg,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.xl,
-    backgroundColor: colors.bgSubtle,
-    color: colors.fg,
-    boxShadow: elevation.sm,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    gap: spacing.md,
     marginBlock: spacing.lg,
+    alignItems: "flex-start",
+    backgroundColor: colors.bgSubtle,
+    boxShadow: elevation.sm,
+    color: colors.fg,
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
   },
   header: {
-    display: 'grid',
     gap: spacing.xs,
+    display: "grid",
   },
   controls: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-    gap: spacing.sm,
     padding: spacing.md,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.lg,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    gap: spacing.sm,
     backgroundColor: colors.bg,
+    display: "flex",
+    flexWrap: "wrap",
+    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
   },
   field: {
-    display: 'grid',
     gap: spacing.xs,
+    display: "grid",
     flexShrink: 0,
   },
   fieldLabel: {
@@ -207,42 +226,42 @@ const styles = stylex.create({
     fontWeight: typography.weightMedium,
   },
   select: {
-    minHeight: spacing['3xl'],
-    paddingInline: spacing.sm,
-    paddingBlock: spacing.xs,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingBlock: spacing.xs,
+    paddingInline: spacing.sm,
     backgroundColor: colors.bgRaised,
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
+    minHeight: spacing.xxxl,
   },
   row: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
     gap: spacing.sm,
+    alignItems: "center",
+    display: "flex",
+    flexWrap: "wrap",
   },
   stack: {
-    display: 'grid',
     gap: spacing.sm,
+    display: "grid",
   },
   grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
     gap: spacing.sm,
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
   },
   panel: {
-    display: 'grid',
-    gap: spacing.sm,
     padding: spacing.md,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.lg,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    gap: spacing.sm,
     backgroundColor: colors.bg,
+    display: "grid",
   },
   muted: {
     color: colors.fgMuted,
@@ -256,6 +275,6 @@ const styles = stylex.create({
     fontSize: typography.stepMinus2,
     fontWeight: typography.weightSemibold,
     letterSpacing: typography.trackingWide,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
-})
+});

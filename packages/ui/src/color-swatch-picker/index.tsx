@@ -27,7 +27,13 @@ const defaultColors = ["#7c3aed", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444"];
  * - Selection behavior is simplified.
  * - Does not yet provide a robust radio-group style keyboard model.
  */
-export function ColorSwatchPicker({ colors = defaultColors, onValueChange, sx, value, ...props }: ColorSwatchPickerProps) {
+export function ColorSwatchPicker({
+  colors = defaultColors,
+  onValueChange,
+  sx,
+  value,
+  ...props
+}: ColorSwatchPickerProps) {
   const [internalValue, setInternalValue] = useState(colors[0] ?? "#7c3aed");
   const currentValue = value ?? internalValue;
 
@@ -39,7 +45,12 @@ export function ColorSwatchPicker({ colors = defaultColors, onValueChange, sx, v
   return (
     <div {...props} {...stylex.props(styles.base, sx)}>
       {colors.map((item) => (
-        <button key={item} type="button" onClick={() => handleSelect(item)} aria-pressed={currentValue === item}>
+        <button
+          key={item}
+          type="button"
+          onClick={() => handleSelect(item)}
+          aria-pressed={currentValue === item}
+        >
           <ColorSwatch color={item} />
         </button>
       ))}
@@ -47,4 +58,11 @@ export function ColorSwatchPicker({ colors = defaultColors, onValueChange, sx, v
   );
 }
 
-const styles = stylex.create({ base: { display: "flex", alignItems: "center", gap: spacing.xs, flexWrap: "wrap" } });
+const styles = stylex.create({
+  base: {
+    gap: spacing.xs,
+    alignItems: "center",
+    display: "flex",
+    flexWrap: "wrap",
+  },
+});

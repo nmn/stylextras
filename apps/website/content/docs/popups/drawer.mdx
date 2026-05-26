@@ -9,7 +9,7 @@ export const Example = lazy(() => import("@stylextras/ui/drawer/example"));
 
 # Drawer
 
-Use Drawer for portal-free popup interactions built from trigger and content components. These docs show lazy content loading and direct content composition.
+Use Drawer for side-panel dialogs. A drawer is a styled dialog content component, so it uses the same lazy `DialogTrigger` and programmatic dialog API as `DialogContent`.
 
 The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
@@ -17,10 +17,10 @@ The implementation is intentionally small: visual defaults come from token varia
 
 ```tsx
 import {
+  DialogTrigger,
+  DialogProgrammatic,
   DrawerContent,
-  DrawerTrigger,
-  DrawerProgrammatic,
-} from "@stylextras/ui/drawer";
+} from "@stylextras/ui/dialog";
 ```
 
 ## Basic usage
@@ -33,18 +33,18 @@ Start here when wiring the component into an interface. The demo shows the expec
 
 ```tsx
 import {
+  DialogTrigger,
   DrawerContent,
-  DrawerTrigger,
-  DrawerProgrammatic,
-} from "@stylextras/ui/drawer";
+  type DrawerContentProps,
+} from "@stylextras/ui/dialog";
 
 function DrawerExampleContent(props: DrawerContentProps) {
   return <DrawerContent {...props}>Details</DrawerContent>;
 }
 
-<DrawerTrigger content={() => Promise.resolve(DrawerExampleContent)}>
+<DialogTrigger content={() => Promise.resolve(DrawerExampleContent)}>
   Open Drawer
-</DrawerTrigger>;
+</DialogTrigger>;
 ```
 
 ## Props
@@ -52,24 +52,29 @@ function DrawerExampleContent(props: DrawerContentProps) {
 The public prop types are exported from `@stylextras/ui/drawer`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type DrawerProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
+export type DrawerContentProps = Omit<BaseProps, "className" | "style"> & {
   side?: DrawerSide;
+  sx?: StyleXStyles;
 };
 
-export type DrawerContentProps = DrawerProps;
-
-export type DrawerTriggerProps = Omit<
-  ButtonProps,
-  "className" | "content" | "style"
-> & {
-  content: LazyComponentLoader<DrawerContentProps>;
-  contentProps?: Omit<DrawerContentProps, "ref">;
+export type DialogTriggerProps<
+  Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
+> = Omit<ButtonProps, "className" | "content" | "style"> & {
+  content: LazyComponentLoader<Props>;
+  contentProps?: Omit<Props, "ref">;
   fallback?: React.ReactNode;
 };
 
-export type DrawerProgrammaticProps =
-  DialogProgrammaticProps<DrawerContentProps>;
+export type DialogProgrammaticProps<
+  Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
+> = {
+  content: LazyComponentLoader<Props>;
+  contentProps?: Omit<Props, "open" | "ref">;
+  defaultOpen?: boolean;
+  fallback?: React.ReactNode;
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
+};
 ```
 
 ## Customize styles
@@ -80,11 +85,7 @@ Use the `sx` prop to compose custom styles with the component's token-driven def
 import * as stylex from "@stylexjs/stylex";
 import { colors } from "@stylextras/ui/tokens/color";
 import { spacing } from "@stylextras/ui/tokens/spacing";
-import {
-  DrawerContent,
-  DrawerTrigger,
-  DrawerProgrammatic,
-} from "@stylextras/ui/drawer";
+import { DrawerContent } from "@stylextras/ui/dialog";
 
 <DrawerContent sx={styles.emphasis}>Example</DrawerContent>;
 
@@ -102,13 +103,13 @@ This example shows the component in a fuller composition with the surrounding pi
 
 ```tsx
 import { Button } from "@stylextras/ui/button";
-import { ButtonGroup } from "@stylextras/ui/button-group";
+import { ButtonGroupActions } from "@stylextras/ui/button-group";
 import { Typography } from "@stylextras/ui/typography";
 import {
+  DialogTrigger,
   DrawerContent,
   type DrawerContentProps,
-  DrawerTrigger,
-} from "@stylextras/ui/drawer";
+} from "@stylextras/ui/dialog";
 
 function DrawerExampleContent(props: DrawerContentProps) {
   return (
@@ -121,12 +122,14 @@ function DrawerExampleContent(props: DrawerContentProps) {
           Use a drawer for nearby controls without leaving the current page.
         </span>
         <form method="dialog">
-          <ButtonGroup>
-            <Button type="submit" variant="secondary">
-              Close
-            </Button>
-            <Button type="submit">Save changes</Button>
-          </ButtonGroup>
+          <ButtonGroupActions
+            secondary={
+              <Button type="submit" variant="secondary">
+                Close
+              </Button>
+            }
+            primary={<Button type="submit">Save changes</Button>}
+          />
         </form>
       </div>
     </DrawerContent>
@@ -135,9 +138,9 @@ function DrawerExampleContent(props: DrawerContentProps) {
 
 function DrawerExample() {
   return (
-    <DrawerTrigger content={() => Promise.resolve(DrawerExampleContent)}>
+    <DialogTrigger content={() => Promise.resolve(DrawerExampleContent)}>
       Open drawer
-    </DrawerTrigger>
+    </DialogTrigger>
   );
 }
 ```
@@ -148,10 +151,10 @@ Pass a content loader to the trigger so the popup body can be prefetched and ren
 
 ```tsx
 import {
-  DrawerTrigger,
+  DialogTrigger,
   DrawerContent,
   type DrawerContentProps,
-} from "@stylextras/ui/drawer";
+} from "@stylextras/ui/dialog";
 
 function DetailsContent(props: DrawerContentProps) {
   return (
@@ -162,9 +165,9 @@ function DetailsContent(props: DrawerContentProps) {
   );
 }
 
-<DrawerTrigger content={() => Promise.resolve(DetailsContent)}>
+<DialogTrigger content={() => Promise.resolve(DetailsContent)}>
   Open Drawer
-</DrawerTrigger>;
+</DialogTrigger>;
 ```
 
 ## Content rendered directly
@@ -172,7 +175,7 @@ function DetailsContent(props: DrawerContentProps) {
 Render the content component directly when another controller owns the open state.
 
 ```tsx
-import { DrawerContent } from "@stylextras/ui/drawer";
+import { DrawerContent } from "@stylextras/ui/dialog";
 
 <DrawerContent>
   Content can still be rendered directly when another controller owns opening.
@@ -185,14 +188,14 @@ Use the programmatic component when open state belongs to application state rath
 
 ```tsx
 import {
-  DrawerProgrammatic,
+  DialogProgrammatic,
   DrawerContent,
   type DrawerContentProps,
-} from "@stylextras/ui/drawer";
+} from "@stylextras/ui/dialog";
 
 function ProgrammaticExample({ open, onOpenChange }) {
   return (
-    <DrawerProgrammatic
+    <DialogProgrammatic<DrawerContentProps>
       open={open}
       onOpenChange={onOpenChange}
       content={() =>

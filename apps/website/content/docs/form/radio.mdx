@@ -30,7 +30,7 @@ Start here when wiring the component into an interface. The demo shows the expec
 ```tsx
 import { Radio } from "@stylextras/ui/radio";
 
-<Radio>Example</Radio>;
+<Radio label="Preview only" name="publish-target" />;
 ```
 
 ## Props
@@ -38,10 +38,13 @@ import { Radio } from "@stylextras/ui/radio";
 The public prop types are exported from `@stylextras/ui/radio`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type RadioProps = Omit<BaseProps, "className" | "style" | "type"> & {
-  label?: ReactNode;
-  sx?: StyleXStyles;
-};
+export type RadioProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style" | "type"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+  };
 ```
 
 ## Customize styles

@@ -8,7 +8,7 @@
 declare const STYLEX_SOURCE: string;
 
 export const INITIAL_INPUT_FILES: Record<string, string> = {
-  'App.tsx': `import * as stylex from "@stylexjs/stylex";
+  "App.tsx": `import * as stylex from "@stylexjs/stylex";
 import Logo from "./Logo";
 import { colors } from "./tokens.stylex";
 
@@ -218,7 +218,7 @@ const styles = stylex.create({
   },
 });
 `,
-  'tokens.stylex.ts': `import * as stylex from "@stylexjs/stylex";
+  "tokens.stylex.ts": `import * as stylex from "@stylexjs/stylex";
 
 export const colors = stylex.defineConsts({
   bg: "light-dark(#f7f7f7, #121212)",
@@ -233,7 +233,7 @@ export const colors = stylex.defineConsts({
   buttonSecondary: "light-dark(hsl(222, 67%, 58%), hsl(222, 87%, 78%))",
 });
 `,
-  'Logo.tsx': `import * as React from "react";
+  "Logo.tsx": `import * as React from "react";
 import * as stylex from "@stylexjs/stylex";
 
 export default function Logo({ style }: { style?: stylex.StyleXStyles }) {
@@ -295,44 +295,44 @@ const styles = stylex.create({
 };
 
 export const INITIAL_BUNDLER_FILES = {
-  '/index.js': {
+  "/index.js": {
     code: `import './styles.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 createRoot(document.getElementById('root')).render(<App />);`,
   },
-  '/public/index.html': {
+  "/public/index.html": {
     code: `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
 <body><div id="root"></div></body>
 </html>`,
   },
-  '/package.json': {
+  "/package.json": {
     code: JSON.stringify(
       {
-        main: '/index.js',
+        main: "/index.js",
         dependencies: {
-          react: '19.2.3',
-          'react-dom': '19.2.3',
+          react: "19.2.3",
+          "react-dom": "19.2.3",
         },
       },
       null,
       2,
     ),
   },
-  '/node_modules/@stylexjs/stylex/package.json': {
+  "/node_modules/@stylexjs/stylex/package.json": {
     code: JSON.stringify(
       {
-        name: '@stylexjs/stylex',
-        main: './index.js',
+        name: "@stylexjs/stylex",
+        main: "./index.js",
       },
       null,
       2,
     ),
   },
-  '/node_modules/@stylexjs/stylex/index.js': {
+  "/node_modules/@stylexjs/stylex/index.js": {
     code: STYLEX_SOURCE,
   },
 };

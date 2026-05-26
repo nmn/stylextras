@@ -5,9 +5,17 @@ import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 
 export type ImageCropperRatio = "square" | "video" | "portrait" | "landscape";
-export type ImageCropperPosition = "center" | "top" | "bottom" | "left" | "right";
+export type ImageCropperPosition =
+  | "center"
+  | "top"
+  | "bottom"
+  | "left"
+  | "right";
 
-export type ImageCropperProps = Omit<ComponentPropsWithoutRef<"img">, "className" | "style"> & {
+export type ImageCropperProps = Omit<
+  ComponentPropsWithoutRef<"img">,
+  "className" | "style"
+> & {
   frameSx?: StyleXStyles;
   position?: ImageCropperPosition;
   ratio?: ImageCropperRatio;
@@ -46,10 +54,10 @@ export function ImageCropper({
 
 const frameStyles = stylex.create({
   base: {
-    overflow: "hidden",
-    width: "100%",
     borderRadius: radius.md,
+    overflow: "hidden",
     backgroundColor: colors.bgSubtle,
+    width: "100%",
   },
 });
 
@@ -63,9 +71,9 @@ const ratioStyles = stylex.create({
 const imageStyles = stylex.create({
   base: {
     display: "block",
-    width: "100%",
-    height: "100%",
     objectFit: "cover",
+    height: "100%",
+    width: "100%",
   },
 });
 

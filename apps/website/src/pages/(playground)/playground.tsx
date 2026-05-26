@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as stylex from '@stylexjs/stylex';
-import { Playground } from '@/components/Playground/DynamicPlayground';
-import Footer from '@/components/Footer';
-import { vars } from '@/theming/vars.stylex';
+import * as stylex from "@stylexjs/stylex";
+import { Playground } from "@/components/Playground/DynamicPlayground";
+import Footer from "@/components/Footer";
+import { vars } from "@/theming/vars.stylex";
 
 export default function PlaygroundPage() {
   return (
@@ -24,18 +24,18 @@ export default function PlaygroundPage() {
 
 const styles = stylex.create({
   main: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: 8,
-    color: `${vars['--color-fd-foreground']}`,
-    backgroundColor: `${vars['--color-fd-background']}`,
+    color: `${vars["--color-fd-foreground"]}`,
+    backgroundColor: `${vars["--color-fd-background"]}`,
   },
 });
 
 export const getConfig = async () => {
   return {
-    render: 'static',
+    render: "static",
   };
 };

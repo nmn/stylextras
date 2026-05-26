@@ -4,12 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
-import { useEffect, useState } from 'react';
-import { StyleXComponentProps } from '../layout/shared';
-import * as stylex from '@stylexjs/stylex';
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
+import { useEffect, useState } from "react";
+import { StyleXComponentProps } from "../layout/shared";
+import * as stylex from "@stylexjs/stylex";
 
 export const Collapsible = CollapsiblePrimitive.Root;
 
@@ -47,15 +47,15 @@ CollapsibleContent.displayName =
 
 const styles = stylex.create({
   overflowHidden: {
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   mounted: {
     animation: {
       default: null,
       // eslint-disable-next-line @stylexjs/valid-styles
-      ':where([data-state=closed])': 'var(--animation-fd-collapsible-up)',
+      ":where([data-state=closed])": "var(--animation-fd-collapsible-up)",
       // eslint-disable-next-line @stylexjs/valid-styles
-      ':where([data-state=open])': 'var(--animation-fd-collapsible-down)',
+      ":where([data-state=open])": "var(--animation-fd-collapsible-down)",
     },
   },
 });

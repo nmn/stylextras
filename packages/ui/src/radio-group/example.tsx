@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { RadioGroup } from './index'
-import { DemoFrame } from '../example-theme/demo'
+import { RadioGroup } from "./index";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -13,9 +13,9 @@ export default function Example() {
         <RadioGroup
           legend="Where should this release go?"
           name="publish-target"
-          options={['Preview only', 'Staging', 'Production']}
+          options={["Preview only", "Staging", "Production"]}
         />
       </DemoFrame>
     </>
-  )
+  );
 }

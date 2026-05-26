@@ -1,4 +1,7 @@
-import { RangeDatePicker, type RangeDatePickerProps } from "../range-date-picker/index";
+import {
+  RangeDatePicker,
+  type RangeDatePickerProps,
+} from "../range-date-picker/index";
 
 export type DateRangePickerProps = RangeDatePickerProps;
 

@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { Badge } from '../badge'
-import { TagGroup } from './index'
-import { DemoFrame } from '../example-theme/demo'
+import { Badge } from "../badge";
+import { TagGroup } from "./index";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -18,5 +18,5 @@ export default function Example() {
         </TagGroup>
       </DemoFrame>
     </>
-  )
+  );
 }

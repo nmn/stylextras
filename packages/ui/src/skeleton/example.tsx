@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Skeleton } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Skeleton } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -17,5 +17,5 @@ export default function Example() {
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

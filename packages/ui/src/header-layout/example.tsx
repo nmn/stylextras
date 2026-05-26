@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { HeaderLayout } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
-import { Button } from '../button'
+import { HeaderLayout } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Button } from "../button";
 
 export default function Example() {
   return (
@@ -14,10 +14,13 @@ export default function Example() {
         <HeaderLayout header={<Button>Back</Button>}>
           <DemoStack>
             <strong>Page content</strong>
-            <span>This layout keeps the header visually separate from the main content.</span>
+            <span>
+              This layout keeps the header visually separate from the main
+              content.
+            </span>
           </DemoStack>
         </HeaderLayout>
       </DemoFrame>
     </>
-  )
+  );
 }

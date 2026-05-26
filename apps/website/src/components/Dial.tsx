@@ -4,66 +4,67 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import React, { useState, useRef } from 'react';
-import * as stylex from '@stylexjs/stylex';
+import { Fragment, useRef, useState } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
+import * as stylex from "@stylexjs/stylex";
 
 const gradientShift = stylex.keyframes({
-  '0%': { backgroundPosition: '0% 50%' },
-  '50%': { backgroundPosition: '100% 50%' },
-  '100%': { backgroundPosition: '0% 50%' },
+  "0%": { backgroundPosition: "0% 50%" },
+  "50%": { backgroundPosition: "100% 50%" },
+  "100%": { backgroundPosition: "0% 50%" },
 });
 
 const styles = stylex.create({
   wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    backgroundColor: 'black',
-    borderRadius: '8px',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "20px",
+    backgroundColor: "black",
+    borderRadius: "8px",
   },
   gradientBackground: {
-    backgroundImage: 'linear-gradient(45deg, #CE5AD8, #00A1FF)',
-    backgroundSize: '200% 200%',
+    backgroundImage: "linear-gradient(45deg, #CE5AD8, #00A1FF)",
+    backgroundSize: "200% 200%",
     animationName: gradientShift,
-    animationDuration: '3s',
-    animationTimingFunction: 'ease',
-    animationIterationCount: 'infinite',
+    animationDuration: "3s",
+    animationTimingFunction: "ease",
+    animationIterationCount: "infinite",
   },
   knobContainer: {
-    width: '120px',
-    height: '120px',
-    userSelect: 'none',
+    width: "120px",
+    height: "120px",
+    userSelect: "none",
   },
   svg: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   knobCircle: {
-    fill: '#ddd',
-    stroke: '#777',
+    fill: "#ddd",
+    stroke: "#777",
     strokeWidth: 2,
   },
   tick: {
-    stroke: '#777',
+    stroke: "#777",
     strokeWidth: 2,
   },
   label: {
     fontSize: 14,
-    dominantBaseline: 'middle',
-    textAnchor: 'middle',
-    fill: 'white',
+    dominantBaseline: "middle",
+    textAnchor: "middle",
+    fill: "white",
   },
   indicator: {
-    stroke: '#f00',
+    stroke: "#f00",
     strokeWidth: 3,
   },
   bottomText: {
-    marginTop: '20px',
+    marginTop: "20px",
     fontSize: 14,
-    color: 'white',
+    color: "white",
   },
 });
 
@@ -88,7 +89,7 @@ const Dial = () => {
   });
 
   const updateVolumeFromEvent = (
-    e: MouseEvent | React.MouseEvent<SVGSVGElement>,
+    e: MouseEvent | ReactMouseEvent<SVGSVGElement>,
   ) => {
     if (!svgRef.current) return;
     const rect = svgRef.current?.getBoundingClientRect();
@@ -106,15 +107,15 @@ const Dial = () => {
     setVolume(newVolume);
   };
 
-  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+  const handleMouseDown = (e: ReactMouseEvent<SVGSVGElement>) => {
     updateVolumeFromEvent(e);
-    window.addEventListener('mousemove', updateVolumeFromEvent);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener("mousemove", updateVolumeFromEvent);
+    window.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleMouseUp = () => {
-    window.removeEventListener('mousemove', updateVolumeFromEvent);
-    window.removeEventListener('mouseup', handleMouseUp);
+    window.removeEventListener("mousemove", updateVolumeFromEvent);
+    window.removeEventListener("mouseup", handleMouseUp);
   };
 
   const indicatorAngle = startAngle + (volume - 1) * stepAngle;
@@ -146,14 +147,14 @@ const Dial = () => {
             const tickEnd = getCoords(currentAngle, tickEndRadius);
             if (i === 0 || i === 10) {
               return (
-                <React.Fragment key={`frag-${i}`}>
+                <Fragment key={`frag-${i}`}>
                   <text
                     key={`label-${i}`}
                     x={labelPos.x}
                     y={labelPos.y}
                     {...stylex.props(styles.label)}
                   >
-                    {i === 0 ? '1' : '11'}
+                    {i === 0 ? "1" : "11"}
                   </text>
                   <line
                     key={`line-${i}`}
@@ -163,7 +164,7 @@ const Dial = () => {
                     y2={tickEnd.y}
                     {...stylex.props(styles.tick)}
                   />
-                </React.Fragment>
+                </Fragment>
               );
             }
             return (

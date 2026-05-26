@@ -7,25 +7,25 @@
  * @format
  */
 
-import React from 'react';
-import json from '@stylexjs/stylex/package.json';
+import type { ReactNode } from "react";
+import json from "@stylexjs/stylex/package.json";
 const { version } = json;
 
-export const versionTag = version.includes('beta') ? '@beta' : '';
+export const versionTag = version.includes("beta") ? "@beta" : "";
 
 export function VersionTag() {
   return <span>{versionTag}</span>;
 }
 
-export function IfBeta({ children }: { children: React.ReactNode }) {
-  if (version.includes('beta')) {
+export function IfBeta({ children }: { children: ReactNode }) {
+  if (version.includes("beta")) {
     return children;
   }
   return null;
 }
 
-export function IfNotBeta({ children }: { children: React.ReactNode }) {
-  if (version.includes('beta')) {
+export function IfNotBeta({ children }: { children: ReactNode }) {
+  if (version.includes("beta")) {
     return null;
   }
   return children;

@@ -1,6 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
+import type { AccessibleNameProps } from "../accessibility";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
@@ -11,13 +12,16 @@ type BaseProps = ComponentPropsWithoutRef<"input">;
 
 export type NumberFieldSize = "sm" | "md";
 
-export type NumberFieldProps = Omit<BaseProps, "className" | "style" | "type" | "size"> & {
-  sx?: StyleXStyles;
-  inputSx?: StyleXStyles;
-  labelSx?: StyleXStyles;
-  label?: ReactNode;
-  size?: NumberFieldSize;
-};
+export type NumberFieldProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style" | "type" | "size"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    size?: NumberFieldSize;
+  };
 
 /**
  * Renders a token-styled numeric input control.
@@ -38,7 +42,9 @@ export function NumberField({
 }: NumberFieldProps) {
   return (
     <label {...stylex.props(rootStyles.base, sx)}>
-      {label ? <span {...stylex.props(labelStyles.base, labelSx)}>{label}</span> : null}
+      {label ? (
+        <span {...stylex.props(labelStyles.base, labelSx)}>{label}</span>
+      ) : null}
       <input
         {...props}
         type="number"
@@ -48,10 +54,40 @@ export function NumberField({
   );
 }
 
-const rootStyles = stylex.create({ base: { display: "grid", gap: spacing.xs, width: "100%" } });
-const labelStyles = stylex.create({ base: { color: colors.fgSoft, fontFamily: typography.fontSans, fontSize: typography.stepMinus1, fontWeight: typography.weightMedium } });
-const inputStyles = stylex.create({ base: { width: "100%", borderStyle: "solid", borderWidth: stroke.thin, borderColor: colors.border, borderRadius: radius.md, backgroundColor: colors.bgRaised, color: colors.fg, fontFamily: typography.fontSans } });
+const rootStyles = stylex.create({
+  base: { gap: spacing.xs, display: "grid", width: "100%" },
+});
+const labelStyles = stylex.create({
+  base: {
+    color: colors.fgSoft,
+    fontFamily: typography.fontSans,
+    fontSize: typography.stepMinus1,
+    fontWeight: typography.weightMedium,
+  },
+});
+const inputStyles = stylex.create({
+  base: {
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    backgroundColor: colors.bgRaised,
+    color: colors.fg,
+    fontFamily: typography.fontSans,
+    width: "100%",
+  },
+});
 const sizeStyles = stylex.create({
-  sm: { minHeight: spacing["2xl"], paddingInline: spacing.sm, paddingBlock: spacing.xs, fontSize: typography.stepMinus1 },
-  md: { minHeight: spacing["3xl"], paddingInline: spacing.md, paddingBlock: spacing.sm, fontSize: typography.step0 },
+  sm: {
+    paddingBlock: spacing.xs,
+    paddingInline: spacing.sm,
+    fontSize: typography.stepMinus1,
+    minHeight: spacing.xxl,
+  },
+  md: {
+    paddingBlock: spacing.sm,
+    paddingInline: spacing.md,
+    fontSize: typography.step0,
+    minHeight: spacing.xxxl,
+  },
 });

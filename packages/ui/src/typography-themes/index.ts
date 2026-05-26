@@ -1,15 +1,13 @@
 import * as stylex from "@stylexjs/stylex";
-import { typography_core, typography_derived } from "../tokens/typography.stylex";
+import { typography } from "../tokens/typography.stylex";
 
-const uiTheme_core = stylex.createTheme(typography_core, {});
-const uiTheme_derived = stylex.createTheme(typography_derived, {});
-export const uiTheme = [uiTheme_core, uiTheme_derived] as const;
+export const uiTheme = stylex.createTheme(typography, {});
 
-const editorialTheme_core = stylex.createTheme(typography_core, {
-  fontSizeMin: '19px',
-  fontSizeMax: '21px',
-  scaleMin: '1.18',
-  scaleMax: '1.24',
+export const editorialTheme = stylex.createTheme(typography, {
+  fontSizeMin: "19px",
+  fontSizeMax: "21px",
+  scaleMin: "1.18",
+  scaleMax: "1.24",
   fontSans: `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif`,
   fontDisplay: `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif`,
   lineHeightTight: "1.1",
@@ -19,14 +17,12 @@ const editorialTheme_core = stylex.createTheme(typography_core, {
   trackingNormal: "-0.01em",
   trackingWide: "0.01em",
 });
-const editorialTheme_derived = stylex.createTheme(typography_derived, {});
-export const editorialTheme = [editorialTheme_core, editorialTheme_derived] as const;
 
-const monoTheme_core = stylex.createTheme(typography_core, {
-  fontSizeMin: '17px',
-  fontSizeMax: '19px',
-  scaleMin: '1.14',
-  scaleMax: '1.18',
+export const monoTheme = stylex.createTheme(typography, {
+  fontSizeMin: "17px",
+  fontSizeMax: "19px",
+  scaleMin: "1.14",
+  scaleMax: "1.18",
   fontSans: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
   fontDisplay: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
   fontMono: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
@@ -37,14 +33,12 @@ const monoTheme_core = stylex.createTheme(typography_core, {
   trackingNormal: "0em",
   trackingWide: "0.03em",
 });
-const monoTheme_derived = stylex.createTheme(typography_derived, {});
-export const monoTheme = [monoTheme_core, monoTheme_derived] as const;
 
-const industrialTheme_core = stylex.createTheme(typography_core, {
-  fontSizeMin: '18px',
-  fontSizeMax: '22px',
-  scaleMin: '1.24',
-  scaleMax: '1.32',
+export const industrialTheme = stylex.createTheme(typography, {
+  fontSizeMin: "18px",
+  fontSizeMax: "22px",
+  scaleMin: "1.24",
+  scaleMax: "1.32",
   fontSans: `"Arial Narrow", "Helvetica Neue", Arial, sans-serif`,
   fontDisplay: `"Arial Narrow", "Helvetica Neue", Arial, sans-serif`,
   lineHeightTight: "1.05",
@@ -57,8 +51,6 @@ const industrialTheme_core = stylex.createTheme(typography_core, {
   weightSemibold: "700",
   weightBold: "800",
 });
-const industrialTheme_derived = stylex.createTheme(typography_derived, {});
-export const industrialTheme = [industrialTheme_core, industrialTheme_derived] as const;
 
 export const typographyThemes = {
   ui: uiTheme,

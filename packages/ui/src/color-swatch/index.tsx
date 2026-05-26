@@ -20,8 +20,25 @@ export type ColorSwatchProps = Omit<BaseProps, "className" | "style"> & {
  * - Visual only unless labelled by the caller.
  * - Color meaning should not be conveyed by color alone.
  */
-export function ColorSwatch({ color = "#7c3aed", sx, ...props }: ColorSwatchProps) {
-  return <span {...props} style={{ backgroundColor: color } as CSSProperties} {...stylex.props(styles.base, sx)} />;
+export function ColorSwatch({
+  color = "#7c3aed",
+  sx,
+  ...props
+}: ColorSwatchProps) {
+  return (
+    <span
+      {...props}
+      style={{ backgroundColor: color } as CSSProperties}
+      {...stylex.props(styles.base, sx)}
+    />
+  );
 }
 
-const styles = stylex.create({ base: { display: "inline-flex", width: spacing["2xl"], height: spacing["2xl"], borderRadius: radius.md } });
+const styles = stylex.create({
+  base: {
+    borderRadius: radius.md,
+    display: "inline-flex",
+    height: spacing.xxl,
+    width: spacing.xxl,
+  },
+});

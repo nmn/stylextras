@@ -1,9 +1,10 @@
 "use client";
 
-import * as React from "react";
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
+import { useId, useState } from "react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { AccessibleGroupNameProps } from "../accessibility";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
@@ -20,15 +21,18 @@ export type SegmentOption =
       value: string;
     };
 
-export type SegmentedControlProps = Omit<BaseProps, "className" | "style"> & {
-  legend?: ReactNode;
-  name?: string;
-  onValueChange?: (value: string) => void;
-  options?: SegmentOption[];
-  sx?: StyleXStyles;
-  value?: string;
-  defaultValue?: string;
-};
+export type SegmentedControlProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style"
+> &
+  AccessibleGroupNameProps & {
+    name?: string;
+    onValueChange?: (value: string) => void;
+    options?: SegmentOption[];
+    sx?: StyleXStyles;
+    value?: string;
+    defaultValue?: string;
+  };
 
 const defaultOptions: SegmentOption[] = [
   { label: "Day", value: "day" },
@@ -56,12 +60,12 @@ export function SegmentedControl({
   value,
   ...props
 }: SegmentedControlProps) {
-  const generatedName = React.useId();
+  const generatedName = useId();
   const groupName = name ?? generatedName;
   const normalizedOptions = options.map((option) =>
     typeof option === "string" ? { label: option, value: option } : option,
   );
-  const [internalValue, setInternalValue] = React.useState(
+  const [internalValue, setInternalValue] = useState(
     defaultValue ?? normalizedOptions[0]?.value ?? "",
   );
   const currentValue = value ?? internalValue;
@@ -120,14 +124,14 @@ export function SegmentedControl({
 
 const rootStyles = stylex.create({
   base: {
-    display: "grid",
-    gap: spacing.xs,
-    minWidth: 0,
+    margin: 0,
+    padding: 0,
+    borderColor: "transparent",
     borderStyle: "solid",
     borderWidth: 0,
-    borderColor: "transparent",
-    padding: 0,
-    margin: 0,
+    gap: spacing.xs,
+    display: "grid",
+    minWidth: 0,
   },
   legend: {
     color: colors.fgSoft,
@@ -139,77 +143,79 @@ const rootStyles = stylex.create({
 
 const trackStyles = stylex.create({
   base: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    gap: spacing["3xs"],
-    width: "fit-content",
-    maxWidth: "100%",
-    padding: spacing["3xs"],
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
+    padding: spacing.xxxs,
     borderColor: colors.border,
     borderRadius: radius.xl,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    gap: spacing.xxxs,
+    alignItems: "stretch",
     backgroundColor: colors.bg,
     boxShadow: `inset 0 0 0 1px ${colors.bgInset}`,
+    display: "flex",
+    flexWrap: "wrap",
+    maxWidth: "100%",
+    width: "fit-content",
   },
 });
 
 const segmentStyles = stylex.create({
   base: {
-    position: "relative",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: "1 1 auto",
-    minHeight: spacing["3xl"],
-    minWidth: `calc(${spacing["4xl"]} + ${spacing.md})`,
-    paddingInline: spacing.md,
-    paddingBlock: spacing.xs,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
     borderColor: "transparent",
     borderRadius: radius.lg,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingBlock: spacing.xs,
+    paddingInline: spacing.md,
+    alignItems: "center",
     backgroundColor: {
       default: "transparent",
-      ":hover": colors.bgSubtle,
       ":has(input:checked)": colors.bgRaised,
-    },
-    color: {
-      default: colors.fgMuted,
-      ":hover": colors.fgSoft,
-      ":has(input:checked)": colors.fg,
+      ":hover": colors.bgSubtle,
     },
     boxShadow: {
       default: null,
       ":has(input:checked)": `0 1px 2px ${colors.overlay}`,
       ":has(input:focus-visible)": `0 0 0 ${stroke.thick} ${colors.focusRing}`,
     },
+    color: {
+      default: colors.fgMuted,
+      ":has(input:checked)": colors.fg,
+      ":hover": colors.fgSoft,
+    },
     cursor: "pointer",
-    userSelect: "none",
+    display: "inline-flex",
+    flexBasis: "auto",
+    flexGrow: 1,
+    flexShrink: 1,
+    justifyContent: "center",
+    position: "relative",
     textAlign: "center",
     transitionDuration: "150ms",
     transitionProperty: "background-color, border-color, box-shadow, color",
     transitionTimingFunction: "ease-in-out",
+    userSelect: "none",
+    minHeight: spacing.xxxl,
+    minWidth: `calc(${spacing.xxxxl} + ${spacing.md})`,
   },
 });
 
 const inputStyles = stylex.create({
   base: {
-    position: "absolute",
     inset: 0,
     margin: 0,
-    opacity: 0,
     cursor: "inherit",
+    opacity: 0,
+    position: "absolute",
   },
 });
 
 const copyStyles = stylex.create({
   base: {
+    gap: spacing.xxs,
     display: "grid",
-    gap: spacing["2xs"],
-    minWidth: 0,
     pointerEvents: "none",
+    minWidth: 0,
   },
   label: {
     fontFamily: typography.fontSans,

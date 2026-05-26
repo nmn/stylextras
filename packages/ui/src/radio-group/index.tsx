@@ -1,28 +1,28 @@
-import * as stylex from '@stylexjs/stylex'
-import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
-import { colors } from '../tokens/color.stylex'
-import { spacing } from '../tokens/spacing.stylex'
-import { typography } from '../tokens/typography.stylex'
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { colors } from "../tokens/color.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<'fieldset'>
+type BaseProps = ComponentPropsWithoutRef<"fieldset">;
 
-type RadioOption = string | { label: string; value: string }
+type RadioOption = string | { label: string; value: string };
 
-export type RadioGroupProps = Omit<BaseProps, 'className' | 'style'> & {
-  sx?: StyleXStyles
-  legendSx?: StyleXStyles
-  optionSx?: StyleXStyles
-  legend?: ReactNode
-  name?: string
-  options?: RadioOption[]
-}
+export type RadioGroupProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  legendSx?: StyleXStyles;
+  optionSx?: StyleXStyles;
+  legend?: ReactNode;
+  name?: string;
+  options?: RadioOption[];
+};
 
 const defaultOptions = [
-  { label: 'Small', value: 'small' },
-  { label: 'Medium', value: 'medium' },
-  { label: 'Large', value: 'large' },
-]
+  { label: "Small", value: "small" },
+  { label: "Medium", value: "medium" },
+  { label: "Large", value: "large" },
+];
 
 /**
  * Renders a grouped set of native radio controls.
@@ -35,9 +35,9 @@ const defaultOptions = [
  */
 export function RadioGroup({
   children,
-  legend = 'Options',
+  legend = "Options",
   legendSx,
-  name = 'radio-group',
+  name = "radio-group",
   optionSx,
   options = defaultOptions,
   sx,
@@ -49,30 +49,35 @@ export function RadioGroup({
       {children ??
         options.map((option) => {
           const normalizedOption =
-            typeof option === 'string' ? { label: option, value: option } : option
+            typeof option === "string"
+              ? { label: option, value: option }
+              : option;
 
           return (
-            <label key={normalizedOption.value} {...stylex.props(optionStyles.base, optionSx)}>
+            <label
+              key={normalizedOption.value}
+              {...stylex.props(optionStyles.base, optionSx)}
+            >
               <input name={name} type="radio" value={normalizedOption.value} />
               <span>{normalizedOption.label}</span>
             </label>
-          )
+          );
         })}
     </fieldset>
-  )
+  );
 }
 
 const rootStyles = stylex.create({
   base: {
-    display: 'grid',
-    gap: spacing.xs,
-    borderStyle: 'solid',
-    borderWidth: 0,
-    borderColor: 'transparent',
-    padding: 0,
     margin: 0,
+    padding: 0,
+    borderColor: "transparent",
+    borderStyle: "solid",
+    borderWidth: 0,
+    gap: spacing.xs,
+    display: "grid",
   },
-})
+});
 const legendStyles = stylex.create({
   base: {
     color: colors.fgSoft,
@@ -81,14 +86,14 @@ const legendStyles = stylex.create({
     fontWeight: typography.weightMedium,
     marginBottom: spacing.xs,
   },
-})
+});
 const optionStyles = stylex.create({
   base: {
-    display: 'inline-flex',
-    alignItems: 'center',
     gap: spacing.xs,
+    alignItems: "center",
+    display: "inline-flex",
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
   },
-})
+});

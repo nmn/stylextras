@@ -4,11 +4,12 @@ Token-driven UI primitives built with StyleX and native HTML/CSS features.
 
 ## Status
 
-- All requested component entrypoints are present and exported.
-- The package does not depend on `react-aria-components`.
+- Component entrypoints are exported by subpath. There is no package barrel.
 - Components accept `sx?: StyleXStyles` and intentionally do not expose `className` or `style`.
-- Popup primitives use native `<dialog>` or the `popover` attribute.
-- Floating popovers/tooltips/menus use CSS anchor positioning through StyleX.
+- Most components are thin wrappers around native elements and browser behavior.
+- Dialog-style components use native `<dialog>`.
+- Floating components use the `popover` attribute and CSS anchor positioning.
+- Components should keep working without JavaScript wherever the platform gives us a native behavior.
 
 ## Installation
 
@@ -33,15 +34,16 @@ export function Example() {
 }
 ```
 
-## Package conventions
+## Package Conventions
 
-- Import each component from its own subpath. There is no barrel export.
-- Most components are thin wrappers around native elements.
-- Components generally forward native props for their underlying element, except `className` and `style`.
-- Aliases exist for some spaced doc names such as `combo-box`, `text-area`, `time-field`, `date-range-picker`, `breadcrumbs`, and `alert`.
-- Some legacy internal aliases still exist as separate exports such as `alert-callout`, `combobox`, `textarea`, `timefield`, `breadcrumb`, `empty`, and `flez`.
+- Import each component from its own subpath.
+- Prefer the canonical dashed exports in docs: `combo-box`, `text-area`, `time-field`, `date-range-picker`, `breadcrumbs`, `empty-state`, and `alert`.
+- Legacy aliases still exist for compatibility and search only: `combobox`, `textarea`, `timefield`, `range-date-picker`, `breadcrumb`, `empty`, and `alert-callout`. They should not get separate docs pages.
+- Use StyleX and token variables for all component styling.
+- Prefer platform primitives first: native form controls, `<details>`, `<dialog>`, `popover`, CSS anchor positioning, semantic tables, and semantic lists.
+- Do not introduce portals for dialog, popover, menu, tooltip, or hover-card primitives.
 
-## Tokens and themes
+## Tokens And Themes
 
 Token exports:
 
@@ -63,209 +65,197 @@ Theme exports:
 - `@stylextras/ui/typography-themes`
 - `@stylextras/ui/example-theme`
 
-## Named variant / option types
+## Component Groups
 
-| Type                    | Values      |
-| ----------------------- | ----------- | --------- | -------- | ---------- | ------- | ------- | ------- | ------- |
-| `ButtonVariant`         | `primary    | secondary | outline  | ghost      | danger` |
-| `ButtonSize`            | `sm         | md        | lg`      |
-| `CardElevation`         | `flat       | sm        | md       | lg`        |
-| `TypographyScale`       | `label      | body      | title    | display`   |
-| `TypographyTone`        | `default    | soft      | muted    | brand      | info    | success | warning | danger` |
-| `PopoverBehavior`       | `auto       | manual`   |
-| `PopoverPlacement`      | `bottom     | top       | right    | left`      |
-| `PopoverSize`           | `sm         | md        | lg`      |
-| `DropdownMenuBehavior`  | `auto       | manual`   |
-| `DropdownMenuPlacement` | `bottom     | top       | right    | left`      |
-| `ContextMenuBehavior`   | `auto       | manual`   |
-| `ContextMenuPlacement`  | `bottom     | top       | right    | left`      |
-| `TooltipPlacement`      | `bottom     | top       | right    | left`      |
-| `HoverCardPlacement`    | `bottom     | top       | right    | left`      |
-| `DialogSize`            | `sm         | md        | lg`      |
-| `DrawerSide`            | `left       | right`    |
-| `AspectRatioValue`      | `square     | video     | portrait | landscape` |
-| `ImageCropperRatio`     | `square     | video     | portrait | landscape` |
-| `ImageCropperPosition`  | `center     | top       | bottom   | left       | right`  |
-| `SeparatorOrientation`  | `horizontal | vertical` |
-| `SeparatorEmphasis`     | `subtle     | strong`   |
-| `FlexDirection`         | `row        | column`   |
-| `FlexAlign`             | `start      | center    | end      | stretch`   |
-| `FlexJustify`           | `start      | center    | end      | between`   |
-| `FlexGap`               | `sm         | md        | lg`      |
-| `GridCols`              | `1          | 2         | 3        | 4`         |
-| `ProgressCircleSize`    | `sm         | md        | lg`      |
+### Actions
 
-## Component index
+- `button`
+- `button-group`
+- `copy-to-clipboard-button`
+- `icon-button`
+- `segmented-control`
+- `toggle`
+- `toggle-group`
 
-### Buttons
+### Inputs And Forms
 
-| Component             | Import                                    | Props type                   | Notes                                   |
-| --------------------- | ----------------------------------------- | ---------------------------- | --------------------------------------- |
-| Button                | `@stylextras/ui/button`                   | `ButtonProps`                | `variant`, `size`                       |
-| Button Group          | `@stylextras/ui/button-group`             | `ButtonGroupProps`           | layout wrapper for grouped buttons      |
-| CopyToClipboardButton | `@stylextras/ui/copy-to-clipboard-button` | `CopyToClipboardButtonProps` | clipboard wrapper around `Button`       |
-| Icon Button           | `@stylextras/ui/icon-button`              | `IconButtonProps`            | `size` variant for square icon controls |
-| Segmented Control     | `@stylextras/ui/segmented-control`        | `SegmentedControlProps`      | single-row segmented selector           |
-| Toggle Button         | `@stylextras/ui/toggle`                   | `ToggleProps`                | pressed-state button primitive          |
-| Toggle Button Group   | `@stylextras/ui/toggle-group`             | `ToggleGroupProps`           | grouped toggle controls                 |
+- `checkbox`
+- `combo-box`
+- `field-errors`
+- `file-drop-zone`
+- `file-trigger`
+- `form`
+- `input-fields`
+- `input-group`
+- `label`
+- `number-field`
+- `radio`
+- `radio-group`
+- `search-field`
+- `select`
+- `slider`
+- `switch`
+- `text-area`
+- `text-field`
 
-### Collections
+### Date And Time
 
-| Component    | Import                        | Props type         | Notes                             |
-| ------------ | ----------------------------- | ------------------ | --------------------------------- |
-| Command Menu | `@stylextras/ui/command`      | `CommandProps`     | native `<dialog>` command surface |
-| Context Menu | `@stylextras/ui/context-menu` | `ContextMenuProps` | `popover` + anchor positioning    |
-| List Box     | `@stylextras/ui/listbox`      | `ListboxProps`     | styled list container             |
-| Menu         | `@stylextras/ui/menu`         | `MenuProps`        | alias of `DropdownMenu`           |
-| Menubar      | `@stylextras/ui/menubar`      | `MenubarProps`     | horizontal menu row               |
-| Table        | `@stylextras/ui/table`        | `TableProps`       | styled semantic table             |
-| Tag Group    | `@stylextras/ui/tag-group`    | `TagGroupProps`    | tag collection wrapper            |
-| Tree         | `@stylextras/ui/tree`         | `TreeProps`        | styled hierarchical list wrapper  |
+- `calendar`
+- `date-field`
+- `date-picker`
+- `date-range-picker`
+- `range-calendar`
+- `time-field`
 
 ### Color
 
-| Component           | Import                               | Props type               | Notes                              |
-| ------------------- | ------------------------------------ | ------------------------ | ---------------------------------- |
-| Color Area          | `@stylextras/ui/color-area`          | `ColorAreaProps`         | simplified color-selection surface |
-| Color Field         | `@stylextras/ui/color-field`         | `ColorFieldProps`        | native color/text field wrapper    |
-| Color Picker        | `@stylextras/ui/color-picker`        | `ColorPickerProps`       | native color input wrapper         |
-| Color Slider        | `@stylextras/ui/color-slider`        | `ColorSliderProps`       | range-based color channel control  |
-| Color Swatch        | `@stylextras/ui/color-swatch`        | `ColorSwatchProps`       | visual swatch block                |
-| Color Swatch Picker | `@stylextras/ui/color-swatch-picker` | `ColorSwatchPickerProps` | swatch selection group             |
-| Color Wheel         | `@stylextras/ui/color-wheel`         | `ColorWheelProps`        | simplified wheel-style control     |
+- `color-area`
+- `color-field`
+- `color-picker`
+- `color-slider`
+- `color-swatch`
+- `color-swatch-picker`
+- `color-wheel`
 
-### Content
+### Menus And Collections
 
-| Component     | Import                         | Props type          | Notes                                  |
-| ------------- | ------------------------------ | ------------------- | -------------------------------------- |
-| Aspect Ratio  | `@stylextras/ui/aspect-ratio`  | `AspectRatioProps`  | `ratio` presets                        |
-| Avatar        | `@stylextras/ui/avatar`        | `AvatarProps`       | `size` presets                         |
-| Card          | `@stylextras/ui/card`          | `CardProps`         | `elevation` presets                    |
-| Content       | `@stylextras/ui/content`       | `ContentProps`      | readable long-form wrapper             |
-| Editable Text | `@stylextras/ui/editable-text` | `EditableTextProps` | content-editable primitive             |
-| Empty State   | `@stylextras/ui/empty-state`   | `EmptyStateProps`   | alias of `Empty`                       |
-| ImageCropper  | `@stylextras/ui/image-cropper` | `ImageCropperProps` | `ratio` and `position` presets         |
-| Kbd           | `@stylextras/ui/kbd`           | `KbdProps`          | `size` presets                         |
-| Separator     | `@stylextras/ui/separator`     | `SeparatorProps`    | `orientation`, `emphasis`              |
-| Text          | `@stylextras/ui/text`          | `TextProps`         | body-scale wrapper around `Typography` |
-| Typography    | `@stylextras/ui/typography`    | `TypographyProps`   | `scale`, `tone`, `mono`, `as`          |
+- `command`
+- `context-menu`
+- `data-table`
+- `dropdown-menu`
+- `listbox`
+- `menu`
+- `menu/menu-content`
+- `menubar`
+- `table`
+- `tag-group`
+- `tree`
 
-### Date and time
+### Dialogs And Popovers
 
-| Component         | Import                             | Props type             | Notes                          |
-| ----------------- | ---------------------------------- | ---------------------- | ------------------------------ |
-| Calendar          | `@stylextras/ui/calendar`          | `CalendarProps`        | native date-oriented primitive |
-| Date Field        | `@stylextras/ui/date-field`        | `DateFieldProps`       | native date input wrapper      |
-| Date Picker       | `@stylextras/ui/date-picker`       | `DatePickerProps`      | token-styled date control      |
-| Date Range Picker | `@stylextras/ui/date-range-picker` | `DateRangePickerProps` | alias of `RangeDatePicker`     |
-| Range Calendar    | `@stylextras/ui/range-calendar`    | `RangeCalendarProps`   | simplified range calendar      |
-| Time Field        | `@stylextras/ui/time-field`        | `TimeFieldProps`       | alias of `timefield` export    |
-
-### Form
-
-| Component      | Import                          | Props type          | Notes                      |
-| -------------- | ------------------------------- | ------------------- | -------------------------- |
-| Checkbox       | `@stylextras/ui/checkbox`       | `CheckboxProps`     | `size` presets             |
-| Combo Box      | `@stylextras/ui/combo-box`      | `ComboBoxProps`     | alias of `combobox` export |
-| File Drop Zone | `@stylextras/ui/file-drop-zone` | `FileDropZoneProps` | native drop target shell   |
-| Form           | `@stylextras/ui/form`           | `FormProps`         | semantic form wrapper      |
-| Label          | `@stylextras/ui/label`          | `LabelProps`        | styled label element       |
-| Number Field   | `@stylextras/ui/number-field`   | `NumberFieldProps`  | `size` presets             |
-| Radio          | `@stylextras/ui/radio`          | `RadioProps`        | single radio control       |
-| Search Field   | `@stylextras/ui/search-field`   | `SearchFieldProps`  | search input wrapper       |
-| Select         | `@stylextras/ui/select`         | `SelectProps`       | `size` presets             |
-| Slider         | `@stylextras/ui/slider`         | `SliderProps`       | `size` presets             |
-| Switch         | `@stylextras/ui/switch`         | `SwitchProps`       | `size` presets             |
-| Text Area      | `@stylextras/ui/text-area`      | `TextAreaProps`     | alias of `textarea` export |
-| Text Field     | `@stylextras/ui/text-field`     | `TextFieldProps`    | `size` presets             |
+- `alert-dialog`
+- `dialog`
+- `drawer`
+- `hover-card`
+- `popover`
+- `tooltip`
 
 ### Layout
 
-| Component       | Import                           | Props type            | Notes                                          |
-| --------------- | -------------------------------- | --------------------- | ---------------------------------------------- |
-| Flex            | `@stylextras/ui/flex`            | `FlexProps`           | `direction`, `align`, `justify`, `gap`, `wrap` |
-| Grid            | `@stylextras/ui/grid`            | `GridProps`           | `cols` presets                                 |
-| Toolbar         | `@stylextras/ui/toolbar`         | `ToolbarProps`        | toolbar row wrapper                            |
-| Window Splitter | `@stylextras/ui/window-splitter` | `WindowSplitterProps` | `orientation`                                  |
+- `flex`
+- `grid`
+- `header-layout`
+- `sidebar-layout`
+- `toolbar`
+- `window-splitter`
 
 ### Navigation
 
-| Component        | Import                             | Props type             | Notes                             |
-| ---------------- | ---------------------------------- | ---------------------- | --------------------------------- |
-| Breadcrumbs      | `@stylextras/ui/breadcrumbs`       | `BreadcrumbsProps`     | alias of `breadcrumb` export      |
-| Disclosure       | `@stylextras/ui/disclosure`        | `DisclosureProps`      | native `<details>` primitive      |
-| Disclosure Group | `@stylextras/ui/disclosure-group`  | `DisclosureGroupProps` | group wrapper for disclosures     |
-| Footer           | `@stylextras/ui/footer`            | `FooterProps`          | page/footer layout shell          |
-| HeaderLayout     | `@stylextras/ui/header-layout`     | `HeaderLayoutProps`    | header + main layout composition  |
-| Link             | `@stylextras/ui/link`              | `LinkProps`            | styled anchor                     |
-| Navbar           | `@stylextras/ui/navbar`            | `NavbarProps`          | top navigation row                |
-| Pagination       | `@stylextras/ui/pagination`        | `PaginationProps`      | simple page navigation shell      |
-| Sidebar          | `@stylextras/ui/sidebar`           | `SidebarProps`         | aside/navigation shell            |
-| SidebarLayout    | `@stylextras/ui/sidebar-layout`    | `SidebarLayoutProps`   | sidebar + main layout composition |
-| TableOfContents  | `@stylextras/ui/table-of-contents` | `TableOfContentsProps` | anchor list navigation            |
-| Tabs             | `@stylextras/ui/tabs`              | `TabsProps`            | minimal tabs primitive            |
+- `breadcrumbs`
+- `disclosure`
+- `disclosure-group`
+- `footer`
+- `link`
+- `navbar`
+- `pagination`
+- `sidebar`
+- `table-of-contents`
+- `tabs`
 
-### Popups
+### Content And Media
 
-| Component    | Import                        | Props type         | Notes                                   |
-| ------------ | ----------------------------- | ------------------ | --------------------------------------- |
-| Alert Dialog | `@stylextras/ui/alert-dialog` | `AlertDialogProps` | native `<dialog>` alert surface         |
-| Dialog       | `@stylextras/ui/dialog`       | `DialogProps`      | `size` presets, native `<dialog>`       |
-| Drawer       | `@stylextras/ui/drawer`       | `DrawerProps`      | `side` presets, native `<dialog>`       |
-| Hover Card   | `@stylextras/ui/hover-card`   | `HoverCardProps`   | `popover` + anchor positioning          |
-| Popover      | `@stylextras/ui/popover`      | `PopoverProps`     | `behavior`, `placement`, `size`         |
-| Tooltip      | `@stylextras/ui/tooltip`      | `TooltipProps`     | `popover="manual"` + anchor positioning |
+- `aspect-ratio`
+- `avatar`
+- `card`
+- `content`
+- `editable-text`
+- `empty-state`
+- `image-cropper`
+- `kbd`
+- `separator`
+- `text`
+- `typography`
 
-### Status
+### Feedback
 
-| Component       | Import                           | Props type            | Notes                           |
-| --------------- | -------------------------------- | --------------------- | ------------------------------- |
-| Alert           | `@stylextras/ui/alert`           | `AlertProps`          | alias of `alert-callout` export |
-| Badge           | `@stylextras/ui/badge`           | `BadgeProps`          | `variant`, `size`               |
-| Meter           | `@stylextras/ui/meter`           | `MeterProps`          | styled native meter             |
-| Progress Bar    | `@stylextras/ui/progress-bar`    | `ProgressBarProps`    | styled native progress          |
-| Progress Circle | `@stylextras/ui/progress-circle` | `ProgressCircleProps` | `size`, `showValue`             |
-| Skeleton        | `@stylextras/ui/skeleton`        | `SkeletonProps`       | placeholder block               |
-| Toast           | `@stylextras/ui/toast`           | `ToastProps`          | static toast surface            |
+- `alert`
+- `badge`
+- `meter`
+- `progress-bar`
+- `progress-circle`
+- `skeleton`
+- `spinner`
+- `toast`
 
-## Additional exports
+## JavaScript Dependency Inventory
 
-These are not part of the main requested component set but are still exported:
+These components currently use JavaScript for layout or core behavior and should be the first targets when reducing runtime requirements.
 
-- `@stylextras/ui/alert-callout` with `AlertProps` / `AlertVariant`
-- `@stylextras/ui/combobox` with `ComboboxProps`
-- `@stylextras/ui/textarea` with `TextareaProps` / `TextareaSize`
-- `@stylextras/ui/timefield` with `TimefieldProps`
-- `@stylextras/ui/range-date-picker` with `RangeDatePickerProps`
-- `@stylextras/ui/breadcrumb` with `BreadcrumbProps`
-- `@stylextras/ui/empty` with `EmptyProps`
-- `@stylextras/ui/flez` with `FlezProps`
+| Component                                          | Current JS use                                                                                                                    | Platform-first direction                                                                                                              |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `window-splitter`                                  | Tracks pointer position, computes percentages from `getBoundingClientRect`, and stores uncontrolled split state.                  | Keep the semantic separator, but explore CSS grid/custom-property patterns and native range fallbacks for non-JS layouts.             |
+| `dialog`, `alert-dialog`, `drawer`, `command`      | Trigger variants lazy-load content and call `showModal()`. Programmatic dialogs hold open state in React.                         | Keep content components as plain `<dialog>` surfaces. Prefer declarative rendered content and platform close behavior where possible. |
+| `popover`, `dropdown-menu`, `menu`, `context-menu` | Trigger variants lazy-load content and call `showPopover({ source })`; menu items close parent popovers with DOM lookups.         | Prefer static `popovertarget` wiring when lazy loading is not needed. Keep CSS anchor positioning as the placement layer.             |
+| `tooltip`                                          | Hover/focus triggers mount lazy content and call `showPopover`.                                                                   | Prefer CSS-only disclosure for simple labels and reserve JS for lazy content.                                                         |
+| `hover-card`                                       | Hover/focus opens an inert tooltip preview, ArrowDown or preview hover upgrades it to `showModal()`, and dismissal returns focus. | Keep the tooltip-to-dialog split; reduce JS only where platform popover/dialog and anchor behavior can take over directly.            |
+| `menubar`                                          | Depends on menu trigger behavior so sibling menus open on hover after one menu is active.                                         | Keep markup semantic and use JS only for the cross-trigger hover handoff.                                                             |
+| `tabs`                                             | Uses React state to switch active tab and panel content.                                                                          | Consider a radio-backed or anchor-backed variant so baseline content remains navigable without hydration.                             |
+| `segmented-control`                                | Uses React state for uncontrolled value management, while the underlying controls are native radios.                              | Keep the radio foundation; avoid adding layout JS.                                                                                    |
+| `color-swatch-picker`                              | Uses React state for uncontrolled selected swatch.                                                                                | Keep the radio foundation and make form submission useful without hydration.                                                          |
+| `copy-to-clipboard-button`                         | Uses `navigator.clipboard`, timeout state, and popover feedback.                                                                  | Clipboard requires JS; keep feedback optional and avoid layout work.                                                                  |
+| `editable-text`                                    | Uses a paste handler and `document.execCommand` to force plain-text insertion.                                                    | Keep native `contenteditable`; replace deprecated paste handling when a better platform path is available.                            |
+| `lazy-component`                                   | Caches `React.lazy` components and preloads async content.                                                                        | Keep this as an optional trigger helper, not a requirement for content components.                                                    |
 
-## Current limitations
+Low-JS or no-JS components include the structural wrappers, native inputs, `disclosure`, `disclosure-group`, `meter`, `progress-bar`, `table`, typography/content components, and most layout shells. They should remain mostly declarative.
 
-- These components are intentionally minimal. Many are structural/styling primitives rather than full interaction systems.
-- There is not feature parity with mature accessibility/interaction libraries. Keyboard navigation, roving focus, typeahead, collision handling, and advanced dismissal logic are limited or absent in many components.
-- Menu-like and popover-like components rely on native `popover`, CSS anchor positioning, and browser behavior. They require modern browser support.
+Demo-only state exists in examples and theme demos. That state should not be treated as required component behavior.
+
+## Variant Types
+
+- `ButtonVariant`: `primary`, `secondary`, `outline`, `ghost`, `danger`
+- `ButtonSize`: `sm`, `md`, `lg`
+- `CardElevation`: `flat`, `sm`, `md`, `lg`
+- `TypographyScale`: `label`, `body`, `title`, `display`
+- `TypographyTone`: `default`, `soft`, `muted`, `brand`, `info`, `success`, `warning`, `danger`
+- `PopoverBehavior`: `auto`, `manual`
+- `PopoverPlacement`: `bottom`, `top`, `right`, `left`
+- `PopoverSize`: `sm`, `md`, `lg`
+- `DropdownMenuBehavior`: `auto`, `manual`
+- `DropdownMenuPlacement`: `bottom`, `top`, `right`, `left`
+- `ContextMenuBehavior`: `auto`, `manual`
+- `ContextMenuPlacement`: `bottom`, `top`, `right`, `left`
+- `TooltipPlacement`: `bottom`, `top`, `right`, `left`
+- `HoverCardPlacement`: `bottom`, `top`, `right`, `left`
+- `DialogSize`: `sm`, `md`, `lg`
+- `DrawerSide`: `left`, `right`
+- `AspectRatioValue`: `square`, `video`, `portrait`, `landscape`
+- `ImageCropperRatio`: `square`, `video`, `portrait`, `landscape`
+- `ImageCropperPosition`: `center`, `top`, `bottom`, `left`, `right`
+- `SeparatorOrientation`: `horizontal`, `vertical`
+- `SeparatorEmphasis`: `subtle`, `strong`
+- `FlexDirection`: `row`, `column`
+- `FlexAlign`: `start`, `center`, `end`, `stretch`
+- `FlexJustify`: `start`, `center`, `end`, `between`
+- `FlexGap`: `sm`, `md`, `lg`
+- `GridCols`: `1`, `2`, `3`, `4`
+- `ProgressCircleSize`: `sm`, `md`, `lg`
+
+## Current Limitations
+
+- These components are intentionally minimal. Many are structural or styling primitives rather than full interaction systems.
+- Keyboard navigation, roving focus, typeahead, collision handling, and advanced dismissal logic are limited in several composite components.
+- Menu-like and popover-like components require modern browser support for `popover` and CSS anchor positioning.
 - Dialog-like components rely on native `<dialog>` behavior and do not add a custom focus-management layer beyond the platform.
-- Collection components such as `Table`, `Tree`, `Listbox`, `Menubar`, and `TagGroup` are simplified wrappers and do not yet provide advanced selection, virtualization, treegrid behavior, or robust keyboard semantics.
-- Date/time/color primitives are simplified and lean heavily on native inputs or stand-in UI rather than full custom interaction models.
-- Tooltip / hover-card / context-menu triggering is not yet fully packaged as a high-level controller API; the current primitives focus on the rendered surface.
-- Some alias exports remain for naming convenience and migration, so the surface area is broader than the preferred canonical names.
-- Documentation prose across the website is not fully normalized yet; some MDX pages still describe the old implementation model.
+- Date/time/color primitives lean heavily on native inputs or simplified UI instead of a custom interaction model.
+- Some alias exports remain for naming compatibility, but canonical docs should prefer the dashed names listed above.
 
-## Missing or deferred features
+## Notes For Contributors
 
-- Full WAI-ARIA interaction parity for tabs, menus, comboboxes, listboxes, radio groups, and trees
-- Portal-free popup helpers for trigger wiring, focus return, escape handling, outside click handling, and collision-aware placement
-- Rich date/time selection model beyond native controls
-- Rich color model beyond native inputs and simplified slider/swatch/wheel controls
-- Async loading, virtualization, and large-data ergonomics for table/tree/list primitives
-- More complete example coverage for every component export
-
-## Notes for contributors
-
-- Keep new components token-driven and prefer direct use of core token consts over unnecessary component-level indirection.
+- Keep new components token-driven and prefer direct use of core token constants over unnecessary component-level indirection.
 - Use function declarations for component exports.
 - Prefer native platform elements and browser features first.
-- Do not introduce portals for popup primitives.
+- Use ref callback cleanup instead of effects when a small DOM bridge is required.
+- Keep JavaScript out of layout unless the component cannot work without measurement or pointer tracking.
+- Do not add `useCallback` or `useMemo`; React Compiler handles memoization.
+- Do not introduce portals for dialog, popover, menu, tooltip, hover-card, drawer, or command primitives.
 - Use StyleX anchor-positioning APIs for floating surfaces.

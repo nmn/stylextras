@@ -1,6 +1,6 @@
-import { AlertCallout, type AlertProps } from '../alert-callout/index';
+import { AlertCallout, type AlertProps } from "../alert-callout/index";
 
-export type { AlertProps } from '../alert-callout/index';
+export type { AlertProps } from "../alert-callout/index";
 
 /**
  * Renders a token-driven status message surface for inline feedback.

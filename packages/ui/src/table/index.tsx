@@ -7,7 +7,9 @@ import { typography } from "../tokens/typography.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"table">;
 
-export type TableProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type TableProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a styled semantic table.
@@ -18,6 +20,18 @@ export type TableProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXS
  * - Provides basic table semantics only.
  * - Sorting, selection, grid navigation, and sticky header semantics are not implemented.
  */
-export function Table({ sx, ...props }: TableProps) { return <table {...props} {...stylex.props(styles.base, sx)} />; }
+export function Table({ sx, ...props }: TableProps) {
+  return <table {...props} {...stylex.props(styles.base, sx)} />;
+}
 
-const styles = stylex.create({ base: { width: "100%", borderCollapse: "collapse", color: colors.fg, fontFamily: typography.fontSans, borderStyle: "solid", borderWidth: stroke.thin, borderColor: colors.border } });
+const styles = stylex.create({
+  base: {
+    borderColor: colors.border,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    borderCollapse: "collapse",
+    color: colors.fg,
+    fontFamily: typography.fontSans,
+    width: "100%",
+  },
+});

@@ -41,13 +41,13 @@ export function Content({ as = "article", sx, ...props }: ContentProps) {
 
 const styles = stylex.create({
   base: {
-    display: "grid",
     gap: spacing.md,
-    width: "100%",
-    maxWidth: "72ch",
     color: colors.fg,
+    display: "grid",
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
+    maxWidth: "72ch",
+    width: "100%",
   },
 });

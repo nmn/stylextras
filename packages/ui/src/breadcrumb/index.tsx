@@ -29,14 +29,28 @@ const defaultItems = [
  * - Does not generate item markup automatically.
  * - Callers must provide meaningful link text and current-page indication.
  */
-export function Breadcrumb({ items = defaultItems, sx, ...props }: BreadcrumbProps) {
+export function Breadcrumb({
+  items = defaultItems,
+  sx,
+  ...props
+}: BreadcrumbProps) {
   return (
-    <nav {...props} aria-label="Breadcrumb" {...stylex.props(navStyles.base, sx)}>
+    <nav
+      {...props}
+      aria-label="Breadcrumb"
+      {...stylex.props(navStyles.base, sx)}
+    >
       <ol {...stylex.props(listStyles.base)}>
         {items.map((item, index) => (
           <li key={index} {...stylex.props(itemStyles.base)}>
-            {item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}
-            {index < items.length - 1 ? <span {...stylex.props(separatorStyles.base)}>/</span> : null}
+            {item.href ? (
+              <a href={item.href}>{item.label}</a>
+            ) : (
+              <span>{item.label}</span>
+            )}
+            {index < items.length - 1 ? (
+              <span {...stylex.props(separatorStyles.base)}>/</span>
+            ) : null}
           </li>
         ))}
       </ol>
@@ -44,7 +58,25 @@ export function Breadcrumb({ items = defaultItems, sx, ...props }: BreadcrumbPro
   );
 }
 
-const navStyles = stylex.create({ base: { color: colors.fgSoft, fontFamily: typography.fontSans, fontSize: typography.stepMinus1 } });
-const listStyles = stylex.create({ base: { display: "flex", alignItems: "center", gap: spacing.xs, listStyle: "none", padding: 0, margin: 0, flexWrap: "wrap" } });
-const itemStyles = stylex.create({ base: { display: "inline-flex", alignItems: "center", gap: spacing.xs } });
+const navStyles = stylex.create({
+  base: {
+    color: colors.fgSoft,
+    fontFamily: typography.fontSans,
+    fontSize: typography.stepMinus1,
+  },
+});
+const listStyles = stylex.create({
+  base: {
+    margin: 0,
+    padding: 0,
+    gap: spacing.xs,
+    listStyle: "none",
+    alignItems: "center",
+    display: "flex",
+    flexWrap: "wrap",
+  },
+});
+const itemStyles = stylex.create({
+  base: { gap: spacing.xs, alignItems: "center", display: "inline-flex" },
+});
 const separatorStyles = stylex.create({ base: { color: colors.fgMuted } });

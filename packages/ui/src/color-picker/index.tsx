@@ -6,7 +6,9 @@ import { ColorField } from "../color-field";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type ColorPickerProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type ColorPickerProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a token-styled native color picker input.
@@ -18,7 +20,13 @@ export type ColorPickerProps = Omit<BaseProps, "className" | "style"> & { sx?: S
  * - The exact accessibility experience varies by browser and platform.
  */
 export function ColorPicker({ sx, ...props }: ColorPickerProps) {
-  return <div {...props} {...stylex.props(styles.base, sx)}><ColorField /></div>;
+  return (
+    <div {...props} {...stylex.props(styles.base, sx)}>
+      <ColorField />
+    </div>
+  );
 }
 
-const styles = stylex.create({ base: { display: "inline-flex", alignItems: "center", gap: spacing.xs } });
+const styles = stylex.create({
+  base: { gap: spacing.xs, alignItems: "center", display: "inline-flex" },
+});

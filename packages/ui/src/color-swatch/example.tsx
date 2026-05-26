@@ -1,12 +1,15 @@
-'use client'
+"use client";
 
-import { ColorSwatch } from './index'
-import { DemoFrame, DemoRow } from '../example-theme/demo'
+import { ColorSwatch } from "./index";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Swatches" description="Color Swatch should show a palette at a glance.">
+      <DemoFrame
+        title="Swatches"
+        description="Color Swatch should show a palette at a glance."
+      >
         <DemoRow>
           <ColorSwatch color="#2563eb" aria-label="Blue" />
           <ColorSwatch color="#9333ea" aria-label="Purple" />
@@ -15,5 +18,5 @@ export default function Example() {
         </DemoRow>
       </DemoFrame>
     </>
-  )
+  );
 }

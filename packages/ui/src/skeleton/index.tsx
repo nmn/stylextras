@@ -7,7 +7,9 @@ import { spacing } from "../tokens/spacing.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type SkeletonProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type SkeletonProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a placeholder block for loading states.
@@ -18,6 +20,17 @@ export type SkeletonProps = Omit<BaseProps, "className" | "style"> & { sx?: Styl
  * - Primarily visual.
  * - It does not announce loading state or busy status automatically.
  */
-export function Skeleton({ sx, ...props }: SkeletonProps) { return <div {...props} aria-hidden="true" {...stylex.props(styles.base, sx)} />; }
+export function Skeleton({ sx, ...props }: SkeletonProps) {
+  return (
+    <div {...props} aria-hidden="true" {...stylex.props(styles.base, sx)} />
+  );
+}
 
-const styles = stylex.create({ base: { width: "100%", minHeight: spacing.lg, borderRadius: radius.md, backgroundColor: colors.bgInset } });
+const styles = stylex.create({
+  base: {
+    borderRadius: radius.md,
+    backgroundColor: colors.bgInset,
+    minHeight: spacing.lg,
+    width: "100%",
+  },
+});

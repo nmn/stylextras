@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Combobox } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Combobox } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -14,15 +14,15 @@ export default function Example() {
           <Combobox
             label="Reviewer"
             listId="reviewers"
-            options={['Alex Kim', 'Taylor Rivera', 'Jordan Patel', 'Sam Lee']}
+            options={["Alex Kim", "Taylor Rivera", "Jordan Patel", "Sam Lee"]}
           />
           <Combobox
             label="Environment"
             listId="environments"
-            options={['Development', 'Preview', 'Production']}
+            options={["Development", "Preview", "Production"]}
           />
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

@@ -33,7 +33,15 @@ export function HeaderLayout({
 }: HeaderLayoutProps) {
   return (
     <div {...props} {...stylex.props(rootStyles.base, sx)}>
-      <div {...stylex.props(headerStyles.base, sticky && headerStyles.sticky, headerSx)}>{header}</div>
+      <div
+        {...stylex.props(
+          headerStyles.base,
+          sticky && headerStyles.sticky,
+          headerSx,
+        )}
+      >
+        {header}
+      </div>
       <main {...stylex.props(mainStyles.base, mainSx)}>{children}</main>
     </div>
   );
@@ -59,10 +67,10 @@ const headerStyles = stylex.create({
 
 const mainStyles = stylex.create({
   base: {
-    display: "grid",
-    alignContent: "start",
-    gap: spacing.lg,
-    minWidth: 0,
     padding: spacing.lg,
+    gap: spacing.lg,
+    alignContent: "start",
+    display: "grid",
+    minWidth: 0,
   },
 });

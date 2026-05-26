@@ -4,41 +4,41 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import { ChevronDown, ExternalLink } from 'lucide-react';
-import { usePathname } from 'fumadocs-core/framework';
+import { ChevronDown, ExternalLink } from "lucide-react";
+import { usePathname } from "fumadocs-core/framework";
 import {
   type ComponentProps,
+  type Dispatch,
   createContext,
   type FC,
   Fragment,
   type ReactNode,
+  type SetStateAction,
   useContext,
-  useMemo,
   useRef,
   useState,
-} from 'react';
-import Link, { type LinkProps } from 'fumadocs-core/link';
-import { useOnChange } from 'fumadocs-core/utils/use-on-change';
-import { ScrollArea, ScrollViewport } from './ui/scroll-area';
-import { isActive } from '../lib/is-active';
+} from "react";
+import Link, { type LinkProps } from "fumadocs-core/link";
+import { useOnChange } from "fumadocs-core/utils/use-on-change";
+import { ScrollArea, ScrollViewport } from "./ui/scroll-area";
+import { isActive } from "../lib/is-active";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from './ui/collapsible';
+} from "./ui/collapsible";
 import type {
   CollapsibleContentProps,
   CollapsibleTriggerProps,
-} from '@radix-ui/react-collapsible';
-import type * as PageTree from 'fumadocs-core/page-tree';
-import { useTreeContext, useTreePath } from 'fumadocs-ui/contexts/tree';
-import { useMediaQuery } from 'fumadocs-core/utils/use-media-query';
-import { StyleXComponentProps } from './layout/shared';
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { vars } from '../theming/vars.stylex';
+} from "@radix-ui/react-collapsible";
+import type * as PageTree from "fumadocs-core/page-tree";
+import { useTreeContext, useTreePath } from "fumadocs-ui/contexts/tree";
+import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
+import { StyleXComponentProps } from "./layout/shared";
+import * as stylex from "@stylexjs/stylex";
+import { vars } from "../theming/vars.stylex";
 
 export interface SidebarProps {
   /**
@@ -76,39 +76,39 @@ interface InternalContext {
 const itemVariants = stylex.create({
   base: {
     // text-fd-muted-foreground [overflow-wrap:anywhere] [&_svg]:size-4 [&_svg]:shrink-0
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'row',
+    position: "relative",
+    display: "flex",
+    flexDirection: "row",
     gap: 2 * 4,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 2 * 4,
-    paddingInlineStart: `calc(${vars['--spacing']} * 2)`,
+    paddingInlineStart: `calc(${vars["--spacing"]} * 2)`,
     color: {
-      default: vars['--color-fd-muted-foreground'],
-      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent-foreground']} 80%, transparent)`,
+      default: vars["--color-fd-muted-foreground"],
+      ":hover": `color-mix(in oklab, ${vars["--color-fd-accent-foreground"]} 80%, transparent)`,
     },
-    textAlign: 'start',
-    overflowWrap: 'anywhere',
+    textAlign: "start",
+    overflowWrap: "anywhere",
     backgroundColor: {
       default: null,
-      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 50%, transparent)`,
+      ":hover": `color-mix(in oklab, ${vars["--color-fd-accent"]} 50%, transparent)`,
     },
     borderRadius: 8,
     transitionProperty: {
-      default: 'color, background-color, border-color',
-      ':hover': 'none',
+      default: "color, background-color, border-color",
+      ":hover": "none",
     },
   },
   active: {
-    color: vars['--color-fd-primary'],
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-primary']} 10%, transparent)`,
+    color: vars["--color-fd-primary"],
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-primary"]} 10%, transparent)`,
   },
 });
 
 const Context = createContext<InternalContext | null>(null);
 const FolderContext = createContext<{
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 } | null>(null);
 
 export function Sidebar({
@@ -117,14 +117,12 @@ export function Sidebar({
   Mobile,
   Content,
 }: SidebarProps) {
-  const isMobile = useMediaQuery('(width < 768px)') ?? false;
-  const context = useMemo<InternalContext>(() => {
-    return {
-      defaultOpenLevel,
-      prefetch,
-      level: 1,
-    };
-  }, [defaultOpenLevel, prefetch]);
+  const isMobile = useMediaQuery("(width < 768px)") ?? false;
+  const context: InternalContext = {
+    defaultOpenLevel,
+    prefetch,
+    level: 1,
+  };
 
   return (
     <Context.Provider value={context}>
@@ -136,7 +134,7 @@ export function Sidebar({
 export function SidebarContent({
   xstyle,
   ...props
-}: StyleXComponentProps<'aside'>) {
+}: StyleXComponentProps<"aside">) {
   // const { collapsed } = useSidebar();
   const collapsed = false;
   const [hover, setHover] = useState(false);
@@ -163,7 +161,7 @@ export function SidebarContent({
       onPointerEnter={(e) => {
         if (
           !collapsed ||
-          e.pointerType === 'touch' ||
+          e.pointerType === "touch" ||
           closeTimeRef.current > Date.now()
         )
           return;
@@ -171,7 +169,7 @@ export function SidebarContent({
         setHover(true);
       }}
       onPointerLeave={(e) => {
-        if (!collapsed || e.pointerType === 'touch') return;
+        if (!collapsed || e.pointerType === "touch") return;
         window.clearTimeout(timerRef.current);
 
         timerRef.current = window.setTimeout(
@@ -191,53 +189,53 @@ export function SidebarContent({
 }
 const contentStyles = stylex.create({
   base: {
-    position: 'fixed',
+    position: "fixed",
     top: 0,
     right: {
       default: null,
-      ':dir(rtl)': 0,
+      ":dir(rtl)": 0,
     },
     bottom: 0,
-    left: { default: 0, ':dir(rtl)': 'auto' },
+    left: { default: 0, ":dir(rtl)": "auto" },
     zIndex: 20,
-    display: { default: 'flex', '@media (max-width: 768px)': 'none' },
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    width: `calc(${vars['--spacing']} + ${vars['--fd-sidebar-width']} + var(--fd-layout-offset))`,
+    display: { default: "flex", "@media (max-width: 768px)": "none" },
+    flexDirection: "column",
+    alignItems: "flex-end",
+    width: `calc(${vars["--spacing"]} + ${vars["--fd-sidebar-width"]} + var(--fd-layout-offset))`,
     fontSize: `${14 / 16}rem`,
     lineHeight: 1.42,
-    backgroundColor: vars['--color-fd-card'],
-    borderInlineEndColor: vars['--color-fd-border'],
-    borderInlineEndStyle: 'solid',
+    backgroundColor: vars["--color-fd-card"],
+    borderInlineEndColor: vars["--color-fd-border"],
+    borderInlineEndStyle: "solid",
     borderInlineEndWidth: 1,
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '0.2s',
-    transitionProperty: 'top, opacity, translate, width',
-    '--fd-sidebar-margin': '0px',
-    '--fd-sidebar-offset': 'calc(16px - 100%)',
-    '--fd-sidebar-top': `calc(${vars['--fd-banner-height']} + ${vars['--fd-nav-height']} + var(--fd-sidebar-margin))`,
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "0.2s",
+    transitionProperty: "top, opacity, translate, width",
+    "--fd-sidebar-margin": "0px",
+    "--fd-sidebar-offset": "calc(16px - 100%)",
+    "--fd-sidebar-top": `calc(${vars["--fd-banner-height"]} + ${vars["--fd-nav-height"]} + var(--fd-sidebar-margin))`,
   },
   collapsed: {
-    width: vars['--fd-sidebar-width'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    width: vars["--fd-sidebar-width"],
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 12,
     opacity: 0,
     transform: {
-      default: 'translateX(var(--fd-sidebar-offset))',
-      ':dir(rtl)': 'translateX(calc(var(--fd-sidebar-offset) * -1))',
+      default: "translateX(var(--fd-sidebar-offset))",
+      ":dir(rtl)": "translateX(calc(var(--fd-sidebar-offset) * -1))",
     },
-    '--fd-sidebar-margin': '0.5rem',
+    "--fd-sidebar-margin": "0.5rem",
   },
   collapsedHovered: {
     zIndex: 50,
     boxShadow:
-      '0 10px 15px -3px gb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      "0 10px 15px -3px gb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
     opacity: null,
   },
   hovered: {
-    '--fd-sidebar-offset': `calc(${vars['--spacing']} * 2)`,
+    "--fd-sidebar-offset": `calc(${vars["--spacing"]} * 2)`,
   },
 });
 
@@ -245,10 +243,10 @@ export function SidebarContentMobile({
   xstyle,
   children,
   ...props
-}: StyleXComponentProps<'aside'>) {
+}: StyleXComponentProps<"aside">) {
   const open = true;
   const setOpen = (_open: any) => {};
-  const state = open ? 'open' : 'closed';
+  const state = open ? "open" : "closed";
 
   return (
     <>
@@ -274,37 +272,37 @@ export function SidebarContentMobile({
 }
 const mobContentStyles = stylex.create({
   top: {
-    position: 'fixed',
+    position: "fixed",
     inset: 0,
     zIndex: 40,
-    backdropFilter: 'blur(4px)',
+    backdropFilter: "blur(4px)",
     animation: {
       default: null,
-      ':where([data-state="closed"])': vars['--animate-fd-fade-out'],
-      ':where([data-state="open"])': vars['--animate-fd-fade-in'],
+      ':where([data-state="closed"])': vars["--animate-fd-fade-out"],
+      ':where([data-state="open"])': vars["--animate-fd-fade-in"],
     },
   },
   bottom: {
-    position: 'fixed',
+    position: "fixed",
     insetBlock: 0,
     insetInlineEnd: 0,
     // z-40 bg-fd-background data-[state=open]:animate-fd-sidebar-in data-[state=closed]:animate-fd-sidebar-out
     zIndex: 40,
-    display: 'flex',
-    flexDirection: 'column',
-    width: '85%',
+    display: "flex",
+    flexDirection: "column",
+    width: "85%",
     maxWidth: 380,
     fontSize: `${15 / 16}rem`,
-    backgroundColor: vars['--color-fd-background'],
-    borderInlineStartColor: vars['--color-fd-accent'],
-    borderInlineStartStyle: 'solid',
+    backgroundColor: vars["--color-fd-background"],
+    borderInlineStartColor: vars["--color-fd-accent"],
+    borderInlineStartStyle: "solid",
     borderInlineStartWidth: 1,
     boxShadow:
-      '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
     animation: {
       default: null,
-      ':where([data-state="closed"])': vars['--animate-fd-sidebar-out'],
-      ':where([data-state="open"])': vars['--animate-fd-sidebar-in'],
+      ':where([data-state="closed"])': vars["--animate-fd-sidebar-out"],
+      ':where([data-state="open"])': vars["--animate-fd-sidebar-in"],
     },
   },
 });
@@ -312,7 +310,7 @@ const mobContentStyles = stylex.create({
 export function SidebarHeader({
   xstyle,
   ...props
-}: StyleXComponentProps<'div'>) {
+}: StyleXComponentProps<"div">) {
   return (
     <div {...props} {...stylex.props(headerStyles.div, xstyle)}>
       {props.children}
@@ -321,8 +319,8 @@ export function SidebarHeader({
 }
 const headerStyles = stylex.create({
   div: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 3 * 4,
     padding: 4 * 4,
     paddingBottom: 2 * 4,
@@ -332,7 +330,7 @@ const headerStyles = stylex.create({
 export function SidebarFooter({
   xstyle,
   ...props
-}: StyleXComponentProps<'div'>) {
+}: StyleXComponentProps<"div">) {
   return (
     <div {...props} {...stylex.props(footerStyles.div, xstyle)}>
       {props.children}
@@ -341,12 +339,12 @@ export function SidebarFooter({
 }
 const footerStyles = stylex.create({
   div: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     padding: 4 * 4,
     paddingTop: 2 * 4,
-    borderTopColor: vars['--color-fd-accent'],
-    borderTopStyle: 'solid',
+    borderTopColor: vars["--color-fd-accent"],
+    borderTopStyle: "solid",
     borderTopWidth: 1,
   },
 });
@@ -364,21 +362,21 @@ export function SidebarViewport({
   );
 }
 const sidebarStyles = stylex.create({
-  area: { height: '100%' },
+  area: { height: "100%" },
   viewport: {
     padding: 4 * 4,
-    overscrollBehavior: 'contain',
+    overscrollBehavior: "contain",
     // eslint-disable-next-line @stylexjs/valid-styles
-    ['--sidebar-item-offset' as any]: 'calc(var(--spacing) * 2)',
+    ["--sidebar-item-offset" as any]: "calc(var(--spacing) * 2)",
     maskImage:
-      'linear-gradient(to bottom, transparent, white 12px, white calc(100% - 12px), transparent)',
+      "linear-gradient(to bottom, transparent, white 12px, white calc(100% - 12px), transparent)",
   },
 });
 
 export function SidebarSeparator({
   xstyle,
   ...props
-}: StyleXComponentProps<'p'>) {
+}: StyleXComponentProps<"p">) {
   return (
     <p {...props} {...stylex.props(separatorStyles.p, xstyle)}>
       {props.children}
@@ -387,12 +385,12 @@ export function SidebarSeparator({
 }
 const separatorStyles = stylex.create({
   p: {
-    display: 'inline-flex',
+    display: "inline-flex",
     gap: 8,
-    alignItems: 'center',
+    alignItems: "center",
     paddingInline: 8,
-    paddingInlineStart: 'var(--sidebar-item-offset)',
-    marginBottom: { default: 1.5 * 4, ':empty': 0 },
+    paddingInlineStart: "var(--sidebar-item-offset)",
+    marginBottom: { default: 1.5 * 4, ":empty": 0 },
   },
 });
 
@@ -400,7 +398,7 @@ export function SidebarItem({
   icon,
   xstyle,
   ...props
-}: Omit<LinkProps, 'className' | 'style'> & {
+}: Omit<LinkProps, "className" | "style"> & {
   icon?: ReactNode;
   xstyle?: stylex.StyleXStyles;
 }) {
@@ -429,7 +427,7 @@ export function SidebarItem({
 export function SidebarFolder({
   defaultOpen = false,
   ...props
-}: ComponentProps<'div'> & {
+}: ComponentProps<"div"> & {
   defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -440,9 +438,7 @@ export function SidebarFolder({
 
   return (
     <Collapsible onOpenChange={setOpen} open={open} {...props}>
-      <FolderContext.Provider
-        value={useMemo(() => ({ open, setOpen }), [open])}
-      >
+      <FolderContext.Provider value={{ open, setOpen }}>
         {props.children}
       </FolderContext.Provider>
     </Collapsible>
@@ -452,7 +448,7 @@ export function SidebarFolder({
 export function SidebarFolderTrigger({
   xstyle,
   ...props
-}: Omit<CollapsibleTriggerProps, 'className' | 'style'> & {
+}: Omit<CollapsibleTriggerProps, "className" | "style"> & {
   xstyle?: stylex.StyleXStyles;
 }) {
   const { open } = useFolderContext();
@@ -478,24 +474,24 @@ export function SidebarFolderTrigger({
   );
 }
 const folderTriggerStyles = stylex.create({
-  fullWidth: { width: '100%' },
+  fullWidth: { width: "100%" },
   chevron: {
-    width: 'var(--svg-size)',
-    height: 'var(--svg-size)',
-    marginInlineStart: 'auto',
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '0.15',
-    transitionProperty: 'transform',
+    width: "var(--svg-size)",
+    height: "var(--svg-size)",
+    marginInlineStart: "auto",
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "0.15",
+    transitionProperty: "transform",
   },
   closed: {
-    rotate: '-90deg',
+    rotate: "-90deg",
   },
 });
 
 export function SidebarFolderLink({
   xstyle,
   ...props
-}: Omit<LinkProps, 'className' | 'style'> & { xstyle?: stylex.StyleXStyles }) {
+}: Omit<LinkProps, "className" | "style"> & { xstyle?: stylex.StyleXStyles }) {
   const { open, setOpen } = useFolderContext();
   const { prefetch } = useInternalContext();
 
@@ -516,7 +512,7 @@ export function SidebarFolderLink({
       onClick={(e) => {
         if (
           e.target instanceof Element &&
-          e.target.matches('[data-icon], [data-icon] *')
+          e.target.matches("[data-icon], [data-icon] *")
         ) {
           setOpen(!open);
           e.preventDefault();
@@ -538,22 +534,22 @@ export function SidebarFolderLink({
   );
 }
 const folderLinkStyles = stylex.create({
-  fullWidth: { width: '100%' },
+  fullWidth: { width: "100%" },
   chevron: {
-    width: 'var(--svg-size)',
-    height: 'var(--svg-size)',
-    marginInlineStart: 'auto',
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '0.15s',
-    transitionProperty: 'transform',
+    width: "var(--svg-size)",
+    height: "var(--svg-size)",
+    marginInlineStart: "auto",
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "0.15s",
+    transitionProperty: "transform",
   },
   closed: {
-    rotate: '-90deg',
+    rotate: "-90deg",
   },
 });
 
 export function SidebarFolderContent(
-  props: Omit<CollapsibleContentProps, 'className' | 'style'> & {
+  props: Omit<CollapsibleContentProps, "className" | "style"> & {
     xstyle?: stylex.StyleXStyles;
   },
 ) {
@@ -561,15 +557,7 @@ export function SidebarFolderContent(
 
   return (
     <CollapsibleContent {...props} {...stylex.props(folderStyles.base(level))}>
-      <Context.Provider
-        value={useMemo(
-          () => ({
-            ...ctx,
-            level: level + 1,
-          }),
-          [ctx, level],
-        )}
-      >
+      <Context.Provider value={{ ...ctx, level: level + 1 }}>
         {props.children}
       </Context.Provider>
     </CollapsibleContent>
@@ -577,8 +565,8 @@ export function SidebarFolderContent(
 }
 const folderStyles = stylex.create({
   base: (level: number) => ({
-    position: 'relative',
-    '--sidebar-item-offset': `calc(var(--spacing) * ${(level + 1) * 3})`,
+    position: "relative",
+    "--sidebar-item-offset": `calc(var(--spacing) * ${(level + 1) * 3})`,
   }),
 });
 
@@ -586,7 +574,7 @@ export function SidebarTrigger({
   children,
   xstyle,
   ...props
-}: StyleXComponentProps<'button'>) {
+}: StyleXComponentProps<"button">) {
   // const { setOpen } = useSidebar();
   const setOpen = (_open: any) => {};
 
@@ -605,7 +593,7 @@ export function SidebarTrigger({
 export function SidebarCollapseTrigger({
   xstyle,
   ...props
-}: StyleXComponentProps<'button'>) {
+}: StyleXComponentProps<"button">) {
   return (
     <button
       aria-label="Collapse Sidebar"
@@ -621,14 +609,14 @@ export function SidebarCollapseTrigger({
 
 function useFolderContext() {
   const ctx = useContext(FolderContext);
-  if (!ctx) throw new Error('Missing sidebar folder');
+  if (!ctx) throw new Error("Missing sidebar folder");
 
   return ctx;
 }
 
 function useInternalContext() {
   const ctx = useContext(Context);
-  if (!ctx) throw new Error('<Sidebar /> component required.');
+  if (!ctx) throw new Error("<Sidebar /> component required.");
 
   return ctx;
 }
@@ -647,61 +635,59 @@ export function SidebarPageTree(props: {
 }) {
   const { root } = useTreeContext();
 
-  return useMemo(() => {
-    const { Separator, Item, Folder } = props.components ?? {};
+  const { Separator, Item, Folder } = props.components ?? {};
 
-    function renderSidebarList(
-      items: PageTree.Node[],
-      level: number,
-    ): ReactNode[] {
-      return items.map((item, i) => {
-        if (item.type === 'separator') {
-          if (Separator) return <Separator item={item} key={i} />;
-          return (
-            <SidebarSeparator
-              key={i}
-              {...stylex.props(i !== 0 && treeStyles.mt6)}
-            >
-              {item.icon}
-              {item.name}
-            </SidebarSeparator>
-          );
-        }
-
-        if (item.type === 'folder') {
-          const children = renderSidebarList(item.children, level + 1);
-
-          if (Folder)
-            return (
-              <Folder item={item} key={i} level={level}>
-                {children}
-              </Folder>
-            );
-          return (
-            <PageTreeFolder item={item} key={i}>
-              {children}
-            </PageTreeFolder>
-          );
-        }
-
-        if (Item) return <Item item={item} key={item.url} />;
+  function renderSidebarList(
+    items: PageTree.Node[],
+    level: number,
+  ): ReactNode[] {
+    return items.map((item, i) => {
+      if (item.type === "separator") {
+        if (Separator) return <Separator item={item} key={i} />;
         return (
-          <SidebarItem
-            external={item.external}
-            href={item.url}
-            icon={item.icon}
-            key={item.url}
+          <SidebarSeparator
+            key={i}
+            {...stylex.props(i !== 0 && treeStyles.mt6)}
           >
+            {item.icon}
             {item.name}
-          </SidebarItem>
+          </SidebarSeparator>
         );
-      });
-    }
+      }
 
-    return (
-      <Fragment key={root.$id}>{renderSidebarList(root.children, 1)}</Fragment>
-    );
-  }, [props.components, root]);
+      if (item.type === "folder") {
+        const children = renderSidebarList(item.children, level + 1);
+
+        if (Folder)
+          return (
+            <Folder item={item} key={i} level={level}>
+              {children}
+            </Folder>
+          );
+        return (
+          <PageTreeFolder item={item} key={i}>
+            {children}
+          </PageTreeFolder>
+        );
+      }
+
+      if (Item) return <Item item={item} key={item.url} />;
+      return (
+        <SidebarItem
+          external={item.external}
+          href={item.url}
+          icon={item.icon}
+          key={item.url}
+        >
+          {item.name}
+        </SidebarItem>
+      );
+    });
+  }
+
+  return (
+    <Fragment key={root.$id}>{renderSidebarList(root.children, 1)}</Fragment>
+  );
 }
 const treeStyles = stylex.create({
   mt6: { marginTop: 6 * 4 },

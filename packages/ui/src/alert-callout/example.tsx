@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { AlertCallout } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { AlertCallout } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -19,5 +19,5 @@ export default function Example() {
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

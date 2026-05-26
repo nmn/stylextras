@@ -22,4 +22,11 @@ export function InputGroup({ sx, ...props }: InputGroupProps) {
   return <div {...props} {...stylex.props(styles.base, sx)} />;
 }
 
-const styles = stylex.create({ base: { display: "flex", alignItems: "stretch", gap: spacing.xs, width: "100%" } });
+const styles = stylex.create({
+  base: {
+    gap: spacing.xs,
+    alignItems: "stretch",
+    display: "flex",
+    width: "100%",
+  },
+});

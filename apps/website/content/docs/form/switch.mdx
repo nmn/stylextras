@@ -40,14 +40,14 @@ The public prop types are exported from `@stylextras/ui/switch`. Most components
 ```tsx
 export type SwitchProps = Omit<
   BaseProps,
-  "className" | "style" | "type" | "size"
-> & {
-  sx?: StyleXStyles;
-  inputSx?: StyleXStyles;
-  labelSx?: StyleXStyles;
-  label?: ReactNode;
-  size?: SwitchSize;
-};
+  "aria-label" | "aria-labelledby" | "className" | "style" | "type" | "size"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    size?: SwitchSize;
+  };
 ```
 
 ## Customize styles

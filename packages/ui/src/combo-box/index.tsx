@@ -1,7 +1,7 @@
-import { Combobox, type ComboboxProps } from '../combobox/index'
+import { Combobox, type ComboboxProps } from "../combobox/index";
 
-export type ComboBoxProps = ComboboxProps
-export type ComboBoxFieldProps = ComboBoxProps
+export type ComboBoxProps = ComboboxProps;
+export type ComboBoxFieldProps = ComboBoxProps;
 
 /**
  * Renders the combo box primitive under the spaced alias export.
@@ -13,9 +13,9 @@ export type ComboBoxFieldProps = ComboBoxProps
  * - Does not implement a full ARIA combobox popup interaction model.
  */
 export function ComboBoxField(props: ComboBoxFieldProps) {
-  return <ComboBox {...props} />
+  return <ComboBox {...props} />;
 }
 
 export function ComboBox(props: ComboBoxProps) {
-  return <Combobox {...props} />
+  return <Combobox {...props} />;
 }

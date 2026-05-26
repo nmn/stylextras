@@ -7,11 +7,11 @@
  * @format
  */
 
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { legacyColors, vars } from '@/theming/vars.stylex';
+import * as React from "react";
+import * as stylex from "@stylexjs/stylex";
+import { legacyColors, vars } from "@/theming/vars.stylex";
 
-export const viewBox = '0 0 644 435';
+export const viewBox = "0 0 644 435";
 
 export function LogoText() {
   return (
@@ -23,20 +23,20 @@ export function LogoText() {
 
 const styles = stylex.create({
   logo: {
-    fill: vars['--color-fd-card-foreground'],
-    fillRule: 'nonzero',
+    fill: vars["--color-fd-card-foreground"],
+    fillRule: "nonzero",
   },
 });
 
 export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
-  const idA = 'a';
-  const idB = 'b';
-  const idC = 'c';
-  const idD = 'd';
-  const idE = 'e';
-  const idF = 'f';
-  const idG = 'g';
-  const idH = 'h';
+  const idA = "a";
+  const idB = "b";
+  const idC = "c";
+  const idD = "d";
+  const idE = "e";
+  const idF = "f";
+  const idG = "g";
+  const idH = "h";
 
   return (
     <svg {...stylex.props(xstyle)} viewBox={viewBox}>
@@ -76,8 +76,8 @@ export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
           y1="31.719%"
           y2="59.893%"
         >
-          <stop offset="0%" stopColor={legacyColors['--fg1']} stopOpacity="0" />
-          <stop offset="100%" stopColor={legacyColors['--fg1']} />
+          <stop offset="0%" stopColor={legacyColors["--fg1"]} stopOpacity="0" />
+          <stop offset="100%" stopColor={legacyColors["--fg1"]} />
         </linearGradient>
         <linearGradient
           id={idB}
@@ -86,8 +86,8 @@ export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
           y1="56.078%"
           y2="39.384%"
         >
-          <stop offset="0%" stopColor={legacyColors['--fg1']} stopOpacity="0" />
-          <stop offset="100%" stopColor={legacyColors['--fg1']} />
+          <stop offset="0%" stopColor={legacyColors["--fg1"]} stopOpacity="0" />
+          <stop offset="100%" stopColor={legacyColors["--fg1"]} />
         </linearGradient>
         <filter
           filterUnits="objectBoundingBox"
@@ -171,7 +171,7 @@ export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
         <g transform="translate(-.234)">
           <use fill={`url(#${idC})`} xlinkHref="#d" />
           <use
-            fill={legacyColors['--fg1']}
+            fill={legacyColors["--fg1"]}
             filter={`url(#${idE})`}
             xlinkHref="#d"
           />
@@ -179,7 +179,7 @@ export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
         <g transform="translate(-.234)">
           <use fill={`url(#${idF})`} xlinkHref="#g" />
           <use
-            fill={legacyColors['--fg1']}
+            fill={legacyColors["--fg1"]}
             filter={`url(#${idH})`}
             xlinkHref="#g"
           />

@@ -103,7 +103,7 @@ This example shows the component in a fuller composition with the surrounding pi
 
 ```tsx
 import { Button } from "@stylextras/ui/button";
-import { ButtonGroup } from "@stylextras/ui/button-group";
+import { ButtonGroupActions } from "@stylextras/ui/button-group";
 import { Typography } from "@stylextras/ui/typography";
 import {
   AlertDialogContent,
@@ -119,14 +119,18 @@ function AlertDialogExampleContent(props: AlertDialogContentProps) {
         </Typography>
         <span>This action cannot be undone.</span>
         <form method="dialog">
-          <ButtonGroup>
-            <Button variant="secondary" type="submit">
-              Cancel
-            </Button>
-            <Button variant="danger" type="submit">
-              Delete
-            </Button>
-          </ButtonGroup>
+          <ButtonGroupActions
+            secondary={
+              <Button variant="secondary" type="submit">
+                Cancel
+              </Button>
+            }
+            primary={
+              <Button variant="danger" type="submit">
+                Delete
+              </Button>
+            }
+          />
         </form>
       </div>
     </AlertDialogContent>

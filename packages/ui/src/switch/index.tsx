@@ -1,6 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
+import type { AccessibleNameProps } from "../accessibility";
 import { colors } from "../tokens/color.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
@@ -11,14 +12,14 @@ export type SwitchSize = "sm" | "md";
 
 export type SwitchProps = Omit<
   BaseProps,
-  "className" | "style" | "type" | "size"
-> & {
-  sx?: StyleXStyles;
-  inputSx?: StyleXStyles;
-  labelSx?: StyleXStyles;
-  label?: ReactNode;
-  size?: SwitchSize;
-};
+  "aria-label" | "aria-labelledby" | "className" | "style" | "type" | "size"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    size?: SwitchSize;
+  };
 
 /**
  * Renders a token-styled boolean switch control.
@@ -45,17 +46,19 @@ export function Switch({
         type="checkbox"
         {...stylex.props(inputStyles.base, sizeStyles[size], inputSx)}
       />
-      {label ? <span {...stylex.props(labelStyles.base, labelSx)}>{label}</span> : null}
+      {label ? (
+        <span {...stylex.props(labelStyles.base, labelSx)}>{label}</span>
+      ) : null}
     </label>
   );
 }
 
 const rootStyles = stylex.create({
   base: {
-    display: "inline-flex",
-    alignItems: "center",
     gap: spacing.xs,
+    alignItems: "center",
     color: colors.fg,
+    display: "inline-flex",
   },
 });
 
@@ -68,12 +71,12 @@ const inputStyles = stylex.create({
 
 const sizeStyles = stylex.create({
   sm: {
-    width: spacing.xl,
     height: spacing.md,
+    width: spacing.xl,
   },
   md: {
-    width: spacing["2xl"],
     height: spacing.lg,
+    width: spacing.xxl,
   },
 });
 

@@ -13,6 +13,8 @@ Use Text Area inside forms where native input behavior, labeling, validation, an
 
 The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
+Search aliases: textarea, multiline input, multiline field, message field.
+
 ## Import
 
 ```tsx
@@ -38,7 +40,16 @@ import { TextAreaField, TextArea } from "@stylextras/ui/text-area";
 The public prop types are exported from `@stylextras/ui/text-area`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type TextAreaProps = TextAreaProps;
+export type TextAreaProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style"
+> &
+  AccessibleNameProps & {
+    labelSx?: StyleXStyles;
+    size?: TextareaSize;
+    sx?: StyleXStyles;
+    textareaSx?: StyleXStyles;
+  };
 
 export type TextAreaFieldProps = TextAreaProps;
 ```

@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { Navbar } from './index'
-import { DemoFrame } from '../example-theme/demo'
-import { Link } from '../link'
+import { Navbar } from "./index";
+import { DemoFrame } from "../example-theme/demo";
+import { Link } from "../link";
 
 export default function Example() {
   return (
@@ -18,5 +18,5 @@ export default function Example() {
         </Navbar>
       </DemoFrame>
     </>
-  )
+  );
 }

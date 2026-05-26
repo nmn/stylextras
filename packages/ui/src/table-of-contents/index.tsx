@@ -27,7 +27,12 @@ export type TableOfContentsProps = Omit<BaseProps, "className" | "style"> & {
  * - Uses native nav and list semantics.
  * - The caller must ensure targets exist and link text matches the visible headings.
  */
-export function TableOfContents({ items, sx, title = "On this page", ...props }: TableOfContentsProps) {
+export function TableOfContents({
+  items,
+  sx,
+  title = "On this page",
+  ...props
+}: TableOfContentsProps) {
   return (
     <nav {...props} aria-label={title} {...stylex.props(rootStyles.base, sx)}>
       <div {...stylex.props(textStyles.title)}>{title}</div>
@@ -46,16 +51,16 @@ export function TableOfContents({ items, sx, title = "On this page", ...props }:
 
 const rootStyles = stylex.create({
   base: {
-    display: "grid",
     gap: spacing.sm,
+    display: "grid",
   },
 });
 
 const listStyles = stylex.create({
   base: {
-    display: "grid",
-    gap: spacing.xs,
     margin: 0,
+    gap: spacing.xs,
+    display: "grid",
     paddingLeft: spacing.md,
   },
 });
@@ -68,9 +73,9 @@ const textStyles = stylex.create({
     fontWeight: typography.weightSemibold,
   },
   link: {
+    textDecoration: "none",
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
-    textDecoration: "none",
   },
 });

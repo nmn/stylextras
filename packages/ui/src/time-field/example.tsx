@@ -1,1 +1,1 @@
-export { default } from '../timefield/example'
+export { default } from "../timefield/example";

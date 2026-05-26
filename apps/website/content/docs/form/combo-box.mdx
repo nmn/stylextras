@@ -13,6 +13,8 @@ Use Combo Box inside forms where native input behavior, labeling, validation, an
 
 The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
+Search aliases: combobox, autocomplete, suggest field, picker field.
+
 ## Import
 
 ```tsx
@@ -38,7 +40,17 @@ import { ComboBoxField, ComboBox } from "@stylextras/ui/combo-box";
 The public prop types are exported from `@stylextras/ui/combo-box`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type ComboBoxProps = ComboBoxProps;
+export type ComboBoxProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style" | "type"
+> &
+  AccessibleNameProps & {
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    listId?: string;
+    options?: ComboboxOption[];
+    sx?: StyleXStyles;
+  };
 
 export type ComboBoxFieldProps = ComboBoxProps;
 ```

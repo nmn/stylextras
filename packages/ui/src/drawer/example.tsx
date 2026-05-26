@@ -1,10 +1,14 @@
 "use client";
 
 import { Button } from "../button";
-import { ButtonGroup } from "../button-group";
+import { ButtonGroupActions } from "../button-group";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
 import { Typography } from "../typography";
-import { DrawerContent, type DrawerContentProps, DrawerTrigger } from "./index";
+import {
+  DialogTrigger,
+  DrawerContent,
+  type DrawerContentProps,
+} from "../dialog";
 
 function DrawerExampleContent(props: DrawerContentProps) {
   return (
@@ -17,12 +21,14 @@ function DrawerExampleContent(props: DrawerContentProps) {
           Use a drawer for nearby controls without leaving the current page.
         </span>
         <form method="dialog">
-          <ButtonGroup>
-            <Button type="submit" variant="secondary">
-              Close
-            </Button>
-            <Button type="submit">Save changes</Button>
-          </ButtonGroup>
+          <ButtonGroupActions
+            secondary={
+              <Button type="submit" variant="secondary">
+                Close
+              </Button>
+            }
+            primary={<Button type="submit">Save changes</Button>}
+          />
         </form>
       </DemoStack>
     </DrawerContent>
@@ -35,9 +41,9 @@ export default function Example() {
       title="Drawer"
       description="Click the trigger to open the drawer."
     >
-      <DrawerTrigger content={() => Promise.resolve(DrawerExampleContent)}>
+      <DialogTrigger content={() => Promise.resolve(DrawerExampleContent)}>
         Open drawer
-      </DrawerTrigger>
+      </DialogTrigger>
     </DemoFrame>
   );
 }

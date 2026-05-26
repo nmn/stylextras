@@ -28,17 +28,17 @@ export function InputFields({ sx, ...props }: InputFieldsProps) {
 
 const styles = stylex.create({
   base: {
-    width: "100%",
-    minHeight: spacing["3xl"],
-    paddingInline: spacing.md,
-    paddingBlock: spacing.sm,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingBlock: spacing.sm,
+    paddingInline: spacing.md,
     backgroundColor: colors.bgRaised,
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
+    minHeight: spacing.xxxl,
+    width: "100%",
   },
 });

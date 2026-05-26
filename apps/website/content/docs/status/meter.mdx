@@ -38,10 +38,13 @@ import { Meter } from "@stylextras/ui/meter";
 The public prop types are exported from `@stylextras/ui/meter`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type MeterProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  label?: ReactNode;
-};
+export type MeterProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+  };
 ```
 
 ## Customize styles

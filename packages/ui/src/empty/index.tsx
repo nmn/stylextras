@@ -7,7 +7,9 @@ import { typography } from "../tokens/typography.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type EmptyProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type EmptyProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a token-styled empty-state surface.
@@ -18,6 +20,19 @@ export type EmptyProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXS
  * - Provides presentation only.
  * - The caller should ensure the empty state message is meaningful in context.
  */
-export function Empty({ sx, ...props }: EmptyProps) { return <div {...props} {...stylex.props(styles.base, sx)} />; }
+export function Empty({ sx, ...props }: EmptyProps) {
+  return <div {...props} {...stylex.props(styles.base, sx)} />;
+}
 
-const styles = stylex.create({ base: { display: "grid", placeItems: "center", gap: spacing.sm, minHeight: spacing["4xl"], color: colors.fgMuted, fontFamily: typography.fontSans, fontSize: typography.step0, textAlign: "center" } });
+const styles = stylex.create({
+  base: {
+    gap: spacing.sm,
+    placeItems: "center",
+    color: colors.fgMuted,
+    display: "grid",
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    textAlign: "center",
+    minHeight: spacing.xxxxl,
+  },
+});

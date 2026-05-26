@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { AspectRatio } from './index'
-import { DemoFrame, DemoGrid, DemoPanel } from '../example-theme/demo'
+import { AspectRatio } from "./index";
+import { DemoFrame, DemoGrid, DemoPanel } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -26,5 +26,5 @@ export default function Example() {
         </DemoGrid>
       </DemoFrame>
     </>
-  )
+  );
 }

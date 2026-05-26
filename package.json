@@ -2,7 +2,7 @@
   "name": "stylextras",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@stylexjs/eslint-plugin": "0.17.5",
+    "@stylexjs/eslint-plugin": "0.18.3",
     "@types/bun": "^1.2.3",
     "@typescript-eslint/parser": "7.2.0",
     "eslint": "8.57.1",
@@ -15,5 +15,9 @@
     "test": "bun run --filter '*' test",
     "format": "biome format --write ."
   },
-  "workspaces": ["apps/*", "tools/*", "packages/*"]
+  "workspaces": [
+    "apps/*",
+    "tools/*",
+    "packages/*"
+  ]
 }

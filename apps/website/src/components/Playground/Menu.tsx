@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { vars } from '@/theming/vars.stylex';
+import * as stylex from "@stylexjs/stylex";
+import type { ReactNode, RefObject } from "react";
+import { vars } from "@/theming/vars.stylex";
 
 export function Menu({
   id,
@@ -15,8 +15,8 @@ export function Menu({
   ref,
 }: {
   id: string;
-  children: React.ReactNode;
-  ref?: React.RefObject<HTMLDivElement | null>;
+  children: ReactNode;
+  ref?: RefObject<HTMLDivElement | null>;
 }) {
   return (
     <>
@@ -31,7 +31,7 @@ export function Item({
   children,
   onClick,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   onClick: () => void;
 }) {
   return (
@@ -44,33 +44,33 @@ export function Item({
 const styles = stylex.create({
   menu: {
     // eslint-disable-next-line @stylexjs/valid-styles
-    positionAnchor: 'auto',
+    positionAnchor: "auto",
     // eslint-disable-next-line @stylexjs/valid-styles
-    positionArea: 'bottom right',
-    position: 'fixed',
-    backgroundColor: vars['--color-fd-card'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    positionArea: "bottom right",
+    position: "fixed",
+    backgroundColor: vars["--color-fd-card"],
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
-    borderRadius: '6px',
-    boxShadow: '0 8px 16px rgba(0,0,0,0.35)',
-    transform: 'translate(-30px, 0)',
+    borderRadius: "6px",
+    boxShadow: "0 8px 16px rgba(0,0,0,0.35)",
+    transform: "translate(-30px, 0)",
   },
   menuContent: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
   },
   menuItem: {
     padding: 8,
     paddingInline: 16,
     fontSize: 14,
-    color: vars['--color-fd-foreground'],
-    textAlign: 'left',
-    cursor: 'pointer',
+    color: vars["--color-fd-foreground"],
+    textAlign: "left",
+    cursor: "pointer",
     backgroundColor: {
-      default: 'transparent',
-      ':focus-visible': vars['--color-fd-accent'],
-      ':hover': vars['--color-fd-accent'],
+      default: "transparent",
+      ":focus-visible": vars["--color-fd-accent"],
+      ":hover": vars["--color-fd-accent"],
     },
     borderWidth: 0,
     borderRadius: 4,

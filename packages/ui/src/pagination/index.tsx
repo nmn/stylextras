@@ -23,16 +23,30 @@ export type PaginationProps = Omit<BaseProps, "className" | "style"> & {
  * - Provides structure only.
  * - Current page state, disabled state, and labels must be supplied by the caller.
  */
-export function Pagination({ currentPage = 2, sx, totalPages = 5, ...props }: PaginationProps) {
+export function Pagination({
+  currentPage = 2,
+  sx,
+  totalPages = 5,
+  ...props
+}: PaginationProps) {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
   return (
-    <nav {...props} aria-label="Pagination" {...stylex.props(navStyles.base, sx)}>
+    <nav
+      {...props}
+      aria-label="Pagination"
+      {...stylex.props(navStyles.base, sx)}
+    >
       {pages.map((page) => (
         <a
           key={page}
           href="#"
           aria-current={page === currentPage ? "page" : undefined}
-          {...stylex.props(linkStyles.base, page === currentPage ? linkStateStyles.active : linkStateStyles.inactive)}
+          {...stylex.props(
+            linkStyles.base,
+            page === currentPage
+              ? linkStateStyles.active
+              : linkStateStyles.inactive,
+          )}
         >
           {page}
         </a>
@@ -41,6 +55,37 @@ export function Pagination({ currentPage = 2, sx, totalPages = 5, ...props }: Pa
   );
 }
 
-const navStyles = stylex.create({ base: { display: "inline-flex", alignItems: "center", gap: spacing.xs, flexWrap: "wrap" } });
-const linkStyles = stylex.create({ base: { display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: spacing["2xl"], minHeight: spacing["2xl"], paddingInline: spacing.xs, borderStyle: "solid", borderWidth: stroke.thin, borderRadius: radius.md, textDecoration: "none" } });
-const linkStateStyles = stylex.create({ active: { color: colors.primaryForeground, backgroundColor: colors.primary, borderColor: colors.primary }, inactive: { color: colors.fg, backgroundColor: colors.bg, borderColor: colors.border } });
+const navStyles = stylex.create({
+  base: {
+    gap: spacing.xs,
+    alignItems: "center",
+    display: "inline-flex",
+    flexWrap: "wrap",
+  },
+});
+const linkStyles = stylex.create({
+  base: {
+    borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingInline: spacing.xs,
+    textDecoration: "none",
+    alignItems: "center",
+    display: "inline-flex",
+    justifyContent: "center",
+    minHeight: spacing.xxl,
+    minWidth: spacing.xxl,
+  },
+});
+const linkStateStyles = stylex.create({
+  active: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primary,
+    color: colors.primaryForeground,
+  },
+  inactive: {
+    borderColor: colors.border,
+    backgroundColor: colors.bg,
+    color: colors.fg,
+  },
+});

@@ -10,21 +10,21 @@ import type {
   JSX,
   JSXElementConstructor,
   ReactNode,
-} from 'react';
-import type { NavProviderProps } from 'fumadocs-ui/contexts/layout';
-import type { I18nConfig } from 'fumadocs-core/i18n';
-import { type StyleXStyles } from '@stylexjs/stylex';
+} from "react";
+import type { NavProviderProps } from "fumadocs-ui/contexts/layout";
+import type { I18nConfig } from "fumadocs-core/i18n";
+import { type StyleXStyles } from "@stylexjs/stylex";
 
 export type StyleXAttributes<T> = Omit<
   HTMLAttributes<T>,
-  'className' | 'style'
+  "className" | "style"
 > & {
   xstyle?: StyleXStyles;
 };
 
 export type StyleXComponentProps<
   T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,
-> = Omit<ComponentProps<T>, 'className' | 'style'> & {
+> = Omit<ComponentProps<T>, "className" | "style"> & {
   xstyle?: StyleXStyles;
 };
 
@@ -73,7 +73,7 @@ interface BaseItem {
    *
    * @defaultValue 'all'
    */
-  on?: 'menu' | 'nav' | 'all';
+  on?: "menu" | "nav" | "all";
 }
 
 export interface BaseLinkType extends BaseItem {
@@ -83,19 +83,19 @@ export interface BaseLinkType extends BaseItem {
    *
    * @defaultValue 'url'
    */
-  active?: 'url' | 'nested-url' | 'none';
+  active?: "url" | "nested-url" | "none";
   external?: boolean;
 }
 
 export interface MainItemType extends BaseLinkType {
-  type?: 'main';
+  type?: "main";
   icon?: ReactNode;
   text: ReactNode;
   description?: ReactNode;
 }
 
 export interface IconItemType extends BaseLinkType {
-  type: 'icon';
+  type: "icon";
   /**
    * `aria-label` of icon button
    */
@@ -109,7 +109,7 @@ export interface IconItemType extends BaseLinkType {
 }
 
 export interface ButtonItemType extends BaseLinkType {
-  type: 'button';
+  type: "button";
   icon?: ReactNode;
   text: ReactNode;
   /**
@@ -119,7 +119,7 @@ export interface ButtonItemType extends BaseLinkType {
 }
 
 export interface MenuItemType extends Partial<BaseLinkType> {
-  type: 'menu';
+  type: "menu";
   icon?: ReactNode;
   text: ReactNode;
 
@@ -142,7 +142,7 @@ export interface MenuItemType extends Partial<BaseLinkType> {
 }
 
 export interface CustomItemType extends BaseItem {
-  type: 'custom';
+  type: "custom";
   /**
    * @defaultValue false
    */
@@ -170,10 +170,10 @@ export function getLinks(
     result = [
       ...result,
       {
-        type: 'icon',
+        type: "icon",
         url: githubUrl,
-        text: 'Github',
-        label: 'GitHub',
+        text: "Github",
+        label: "GitHub",
         icon: (
           <svg
             fill="none"
@@ -197,4 +197,4 @@ export function getLinks(
   return result;
 }
 
-export { BaseLinkItem } from './client';
+export { BaseLinkItem } from "./client";

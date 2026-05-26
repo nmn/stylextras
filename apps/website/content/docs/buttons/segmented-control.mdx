@@ -113,15 +113,18 @@ Descriptions are useful when labels alone are ambiguous. Use them sparingly beca
 The public prop types are exported from `@stylextras/ui/segmented-control`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type SegmentedControlProps = Omit<BaseProps, "className" | "style"> & {
-  legend?: ReactNode;
-  name?: string;
-  onValueChange?: (value: string) => void;
-  options?: SegmentOption[];
-  sx?: StyleXStyles;
-  value?: string;
-  defaultValue?: string;
-};
+export type SegmentedControlProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style"
+> &
+  AccessibleGroupNameProps & {
+    name?: string;
+    onValueChange?: (value: string) => void;
+    options?: SegmentOption[];
+    sx?: StyleXStyles;
+    value?: string;
+    defaultValue?: string;
+  };
 ```
 
 ## Customize styles
@@ -134,7 +137,11 @@ import { colors } from "@stylextras/ui/tokens/color";
 import { spacing } from "@stylextras/ui/tokens/spacing";
 import { SegmentedControl } from "@stylextras/ui/segmented-control";
 
-<SegmentedControl sx={styles.emphasis}>Example</SegmentedControl>;
+<SegmentedControl
+  legend="View"
+  options={["Preview", "Code"]}
+  sx={styles.emphasis}
+/>;
 
 const styles = stylex.create({
   emphasis: {

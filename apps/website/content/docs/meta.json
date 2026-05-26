@@ -2,14 +2,14 @@
   "pages": [
     "./get-started.mdx",
     "./buttons",
-    "./collections",
-    "./color",
-    "./content",
-    "./date-and-time",
     "./form",
+    "./date-and-time",
+    "./color",
+    "./collections",
+    "./popups",
     "./layout",
     "./navigation",
-    "./popups",
+    "./content",
     "./status"
   ]
 }

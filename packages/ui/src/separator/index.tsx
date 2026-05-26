@@ -51,23 +51,23 @@ export function Separator({
 
 const baseStyles = stylex.create({
   base: {
+    backgroundColor: colors.border,
     display: "block",
     flexShrink: 0,
-    backgroundColor: colors.border,
   },
 });
 
 const orientationStyles = stylex.create({
   horizontal: {
-    width: "100%",
-    height: stroke.thin,
     marginBlock: spacing.md,
+    height: stroke.thin,
+    width: "100%",
   },
   vertical: {
-    width: stroke.thin,
-    height: "100%",
-    minHeight: spacing["3xl"],
     marginInline: spacing.md,
+    height: "100%",
+    minHeight: spacing.xxxl,
+    width: stroke.thin,
   },
 });
 

@@ -9,7 +9,10 @@ import { typography } from "../tokens/typography.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"input">;
 
-export type DatePickerProps = Omit<BaseProps, "className" | "style" | "type"> & { sx?: StyleXStyles };
+export type DatePickerProps = Omit<
+  BaseProps,
+  "className" | "style" | "type"
+> & { sx?: StyleXStyles };
 
 /**
  * Renders a token-styled date picker control.
@@ -20,6 +23,22 @@ export type DatePickerProps = Omit<BaseProps, "className" | "style" | "type"> & 
  * - This is a simplified implementation.
  * - It does not provide a fully custom accessible calendar-popup interaction model.
  */
-export function DatePicker({ sx, ...props }: DatePickerProps) { return <input {...props} type="date" {...stylex.props(styles.base, sx)} />; }
+export function DatePicker({ sx, ...props }: DatePickerProps) {
+  return <input {...props} type="date" {...stylex.props(styles.base, sx)} />;
+}
 
-const styles = stylex.create({ base: { minHeight: spacing["3xl"], paddingInline: spacing.md, paddingBlock: spacing.sm, borderStyle: "solid", borderWidth: stroke.thin, borderColor: colors.border, borderRadius: radius.md, backgroundColor: colors.bgRaised, color: colors.fg, fontFamily: typography.fontSans, fontSize: typography.step0 } });
+const styles = stylex.create({
+  base: {
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingBlock: spacing.sm,
+    paddingInline: spacing.md,
+    backgroundColor: colors.bgRaised,
+    color: colors.fg,
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    minHeight: spacing.xxxl,
+  },
+});

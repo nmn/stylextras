@@ -1,5 +1,5 @@
 {
-  "title": "Buttons",
+  "title": "Actions",
   "pages": [
     "./button-group.mdx",
     "./button.mdx",

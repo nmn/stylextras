@@ -1,10 +1,12 @@
-import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithoutRef } from 'react'
-import { Table } from '../table'
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { Table } from "../table";
 
-type BaseProps = ComponentPropsWithoutRef<typeof Table>
+type BaseProps = ComponentPropsWithoutRef<typeof Table>;
 
-export type DataTableProps = Omit<BaseProps, 'className' | 'style'> & { sx?: StyleXStyles }
+export type DataTableProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a simplified data-table wrapper.
@@ -16,5 +18,5 @@ export type DataTableProps = Omit<BaseProps, 'className' | 'style'> & { sx?: Sty
  * - Sorting, selection, grid navigation, and virtualization semantics are not implemented.
  */
 export function DataTable({ sx, ...props }: DataTableProps) {
-  return <Table {...props} sx={sx} />
+  return <Table {...props} sx={sx} />;
 }

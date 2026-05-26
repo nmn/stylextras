@@ -46,40 +46,40 @@ export function AlertCallout({
 
 const baseStyles = stylex.create({
   base: {
-    display: "flex",
-    flexDirection: "column",
-    gap: spacing.sm,
     padding: spacing.md,
+    borderRadius: radius.md,
     borderStyle: "solid",
     borderWidth: stroke.thin,
-    borderRadius: radius.md,
+    gap: spacing.sm,
+    display: "flex",
+    flexDirection: "column",
   },
 });
 
 const variantStyles = stylex.create({
   neutral: {
-    color: colors.fg,
-    backgroundColor: colors.bgSubtle,
     borderColor: colors.border,
+    backgroundColor: colors.bgSubtle,
+    color: colors.fg,
   },
   info: {
-    color: colors.info,
-    backgroundColor: colors.infoSoft,
     borderColor: colors.info,
+    backgroundColor: colors.infoSoft,
+    color: colors.info,
   },
   success: {
-    color: colors.success,
-    backgroundColor: colors.successSoft,
     borderColor: colors.success,
+    backgroundColor: colors.successSoft,
+    color: colors.success,
   },
   warning: {
-    color: colors.warning,
-    backgroundColor: colors.warningSoft,
     borderColor: colors.warning,
+    backgroundColor: colors.warningSoft,
+    color: colors.warning,
   },
   danger: {
-    color: colors.danger,
-    backgroundColor: colors.dangerSoft,
     borderColor: colors.danger,
+    backgroundColor: colors.dangerSoft,
+    color: colors.danger,
   },
 });

@@ -13,6 +13,8 @@ Use Alert to communicate state, progress, or feedback in a compact token-driven 
 
 The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
+Search aliases: alert callout, callout, notice, message.
+
 ## Import
 
 ```tsx
@@ -38,7 +40,11 @@ import { Alert } from "@stylextras/ui/alert";
 The public prop types are exported from `@stylextras/ui/alert`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type AlertProps = import("@stylextras/ui/alert-callout").AlertProps;
+export type AlertProps = Omit<BaseProps, "className" | "style"> & {
+  role?: "alert" | "status" | "note";
+  sx?: StyleXStyles;
+  variant?: AlertVariant;
+};
 ```
 
 ## Complete example

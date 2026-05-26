@@ -1,38 +1,63 @@
-'use client'
+"use client";
 
-import * as React from 'react'
+import { lazy, useRef } from "react";
+import type { ComponentType } from "react";
+import { ensurePopoverPolyfills, isPopoverOpen } from "../platform-polyfills";
 
-export type ReactComponent<Props = Record<string, never>> = React.ComponentType<Props>
+export type ReactComponent<Props = Record<string, never>> =
+  ComponentType<Props>;
 export type LazyComponentLoader<Props = Record<string, never>> = () => Promise<
   ReactComponent<Props>
->
+>;
 
 type LazyState<Props> = {
-  loader: LazyComponentLoader<Props>
-  promise: Promise<{ default: ReactComponent<Props> }> | null
-}
+  LazyContent: ReactComponent<Props> | null;
+  loader: LazyComponentLoader<Props>;
+  promise: Promise<{ default: ReactComponent<Props> }> | null;
+};
 
 export function useLazyComponent<Props>(loader: LazyComponentLoader<Props>) {
-  const stateRef = React.useRef<LazyState<Props>>({ loader, promise: null })
+  const stateRef = useRef<LazyState<Props>>({
+    LazyContent: null,
+    loader,
+    promise: null,
+  });
 
-  const load = React.useCallback(() => {
+  function load() {
     if (stateRef.current.loader !== loader) {
-      stateRef.current = { loader, promise: null }
+      stateRef.current = {
+        LazyContent: null,
+        loader,
+        promise: null,
+      };
     }
 
-    stateRef.current.promise ??= loader().then((component) => ({ default: component }))
-    return stateRef.current.promise
-  }, [loader])
+    stateRef.current.promise ??= loader().then((component) => ({
+      default: component,
+    }));
+    return stateRef.current.promise;
+  }
 
-  const LazyContent = React.useMemo(() => React.lazy(load), [load])
+  stateRef.current.LazyContent ??= lazy(load);
 
   return {
-    LazyContent,
+    LazyContent: stateRef.current.LazyContent,
     preload: load,
-  }
+  };
 }
 
-export function showPopoverWithSource(element: HTMLElement, source: HTMLElement | null) {
-  const showPopover = element.showPopover as (options?: { source?: HTMLElement }) => void
-  showPopover.call(element, source ? { source } : undefined)
+export function showPopoverWithSource(
+  element: HTMLElement,
+  source: HTMLElement | null,
+) {
+  void ensurePopoverPolyfills().then(() => {
+    if (!element.isConnected || isPopoverOpen(element)) {
+      return;
+    }
+
+    const showPopover = element.showPopover as (options?: {
+      source?: HTMLElement;
+    }) => void;
+    showPopover.call(element, source ? { source } : undefined);
+  });
 }

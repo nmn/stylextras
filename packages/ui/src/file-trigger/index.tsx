@@ -9,7 +9,10 @@ import { typography } from "../tokens/typography.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"input">;
 
-export type FileTriggerProps = Omit<BaseProps, "className" | "style" | "type"> & {
+export type FileTriggerProps = Omit<
+  BaseProps,
+  "className" | "style" | "type"
+> & {
   sx?: StyleXStyles;
   label?: ReactNode;
 };
@@ -23,7 +26,11 @@ export type FileTriggerProps = Omit<BaseProps, "className" | "style" | "type"> &
  * - Relies on the native file input for actual selection.
  * - Custom trigger labeling and status messaging remain the caller’s responsibility.
  */
-export function FileTrigger({ label = "Choose file", sx, ...props }: FileTriggerProps) {
+export function FileTrigger({
+  label = "Choose file",
+  sx,
+  ...props
+}: FileTriggerProps) {
   return (
     <label {...stylex.props(styles.button, sx)}>
       <span>{label}</span>
@@ -34,22 +41,22 @@ export function FileTrigger({ label = "Choose file", sx, ...props }: FileTrigger
 
 const styles = stylex.create({
   button: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: spacing["3xl"],
-    paddingInline: spacing.md,
-    paddingBlock: spacing.sm,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingBlock: spacing.sm,
+    paddingInline: spacing.md,
+    alignItems: "center",
     backgroundColor: colors.secondary,
     color: colors.fg,
+    cursor: "pointer",
+    display: "inline-flex",
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     fontWeight: typography.weightMedium,
-    cursor: "pointer",
+    justifyContent: "center",
+    minHeight: spacing.xxxl,
   },
   input: { display: "none" },
 });

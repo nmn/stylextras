@@ -1,16 +1,21 @@
+import { Suspense, useId, useRef, useState } from "react";
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import * as React from "react";
 import type { ComponentPropsWithRef, ReactNode } from "react";
-import { useId } from "react";
 import { Button } from "../button";
 import type { ButtonProps } from "../button";
+import {
+  attachFocusgroupPolyfill,
+  focusgroupAttributes,
+  focusgroupRef,
+} from "../focusgroup";
 import {
   type LazyComponentLoader,
   type ReactComponent,
   showPopoverWithSource,
   useLazyComponent,
 } from "../lazy-component";
+import { attachPopoverPolyfills, isPopoverOpen } from "../platform-polyfills";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
@@ -49,7 +54,7 @@ export type DropdownMenuTriggerProps = Omit<
 > & {
   content: LazyComponentLoader<DropdownMenuContentProps>;
   contentProps?: Omit<DropdownMenuContentProps, "ref">;
-  fallback?: React.ReactNode;
+  fallback?: ReactNode;
 };
 
 export type DropdownMenuComponent = ReactComponent<DropdownMenuContentProps>;
@@ -65,8 +70,8 @@ const leftFallback = stylex.positionTry({ positionArea: "right" });
  * Search aliases: dropdown menu, menu button, popup menu, action menu.
  *
  * A11y notes:
- * - Provides a surfaced menu but not a full ARIA menu-button interaction system.
- * - Focus movement, typeahead, and composite keyboard navigation are limited.
+ * - Uses menu semantics on the surfaced content.
+ * - Arrow-key focus movement is provided by focusgroup with a lazy polyfill.
  */
 export function DropdownMenu({
   behavior = "auto",
@@ -79,6 +84,11 @@ export function DropdownMenu({
   ...props
 }: DropdownMenuProps) {
   const popoverId = useId();
+
+  function setMenuRef(node: HTMLDivElement | null) {
+    attachFocusgroupPolyfill(node);
+    attachPopoverPolyfills(node);
+  }
 
   return (
     <div {...props} {...stylex.props(rootStyles.base, sx)}>
@@ -94,7 +104,9 @@ export function DropdownMenu({
       <div
         id={popoverId}
         popover={behavior}
+        ref={setMenuRef}
         role="menu"
+        {...focusgroupAttributes("menu")}
         {...stylex.props(
           menuStyles.base,
           placementStyles[placement],
@@ -133,12 +145,18 @@ export function DropdownMenuContent({
   sx,
   ...props
 }: DropdownMenuContentProps) {
+  function setContentRef(node: HTMLDivElement | null) {
+    focusgroupRef(ref)(node);
+    attachPopoverPolyfills(node);
+  }
+
   return (
     <div
-      ref={ref}
+      ref={setContentRef}
       {...props}
       popover={behavior}
       role="menu"
+      {...focusgroupAttributes("menu")}
       {...stylex.props(
         menuStyles.base,
         placementStyles[placement],
@@ -175,46 +193,100 @@ export function DropdownMenuTrigger({
   fallback = null,
   onClick,
   onFocus,
+  onKeyDown,
+  onMouseEnter,
   onPointerEnter,
   type = "button",
   ...props
 }: DropdownMenuTriggerProps) {
-  const [mounted, setMounted] = React.useState(false);
-  const triggerRef = React.useRef<HTMLButtonElement | null>(null);
-  const menuRef = React.useRef<HTMLDivElement | null>(null);
-  const shouldOpenRef = React.useRef(false);
+  const [mounted, setMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const pendingFocusRef = useRef<"first" | "last" | null>(null);
+  const shouldOpenRef = useRef(false);
   const { LazyContent, preload } = useLazyComponent(content);
 
-  const openMenu = React.useCallback(() => {
+  function focusMenuItem(menu: HTMLElement, position: "first" | "last") {
+    const items = Array.from(
+      menu.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], [role="menuitem"]:not([aria-disabled="true"]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((item) => item.offsetParent !== null);
+    const item = position === "first" ? items[0] : items.at(-1);
+    item?.focus();
+  }
+
+  function openMenu(focusItem?: "first" | "last") {
     shouldOpenRef.current = true;
+    pendingFocusRef.current = focusItem ?? null;
     setMounted(true);
 
     const menu = menuRef.current;
-    if (menu && !menu.matches(":popover-open")) {
+    if (menu && !isPopoverOpen(menu)) {
       showPopoverWithSource(menu, triggerRef.current);
       shouldOpenRef.current = false;
+      setIsOpen(true);
+      if (focusItem) {
+        queueMicrotask(() => focusMenuItem(menu, focusItem));
+      }
     }
-  }, []);
+  }
 
-  const setMenuRef = React.useCallback((node: HTMLDivElement | null) => {
+  function openPeerMenubarMenu() {
+    const trigger = triggerRef.current;
+    const menubar = trigger?.closest('[role="menubar"]');
+
+    if (!menubar) {
+      return;
+    }
+
+    const hasOpenMenu = Array.from(
+      menubar.querySelectorAll<HTMLElement>("[popover]"),
+    ).some(isPopoverOpen);
+    if (hasOpenMenu) {
+      openMenu();
+    }
+  }
+
+  function setMenuRef(node: HTMLDivElement | null) {
     menuRef.current = node;
+    attachFocusgroupPolyfill(node);
+    attachPopoverPolyfills(node);
 
-    if (node && shouldOpenRef.current && !node.matches(":popover-open")) {
+    function handleToggle(event: Event) {
+      const state = (event as Event & { newState?: string }).newState;
+      setIsOpen(state ? state === "open" : node ? isPopoverOpen(node) : false);
+    }
+
+    if (node && shouldOpenRef.current && !isPopoverOpen(node)) {
       showPopoverWithSource(node, triggerRef.current);
       shouldOpenRef.current = false;
+      setIsOpen(true);
+      if (pendingFocusRef.current) {
+        const focusItem = pendingFocusRef.current;
+        pendingFocusRef.current = null;
+        queueMicrotask(() => focusMenuItem(node, focusItem));
+      }
+    }
+
+    if (node) {
+      node.addEventListener("toggle", handleToggle);
     }
 
     return () => {
+      node?.removeEventListener("toggle", handleToggle);
       if (menuRef.current === node) {
         menuRef.current = null;
       }
     };
-  }, []);
+  }
 
   return (
     <>
       <Button
         {...props}
+        aria-expanded={isOpen}
         aria-haspopup="menu"
         data-menu-keep-open="true"
         onClick={(event) => {
@@ -227,9 +299,36 @@ export function DropdownMenuTrigger({
           onFocus?.(event);
           void preload();
         }}
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+          if (event.defaultPrevented) {
+            return;
+          }
+
+          const opensFirst =
+            event.key === "ArrowDown" ||
+            (event.key === "ArrowRight" &&
+              !!triggerRef.current?.closest('[role="menu"]'));
+          const opensLast = event.key === "ArrowUp";
+
+          if (opensFirst || opensLast) {
+            event.preventDefault();
+            openMenu(opensLast ? "last" : "first");
+          }
+        }}
+        onMouseEnter={(event) => {
+          onMouseEnter?.(event);
+          void preload();
+          if (!event.defaultPrevented) {
+            openPeerMenubarMenu();
+          }
+        }}
         onPointerEnter={(event) => {
           onPointerEnter?.(event);
           void preload();
+          if (!event.defaultPrevented) {
+            openPeerMenubarMenu();
+          }
         }}
         ref={triggerRef}
         type={type}
@@ -237,9 +336,9 @@ export function DropdownMenuTrigger({
         {children}
       </Button>
       {mounted ? (
-        <React.Suspense fallback={fallback}>
+        <Suspense fallback={fallback}>
           <LazyContent {...contentProps} ref={setMenuRef} />
-        </React.Suspense>
+        </Suspense>
       ) : null}
     </>
   );
@@ -253,21 +352,21 @@ const rootStyles = stylex.create({
 
 const menuStyles = stylex.create({
   base: {
-    position: "fixed",
-    margin: 0,
-    minWidth: spacing["4xl"],
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    backgroundColor: colors.bgRaised,
-    color: colors.fg,
     // eslint-disable-next-line @stylexjs/valid-styles
     positionAnchor: "auto",
+    margin: 0,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    backgroundColor: colors.bgRaised,
+    color: colors.fg,
     display: {
       default: null,
       ":popover-open": "grid",
     },
+    position: "fixed",
+    minWidth: spacing.xxxxl,
   },
 });
 
@@ -299,14 +398,14 @@ const fallbackStyles = stylex.create({
 
 const itemStyles = stylex.create({
   base: {
-    paddingInline: spacing.sm,
-    paddingBlock: spacing.xs,
-    borderWidth: 0,
     borderRadius: radius.sm,
+    borderWidth: 0,
+    paddingBlock: spacing.xs,
+    paddingInline: spacing.sm,
     backgroundColor: "transparent",
     color: colors.fg,
-    textAlign: "left",
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
+    textAlign: "left",
   },
 });

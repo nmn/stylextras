@@ -56,7 +56,7 @@ const sidebarStyles = stylex.create({
 
 const mainStyles = stylex.create({
   base: {
-    minWidth: 0,
     padding: spacing.lg,
+    minWidth: 0,
   },
 });

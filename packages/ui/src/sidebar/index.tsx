@@ -24,4 +24,14 @@ export function Sidebar({ sx, ...props }: SidebarProps) {
   return <aside {...props} {...stylex.props(styles.base, sx)} />;
 }
 
-const styles = stylex.create({ base: { display: "grid", gap: spacing.md, padding: spacing.lg, borderRightStyle: "solid", borderRightWidth: stroke.thin, borderRightColor: colors.border, backgroundColor: colors.bgSubtle } });
+const styles = stylex.create({
+  base: {
+    padding: spacing.lg,
+    gap: spacing.md,
+    backgroundColor: colors.bgSubtle,
+    display: "grid",
+    borderRightColor: colors.border,
+    borderRightStyle: "solid",
+    borderRightWidth: stroke.thin,
+  },
+});

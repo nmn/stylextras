@@ -1,1 +1,1 @@
-export { default } from '../range-date-picker/example'
+export { default } from "../range-date-picker/example";

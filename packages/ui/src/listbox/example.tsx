@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Listbox } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Listbox } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -13,11 +13,11 @@ export default function Example() {
         <DemoStack>
           <Listbox
             aria-label="Enabled modules"
-            options={['Tokens', 'Components', 'Themes', 'Examples', 'Docs']}
+            options={["Tokens", "Components", "Themes", "Examples", "Docs"]}
             size={5}
           />
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

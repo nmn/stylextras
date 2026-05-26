@@ -4,26 +4,26 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as stylex from '@stylexjs/stylex';
-import { Info, TriangleAlert, CircleX, CircleCheck } from 'lucide-react';
-import type { HTMLAttributes, ReactNode } from 'react';
-import { calloutMarker } from './mdx.stylex';
-import { vars } from '@/theming/vars.stylex';
+import * as stylex from "@stylexjs/stylex";
+import { Info, TriangleAlert, CircleX, CircleCheck } from "lucide-react";
+import type { HTMLAttributes, ReactNode } from "react";
+import { calloutMarker } from "./mdx.stylex";
+import { vars } from "@/theming/vars.stylex";
 
 export type CalloutType =
-  | 'info'
-  | 'warn'
-  | 'warning'
-  | 'error'
-  | 'success'
-  | 'danger'
-  | 'tip';
+  | "info"
+  | "warn"
+  | "warning"
+  | "error"
+  | "success"
+  | "danger"
+  | "tip";
 
 function resolveType(
   type: CalloutType,
-): 'info' | 'warning' | 'error' | 'success' {
-  if (type === 'warn' || type === 'danger') return 'warning';
-  if (type === 'tip') return 'info';
+): "info" | "warning" | "error" | "success" {
+  if (type === "warn" || type === "danger") return "warning";
+  if (type === "tip") return "info";
   return type;
 }
 
@@ -40,11 +40,10 @@ export function Callout({ children, title, ...props }: CalloutProps) {
   );
 }
 
-export interface CalloutContainerProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'className' | 'style' | 'title'
-  > {
+export interface CalloutContainerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "className" | "style" | "title"
+> {
   /**
    * @defaultValue info
    */
@@ -58,7 +57,7 @@ export interface CalloutContainerProps
 }
 
 export function CalloutContainer({
-  type: inputType = 'info',
+  type: inputType = "info",
   icon,
   children,
   title,
@@ -94,8 +93,10 @@ export function CalloutContainer({
   );
 }
 
-export interface CalloutTitleProps
-  extends Omit<HTMLAttributes<HTMLParagraphElement>, 'className' | 'style'> {
+export interface CalloutTitleProps extends Omit<
+  HTMLAttributes<HTMLParagraphElement>,
+  "className" | "style"
+> {
   children: ReactNode;
 }
 
@@ -107,8 +108,10 @@ export function CalloutTitle({ children, ...props }: CalloutTitleProps) {
   );
 }
 
-export interface CalloutDescriptionProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+export interface CalloutDescriptionProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "className" | "style"
+> {
   children: ReactNode;
 }
 
@@ -127,71 +130,71 @@ const iconStyles = stylex.create({
   base: {
     flexShrink: 0,
     width: 20,
-    height: 'calc(16px * 1.65)',
+    height: "calc(16px * 1.65)",
     marginInlineEnd: -2,
-    color: vars['--color-fd-card'],
-    fill: vars['--color-fd-card'],
+    color: vars["--color-fd-card"],
+    fill: vars["--color-fd-card"],
   },
   withTitle: {
-    height: 'calc(14px * 1.5)',
+    height: "calc(14px * 1.5)",
   },
-  info: { fill: vars['--color-fd-info'] },
-  warning: { fill: vars['--color-fd-warning'] },
-  error: { fill: vars['--color-fd-error'] },
-  success: { fill: vars['--color-fd-success'] },
+  info: { fill: vars["--color-fd-info"] },
+  warning: { fill: vars["--color-fd-warning"] },
+  error: { fill: vars["--color-fd-error"] },
+  success: { fill: vars["--color-fd-success"] },
 });
 
 const indicatorStyles = stylex.create({
   base: {
     flexShrink: 0,
     width: 2,
-    backgroundColor: 'color-mix(in srgb, currentColor 50%, transparent)',
+    backgroundColor: "color-mix(in srgb, currentColor 50%, transparent)",
     borderRadius: 2,
   },
-  info: { color: vars['--color-fd-info'] },
-  warning: { color: vars['--color-fd-warning'] },
-  error: { color: vars['--color-fd-error'] },
-  success: { color: vars['--color-fd-success'] },
+  info: { color: vars["--color-fd-info"] },
+  warning: { color: vars["--color-fd-warning"] },
+  error: { color: vars["--color-fd-error"] },
+  success: { color: vars["--color-fd-success"] },
 });
 
 const containerStyles = stylex.create({
   info: {
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-info']} 10%, ${vars['--color-fd-card']})`,
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-info"]} 10%, ${vars["--color-fd-card"]})`,
   },
   warning: {
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-warning']} 10%, ${vars['--color-fd-card']})`,
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-warning"]} 10%, ${vars["--color-fd-card"]})`,
   },
   error: {
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-error']} 10%, ${vars['--color-fd-card']})`,
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-error"]} 10%, ${vars["--color-fd-card"]})`,
   },
   success: {
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-success']} 10%, ${vars['--color-fd-card']})`,
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-success"]} 10%, ${vars["--color-fd-card"]})`,
   },
 });
 
 const styles = stylex.create({
   container: {
-    display: 'flex',
+    display: "flex",
     gap: 8,
     padding: 12,
     paddingInlineStart: 4,
     marginBlock: 16,
     fontSize: 14,
     lineHeight: 1.5,
-    color: vars['--color-fd-card-foreground'],
-    backgroundColor: vars['--color-fd-card'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    color: vars["--color-fd-card-foreground"],
+    backgroundColor: vars["--color-fd-card"],
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 12,
-    cornerShape: 'squircle',
-    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    cornerShape: "squircle",
+    boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
   },
 
   content: {
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 8,
     minWidth: 0,
   },
@@ -201,6 +204,6 @@ const styles = stylex.create({
     fontWeight: 500,
   },
   description: {
-    color: vars['--color-fd-muted-foreground'],
+    color: vars["--color-fd-muted-foreground"],
   },
 });

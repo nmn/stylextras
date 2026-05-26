@@ -26,39 +26,41 @@ export type KbdProps = Omit<BaseProps, "className" | "style"> & {
  * - Shortcut meaning and interaction context must be described by nearby text.
  */
 export function Kbd({ size = "md", sx, ...props }: KbdProps) {
-  return <kbd {...props} {...stylex.props(baseStyles.base, sizeStyles[size], sx)} />;
+  return (
+    <kbd {...props} {...stylex.props(baseStyles.base, sizeStyles[size], sx)} />
+  );
 }
 
 const baseStyles = stylex.create({
   base: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: spacing.lg,
-    paddingInline: spacing.xs,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
     borderColor: colors.borderStrong,
     borderRadius: radius.sm,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingInline: spacing.xs,
+    alignItems: "center",
     backgroundColor: colors.bgInset,
     color: colors.fgSoft,
+    display: "inline-flex",
     fontFamily: typography.fontMono,
     fontWeight: typography.weightMedium,
+    justifyContent: "center",
     whiteSpace: "nowrap",
+    minWidth: spacing.lg,
   },
 });
 
 const sizeStyles = stylex.create({
   sm: {
-    minHeight: spacing.lg,
-    paddingBlock: spacing["3xs"],
+    paddingBlock: spacing.xxxs,
     fontSize: typography.stepMinus2,
     lineHeight: typography.lineHeightSnug,
+    minHeight: spacing.lg,
   },
   md: {
-    minHeight: spacing.xl,
-    paddingBlock: spacing["2xs"],
+    paddingBlock: spacing.xxs,
     fontSize: typography.stepMinus1,
     lineHeight: typography.lineHeightSnug,
+    minHeight: spacing.xl,
   },
 });

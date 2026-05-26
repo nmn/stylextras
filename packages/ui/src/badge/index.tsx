@@ -43,70 +43,75 @@ export function Badge({
   return (
     <span
       {...props}
-      {...stylex.props(baseStyles.base, sizeStyles[size], variantStyles[variant], sx)}
+      {...stylex.props(
+        baseStyles.base,
+        sizeStyles[size],
+        variantStyles[variant],
+        sx,
+      )}
     />
   );
 }
 
 const baseStyles = stylex.create({
   base: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing["3xs"],
-    width: "fit-content",
+    borderRadius: radius.round,
     borderStyle: "solid",
     borderWidth: stroke.thin,
-    borderRadius: radius.round,
+    gap: spacing.xxxs,
+    alignItems: "center",
+    display: "inline-flex",
     fontFamily: typography.fontSans,
     fontWeight: typography.weightMedium,
+    justifyContent: "center",
     lineHeight: typography.lineHeightSnug,
     whiteSpace: "nowrap",
+    width: "fit-content",
   },
 });
 
 const sizeStyles = stylex.create({
   sm: {
+    paddingBlock: spacing.xxxs,
     paddingInline: spacing.xs,
-    paddingBlock: spacing["3xs"],
     fontSize: typography.stepMinus2,
   },
   md: {
+    paddingBlock: spacing.xxs,
     paddingInline: spacing.sm,
-    paddingBlock: spacing["2xs"],
     fontSize: typography.stepMinus1,
   },
 });
 
 const variantStyles = stylex.create({
   neutral: {
-    color: colors.fgSoft,
-    backgroundColor: colors.bgSubtle,
     borderColor: colors.border,
+    backgroundColor: colors.bgSubtle,
+    color: colors.fgSoft,
   },
   brand: {
-    color: colors.primaryForeground,
-    backgroundColor: colors.primary,
     borderColor: colors.primary,
+    backgroundColor: colors.primary,
+    color: colors.primaryForeground,
   },
   info: {
-    color: colors.info,
-    backgroundColor: colors.infoSoft,
     borderColor: colors.info,
+    backgroundColor: colors.infoSoft,
+    color: colors.info,
   },
   success: {
-    color: colors.success,
-    backgroundColor: colors.successSoft,
     borderColor: colors.success,
+    backgroundColor: colors.successSoft,
+    color: colors.success,
   },
   warning: {
-    color: colors.warning,
-    backgroundColor: colors.warningSoft,
     borderColor: colors.warning,
+    backgroundColor: colors.warningSoft,
+    color: colors.warning,
   },
   danger: {
-    color: colors.danger,
-    backgroundColor: colors.dangerSoft,
     borderColor: colors.danger,
+    backgroundColor: colors.dangerSoft,
+    color: colors.danger,
   },
 });

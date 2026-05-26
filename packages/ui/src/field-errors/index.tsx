@@ -26,9 +26,9 @@ export function FieldErrors({ sx, ...props }: FieldErrorsProps) {
 
 const styles = stylex.create({
   base: {
-    display: "grid",
-    gap: spacing["3xs"],
+    gap: spacing.xxxs,
     color: colors.danger,
+    display: "grid",
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     fontWeight: typography.weightMedium,

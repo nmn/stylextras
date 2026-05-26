@@ -39,7 +39,9 @@ export function Disclosure({
 }: DisclosureProps) {
   return (
     <details {...props} {...stylex.props(baseStyles.base, sx)}>
-      <summary {...stylex.props(summaryStyles.base, sizeStyles[size], summarySx)}>
+      <summary
+        {...stylex.props(summaryStyles.base, sizeStyles[size], summarySx)}
+      >
         {summary}
       </summary>
       <div {...stylex.props(contentStyles.base, contentSx)}>{children}</div>
@@ -49,24 +51,24 @@ export function Disclosure({
 
 const baseStyles = stylex.create({
   base: {
-    width: "100%",
     padding: spacing.md,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.lg,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
     backgroundColor: colors.bgRaised,
     color: colors.fg,
+    width: "100%",
   },
 });
 
 const summaryStyles = stylex.create({
   base: {
-    cursor: "pointer",
+    listStyle: "revert",
     color: colors.fg,
+    cursor: "pointer",
     fontFamily: typography.fontSans,
     fontWeight: typography.weightSemibold,
-    listStyle: "revert",
   },
 });
 
@@ -83,7 +85,7 @@ const sizeStyles = stylex.create({
 
 const contentStyles = stylex.create({
   base: {
-    paddingTop: spacing.md,
     color: colors.fgSoft,
+    paddingTop: spacing.md,
   },
 });

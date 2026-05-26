@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { ColorPicker } from './index'
-import { DemoFrame, DemoRow } from '../example-theme/demo'
+import { ColorPicker } from "./index";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -16,5 +16,5 @@ export default function Example() {
         </DemoRow>
       </DemoFrame>
     </>
-  )
+  );
 }

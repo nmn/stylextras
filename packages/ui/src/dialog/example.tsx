@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "../button";
-import { ButtonGroup } from "../button-group";
+import { ButtonGroupActions } from "../button-group";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
 import { TextField } from "../text-field";
 import { Typography } from "../typography";
@@ -16,12 +16,14 @@ function DialogExampleContent(props: DialogContentProps) {
         </Typography>
         <TextField label="Display name" defaultValue="Segmented Control" />
         <form method="dialog">
-          <ButtonGroup>
-            <Button type="submit" variant="secondary">
-              Cancel
-            </Button>
-            <Button type="submit">Save</Button>
-          </ButtonGroup>
+          <ButtonGroupActions
+            secondary={
+              <Button type="submit" variant="secondary">
+                Cancel
+              </Button>
+            }
+            primary={<Button type="submit">Save</Button>}
+          />
         </form>
       </DemoStack>
     </DialogContent>

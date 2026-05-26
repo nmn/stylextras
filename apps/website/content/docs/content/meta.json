@@ -1,5 +1,5 @@
 {
-  "title": "Content",
+  "title": "Content and media",
   "pages": [
     "./aspect-ratio.mdx",
     "./avatar.mdx",
@@ -7,8 +7,6 @@
     "./content.mdx",
     "./editable-text.mdx",
     "./empty-state.mdx",
-    "./empty.mdx",
-    "./flez.mdx",
     "./image-cropper.mdx",
     "./kbd.mdx",
     "./separator.mdx",

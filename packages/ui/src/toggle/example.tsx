@@ -1,11 +1,14 @@
-'use client'
+"use client";
 
-import { Toggle } from './index'
-import { DemoFrame, DemoRow } from '../example-theme/demo'
+import { Toggle } from "./index";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
-    <DemoFrame title="Toggle states" description="Toggle buttons should act like on-off controls.">
+    <DemoFrame
+      title="Toggle states"
+      description="Toggle buttons should act like on-off controls."
+    >
       <DemoRow>
         <Toggle defaultChecked>Bold</Toggle>
         <Toggle>Italic</Toggle>
@@ -15,5 +18,5 @@ export default function Example() {
         </Toggle>
       </DemoRow>
     </DemoFrame>
-  )
+  );
 }

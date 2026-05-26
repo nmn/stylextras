@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { Toolbar } from './index'
-import { Button } from '../button'
-import { IconButton } from '../icon-button'
-import { DemoFrame } from '../example-theme/demo'
+import { Toolbar } from "./index";
+import { Button } from "../button";
+import { IconButton } from "../icon-button";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -20,5 +20,5 @@ export default function Example() {
         </Toolbar>
       </DemoFrame>
     </>
-  )
+  );
 }

@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { Form } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
-import { TextField } from '../text-field'
-import { Button } from '../button'
+import { Form } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { TextField } from "../text-field";
+import { Button } from "../button";
 
 export default function Example() {
   return (
@@ -21,5 +21,5 @@ export default function Example() {
         </Form>
       </DemoFrame>
     </>
-  )
+  );
 }

@@ -1,6 +1,7 @@
+import { Suspense, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import * as React from "react";
 import type { ComponentPropsWithRef } from "react";
 import { Button, type ButtonProps } from "../button";
 import {
@@ -9,15 +10,17 @@ import {
   showPopoverWithSource,
   useLazyComponent,
 } from "../lazy-component";
+import {
+  attachPopoverPolyfills,
+  hidePopoverElement,
+  isPopoverOpen,
+} from "../platform-polyfills";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
-
 type BaseProps = ComponentPropsWithRef<"div">;
-
 export type TooltipPlacement = "bottom" | "top" | "right" | "left";
-
 export type TooltipProps = Omit<
   BaseProps,
   "className" | "style" | "popover"
@@ -25,25 +28,20 @@ export type TooltipProps = Omit<
   placement?: TooltipPlacement;
   sx?: StyleXStyles;
 };
-
 export type TooltipContentProps = TooltipProps;
-
 export type TooltipTriggerProps = Omit<
   ButtonProps,
   "className" | "content" | "style"
 > & {
   content: LazyComponentLoader<TooltipContentProps>;
   contentProps?: Omit<TooltipContentProps, "ref">;
-  fallback?: React.ReactNode;
+  fallback?: ReactNode;
 };
-
 export type TooltipComponent = ReactComponent<TooltipContentProps>;
-
 const bottomFallback = stylex.positionTry({ positionArea: "top" });
 const topFallback = stylex.positionTry({ positionArea: "bottom" });
 const rightFallback = stylex.positionTry({ positionArea: "left" });
 const leftFallback = stylex.positionTry({ positionArea: "right" });
-
 /**
  * Renders a tooltip surface using native popover and anchor positioning.
  *
@@ -59,9 +57,25 @@ export function TooltipContent({
   sx,
   ...props
 }: TooltipContentProps) {
+  function setContentRef(node: HTMLDivElement | null) {
+    if (typeof ref === "function") {
+      ref(node);
+    } else if (ref) {
+      ref.current = node;
+    }
+
+    attachPopoverPolyfills(node);
+
+    return () => {
+      if (typeof ref !== "function" && ref) {
+        ref.current = null;
+      }
+    };
+  }
+
   return (
     <div
-      ref={ref}
+      ref={setContentRef}
       {...props}
       popover="manual"
       role="tooltip"
@@ -74,7 +88,6 @@ export function TooltipContent({
     />
   );
 }
-
 export function TooltipTrigger({
   children,
   content,
@@ -88,45 +101,40 @@ export function TooltipTrigger({
   type = "button",
   ...props
 }: TooltipTriggerProps) {
-  const [mounted, setMounted] = React.useState(false);
-  const triggerRef = React.useRef<HTMLButtonElement | null>(null);
-  const tooltipRef = React.useRef<HTMLDivElement | null>(null);
-  const shouldOpenRef = React.useRef(false);
+  const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const shouldOpenRef = useRef(false);
   const { LazyContent, preload } = useLazyComponent(content);
-
-  const openTooltip = React.useCallback(() => {
+  function openTooltip() {
     shouldOpenRef.current = true;
     setMounted(true);
-
     const tooltip = tooltipRef.current;
-    if (tooltip && !tooltip.matches(":popover-open")) {
+    if (tooltip && !isPopoverOpen(tooltip)) {
       showPopoverWithSource(tooltip, triggerRef.current);
       shouldOpenRef.current = false;
     }
-  }, []);
-
-  const hideTooltip = React.useCallback(() => {
+  }
+  function hideTooltip() {
     const tooltip = tooltipRef.current;
-    if (tooltip?.matches(":popover-open")) {
-      tooltip.hidePopover();
+    if (tooltip && isPopoverOpen(tooltip)) {
+      hidePopoverElement(tooltip);
     }
-  }, []);
-
-  const setTooltipRef = React.useCallback((node: HTMLDivElement | null) => {
+  }
+  function setTooltipRef(node: HTMLDivElement | null) {
     tooltipRef.current = node;
+    attachPopoverPolyfills(node);
 
-    if (node && shouldOpenRef.current && !node.matches(":popover-open")) {
+    if (node && shouldOpenRef.current && !isPopoverOpen(node)) {
       showPopoverWithSource(node, triggerRef.current);
       shouldOpenRef.current = false;
     }
-
     return () => {
       if (tooltipRef.current === node) {
         tooltipRef.current = null;
       }
     };
-  }, []);
-
+  }
   return (
     <>
       <Button
@@ -162,37 +170,34 @@ export function TooltipTrigger({
         {children}
       </Button>
       {mounted ? (
-        <React.Suspense fallback={fallback}>
+        <Suspense fallback={fallback}>
           <LazyContent {...contentProps} ref={setTooltipRef} />
-        </React.Suspense>
+        </Suspense>
       ) : null}
     </>
   );
 }
-
 export const Tooltip = TooltipContent;
-
 const baseStyles = stylex.create({
   base: {
-    position: "fixed",
-    margin: 0,
-    alignItems: "center",
-    paddingInline: spacing.xs,
-    paddingBlock: spacing["3xs"],
-    borderRadius: radius.sm,
-    backgroundColor: colors.fg,
-    color: colors.bg,
-    fontFamily: typography.fontSans,
-    fontSize: typography.stepMinus1,
     // eslint-disable-next-line @stylexjs/valid-styles
     positionAnchor: "auto",
+    margin: 0,
+    borderRadius: radius.sm,
+    paddingBlock: spacing.xxxs,
+    paddingInline: spacing.xs,
+    alignItems: "center",
+    backgroundColor: colors.fg,
+    color: colors.bg,
     display: {
       default: null,
       ":popover-open": "inline-flex",
     },
+    fontFamily: typography.fontSans,
+    fontSize: typography.stepMinus1,
+    position: "fixed",
   },
 });
-
 const placementStyles = stylex.create({
   bottom: {
     // eslint-disable-next-line @stylexjs/valid-styles
@@ -211,7 +216,6 @@ const placementStyles = stylex.create({
     positionArea: "left",
   },
 });
-
 const fallbackStyles = stylex.create({
   bottom: { positionTryFallbacks: bottomFallback },
   top: { positionTryFallbacks: topFallback },

@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { Sidebar } from '../sidebar'
-import { SidebarLayout } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
-import { Link } from '../link'
+import { Sidebar } from "../sidebar";
+import { SidebarLayout } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Link } from "../link";
 
 export default function Example() {
   return (
@@ -23,10 +23,12 @@ export default function Example() {
         >
           <DemoStack>
             <strong>Button</strong>
-            <span>The button primitive is intentionally small and native-first.</span>
+            <span>
+              The button primitive is intentionally small and native-first.
+            </span>
           </DemoStack>
         </SidebarLayout>
       </DemoFrame>
     </>
-  )
+  );
 }

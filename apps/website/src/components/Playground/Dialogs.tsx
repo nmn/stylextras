@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { vars } from '@/theming/vars.stylex';
+import * as stylex from "@stylexjs/stylex";
+import type { MouseEvent, RefObject } from "react";
+import { vars } from "@/theming/vars.stylex";
 
 export function ConfirmDialog({
   title,
@@ -20,9 +20,9 @@ export function ConfirmDialog({
   description: string;
   onConfirm: () => void;
   onCancel: () => void;
-  ref: React.RefObject<HTMLDialogElement | null>;
+  ref: RefObject<HTMLDialogElement | null>;
 }) {
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+  const handleBackdropClick = (e: MouseEvent<HTMLDialogElement>) => {
     if (e.target === e.currentTarget) {
       onCancel();
     }
@@ -60,61 +60,61 @@ export function ConfirmDialog({
 
 const styles = stylex.create({
   dialog: {
-    top: '50%',
-    left: '50%',
+    top: "50%",
+    left: "50%",
     width: 480,
-    maxWidth: '100%',
-    backgroundColor: vars['--color-fd-card'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    borderRadius: '8px',
-    boxShadow: '0 0 4px rgba(0, 0, 0, 0.3)',
-    transform: 'translate(-50%, -50%)',
-    '::backdrop': {
-      backdropFilter: 'brightness(0.8) blur(2px)',
+    maxWidth: "100%",
+    backgroundColor: vars["--color-fd-card"],
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
+    borderWidth: "1px",
+    borderRadius: "8px",
+    boxShadow: "0 0 4px rgba(0, 0, 0, 0.3)",
+    transform: "translate(-50%, -50%)",
+    "::backdrop": {
+      backdropFilter: "brightness(0.8) blur(2px)",
     },
   },
   content: {
-    padding: '20px',
-    fontStyle: 'normal',
-    color: vars['--color-fd-muted-foreground'],
-    textTransform: 'none',
+    padding: "20px",
+    fontStyle: "normal",
+    color: vars["--color-fd-muted-foreground"],
+    textTransform: "none",
   },
   heading: {
     marginTop: 0,
     marginBottom: 8,
-    fontSize: '1rem',
-    fontStyle: 'normal',
-    color: vars['--color-fd-foreground'],
+    fontSize: "1rem",
+    fontStyle: "normal",
+    color: vars["--color-fd-foreground"],
   },
   description: {
     marginTop: 0,
     marginBottom: 12,
     fontSize: 13,
-    fontStyle: 'normal',
+    fontStyle: "normal",
     lineHeight: 1.5,
   },
   actions: {
-    display: 'flex',
-    gap: '8px',
-    justifyContent: 'flex-end',
+    display: "flex",
+    gap: "8px",
+    justifyContent: "flex-end",
   },
   button: {
     paddingBlock: 8,
     paddingInline: 12,
-    fontStyle: 'normal',
-    color: vars['--color-fd-foreground'],
-    cursor: 'pointer',
-    backgroundColor: vars['--color-fd-background'],
-    borderStyle: 'none',
+    fontStyle: "normal",
+    color: vars["--color-fd-foreground"],
+    cursor: "pointer",
+    backgroundColor: vars["--color-fd-background"],
+    borderStyle: "none",
     borderRadius: 6,
-    boxShadow: `0 0 0 1px ${vars['--color-fd-border']}`,
+    boxShadow: `0 0 0 1px ${vars["--color-fd-border"]}`,
   },
   primary: {
-    color: vars['--color-fd-primary-foreground'],
-    backgroundColor: vars['--color-fd-primary'],
-    borderColor: 'transparent',
+    color: vars["--color-fd-primary-foreground"],
+    backgroundColor: vars["--color-fd-primary"],
+    borderColor: "transparent",
     boxShadow: null,
   },
 });

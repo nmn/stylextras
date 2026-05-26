@@ -43,6 +43,22 @@ import {
 <DropdownMenu>Example</DropdownMenu>;
 ```
 
+## Static menu
+
+Use the direct `DropdownMenu` composition when the menu content can be present in the document. The trigger uses native `popovertarget`, and the menu remains portal-free.
+
+```tsx
+import { DropdownMenu } from "@stylextras/ui/dropdown-menu";
+import { MenuContent, MenuItem } from "@stylextras/ui/menu/menu-content";
+
+<DropdownMenu label="Actions">
+  <MenuContent>
+    <MenuItem type="button">Rename</MenuItem>
+    <MenuItem type="button">Duplicate</MenuItem>
+  </MenuContent>
+</DropdownMenu>;
+```
+
 ## Props
 
 The public prop types are exported from `@stylextras/ui/dropdown-menu`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.

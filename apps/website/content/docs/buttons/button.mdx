@@ -41,9 +41,12 @@ import { Button } from "@stylextras/ui/button";
 
 <Button variant="primary">Primary</Button>
 <Button variant="secondary">Secondary</Button>
+<Button variant="tertiary">Tertiary</Button>
 <Button variant="outline">Outline</Button>
 <Button variant="ghost">Ghost</Button>
 <Button variant="danger">Danger</Button>
+<Button variant="critical">Critical</Button>
+<Button variant="critical-outline">Critical outline</Button>
 ```
 
 ## Sizes and states
@@ -66,6 +69,18 @@ Use sizes to fit the surrounding density. Disabled buttons remain visible but ar
 The public prop types are exported from `@stylextras/ui/button`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "tertiary"
+  | "outline"
+  | "ghost"
+  | "danger"
+  | "critical"
+  | "critical-outline";
+
+export type ButtonSize = "sm" | "md" | "lg";
+
 export type ButtonProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
   variant?: ButtonVariant;
@@ -102,9 +117,12 @@ import { Button } from "@stylextras/ui/button";
 
 <Button variant="primary">Primary</Button>
 <Button variant="secondary">Secondary</Button>
+<Button variant="tertiary">Tertiary</Button>
 <Button variant="outline">Outline</Button>
 <Button variant="ghost">Ghost</Button>
 <Button variant="danger">Danger</Button>
+<Button variant="critical">Critical</Button>
+<Button variant="critical-outline">Critical outline</Button>
 ```
 
 ## Sizes

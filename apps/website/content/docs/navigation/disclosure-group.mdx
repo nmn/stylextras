@@ -15,6 +15,16 @@ export const DisclosureGroupExclusiveDemo = lazy(() =>
     default: module.DisclosureGroupExclusiveDemo,
   })),
 );
+export const DisclosureGroupCompactDemo = lazy(() =>
+  import("@stylextras/ui/disclosure-group/example").then((module) => ({
+    default: module.DisclosureGroupCompactDemo,
+  })),
+);
+export const DisclosureGroupJoinedDemo = lazy(() =>
+  import("@stylextras/ui/disclosure-group/example").then((module) => ({
+    default: module.DisclosureGroupJoinedDemo,
+  })),
+);
 
 # Disclosure Group
 
@@ -69,6 +79,50 @@ Use `exclusive` when the group should behave like an accordion and keep only one
 </DisclosureGroup>
 ```
 
+## Compact spacing
+
+Use `variant="compact"` when the group still needs separate disclosure surfaces but with tighter spacing.
+
+<Suspense fallback={null}>
+  <DisclosureGroupCompactDemo />
+</Suspense>
+
+```tsx
+<DisclosureGroup variant="compact">
+  <Disclosure summary="Daily summary">
+    New comments, status changes, and handoff notes.
+  </Disclosure>
+  <Disclosure summary="Open blockers">
+    Tasks that need a decision before the next release.
+  </Disclosure>
+  <Disclosure summary="Follow-ups">
+    People and projects that need another pass.
+  </Disclosure>
+</DisclosureGroup>
+```
+
+## Joined variant
+
+Use `variant="joined"` when the disclosures should read as one compact accordion with no gaps between items.
+
+<Suspense fallback={null}>
+  <DisclosureGroupJoinedDemo />
+</Suspense>
+
+```tsx
+<DisclosureGroup exclusive variant="joined">
+  <Disclosure summary="Account">
+    Profile, billing, and login settings.
+  </Disclosure>
+  <Disclosure summary="Workspace">
+    Members, roles, projects, and environment defaults.
+  </Disclosure>
+  <Disclosure summary="Publishing">
+    Review checks, release channels, and archive behavior.
+  </Disclosure>
+</DisclosureGroup>
+```
+
 ## Props
 
 The public prop types are exported from `@stylextras/ui/disclosure-group`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
@@ -77,8 +131,11 @@ The public prop types are exported from `@stylextras/ui/disclosure-group`. Most 
 export type DisclosureGroupProps = Omit<BaseProps, "className" | "style"> & {
   exclusive?: boolean;
   name?: string;
+  variant?: DisclosureGroupVariant;
   sx?: StyleXStyles;
 };
+
+export type DisclosureGroupVariant = "spacious" | "compact" | "joined";
 ```
 
 ## Customize styles

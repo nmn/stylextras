@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { EditableText } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { EditableText } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -12,9 +12,13 @@ export default function Example() {
       >
         <DemoStack>
           <EditableText defaultValue="Editable title" />
-          <EditableText as="div" multiline defaultValue="Editable multiline body copy." />
+          <EditableText
+            as="div"
+            multiline
+            defaultValue="Editable multiline body copy."
+          />
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

@@ -4,11 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
-import { StyleXComponentProps } from '../layout/shared';
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { vars } from '../../theming/vars.stylex';
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+import { StyleXComponentProps } from "../layout/shared";
+import * as React from "react";
+import * as stylex from "@stylexjs/stylex";
+import { vars } from "../../theming/vars.stylex";
 
 export const ScrollArea = ({
   xstyle,
@@ -49,7 +49,7 @@ ScrollViewport.displayName = ScrollAreaPrimitive.Viewport.displayName;
 
 export const ScrollBar = ({
   xstyle,
-  orientation = 'vertical',
+  orientation = "vertical",
   ref,
   ...props
 }: StyleXComponentProps<typeof ScrollAreaPrimitive.Scrollbar>) => (
@@ -65,32 +65,32 @@ export const ScrollBar = ({
 ScrollBar.displayName = ScrollAreaPrimitive.Scrollbar.displayName;
 
 const styles = stylex.create({
-  overflowHidden: { overflow: 'hidden' },
+  overflowHidden: { overflow: "hidden" },
   viewport: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 'inherit',
+    width: "100%",
+    height: "100%",
+    borderRadius: "inherit",
   },
   scrollBar: {
-    display: 'flex',
-    userSelect: 'none',
+    display: "flex",
+    userSelect: "none",
     animation: {
       default: null,
-      ':where([data-state="hidden"])': vars['--animate-fd-fade-out'],
+      ':where([data-state="hidden"])': vars["--animate-fd-fade-out"],
     },
   },
   vertical: {
     width: 1.5 * 4,
-    height: '100%',
+    height: "100%",
   },
   horizontal: {
-    flexDirection: 'column',
+    flexDirection: "column",
     height: 1.5 * 4,
   },
   thumb: {
-    position: 'relative',
+    position: "relative",
     flexGrow: 1,
-    backgroundColor: `${vars['--color-fd-border']}`,
+    backgroundColor: `${vars["--color-fd-border"]}`,
     borderRadius: 9999,
   },
 });

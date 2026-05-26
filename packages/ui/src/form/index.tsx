@@ -22,4 +22,6 @@ export function Form({ sx, ...props }: FormProps) {
   return <form {...props} {...stylex.props(styles.base, sx)} />;
 }
 
-const styles = stylex.create({ base: { display: "grid", gap: spacing.md, width: "100%" } });
+const styles = stylex.create({
+  base: { gap: spacing.md, display: "grid", width: "100%" },
+});

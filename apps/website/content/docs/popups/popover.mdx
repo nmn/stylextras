@@ -154,6 +154,20 @@ function DetailsContent(props: PopoverContentProps) {
 </PopoverTrigger>;
 ```
 
+## Static platform popover
+
+When the content is already on the page, use native `popovertarget` wiring. This keeps the baseline interaction working without hydration and still lets the content component provide the shared surface styling.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+import { PopoverContent } from "@stylextras/ui/popover";
+
+<Button popoverTarget="details-popover">Open details</Button>
+<PopoverContent id="details-popover">
+  Native popover content.
+</PopoverContent>
+```
+
 ## Content rendered directly
 
 Render the content component directly when another controller owns the open state.

@@ -26,15 +26,15 @@ export function Footer({ sx, ...props }: FooterProps) {
 
 const styles = stylex.create({
   base: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
     gap: spacing.md,
     paddingBlock: spacing.lg,
     paddingInline: spacing.lg,
+    alignItems: "center",
+    backgroundColor: colors.bgSubtle,
+    display: "flex",
+    justifyContent: "space-between",
+    borderTopColor: colors.border,
     borderTopStyle: "solid",
     borderTopWidth: stroke.thin,
-    borderTopColor: colors.border,
-    backgroundColor: colors.bgSubtle,
   },
 });

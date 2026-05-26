@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use client';
+"use client";
 
-import { vars } from '@/theming/vars.stylex';
-import * as stylex from '@stylexjs/stylex';
-import { Fragment } from 'react';
+import { vars } from "@/theming/vars.stylex";
+import * as stylex from "@stylexjs/stylex";
+import { Fragment } from "react";
 
 const WORDS = [
-  'expressive',
-  'type-safe',
-  'composable',
-  'predictable',
-  'themeable',
+  "expressive",
+  "type-safe",
+  "composable",
+  "predictable",
+  "themeable",
 ];
 
 export default function TypingWord() {
@@ -28,10 +28,10 @@ export default function TypingWord() {
             {word}
             <span {...stylex.props(styles.hidden)}>
               {index < WORDS.length - 2
-                ? ', '
+                ? ", "
                 : index === WORDS.length - 2
-                  ? ' and '
-                  : ''}
+                  ? " and "
+                  : ""}
             </span>
           </span>
         </Fragment>
@@ -41,51 +41,51 @@ export default function TypingWord() {
 }
 
 const typingAnim = stylex.keyframes({
-  '37%': {
-    gridTemplateColumns: '1fr',
-    borderInlineEndColor: 'transparent',
+  "37%": {
+    gridTemplateColumns: "1fr",
+    borderInlineEndColor: "transparent",
   },
-  '40%': {
-    gridTemplateColumns: '1fr',
-    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  "40%": {
+    gridTemplateColumns: "1fr",
+    borderInlineEndColor: vars["--color-fd-accent-foreground"],
   },
-  '49%': {
-    gridTemplateColumns: '0fr',
-    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  "49%": {
+    gridTemplateColumns: "0fr",
+    borderInlineEndColor: vars["--color-fd-accent-foreground"],
   },
-  '51%': {
-    gridTemplateColumns: '0fr',
-    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  "51%": {
+    gridTemplateColumns: "0fr",
+    borderInlineEndColor: vars["--color-fd-accent-foreground"],
   },
-  '60%': {
-    gridTemplateColumns: '1fr',
-    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  "60%": {
+    gridTemplateColumns: "1fr",
+    borderInlineEndColor: vars["--color-fd-accent-foreground"],
   },
-  '63%': {
-    gridTemplateColumns: '1fr',
-    borderInlineEndColor: 'transparent',
+  "63%": {
+    gridTemplateColumns: "1fr",
+    borderInlineEndColor: "transparent",
   },
 });
 
 const hidden = stylex.keyframes({
-  '0%': {
-    display: 'inline',
-    fontSize: '1em',
+  "0%": {
+    display: "inline",
+    fontSize: "1em",
     opacity: 1,
   },
-  '20%': {
-    display: 'inline',
-    fontSize: '1em',
+  "20%": {
+    display: "inline",
+    fontSize: "1em",
     opacity: 1,
   },
-  '20.001%': {
-    display: 'none',
-    fontSize: '0.1em',
+  "20.001%": {
+    display: "none",
+    fontSize: "0.1em",
     opacity: 0,
   },
-  '100%': {
-    display: 'none',
-    fontSize: '0.1em',
+  "100%": {
+    display: "none",
+    fontSize: "0.1em",
     opacity: 0,
   },
 });
@@ -93,28 +93,28 @@ const hidden = stylex.keyframes({
 const TIME = 8;
 const styles = stylex.create({
   container: {
-    display: 'inline-grid',
-    gridTemplateColumns: '1fr',
-    overflow: 'hidden',
+    display: "inline-grid",
+    gridTemplateColumns: "1fr",
+    overflow: "hidden",
     fontWeight: 600,
-    verticalAlign: 'top',
-    color: vars['--color-fd-primary'],
-    borderInlineEndColor: 'transparent',
-    borderInlineEndStyle: 'solid',
+    verticalAlign: "top",
+    color: vars["--color-fd-primary"],
+    borderInlineEndColor: "transparent",
+    borderInlineEndStyle: "solid",
     borderInlineEndWidth: 1,
     animationName: typingAnim,
     animationDuration: `${TIME}s`,
-    animationTimingFunction: 'ease-out',
+    animationTimingFunction: "ease-out",
     animationDelay: `${TIME / 2}s`,
-    animationIterationCount: 'infinite',
+    animationIterationCount: "infinite",
   },
   word: {
-    gridArea: '1 / 1',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
+    gridArea: "1 / 1",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
     animationName: hidden,
     animationDuration: `${TIME * 5}s`,
-    animationTimingFunction: 'steps(5)',
+    animationTimingFunction: "steps(5)",
     // eslint-disable-next-line @stylexjs/valid-styles
     animationDelay: Object.fromEntries(
       [0, 1, 2, 3, 4].map((i) => [
@@ -122,13 +122,13 @@ const styles = stylex.create({
         `${TIME * (i - 5)}s`,
       ]),
     ),
-    animationIterationCount: 'infinite',
+    animationIterationCount: "infinite",
   },
   hidden: {
-    position: 'absolute',
+    position: "absolute",
     top: -9999,
     left: -9999,
-    fontSize: '0.01em',
+    fontSize: "0.01em",
     opacity: 0.0001,
   },
 });

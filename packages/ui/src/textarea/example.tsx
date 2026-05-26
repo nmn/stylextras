@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Textarea } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Textarea } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -11,7 +11,11 @@ export default function Example() {
         description="Textarea should show a short and a longer multiline field."
       >
         <DemoStack>
-          <Textarea label="Summary" rows={4} defaultValue="Short multiline content." />
+          <Textarea
+            label="Summary"
+            rows={4}
+            defaultValue="Short multiline content."
+          />
           <Textarea
             label="Notes"
             rows={6}
@@ -20,5 +24,5 @@ export default function Example() {
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

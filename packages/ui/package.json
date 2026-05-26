@@ -396,14 +396,6 @@
       "types": "./src/flex/example.tsx",
       "import": "./src/flex/example.tsx"
     },
-    "./flez": {
-      "types": "./src/flez/index.tsx",
-      "import": "./src/flez/index.tsx"
-    },
-    "./flez/example": {
-      "types": "./src/flez/example.tsx",
-      "import": "./src/flez/example.tsx"
-    },
     "./footer": {
       "types": "./src/footer/index.tsx",
       "import": "./src/footer/index.tsx"
@@ -854,8 +846,13 @@
     }
   },
   "peerDependencies": {
-    "@stylexjs/stylex": "^0.17.5",
+    "@stylexjs/stylex": "^0.18.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
+  },
+  "dependencies": {
+    "@microsoft/focusgroup-polyfill": "^1.5.0",
+    "@oddbird/css-anchor-positioning": "^0.9.0",
+    "@oddbird/popover-polyfill": "^0.6.1"
   }
 }

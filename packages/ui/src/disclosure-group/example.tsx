@@ -50,11 +50,57 @@ export function DisclosureGroupExclusiveDemo() {
   );
 }
 
+export function DisclosureGroupCompactDemo() {
+  return (
+    <DemoFrame
+      description="Compact groups reduce the space between independent disclosures without changing their individual surfaces."
+      showThemes={false}
+      title="Compact spacing"
+    >
+      <DisclosureGroup variant="compact">
+        <Disclosure summary="Daily summary">
+          New comments, status changes, and handoff notes.
+        </Disclosure>
+        <Disclosure summary="Open blockers">
+          Tasks that need a decision before the next release.
+        </Disclosure>
+        <Disclosure summary="Follow-ups">
+          People and projects that need another pass.
+        </Disclosure>
+      </DisclosureGroup>
+    </DemoFrame>
+  );
+}
+
+export function DisclosureGroupJoinedDemo() {
+  return (
+    <DemoFrame
+      description="Use the joined variant when the disclosures should read as one compact accordion surface."
+      showThemes={false}
+      title="Joined variant"
+    >
+      <DisclosureGroup exclusive variant="joined">
+        <Disclosure summary="Account">
+          Profile, billing, and login settings.
+        </Disclosure>
+        <Disclosure summary="Workspace">
+          Members, roles, projects, and environment defaults.
+        </Disclosure>
+        <Disclosure summary="Publishing">
+          Review checks, release channels, and archive behavior.
+        </Disclosure>
+      </DisclosureGroup>
+    </DemoFrame>
+  );
+}
+
 export default function Example() {
   return (
     <>
       <DisclosureGroupBasicDemo />
       <DisclosureGroupExclusiveDemo />
+      <DisclosureGroupCompactDemo />
+      <DisclosureGroupJoinedDemo />
     </>
   );
 }

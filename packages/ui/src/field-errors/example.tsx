@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { FieldErrors } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { FieldErrors } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -12,9 +12,11 @@ export default function Example() {
       >
         <DemoStack>
           <FieldErrors>Password must be at least 12 characters.</FieldErrors>
-          <FieldErrors>Invite email already belongs to an existing member.</FieldErrors>
+          <FieldErrors>
+            Invite email already belongs to an existing member.
+          </FieldErrors>
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "../button";
-import { ButtonGroup } from "../button-group";
+import { ButtonGroupActions } from "../button-group";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
 import { Typography } from "../typography";
 import {
@@ -19,14 +19,18 @@ function AlertDialogExampleContent(props: AlertDialogContentProps) {
         </Typography>
         <span>This action cannot be undone.</span>
         <form method="dialog">
-          <ButtonGroup>
-            <Button variant="secondary" type="submit">
-              Cancel
-            </Button>
-            <Button variant="danger" type="submit">
-              Delete
-            </Button>
-          </ButtonGroup>
+          <ButtonGroupActions
+            secondary={
+              <Button variant="secondary" type="submit">
+                Cancel
+              </Button>
+            }
+            primary={
+              <Button variant="danger" type="submit">
+                Delete
+              </Button>
+            }
+          />
         </form>
       </DemoStack>
     </AlertDialogContent>

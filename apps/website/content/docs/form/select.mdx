@@ -30,7 +30,7 @@ Start here when wiring the component into an interface. The demo shows the expec
 ```tsx
 import { Select } from "@stylextras/ui/select";
 
-<Select>Example</Select>;
+<Select label="Environment" options={["Development", "Preview"]} />;
 ```
 
 ## Props
@@ -38,14 +38,17 @@ import { Select } from "@stylextras/ui/select";
 The public prop types are exported from `@stylextras/ui/select`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type SelectProps = Omit<BaseProps, "className" | "style" | "size"> & {
-  sx?: StyleXStyles;
-  selectSx?: StyleXStyles;
-  labelSx?: StyleXStyles;
-  label?: ReactNode;
-  options?: SelectOption[];
-  size?: SelectSize;
-};
+export type SelectProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style" | "size"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    selectSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    options?: SelectOption[];
+    size?: SelectSize;
+  };
 ```
 
 ## Customize styles

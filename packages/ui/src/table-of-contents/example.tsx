@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { TableOfContents } from './index'
-import { DemoFrame } from '../example-theme/demo'
+import { TableOfContents } from "./index";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -13,13 +13,13 @@ export default function Example() {
         <TableOfContents
           title="On this page"
           items={[
-            { label: 'Overview', href: '#overview' },
-            { label: 'Usage', href: '#usage' },
-            { label: 'Examples', href: '#examples' },
-            { label: 'Accessibility', href: '#accessibility' },
+            { label: "Overview", href: "#overview" },
+            { label: "Usage", href: "#usage" },
+            { label: "Examples", href: "#examples" },
+            { label: "Accessibility", href: "#accessibility" },
           ]}
         />
       </DemoFrame>
     </>
-  )
+  );
 }

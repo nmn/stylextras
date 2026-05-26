@@ -1,21 +1,21 @@
-import * as stylex from '@stylexjs/stylex'
-import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithoutRef } from 'react'
-import { blur } from '../tokens/blur.stylex'
-import { colors } from '../tokens/color.stylex'
-import { elevation as tokenElevation } from '../tokens/elevation.stylex'
-import { radius } from '../tokens/radius.stylex'
-import { spacing } from '../tokens/spacing.stylex'
-import { stroke } from '../tokens/stroke.stylex'
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import { blur } from "../tokens/blur.stylex";
+import { colors } from "../tokens/color.stylex";
+import { elevation as tokenElevation } from "../tokens/elevation.stylex";
+import { radius } from "../tokens/radius.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { stroke } from "../tokens/stroke.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<'div'>
+type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type CardElevation = 'flat' | 'sm' | 'md' | 'lg'
+export type CardElevation = "flat" | "sm" | "md" | "lg";
 
-export type CardProps = Omit<BaseProps, 'className' | 'style'> & {
-  sx?: StyleXStyles
-  elevation?: CardElevation
-}
+export type CardProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+  elevation?: CardElevation;
+};
 
 /**
  * Renders a token-driven surface for grouping related content.
@@ -26,31 +26,36 @@ export type CardProps = Omit<BaseProps, 'className' | 'style'> & {
  * - Provides visual grouping only.
  * - Landmark or region semantics must be supplied by the caller when needed.
  */
-export function Card({ elevation = 'md', sx, ...props }: CardProps) {
-  return <div {...props} {...stylex.props(baseStyles.base, elevationStyles[elevation], sx)} />
+export function Card({ elevation = "md", sx, ...props }: CardProps) {
+  return (
+    <div
+      {...props}
+      {...stylex.props(baseStyles.base, elevationStyles[elevation], sx)}
+    />
+  );
 }
 
 const baseStyles = stylex.create({
   base: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacing.sm,
     padding: spacing.xl,
-    color: colors.fg,
-    backgroundColor: colors.bg,
     borderColor: colors.borderStrong,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     borderRadius: radius.xl,
-    boxShadow: `inset 0 1px 0 ${colors.bgSubtle}`,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    gap: spacing.sm,
     backdropFilter: `blur(${blur.xs})`,
+    backgroundColor: colors.bg,
+    boxShadow: `inset 0 1px 0 ${colors.bgSubtle}`,
+    color: colors.fg,
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
   },
-})
+});
 
 const elevationStyles = stylex.create({
   flat: {
-    boxShadow: 'none',
+    boxShadow: "none",
   },
   sm: {
     boxShadow: tokenElevation.sm,
@@ -61,4 +66,4 @@ const elevationStyles = stylex.create({
   lg: {
     boxShadow: tokenElevation.lg,
   },
-})
+});

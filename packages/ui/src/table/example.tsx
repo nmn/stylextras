@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Table } from './index'
-import { DemoFrame } from '../example-theme/demo'
+import { Table } from "./index";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -38,5 +38,5 @@ export default function Example() {
         </Table>
       </DemoFrame>
     </>
-  )
+  );
 }

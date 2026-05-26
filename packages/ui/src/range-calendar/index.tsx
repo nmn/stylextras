@@ -6,7 +6,9 @@ import { DateField } from "../date-field";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type RangeCalendarProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type RangeCalendarProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a simplified range-calendar primitive.
@@ -26,4 +28,4 @@ export function RangeCalendar({ sx, ...props }: RangeCalendarProps) {
   );
 }
 
-const styles = stylex.create({ base: { display: "grid", gap: spacing.sm } });
+const styles = stylex.create({ base: { gap: spacing.sm, display: "grid" } });

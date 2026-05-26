@@ -5,7 +5,9 @@ import { colors } from "../tokens/color.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"progress">;
 
-export type SpinnerProps = Omit<BaseProps, "className" | "style" | "value"> & { sx?: StyleXStyles };
+export type SpinnerProps = Omit<BaseProps, "className" | "style" | "value"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a visual spinner for loading states.

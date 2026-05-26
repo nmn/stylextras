@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as stylex from '@stylexjs/stylex';
-import StylexAnimatedLogo from '@/components/StylexAnimatedLogo';
-import CtaButton from '@/components/CtaButton';
-import TypingWord from '@/components/TypingWord';
-import Footer from '@/components/Footer';
-import { vars } from '@/theming/vars.stylex';
+import * as stylex from "@stylexjs/stylex";
+import StylexAnimatedLogo from "@/components/StylexAnimatedLogo";
+import CtaButton from "@/components/CtaButton";
+import TypingWord from "@/components/TypingWord";
+import Footer from "@/components/Footer";
+import { vars } from "@/theming/vars.stylex";
 
 export default function Home() {
   return (
@@ -26,9 +26,9 @@ export default function Home() {
             aria-label="The expressive, type-safe, composable, predictable, and themeable styling system for ambitious interfaces"
           >
             <span aria-hidden="true">
-              The <TypingWord />{' '}
+              The <TypingWord />{" "}
               <br {...stylex.props(styles.mobileBreak)} aria-hidden="true" />
-              styling system for{' '}
+              styling system for{" "}
               <br {...stylex.props(styles.tabletBreak)} aria-hidden="true" />
               ambitious interfaces
             </span>
@@ -50,84 +50,84 @@ export default function Home() {
   );
 }
 
-const TABLET_BREAK = '@media (max-width: 768px)';
-const CTA_BREAK = '@media (max-width: 460px)';
+const TABLET_BREAK = "@media (max-width: 768px)";
+const CTA_BREAK = "@media (max-width: 460px)";
 
 const styles = stylex.create({
   main: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 'calc(100vh - 56px)',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "calc(100vh - 56px)",
     padding: 32,
-    color: `${vars['--color-fd-foreground']}`,
-    backgroundColor: `${vars['--color-fd-background']}`,
+    color: `${vars["--color-fd-foreground"]}`,
+    backgroundColor: `${vars["--color-fd-background"]}`,
   },
   hero: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2vh',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    minHeight: '40vh',
+    display: "flex",
+    flexDirection: "column",
+    gap: "2vh",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    minHeight: "40vh",
   },
   title: {
-    position: 'relative',
+    position: "relative",
     zIndex: 0,
-    boxSizing: 'border-box',
-    paddingBlock: '5px',
+    boxSizing: "border-box",
+    paddingBlock: "5px",
     paddingInline: 32,
     margin: 0,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   logo: {
-    position: 'relative',
+    position: "relative",
     zIndex: 1,
-    display: 'flex',
-    width: '100%',
+    display: "flex",
+    width: "100%",
   },
   subtitle: {
     paddingInline: 24,
     margin: 0,
-    fontSize: 'clamp(1.2rem, 1.2rem + 1vw, 2rem)',
+    fontSize: "clamp(1.2rem, 1.2rem + 1vw, 2rem)",
     fontWeight: 200,
-    color: `${vars['--color-fd-foreground']}`,
-    textAlign: 'center',
+    color: `${vars["--color-fd-foreground"]}`,
+    textAlign: "center",
   },
   ctaSpacer: {
     flexGrow: 1,
     maxHeight: 64,
   },
   ctaSection: {
-    display: 'grid',
+    display: "grid",
     flexDirection: {
-      [CTA_BREAK]: 'column',
-      default: 'row',
+      [CTA_BREAK]: "column",
+      default: "row",
     },
     gridTemplateColumns: {
-      [CTA_BREAK]: '1fr',
-      default: 'repeat(2, 1fr)',
+      [CTA_BREAK]: "1fr",
+      default: "repeat(2, 1fr)",
     },
-    gap: '1rem',
+    gap: "1rem",
   },
   mobileBreak: {
     display: {
-      [CTA_BREAK]: 'block',
-      default: 'none',
+      [CTA_BREAK]: "block",
+      default: "none",
     },
   },
   tabletBreak: {
     display: {
-      [TABLET_BREAK]: 'block',
-      default: 'none',
+      [TABLET_BREAK]: "block",
+      default: "none",
     },
   },
 });
 
 export const getConfig = async () => {
   return {
-    render: 'static',
+    render: "static",
   };
 };

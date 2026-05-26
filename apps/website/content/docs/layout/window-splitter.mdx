@@ -23,7 +23,7 @@ import { WindowSplitter } from "@stylextras/ui/window-splitter";
 
 ## Basic usage
 
-Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
+Use Window Splitter when two panes need an accessible draggable separator. Drag the splitter, or focus it and use arrow keys.
 
 <Suspense fallback={null}>
   <Example />
@@ -32,7 +32,11 @@ Start here when wiring the component into an interface. The demo shows the expec
 ```tsx
 import { WindowSplitter } from "@stylextras/ui/window-splitter";
 
-<WindowSplitter>Example</WindowSplitter>;
+<WindowSplitter
+  label="Resize navigator"
+  onValueChange={setSplit}
+  value={split}
+/>;
 ```
 
 ## Props
@@ -41,8 +45,14 @@ The public prop types are exported from `@stylextras/ui/window-splitter`. Most c
 
 ```tsx
 export type WindowSplitterProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
+  defaultValue?: number;
+  label: string;
+  max?: number;
+  min?: number;
+  onValueChange?: (value: number) => void;
   orientation?: WindowSplitterOrientation;
+  sx?: StyleXStyles;
+  value?: number;
 };
 ```
 
@@ -56,7 +66,7 @@ import { colors } from "@stylextras/ui/tokens/color";
 import { spacing } from "@stylextras/ui/tokens/spacing";
 import { WindowSplitter } from "@stylextras/ui/window-splitter";
 
-<WindowSplitter sx={styles.emphasis}>Example</WindowSplitter>;
+<WindowSplitter label="Resize panels" sx={styles.emphasis} />;
 
 const styles = stylex.create({
   emphasis: {
@@ -68,26 +78,32 @@ const styles = stylex.create({
 
 ## Complete example
 
-This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+This example shows a controlled splitter driving pane sizes.
 
 ```tsx
+import { useState } from "react";
 import { WindowSplitter } from "@stylextras/ui/window-splitter";
 
 function WindowSplitterExample() {
+  const [split, setSplit] = useState(38);
+
   return (
-    <>
-      <div>
-        <WindowSplitter orientation="horizontal" />
-        <WindowSplitter orientation="vertical" />
-      </div>
-    </>
+    <div style={{ display: "grid", gridTemplateColumns: `${split}% auto 1fr` }}>
+      <aside>Navigator</aside>
+      <WindowSplitter
+        label="Resize navigator"
+        onValueChange={setSplit}
+        value={split}
+      />
+      <main>Editor</main>
+    </div>
   );
 }
 ```
 
 ## Accessibility notes
 
-Layout components should not replace semantic landmarks. Use nav, main, aside, section, and heading elements where they describe the content.
+Window Splitter renders a focusable `separator` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`. Use a specific `label`, keep semantic panes around it, and support arrow-key resizing. Arrow keys move by 2%, Shift+Arrow moves by 10%, Home moves to `min`, and End moves to `max`.
 
 ## Implementation notes
 

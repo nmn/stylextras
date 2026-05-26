@@ -6,7 +6,9 @@ import { DatePicker } from "../date-picker";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type RangeDatePickerProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type RangeDatePickerProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a simplified range date picker primitive.
@@ -26,4 +28,4 @@ export function RangeDatePicker({ sx, ...props }: RangeDatePickerProps) {
   );
 }
 
-const styles = stylex.create({ base: { display: "grid", gap: spacing.sm } });
+const styles = stylex.create({ base: { gap: spacing.sm, display: "grid" } });

@@ -11,14 +11,14 @@ export const Example = lazy(
 
 # Button Group
 
-Use Button Group when an interface needs a clear, keyboard-accessible control for taking action. The component keeps native button behavior and moves visual decisions into token variables.
+Use Button Group when related buttons should read as one control cluster. Use the action-row variant for dialog footers and confirmation rows where the primary and secondary actions should be equal width and aligned to the end.
 
 The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them.
 
 ## Import
 
 ```tsx
-import { ButtonGroup } from "@stylextras/ui/button-group";
+import { ButtonGroup, ButtonGroupActions } from "@stylextras/ui/button-group";
 ```
 
 ## Basic usage
@@ -30,9 +30,30 @@ Start here when wiring the component into an interface. The demo shows the expec
 </Suspense>
 
 ```tsx
+import { Button } from "@stylextras/ui/button";
 import { ButtonGroup } from "@stylextras/ui/button-group";
 
-<ButtonGroup>Example</ButtonGroup>;
+<ButtonGroup>
+  <Button>Approve</Button>
+  <Button variant="secondary">Comment</Button>
+  <Button variant="outline">Request changes</Button>
+</ButtonGroup>;
+```
+
+## Action row
+
+Use `ButtonGroupActions` when the buttons should keep a gap instead of sharing borders. The primary and secondary buttons are equal width and right-aligned; a leading button can be added for a tertiary action or icon-only affordance.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+import { ButtonGroupActions } from "@stylextras/ui/button-group";
+import { IconButton } from "@stylextras/ui/icon-button";
+
+<ButtonGroupActions
+  leading={<IconButton label="More actions">+</IconButton>}
+  secondary={<Button variant="secondary">Cancel</Button>}
+  primary={<Button>Save changes</Button>}
+/>;
 ```
 
 ## Props
@@ -41,6 +62,16 @@ The public prop types are exported from `@stylextras/ui/button-group`. Most comp
 
 ```tsx
 export type ButtonGroupProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
+
+export type ButtonGroupActionsProps = Omit<
+  BaseProps,
+  "children" | "className" | "style"
+> & {
+  leading?: ReactNode;
+  primary: ReactNode;
+  secondary: ReactNode;
   sx?: StyleXStyles;
 };
 ```
@@ -53,9 +84,13 @@ Use the `sx` prop to compose custom styles with the component's token-driven def
 import * as stylex from "@stylexjs/stylex";
 import { colors } from "@stylextras/ui/tokens/color";
 import { spacing } from "@stylextras/ui/tokens/spacing";
+import { Button } from "@stylextras/ui/button";
 import { ButtonGroup } from "@stylextras/ui/button-group";
 
-<ButtonGroup sx={styles.emphasis}>Example</ButtonGroup>;
+<ButtonGroup sx={styles.emphasis}>
+  <Button>One</Button>
+  <Button variant="secondary">Two</Button>
+</ButtonGroup>;
 
 const styles = stylex.create({
   emphasis: {
@@ -71,19 +106,24 @@ This example shows the component in a fuller composition with the surrounding pi
 
 ```tsx
 import { Button } from "@stylextras/ui/button";
-import { ButtonGroup } from "@stylextras/ui/button-group";
+import { ButtonGroup, ButtonGroupActions } from "@stylextras/ui/button-group";
+import { IconButton } from "@stylextras/ui/icon-button";
 
 function ButtonGroupExample() {
   return (
-    <>
-      <div>
-        <ButtonGroup>
-          <Button>Approve</Button>
-          <Button variant="secondary">Comment</Button>
-          <Button variant="outline">Request changes</Button>
-        </ButtonGroup>
-      </div>
-    </>
+    <div>
+      <ButtonGroup>
+        <Button>Approve</Button>
+        <Button variant="secondary">Comment</Button>
+        <Button variant="outline">Request changes</Button>
+      </ButtonGroup>
+
+      <ButtonGroupActions
+        leading={<IconButton label="More actions">+</IconButton>}
+        secondary={<Button variant="secondary">Cancel</Button>}
+        primary={<Button>Save changes</Button>}
+      />
+    </div>
   );
 }
 ```
@@ -99,6 +139,26 @@ import { ButtonGroup } from "@stylextras/ui/button-group";
   <Button>One</Button>
   <Button variant="secondary">Two</Button>
 </ButtonGroup>;
+```
+
+## Dialog actions
+
+Use action rows for dialogs and drawers because they preserve a visible gap between the buttons and keep the primary action easy to scan.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+import { ButtonGroupActions } from "@stylextras/ui/button-group";
+
+<form method="dialog">
+  <ButtonGroupActions
+    secondary={
+      <Button type="submit" variant="secondary">
+        Cancel
+      </Button>
+    }
+    primary={<Button type="submit">Save</Button>}
+  />
+</form>;
 ```
 
 ## Accessibility notes

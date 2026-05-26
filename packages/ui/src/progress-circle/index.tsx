@@ -1,6 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
 import type { ComponentPropsWithoutRef } from "react";
+import type { AccessibleAriaNameProps } from "../accessibility";
 import { colors } from "../tokens/color.stylex";
 import { typography } from "../tokens/typography.stylex";
 
@@ -8,13 +9,17 @@ type BaseProps = ComponentPropsWithoutRef<"div">;
 
 export type ProgressCircleSize = "sm" | "md" | "lg";
 
-export type ProgressCircleProps = Omit<BaseProps, "className" | "style"> & {
-  max?: number;
-  showValue?: boolean;
-  size?: ProgressCircleSize;
-  sx?: StyleXStyles;
-  value?: number;
-};
+export type ProgressCircleProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style"
+> &
+  AccessibleAriaNameProps & {
+    max?: number;
+    showValue?: boolean;
+    size?: ProgressCircleSize;
+    sx?: StyleXStyles;
+    value?: number;
+  };
 
 const sizeMap = {
   sm: { box: 36, stroke: 4 },
@@ -56,7 +61,11 @@ export function ProgressCircle({
       aria-valuenow={Math.round(clamped)}
       {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
     >
-      <svg viewBox={"0 0 " + metrics.box + " " + metrics.box} width={metrics.box} height={metrics.box}>
+      <svg
+        viewBox={"0 0 " + metrics.box + " " + metrics.box}
+        width={metrics.box}
+        height={metrics.box}
+      >
         <circle
           cx={metrics.box / 2}
           cy={metrics.box / 2}
@@ -75,35 +84,41 @@ export function ProgressCircle({
           strokeDashoffset={offset}
           strokeLinecap="round"
           strokeWidth={metrics.stroke}
-          transform={"rotate(-90 " + metrics.box / 2 + " " + metrics.box / 2 + ")"}
+          transform={
+            "rotate(-90 " + metrics.box / 2 + " " + metrics.box / 2 + ")"
+          }
         />
       </svg>
-      {showValue ? <span {...stylex.props(labelStyles.base, labelStyles[size])}>{Math.round(percent * 100)}%</span> : null}
+      {showValue ? (
+        <span {...stylex.props(labelStyles.base, labelStyles[size])}>
+          {Math.round(percent * 100)}%
+        </span>
+      ) : null}
     </div>
   );
 }
 
 const baseStyles = stylex.create({
   base: {
-    position: "relative",
-    display: "inline-grid",
     placeItems: "center",
+    display: "inline-grid",
+    position: "relative",
   },
 });
 
 const sizeStyles = stylex.create({
-  sm: { width: "36px", height: "36px" },
-  md: { width: "52px", height: "52px" },
-  lg: { width: "72px", height: "72px" },
+  sm: { height: "36px", width: "36px" },
+  md: { height: "52px", width: "52px" },
+  lg: { height: "72px", width: "72px" },
 });
 
 const labelStyles = stylex.create({
   base: {
-    position: "absolute",
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
+    position: "absolute",
   },
   sm: { fontSize: typography.stepMinus2 },
   md: { fontSize: typography.stepMinus2 },

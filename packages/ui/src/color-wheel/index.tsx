@@ -5,7 +5,9 @@ import { ColorField } from "../color-field";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type ColorWheelProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type ColorWheelProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a simplified color wheel control.
@@ -16,6 +18,12 @@ export type ColorWheelProps = Omit<BaseProps, "className" | "style"> & { sx?: St
  * - Not a full assistive-technology-complete color wheel.
  * - Keyboard manipulation and spoken feedback are limited.
  */
-export function ColorWheel({ sx, ...props }: ColorWheelProps) { return <div {...props} {...stylex.props(styles.base, sx)}><ColorField /></div>; }
+export function ColorWheel({ sx, ...props }: ColorWheelProps) {
+  return (
+    <div {...props} {...stylex.props(styles.base, sx)}>
+      <ColorField />
+    </div>
+  );
+}
 
 const styles = stylex.create({ base: { display: "inline-flex" } });

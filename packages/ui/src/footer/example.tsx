@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { Footer } from './index'
-import { DemoFrame } from '../example-theme/demo'
-import { Link } from '../link'
+import { Footer } from "./index";
+import { DemoFrame } from "../example-theme/demo";
+import { Link } from "../link";
 
 export default function Example() {
   return (
@@ -18,5 +18,5 @@ export default function Example() {
         </Footer>
       </DemoFrame>
     </>
-  )
+  );
 }

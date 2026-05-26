@@ -1,9 +1,8 @@
 {
-  "title": "Form",
+  "title": "Inputs and forms",
   "pages": [
     "./checkbox.mdx",
     "./combo-box.mdx",
-    "./combobox.mdx",
     "./field-errors.mdx",
     "./file-drop-zone.mdx",
     "./file-trigger.mdx",
@@ -19,7 +18,6 @@
     "./slider.mdx",
     "./switch.mdx",
     "./text-area.mdx",
-    "./text-field.mdx",
-    "./textarea.mdx"
+    "./text-field.mdx"
   ]
 }

@@ -6,6 +6,7 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { Button } from "../button";
 import { IconButton } from "../icon-button";
 import type { IconButtonProps } from "../icon-button";
+import { hidePopoverElement, isPopoverOpen } from "../platform-polyfills";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
@@ -84,8 +85,8 @@ export function MenuContent({ onClick, sx, ...props }: MenuContentProps) {
         while (popover instanceof HTMLElement) {
           const nextPopover =
             popover.parentElement?.closest("[popover]") ?? null;
-          if (popover.matches(":popover-open")) {
-            popover.hidePopover();
+          if (isPopoverOpen(popover)) {
+            hidePopoverElement(popover);
           }
           popover = nextPopover;
         }
@@ -232,17 +233,17 @@ export function MenuItem({
 
 const contentStyles = stylex.create({
   base: {
+    padding: spacing.xxs,
+    gap: spacing.xxs,
     display: "grid",
-    gap: spacing["2xs"],
-    minWidth: spacing["4xl"],
-    padding: spacing["2xs"],
+    minWidth: spacing.xxxxl,
   },
 });
 
 const sectionStyles = stylex.create({
   base: {
+    gap: spacing.xxxs,
     display: "grid",
-    gap: spacing["3xs"],
   },
 });
 
@@ -260,17 +261,17 @@ const sectionTitleStyles = stylex.create({
 
 const buttonStyles = stylex.create({
   base: {
+    borderRadius: radius.md,
+    gap: spacing.xs,
+    paddingBlock: spacing.xs,
+    paddingInline: spacing.sm,
+    alignItems: "center",
     display: "grid",
     gridTemplateColumns: "auto 1fr auto",
-    alignItems: "center",
     justifyContent: "stretch",
-    gap: spacing.xs,
-    width: "100%",
-    minHeight: spacing["3xl"],
-    paddingInline: spacing.sm,
-    paddingBlock: spacing.xs,
-    borderRadius: radius.md,
     textAlign: "left",
+    minHeight: spacing.xxxl,
+    width: "100%",
   },
   label: {
     minWidth: 0,
@@ -279,20 +280,18 @@ const buttonStyles = stylex.create({
 
 const iconGroupStyles = stylex.create({
   base: {
+    gap: spacing.sm,
+    paddingBlock: spacing.xxs,
+    paddingInline: spacing.xs,
     display: "flex",
     flexWrap: "wrap",
-    gap: spacing.sm,
-    paddingInline: spacing.xs,
-    paddingBlock: spacing["2xs"],
   },
 });
 
 const iconButtonStyles = stylex.create({
   base: {
-    width: spacing["3xl"],
-    height: spacing["3xl"],
-    borderRadius: radius.round,
     borderColor: colors.border,
+    borderRadius: radius.round,
     backgroundColor: {
       default: colors.bg,
       ":hover": colors.bgRaised,
@@ -301,33 +300,35 @@ const iconButtonStyles = stylex.create({
     boxShadow: `0 1px 2px ${colors.overlay}`,
     fontSize: typography.step0,
     fontWeight: typography.weightSemibold,
+    height: spacing.xxxl,
+    width: spacing.xxxl,
   },
 });
 
 const itemListStyles = stylex.create({
   base: {
+    gap: spacing.xxxs,
     display: "grid",
-    gap: spacing["3xs"],
   },
 });
 
 const itemStyles = stylex.create({
   base: {
+    borderRadius: radius.sm,
+    paddingBlock: spacing.xs,
+    paddingInline: spacing.sm,
+    alignItems: "center",
+    columnGap: spacing.sm,
     display: "grid",
     gridTemplateColumns: "auto 1fr auto",
-    alignItems: "center",
     justifyContent: "stretch",
-    columnGap: spacing.sm,
-    width: "100%",
-    minHeight: spacing["3xl"],
-    paddingInline: spacing.sm,
-    paddingBlock: spacing.xs,
-    borderRadius: radius.sm,
     textAlign: "left",
+    minHeight: spacing.xxxl,
+    width: "100%",
   },
   copy: {
+    gap: spacing.xxxs,
     display: "grid",
-    gap: spacing["3xs"],
     minWidth: 0,
   },
   label: {
@@ -344,29 +345,29 @@ const itemStyles = stylex.create({
 
 const slotStyles = stylex.create({
   leading: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: spacing["2xl"],
-    height: spacing["2xl"],
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
     borderColor: colors.border,
     borderRadius: radius.round,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    alignItems: "center",
     backgroundColor: colors.bg,
     color: colors.fgSoft,
+    display: "inline-flex",
     fontSize: typography.step0,
     fontWeight: typography.weightSemibold,
+    justifyContent: "center",
     lineHeight: 1,
+    height: spacing.xxl,
+    width: spacing.xxl,
   },
   trailing: {
-    display: "inline-flex",
     alignItems: "center",
-    justifyContent: "center",
-    minWidth: spacing["2xl"],
     color: colors.fgMuted,
+    display: "inline-flex",
     fontSize: typography.stepMinus1,
+    justifyContent: "center",
     lineHeight: 1,
+    minWidth: spacing.xxl,
   },
 });
 

@@ -23,4 +23,11 @@ export function Link({ sx, ...props }: LinkProps) {
   return <a {...props} {...stylex.props(styles.base, sx)} />;
 }
 
-const styles = stylex.create({ base: { color: colors.brand, fontFamily: typography.fontSans, fontSize: typography.step0, textDecoration: "underline" } });
+const styles = stylex.create({
+  base: {
+    textDecoration: "underline",
+    color: colors.brand,
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+  },
+});

@@ -22,8 +22,24 @@ export type GridProps = Omit<BaseProps, "className" | "style"> & {
  * - It does not imply data-grid semantics.
  */
 export function Grid({ cols = 2, sx, ...props }: GridProps) {
-  return <div {...props} {...stylex.props(baseStyles.base, colStyles[String(cols) as keyof typeof colStyles], sx)} />;
+  return (
+    <div
+      {...props}
+      {...stylex.props(
+        baseStyles.base,
+        colStyles[String(cols) as keyof typeof colStyles],
+        sx,
+      )}
+    />
+  );
 }
 
-const baseStyles = stylex.create({ base: { display: "grid", gap: spacing.md } });
-const colStyles = stylex.create({ "1": { gridTemplateColumns: "repeat(1, minmax(0, 1fr))" }, "2": { gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }, "3": { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }, "4": { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" } });
+const baseStyles = stylex.create({
+  base: { gap: spacing.md, display: "grid" },
+});
+const colStyles = stylex.create({
+  "1": { gridTemplateColumns: "repeat(1, minmax(0, 1fr))" },
+  "2": { gridTemplateColumns: "repeat(2, minmax(0, 1fr))" },
+  "3": { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" },
+  "4": { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" },
+});

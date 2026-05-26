@@ -1,7 +1,7 @@
-import { Textarea, type TextareaProps } from '../textarea/index'
+import { Textarea, type TextareaProps } from "../textarea/index";
 
-export type TextAreaProps = TextareaProps
-export type TextAreaFieldProps = TextAreaProps
+export type TextAreaProps = TextareaProps;
+export type TextAreaFieldProps = TextAreaProps;
 
 /**
  * Renders the textarea primitive under the spaced alias export.
@@ -13,9 +13,9 @@ export type TextAreaFieldProps = TextAreaProps
  * - Labeling and validation messaging must be composed by the caller.
  */
 export function TextAreaField(props: TextAreaFieldProps) {
-  return <TextArea {...props} />
+  return <TextArea {...props} />;
 }
 
 export function TextArea(props: TextAreaProps) {
-  return <Textarea {...props} />
+  return <Textarea {...props} />;
 }

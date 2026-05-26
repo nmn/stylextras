@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Tree } from './index'
-import { DemoFrame } from '../example-theme/demo'
+import { Tree } from "./index";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -43,5 +43,5 @@ export default function Example() {
         </ul>
       </Tree>
     </DemoFrame>
-  )
+  );
 }

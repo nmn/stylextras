@@ -22,18 +22,27 @@ export type AspectRatioProps = Omit<BaseProps, "className" | "style"> & {
  * - Provides layout only and no media semantics.
  * - Accessible naming must come from the content rendered inside it.
  */
-export function AspectRatio({ ratio = "video", sx, ...props }: AspectRatioProps) {
-  return <div {...props} {...stylex.props(baseStyles.base, ratioStyles[ratio], sx)} />;
+export function AspectRatio({
+  ratio = "video",
+  sx,
+  ...props
+}: AspectRatioProps) {
+  return (
+    <div
+      {...props}
+      {...stylex.props(baseStyles.base, ratioStyles[ratio], sx)}
+    />
+  );
 }
 
 const baseStyles = stylex.create({
   base: {
-    display: "grid",
-    placeItems: "center",
-    width: "100%",
-    overflow: "hidden",
     borderRadius: radius.md,
+    overflow: "hidden",
+    placeItems: "center",
     backgroundColor: colors.bgSubtle,
+    display: "grid",
+    width: "100%",
   },
 });
 

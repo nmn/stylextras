@@ -57,9 +57,7 @@ const groups = [
       ["Card", "/docs/content/card"],
       ["Content", "/docs/content/content"],
       ["Editable Text", "/docs/content/editable-text"],
-      ["Empty", "/docs/content/empty"],
       ["Empty State", "/docs/content/empty-state"],
-      ["Flez", "/docs/content/flez"],
       ["ImageCropper", "/docs/content/image-cropper"],
       ["Kbd", "/docs/content/kbd"],
       ["Separator", "/docs/content/separator"],
@@ -75,9 +73,7 @@ const groups = [
       ["Date Picker", "/docs/date-and-time/date-picker"],
       ["Date Range Picker", "/docs/date-and-time/date-range-picker"],
       ["Range Calendar", "/docs/date-and-time/range-calendar"],
-      ["Range Date Picker", "/docs/date-and-time/range-date-picker"],
       ["Time Field", "/docs/date-and-time/time-field"],
-      ["Timefield", "/docs/date-and-time/timefield"],
     ],
   },
   {
@@ -85,7 +81,6 @@ const groups = [
     items: [
       ["Checkbox", "/docs/form/checkbox"],
       ["Combo Box", "/docs/form/combo-box"],
-      ["Combobox", "/docs/form/combobox"],
       ["Field Errors", "/docs/form/field-errors"],
       ["File Drop Zone", "/docs/form/file-drop-zone"],
       ["File Trigger", "/docs/form/file-trigger"],
@@ -102,7 +97,6 @@ const groups = [
       ["Switch", "/docs/form/switch"],
       ["Text Area", "/docs/form/text-area"],
       ["Text Field", "/docs/form/text-field"],
-      ["Textarea", "/docs/form/textarea"],
     ],
   },
   {
@@ -117,7 +111,6 @@ const groups = [
   {
     title: "Navigation",
     items: [
-      ["Breadcrumb", "/docs/navigation/breadcrumb"],
       ["Breadcrumbs", "/docs/navigation/breadcrumbs"],
       ["Disclosure", "/docs/navigation/disclosure"],
       ["Disclosure Group", "/docs/navigation/disclosure-group"],
@@ -147,7 +140,6 @@ const groups = [
     title: "Status",
     items: [
       ["Alert", "/docs/status/alert"],
-      ["Alert Callout", "/docs/status/alert-callout"],
       ["Badge", "/docs/status/badge"],
       ["Meter", "/docs/status/meter"],
       ["Progress Bar", "/docs/status/progress-bar"],

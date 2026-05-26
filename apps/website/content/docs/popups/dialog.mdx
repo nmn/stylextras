@@ -20,6 +20,7 @@ import {
   DialogContent,
   DialogTrigger,
   DialogProgrammatic,
+  DrawerContent,
 } from "@stylextras/ui/dialog";
 ```
 
@@ -59,12 +60,16 @@ export type DialogProps = Omit<BaseProps, "className" | "style"> & {
 
 export type DialogContentProps = DialogProps;
 
-export type DialogTriggerProps = Omit<
-  ButtonProps,
-  "className" | "content" | "style"
-> & {
-  content: LazyComponentLoader<DialogContentProps>;
-  contentProps?: Omit<DialogContentProps, "ref">;
+export type DrawerContentProps = Omit<BaseProps, "className" | "style"> & {
+  side?: DrawerSide;
+  sx?: StyleXStyles;
+};
+
+export type DialogTriggerProps<
+  Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
+> = Omit<ButtonProps, "className" | "content" | "style"> & {
+  content: LazyComponentLoader<Props>;
+  contentProps?: Omit<Props, "ref">;
   fallback?: React.ReactNode;
 };
 
@@ -110,7 +115,7 @@ This example shows the component in a fuller composition with the surrounding pi
 
 ```tsx
 import { Button } from "@stylextras/ui/button";
-import { ButtonGroup } from "@stylextras/ui/button-group";
+import { ButtonGroupActions } from "@stylextras/ui/button-group";
 import { TextField } from "@stylextras/ui/text-field";
 import { Typography } from "@stylextras/ui/typography";
 import {
@@ -128,12 +133,14 @@ function DialogExampleContent(props: DialogContentProps) {
         </Typography>
         <TextField label="Display name" defaultValue="Segmented Control" />
         <form method="dialog">
-          <ButtonGroup>
-            <Button type="submit" variant="secondary">
-              Cancel
-            </Button>
-            <Button type="submit">Save</Button>
-          </ButtonGroup>
+          <ButtonGroupActions
+            secondary={
+              <Button type="submit" variant="secondary">
+                Cancel
+              </Button>
+            }
+            primary={<Button type="submit">Save</Button>}
+          />
         </form>
       </div>
     </DialogContent>
@@ -174,6 +181,34 @@ function DetailsContent(props: DialogContentProps) {
 </DialogTrigger>;
 ```
 
+## Static dialog content
+
+When the dialog content is already rendered, keep it as a normal `<dialog>` surface and open it from a ref callback or product code. Forms with `method="dialog"` keep close behavior platform-native.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+import { DialogContent } from "@stylextras/ui/dialog";
+import { useRef } from "react";
+
+function StaticDialogExample() {
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+
+  return (
+    <>
+      <Button onClick={() => dialogRef.current?.showModal()}>
+        Open dialog
+      </Button>
+      <DialogContent ref={dialogRef}>
+        <form method="dialog">
+          <p>Native dialog content.</p>
+          <Button type="submit">Close</Button>
+        </form>
+      </DialogContent>
+    </>
+  );
+}
+```
+
 ## Content rendered directly
 
 Render the content component directly when another controller owns the open state.
@@ -184,6 +219,31 @@ import { DialogContent } from "@stylextras/ui/dialog";
 <DialogContent>
   Content can still be rendered directly when another controller owns opening.
 </DialogContent>;
+```
+
+## Drawer content
+
+A drawer is a dialog with side-panel styling. Use the same `DialogTrigger` and lazy `content` loader, but render `DrawerContent` inside the loaded component.
+
+```tsx
+import {
+  DialogTrigger,
+  DrawerContent,
+  type DrawerContentProps,
+} from "@stylextras/ui/dialog";
+
+function SettingsDrawer(props: DrawerContentProps) {
+  return (
+    <DrawerContent {...props} side="right">
+      <h2>Page settings</h2>
+      <p>Drawer content uses the same native dialog behavior.</p>
+    </DrawerContent>
+  );
+}
+
+<DialogTrigger content={() => Promise.resolve(SettingsDrawer)}>
+  Open settings
+</DialogTrigger>;
 ```
 
 ## Programmatic control

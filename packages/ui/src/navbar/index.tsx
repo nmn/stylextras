@@ -26,16 +26,16 @@ export function Navbar({ sx, ...props }: NavbarProps) {
 
 const styles = stylex.create({
   base: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
     gap: spacing.md,
-    minWidth: 0,
     paddingBlock: spacing.md,
     paddingInline: spacing.lg,
+    alignItems: "center",
+    backgroundColor: colors.bg,
+    display: "flex",
+    flexWrap: "wrap",
+    borderBottomColor: colors.border,
     borderBottomStyle: "solid",
     borderBottomWidth: stroke.thin,
-    borderBottomColor: colors.border,
-    backgroundColor: colors.bg,
+    minWidth: 0,
   },
 });

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from "@stylexjs/stylex";
 
 export default function Bluesky({ xstyle }: { xstyle: stylex.StyleXStyles }) {
   return (
@@ -17,7 +17,7 @@ export default function Bluesky({ xstyle }: { xstyle: stylex.StyleXStyles }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2"
-        style={{ transform: 'translateX(3.8%) scale(0.9) ' }}
+        style={{ transform: "translateX(3.8%) scale(0.9) " }}
       />
     </svg>
   );

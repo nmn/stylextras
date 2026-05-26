@@ -1,7 +1,6 @@
 {
-  "title": "Status",
+  "title": "Feedback",
   "pages": [
-    "./alert-callout.mdx",
     "./alert.mdx",
     "./badge.mdx",
     "./meter.mdx",

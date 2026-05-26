@@ -1,7 +1,6 @@
 {
   "title": "Navigation",
   "pages": [
-    "./breadcrumb.mdx",
     "./breadcrumbs.mdx",
     "./disclosure-group.mdx",
     "./disclosure.mdx",

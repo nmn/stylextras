@@ -38,18 +38,21 @@ import { TextField } from "@stylextras/ui/text-field";
 The public prop types are exported from `@stylextras/ui/text-field`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type TextFieldProps = Omit<BaseProps, "className" | "style" | "size"> & {
-  sx?: StyleXStyles;
-  inputSx?: StyleXStyles;
-  labelSx?: StyleXStyles;
-  descriptionSx?: StyleXStyles;
-  errorSx?: StyleXStyles;
-  label?: ReactNode;
-  description?: ReactNode;
-  error?: ReactNode;
-  invalid?: boolean;
-  size?: TextFieldSize;
-};
+export type TextFieldProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style" | "size"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    descriptionSx?: StyleXStyles;
+    errorSx?: StyleXStyles;
+    description?: ReactNode;
+    error?: ReactNode;
+    invalid?: boolean;
+    size?: TextFieldSize;
+  };
 ```
 
 ## Customize styles

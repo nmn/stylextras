@@ -5,7 +5,9 @@ import { ColorField } from "../color-field";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type ColorAreaProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type ColorAreaProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a simplified color-area control surface.
@@ -16,6 +18,12 @@ export type ColorAreaProps = Omit<BaseProps, "className" | "style"> & { sx?: Sty
  * - This is not a full assistive-technology-complete color area implementation.
  * - Keyboard color manipulation and spoken value feedback are limited.
  */
-export function ColorArea({ sx, ...props }: ColorAreaProps) { return <div {...props} {...stylex.props(styles.base, sx)}><ColorField /></div>; }
+export function ColorArea({ sx, ...props }: ColorAreaProps) {
+  return (
+    <div {...props} {...stylex.props(styles.base, sx)}>
+      <ColorField />
+    </div>
+  );
+}
 
 const styles = stylex.create({ base: { display: "inline-flex" } });

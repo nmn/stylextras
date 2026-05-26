@@ -4,20 +4,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import type * as PageTree from 'fumadocs-core/page-tree';
-import { type ReactNode, use, useEffect, useMemo, useRef } from 'react';
-import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
-import Link from 'fumadocs-core/link';
-import { usePathname } from 'fumadocs-core/framework';
-import * as stylex from '@stylexjs/stylex';
-import { BaseLayoutProps } from './shared';
-import { activeLinkMarker, vars } from '../../theming/vars.stylex';
-import { Header } from './home';
-import { ChevronDown } from 'lucide-react';
-import { SidebarContext } from '@/contexts/SidebarContext';
-import Footer from '@/components/Footer';
+import type * as PageTree from "fumadocs-core/page-tree";
+import { type ReactNode, use, useEffect, useRef } from "react";
+import { TreeContextProvider, useTreeContext } from "fumadocs-ui/contexts/tree";
+import Link from "fumadocs-core/link";
+import { usePathname } from "fumadocs-core/framework";
+import * as stylex from "@stylexjs/stylex";
+import { BaseLayoutProps } from "./shared";
+import { activeLinkMarker, vars } from "../../theming/vars.stylex";
+import { Header } from "./home";
+import { ChevronDown } from "lucide-react";
+import { SidebarContext } from "@/contexts/SidebarContext";
+import Footer from "@/components/Footer";
 
 export interface DocsLayoutProps extends BaseLayoutProps {
   tree: PageTree.Root;
@@ -54,23 +54,23 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
 }
 const layoutStyles = stylex.create({
   wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: 'calc(100dvh - 56px)',
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "calc(100dvh - 56px)",
   },
   main: {
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     // eslint-disable-next-line @stylexjs/valid-styles
-    ['--fd-nav-height' as any]: '64px',
+    ["--fd-nav-height" as any]: "64px",
     paddingInlineStart: {
       default: 292,
-      '@media (max-width: 767.9px)': 0,
+      "@media (max-width: 767.9px)": 0,
     },
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '0.15s',
-    transitionProperty: 'padding-inline-start',
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "0.15s",
+    transitionProperty: "padding-inline-start",
   },
   mainWithSidebarClosed: {
     paddingInlineStart: 0,
@@ -85,17 +85,15 @@ function Sidebar() {
   const { root } = useTreeContext();
   const [open] = use(SidebarContext);
 
-  const children = useMemo(() => {
-    function renderItems(items: PageTree.Node[]) {
-      return items.map((item) => (
-        <SidebarItem item={item} key={item.$id}>
-          {item.type === 'folder' ? renderItems(item.children) : null}
-        </SidebarItem>
-      ));
-    }
+  function renderItems(items: PageTree.Node[]) {
+    return items.map((item) => (
+      <SidebarItem item={item} key={item.$id}>
+        {item.type === "folder" ? renderItems(item.children) : null}
+      </SidebarItem>
+    ));
+  }
 
-    return renderItems(root.children);
-  }, [root]);
+  const children = renderItems(root.children);
 
   const sidebarRef = useRef<HTMLElement>(null);
 
@@ -121,73 +119,73 @@ function Sidebar() {
 }
 const sidebarStyles = stylex.create({
   container: {
-    position: 'fixed',
+    position: "fixed",
     top: 64,
     left: 0,
     zIndex: 10,
-    display: 'flex',
+    display: "flex",
     flexShrink: 0,
-    alignSelf: 'flex-start',
-    height: 'calc(100dvh - 64px)',
+    alignSelf: "flex-start",
+    height: "calc(100dvh - 64px)",
     padding: 8,
     transform: {
-      default: 'translateX(0px)',
-      '@media (max-width: 767.9px)': 'translateX(-100%)',
+      default: "translateX(0px)",
+      "@media (max-width: 767.9px)": "translateX(-100%)",
     },
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '0.15s',
-    transitionProperty: 'transform',
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "0.15s",
+    transitionProperty: "transform",
   },
   open: {
-    transform: 'translateX(0)',
+    transform: "translateX(0)",
   },
   closed: {
-    transform: 'translateX(-100%)',
+    transform: "translateX(-100%)",
   },
   blurContainer: {
-    position: 'absolute',
+    position: "absolute",
     inset: 8,
     zIndex: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderRadius: 20,
-    cornerShape: 'squircle',
+    cornerShape: "squircle",
   },
   blur: {
-    position: 'absolute',
+    position: "absolute",
     inset: -64,
     insetInlineStart: -8,
     bottom: 0,
-    backdropFilter: 'blur(32px) saturate(500%)',
+    backdropFilter: "blur(32px) saturate(500%)",
   },
   overlayBlur: {
-    position: 'absolute',
+    position: "absolute",
     inset: 9,
     zIndex: 1,
-    overflow: 'hidden',
-    pointerEvents: 'none',
+    overflow: "hidden",
+    pointerEvents: "none",
     borderRadius: 19,
-    cornerShape: 'squircle',
-    backdropFilter: 'blur(32px) saturate(800%)',
+    cornerShape: "squircle",
+    backdropFilter: "blur(32px) saturate(800%)",
     maskImage:
-      'linear-gradient(to right, white, transparent 4%, transparent 88%, white)',
+      "linear-gradient(to right, white, transparent 4%, transparent 88%, white)",
   },
   base: {
     zIndex: 1,
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 2,
     width: 280,
-    height: '100%',
+    height: "100%",
     padding: 4 * 4,
-    overflowY: 'auto',
-    overscrollBehavior: 'contain',
-    fontSize: '1rem',
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    overflowY: "auto",
+    overscrollBehavior: "contain",
+    fontSize: "1rem",
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 20,
-    cornerShape: 'squircle',
-    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
+    cornerShape: "squircle",
+    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
   },
 });
 
@@ -200,7 +198,7 @@ function SidebarItem({
 }) {
   const pathname = usePathname();
 
-  if (item.type === 'page') {
+  if (item.type === "page") {
     return (
       <Link
         href={item.url}
@@ -216,7 +214,7 @@ function SidebarItem({
     );
   }
 
-  if (item.type === 'separator') {
+  if (item.type === "separator") {
     return (
       <p {...stylex.props(sidebarItemStyles.separator)}>
         {item.icon}
@@ -237,21 +235,20 @@ function SidebarItemFolder({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const isDescendantActive = useMemo(() => {
-    const check = (item: PageTree.Node) => {
-      if (item.type === 'page') {
-        return pathname === item.url;
+  function checkActiveDescendant(item: PageTree.Node): boolean {
+    if (item.type === "page") {
+      return pathname === item.url;
+    }
+    if (item.type === "folder") {
+      if (item.index && pathname.startsWith(item.index.url)) {
+        return true;
       }
-      if (item.type === 'folder') {
-        if (item.index && pathname.startsWith(item.index.url)) {
-          return true;
-        }
-        return item.children.some(check);
-      }
-      return false;
-    };
-    return check(item);
-  }, [pathname, item]);
+      return item.children.some(checkActiveDescendant);
+    }
+    return false;
+  }
+
+  const isDescendantActive = checkActiveDescendant(item);
   const ref = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
@@ -301,21 +298,21 @@ function SidebarItemFolder({
 
 const sidebarItemStyles = stylex.create({
   separator: {
-    marginTop: { default: 5 * 4, ':first-child': 0 },
+    marginTop: { default: 5 * 4, ":first-child": 0 },
     marginBottom: 1.5 * 4,
     // text-fd-muted-foreground mt-6 mb-2 first:mt-0
     fontSize: `${14 / 16}rem`,
-    color: 'var(--text-fd-muted-foreground)',
+    color: "var(--text-fd-muted-foreground)",
   },
   details: {
-    '--rotation': {
-      default: '-90deg',
-      ':is([open])': '0deg',
+    "--rotation": {
+      default: "-90deg",
+      ":is([open])": "0deg",
     },
-    '--summary-color': {
+    "--summary-color": {
       default: null,
-      [stylex.when.descendant(':is(*)', activeLinkMarker)]:
-        `color-mix(in oklab, ${vars['--color-fd-primary']} 50%, ${vars['--color-fd-foreground']})`,
+      [stylex.when.descendant(":is(*)", activeLinkMarker)]:
+        `color-mix(in oklab, ${vars["--color-fd-primary"]} 50%, ${vars["--color-fd-foreground"]})`,
     },
     // '--details-child-height': {
     //   default: '0px',
@@ -323,61 +320,61 @@ const sidebarItemStyles = stylex.create({
     // },
   },
   summary: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    listStyle: 'none',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    listStyle: "none",
   },
   chevron: {
     flexShrink: 0,
     width: 14,
     height: 14,
-    transform: 'rotate(var(--rotation))',
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '0.15s',
-    transitionProperty: 'transform',
+    transform: "rotate(var(--rotation))",
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "0.15s",
+    transitionProperty: "transform",
   },
   summaryLink: {
     color:
-      'var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))',
+      "var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))",
   },
-  textStart: { textAlign: 'start' },
+  textStart: { textAlign: "start" },
   childContainer: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 2,
     paddingInlineStart: 15,
     marginInlineStart: 1,
-    borderInlineStartColor: vars['--color-fd-border'],
-    borderInlineStartStyle: 'solid',
+    borderInlineStartColor: vars["--color-fd-border"],
+    borderInlineStartStyle: "solid",
     borderInlineStartWidth: 1,
     // eslint-disable-next-line @stylexjs/valid-styles
-    ['--summary-color' as any]: 'initial',
+    ["--summary-color" as any]: "initial",
   },
 });
 
 const linkVariants = stylex.create({
   base: {
-    position: 'relative',
-    display: 'inline-flex',
+    position: "relative",
+    display: "inline-flex",
     gap: 2 * 4,
-    alignItems: 'center',
+    alignItems: "center",
     paddingBlock: 1.5 * 4,
-    fontSize: '1rem',
+    fontSize: "1rem",
     lineHeight: 1.42,
     color:
-      'var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))',
-    borderRadius: '8px',
+      "var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))",
+    borderRadius: "8px",
   },
   active: {
     fontWeight: 500,
-    color: vars['--color-fd-primary'],
+    color: vars["--color-fd-primary"],
   },
   inactive: {
     color: {
       default:
-        'var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))',
-      ':hover': 'var(--text-fd-accent-foreground)',
+        "var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))",
+      ":hover": "var(--text-fd-accent-foreground)",
     },
   },
 });

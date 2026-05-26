@@ -9,7 +9,9 @@ import { stroke } from "../tokens/stroke.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type ToastProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type ToastProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a token-styled toast surface.
@@ -24,4 +26,15 @@ export function Toast({ sx, ...props }: ToastProps) {
   return <div {...props} role="status" {...stylex.props(styles.base, sx)} />;
 }
 
-const styles = stylex.create({ base: { padding: spacing.md, borderStyle: "solid", borderWidth: stroke.thin, borderColor: colors.border, borderRadius: radius.lg, backgroundColor: colors.bgRaised, color: colors.fg, boxShadow: elevation.md } });
+const styles = stylex.create({
+  base: {
+    padding: spacing.md,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    backgroundColor: colors.bgRaised,
+    boxShadow: elevation.md,
+    color: colors.fg,
+  },
+});

@@ -116,16 +116,16 @@ export default function Example() {
 
 const styles = stylex.create({
   submenuTrigger: {
+    borderRadius: radius.sm,
+    paddingBlock: spacing.xs,
+    paddingInline: spacing.sm,
+    alignItems: "center",
     display: "grid",
     gridTemplateColumns: "1fr auto",
-    alignItems: "center",
     justifyContent: "stretch",
-    width: "100%",
-    minHeight: spacing["3xl"],
-    paddingInline: spacing.sm,
-    paddingBlock: spacing.xs,
-    borderRadius: radius.sm,
     textAlign: "left",
+    minHeight: spacing.xxxl,
+    width: "100%",
   },
   submenuArrow: {
     justifySelf: "end",

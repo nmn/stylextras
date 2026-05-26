@@ -5,7 +5,9 @@ import { spacing } from "../tokens/spacing.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"div">;
 
-export type TagGroupProps = Omit<BaseProps, "className" | "style"> & { sx?: StyleXStyles };
+export type TagGroupProps = Omit<BaseProps, "className" | "style"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a group of tag-like items.
@@ -16,6 +18,15 @@ export type TagGroupProps = Omit<BaseProps, "className" | "style"> & { sx?: Styl
  * - Provides grouping layout only.
  * - Selection, removal, and keyboard handling are limited unless composed by the caller.
  */
-export function TagGroup({ sx, ...props }: TagGroupProps) { return <div {...props} {...stylex.props(styles.base, sx)} />; }
+export function TagGroup({ sx, ...props }: TagGroupProps) {
+  return <div {...props} {...stylex.props(styles.base, sx)} />;
+}
 
-const styles = stylex.create({ base: { display: "flex", alignItems: "center", gap: spacing.xs, flexWrap: "wrap" } });
+const styles = stylex.create({
+  base: {
+    gap: spacing.xs,
+    alignItems: "center",
+    display: "flex",
+    flexWrap: "wrap",
+  },
+});

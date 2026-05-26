@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { NumberField } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { NumberField } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -16,5 +16,5 @@ export default function Example() {
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

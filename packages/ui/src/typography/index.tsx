@@ -63,8 +63,8 @@ const baseStyles = stylex.create({
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontWeight: typography.weightRegular,
-    lineHeight: typography.lineHeightBody,
     letterSpacing: typography.trackingNormal,
+    lineHeight: typography.lineHeightBody,
   },
 });
 
@@ -106,28 +106,28 @@ const scaleStyles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     fontWeight: typography.weightMedium,
-    lineHeight: typography.lineHeightSnug,
     letterSpacing: typography.trackingWide,
+    lineHeight: typography.lineHeightSnug,
   },
   body: {
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     fontWeight: typography.weightRegular,
-    lineHeight: typography.lineHeightBody,
     letterSpacing: typography.trackingNormal,
+    lineHeight: typography.lineHeightBody,
   },
   title: {
     fontFamily: typography.fontSans,
     fontSize: typography.step1,
     fontWeight: typography.weightSemibold,
-    lineHeight: typography.lineHeightTight,
     letterSpacing: typography.trackingNormal,
+    lineHeight: typography.lineHeightTight,
   },
   display: {
     fontFamily: typography.fontDisplay,
     fontSize: typography.step4,
     fontWeight: typography.weightBold,
-    lineHeight: typography.lineHeightTight,
     letterSpacing: typography.trackingTight,
+    lineHeight: typography.lineHeightTight,
   },
 });

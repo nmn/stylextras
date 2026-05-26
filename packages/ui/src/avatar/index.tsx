@@ -25,14 +25,68 @@ export type AvatarProps = Omit<BaseProps, "className" | "style"> & {
  * - Does not enforce image alt text or fallback announcement behavior.
  * - When used as a pure decoration it should be hidden from assistive technology by the caller.
  */
-export function Avatar({ alt = "", fallback = "SX", size = "md", src, sx, ...props }: AvatarProps) {
+export function Avatar({
+  alt = "",
+  fallback = "SX",
+  size = "md",
+  src,
+  sx,
+  ...props
+}: AvatarProps) {
   if (src) {
-    return <img {...props} alt={alt} src={src} {...stylex.props(baseStyles.base, sizeStyles[size], sx)} />;
+    return (
+      <img
+        {...props}
+        alt={alt}
+        src={src}
+        {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
+      />
+    );
   }
 
-  return <span aria-hidden="true" {...stylex.props(baseStyles.base, sizeStyles[size], fallbackStyles.base, sx)}>{fallback}</span>;
+  return (
+    <span
+      aria-hidden="true"
+      {...stylex.props(
+        baseStyles.base,
+        sizeStyles[size],
+        fallbackStyles.base,
+        sx,
+      )}
+    >
+      {fallback}
+    </span>
+  );
 }
 
-const baseStyles = stylex.create({ base: { display: "inline-flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: radius.round, backgroundColor: colors.accent, color: colors.accentForeground, fontFamily: typography.fontSans, fontWeight: typography.weightSemibold } });
-const sizeStyles = stylex.create({ sm: { width: spacing["2xl"], height: spacing["2xl"], fontSize: typography.stepMinus1 }, md: { width: spacing["3xl"], height: spacing["3xl"], fontSize: typography.step0 }, lg: { width: spacing["4xl"], height: spacing["4xl"], fontSize: typography.step1 } });
+const baseStyles = stylex.create({
+  base: {
+    borderRadius: radius.round,
+    overflow: "hidden",
+    alignItems: "center",
+    backgroundColor: colors.accent,
+    color: colors.accentForeground,
+    display: "inline-flex",
+    fontFamily: typography.fontSans,
+    fontWeight: typography.weightSemibold,
+    justifyContent: "center",
+  },
+});
+const sizeStyles = stylex.create({
+  sm: {
+    fontSize: typography.stepMinus1,
+    height: spacing.xxl,
+    width: spacing.xxl,
+  },
+  md: {
+    fontSize: typography.step0,
+    height: spacing.xxxl,
+    width: spacing.xxxl,
+  },
+  lg: {
+    fontSize: typography.step1,
+    height: spacing.xxxxl,
+    width: spacing.xxxxl,
+  },
+});
 const fallbackStyles = stylex.create({ base: { textTransform: "uppercase" } });

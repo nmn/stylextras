@@ -1,29 +1,33 @@
-import * as stylex from '@stylexjs/stylex'
-import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
-import { useId } from 'react'
-import { colors } from '../tokens/color.stylex'
-import { radius } from '../tokens/radius.stylex'
-import { spacing } from '../tokens/spacing.stylex'
-import { stroke } from '../tokens/stroke.stylex'
-import { typography } from '../tokens/typography.stylex'
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { useId } from "react";
+import type { AccessibleNameProps } from "../accessibility";
+import { colors } from "../tokens/color.stylex";
+import { radius } from "../tokens/radius.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { stroke } from "../tokens/stroke.stylex";
+import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<'input'>
+type BaseProps = ComponentPropsWithoutRef<"input">;
 
-export type TextFieldSize = 'sm' | 'md'
+export type TextFieldSize = "sm" | "md";
 
-export type TextFieldProps = Omit<BaseProps, 'className' | 'style' | 'size'> & {
-  sx?: StyleXStyles
-  inputSx?: StyleXStyles
-  labelSx?: StyleXStyles
-  descriptionSx?: StyleXStyles
-  errorSx?: StyleXStyles
-  label?: ReactNode
-  description?: ReactNode
-  error?: ReactNode
-  invalid?: boolean
-  size?: TextFieldSize
-}
+export type TextFieldProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style" | "size"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    descriptionSx?: StyleXStyles;
+    errorSx?: StyleXStyles;
+    description?: ReactNode;
+    error?: ReactNode;
+    invalid?: boolean;
+    size?: TextFieldSize;
+  };
 
 /**
  * Renders a token-styled text input control.
@@ -45,20 +49,23 @@ export function TextField({
   invalid = false,
   label,
   labelSx,
-  size = 'md',
+  size = "md",
   sx,
-  type = 'text',
+  type = "text",
   ...props
 }: TextFieldProps) {
-  const generatedId = useId()
-  const id = idProp ?? generatedId
-  const descriptionId = description ? `${id}-description` : undefined
-  const errorId = error ? `${id}-error` : undefined
-  const describedBy = [descriptionId, errorId].filter(Boolean).join(' ') || undefined
+  const generatedId = useId();
+  const id = idProp ?? generatedId;
+  const descriptionId = description ? `${id}-description` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
+  const describedBy =
+    [descriptionId, errorId].filter(Boolean).join(" ") || undefined;
 
   return (
     <label {...stylex.props(rootStyles.root, sx)}>
-      {label ? <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span> : null}
+      {label ? (
+        <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span>
+      ) : null}
       <input
         {...props}
         aria-describedby={describedBy}
@@ -75,7 +82,10 @@ export function TextField({
         )}
       />
       {description ? (
-        <span id={descriptionId} {...stylex.props(descriptionStyles.base, descriptionSx)}>
+        <span
+          id={descriptionId}
+          {...stylex.props(descriptionStyles.base, descriptionSx)}
+        >
           {description}
         </span>
       ) : null}
@@ -85,16 +95,16 @@ export function TextField({
         </span>
       ) : null}
     </label>
-  )
+  );
 }
 
 const rootStyles = stylex.create({
   root: {
-    display: 'grid',
     gap: spacing.xs,
-    width: '100%',
+    display: "grid",
+    width: "100%",
   },
-})
+});
 
 const labelStyles = stylex.create({
   label: {
@@ -104,54 +114,54 @@ const labelStyles = stylex.create({
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
   },
-})
+});
 
 const inputStyles = stylex.create({
   base: {
-    width: '100%',
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     borderColor: {
       default: colors.borderStrong,
-      ':hover': colors.borderAccent,
-      ':focus': colors.primary,
+      ":hover": colors.borderAccent,
+      ":focus": colors.primary,
     },
     borderRadius: radius.lg,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    outline: {
+      default: null,
+      ":focus": "none",
+    },
     backgroundColor: colors.bg,
+    boxShadow: {
+      default: `inset 0 1px 0 ${colors.bgSubtle}`,
+      ":focus": `0 0 0 ${stroke.thick} ${colors.focusRing}`,
+    },
     color: colors.fg,
     fontFamily: typography.fontSans,
     lineHeight: typography.lineHeightBody,
-    boxShadow: {
-      default: `inset 0 1px 0 ${colors.bgSubtle}`,
-      ':focus': `0 0 0 ${stroke.thick} ${colors.focusRing}`,
-    },
-    outline: {
-      default: null,
-      ':focus': 'none',
-    },
-    transitionDuration: '150ms',
-    transitionProperty: 'border-color, box-shadow, background-color',
-    transitionTimingFunction: 'ease-in-out',
-    '::placeholder': {
+    transitionDuration: "150ms",
+    transitionProperty: "border-color, box-shadow, background-color",
+    transitionTimingFunction: "ease-in-out",
+    width: "100%",
+    "::placeholder": {
       color: colors.fgMuted,
     },
   },
-})
+});
 
 const sizeStyles = stylex.create({
   sm: {
-    minHeight: spacing['2xl'],
-    paddingInline: spacing.sm,
     paddingBlock: spacing.xs,
+    paddingInline: spacing.sm,
     fontSize: typography.stepMinus1,
+    minHeight: spacing.xxl,
   },
   md: {
-    minHeight: spacing['3xl'],
-    paddingInline: spacing.md,
     paddingBlock: spacing.sm,
+    paddingInline: spacing.md,
     fontSize: typography.step0,
+    minHeight: spacing.xxxl,
   },
-})
+});
 
 const stateStyles = stylex.create({
   invalid: {
@@ -159,10 +169,10 @@ const stateStyles = stylex.create({
     boxShadow: `0 0 0 ${stroke.thick} ${colors.dangerSoft}`,
   },
   disabled: {
+    cursor: "not-allowed",
     opacity: 0.5,
-    cursor: 'not-allowed',
   },
-})
+});
 
 const descriptionStyles = stylex.create({
   base: {
@@ -171,7 +181,7 @@ const descriptionStyles = stylex.create({
     fontSize: typography.stepMinus1,
     lineHeight: typography.lineHeightBody,
   },
-})
+});
 
 const errorStyles = stylex.create({
   base: {
@@ -181,4 +191,4 @@ const errorStyles = stylex.create({
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightBody,
   },
-})
+});

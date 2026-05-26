@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { RangeDatePicker } from './index'
-import { DemoFrame } from '../example-theme/demo'
+import { RangeDatePicker } from "./index";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -13,5 +13,5 @@ export default function Example() {
         <RangeDatePicker />
       </DemoFrame>
     </>
-  )
+  );
 }

@@ -9,7 +9,9 @@ import { typography } from "../tokens/typography.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"input">;
 
-export type CalendarProps = Omit<BaseProps, "className" | "style" | "type"> & { sx?: StyleXStyles };
+export type CalendarProps = Omit<BaseProps, "className" | "style" | "type"> & {
+  sx?: StyleXStyles;
+};
 
 /**
  * Renders a minimal date-oriented calendar primitive.
@@ -20,6 +22,22 @@ export type CalendarProps = Omit<BaseProps, "className" | "style" | "type"> & { 
  * - This is a simplified calendar surface and not a full keyboard-complete date grid.
  * - Advanced date navigation and screen-reader announcements are limited.
  */
-export function Calendar({ sx, ...props }: CalendarProps) { return <input {...props} type="date" {...stylex.props(styles.base, sx)} />; }
+export function Calendar({ sx, ...props }: CalendarProps) {
+  return <input {...props} type="date" {...stylex.props(styles.base, sx)} />;
+}
 
-const styles = stylex.create({ base: { minHeight: spacing["3xl"], paddingInline: spacing.md, paddingBlock: spacing.sm, borderStyle: "solid", borderWidth: stroke.thin, borderColor: colors.border, borderRadius: radius.md, backgroundColor: colors.bgRaised, color: colors.fg, fontFamily: typography.fontSans, fontSize: typography.step0 } });
+const styles = stylex.create({
+  base: {
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderStyle: "solid",
+    borderWidth: stroke.thin,
+    paddingBlock: spacing.sm,
+    paddingInline: spacing.md,
+    backgroundColor: colors.bgRaised,
+    color: colors.fg,
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    minHeight: spacing.xxxl,
+  },
+});

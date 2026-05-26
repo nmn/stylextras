@@ -1,40 +1,28 @@
 import * as stylex from "@stylexjs/stylex";
-import { spacing_core, spacing_derived } from "../tokens/spacing.stylex";
+import { spacing } from "../tokens/spacing.stylex";
 
-const baseTheme_core = stylex.createTheme(spacing_core, {});
-const baseTheme_derived = stylex.createTheme(spacing_derived, {});
-export const baseTheme = [baseTheme_core, baseTheme_derived] as const;
+export const baseTheme = stylex.createTheme(spacing, {});
 
-const tightTheme_core = stylex.createTheme(spacing_core, {
+export const tightTheme = stylex.createTheme(spacing, {
   base: "2px",
 });
-const tightTheme_derived = stylex.createTheme(spacing_derived, {});
-export const tightTheme = [tightTheme_core, tightTheme_derived] as const;
 export const microTheme = tightTheme;
 
-const compactTheme_core = stylex.createTheme(spacing_core, {
+export const compactTheme = stylex.createTheme(spacing, {
   base: "3px",
 });
-const compactTheme_derived = stylex.createTheme(spacing_derived, {});
-export const compactTheme = [compactTheme_core, compactTheme_derived] as const;
 
-const cozyTheme_core = stylex.createTheme(spacing_core, {
+export const cozyTheme = stylex.createTheme(spacing, {
   base: "4px",
 });
-const cozyTheme_derived = stylex.createTheme(spacing_derived, {});
-export const cozyTheme = [cozyTheme_core, cozyTheme_derived] as const;
 
-const roomyTheme_core = stylex.createTheme(spacing_core, {
+export const roomyTheme = stylex.createTheme(spacing, {
   base: "6px",
 });
-const roomyTheme_derived = stylex.createTheme(spacing_derived, {});
-export const roomyTheme = [roomyTheme_core, roomyTheme_derived] as const;
 
-const posterTheme_core = stylex.createTheme(spacing_core, {
+export const posterTheme = stylex.createTheme(spacing, {
   base: "8px",
 });
-const posterTheme_derived = stylex.createTheme(spacing_derived, {});
-export const posterTheme = [posterTheme_core, posterTheme_derived] as const;
 
 export const spacingThemes = {
   base: baseTheme,

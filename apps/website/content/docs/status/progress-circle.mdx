@@ -40,13 +40,17 @@ import { ProgressCircle } from "@stylextras/ui/progress-circle";
 The public prop types are exported from `@stylextras/ui/progress-circle`. Most components also accept an `sx` prop for custom styles and forward safe native HTML attributes for the underlying element.
 
 ```tsx
-export type ProgressCircleProps = Omit<BaseProps, "className" | "style"> & {
-  max?: number;
-  showValue?: boolean;
-  size?: ProgressCircleSize;
-  sx?: StyleXStyles;
-  value?: number;
-};
+export type ProgressCircleProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "style"
+> &
+  AccessibleAriaNameProps & {
+    max?: number;
+    showValue?: boolean;
+    size?: ProgressCircleSize;
+    sx?: StyleXStyles;
+    value?: number;
+  };
 ```
 
 ## Customize styles
@@ -80,9 +84,27 @@ function ProgressCircleExample() {
   return (
     <>
       <div>
-        <ProgressCircle value={24} max={100} showValue size="sm" />
-        <ProgressCircle value={58} max={100} showValue size="md" />
-        <ProgressCircle value={92} max={100} showValue size="lg" />
+        <ProgressCircle
+          aria-label="Small progress"
+          value={24}
+          max={100}
+          showValue
+          size="sm"
+        />
+        <ProgressCircle
+          aria-label="Medium progress"
+          value={58}
+          max={100}
+          showValue
+          size="md"
+        />
+        <ProgressCircle
+          aria-label="Large progress"
+          value={92}
+          max={100}
+          showValue
+          size="lg"
+        />
       </div>
     </>
   );

@@ -4,20 +4,21 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client'; // This must be a client component
+"use client"; // This must be a client component
 
-import { lazy, Suspense, useEffect, useState } from 'react';
-import { QueryParamProvider } from 'use-query-params';
-import { WindowHistoryAdapter } from 'use-query-params/adapters/window';
-import * as stylex from '@stylexjs/stylex';
-import { vars } from '@/theming/vars.stylex';
+import { lazy, Suspense, useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import { QueryParamProvider } from "use-query-params";
+import { WindowHistoryAdapter } from "use-query-params/adapters/window";
+import * as stylex from "@stylexjs/stylex";
+import { vars } from "@/theming/vars.stylex";
 
 export function ClientOnly({
   children,
   fallback = null,
 }: {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
+  children: ReactNode;
+  fallback?: ReactNode;
 }) {
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -36,7 +37,7 @@ export function ClientOnly({
   return children;
 }
 
-const LazyPlayground = lazy(() => import('./index'));
+const LazyPlayground = lazy(() => import("./index"));
 
 export function Playground() {
   return (
@@ -58,10 +59,10 @@ function PlaygroundPlaceholder() {
 
 const styles = stylex.create({
   placeholder: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: `calc(100dvh - ${vars['--fd-nav-height']})`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: `calc(100dvh - ${vars["--fd-nav-height"]})`,
   },
 });

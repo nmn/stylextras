@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { CopyToClipboardButton } from './index'
-import { DemoFrame, DemoRow } from '../example-theme/demo'
+import { CopyToClipboardButton } from "./index";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -10,7 +10,10 @@ export default function Example() {
       description="Copy buttons are icon actions with brief confirmation."
     >
       <DemoRow>
-        <CopyToClipboardButton label="Copy install command" value="npx create-stylextras app" />
+        <CopyToClipboardButton
+          label="Copy install command"
+          value="npx create-stylextras app"
+        />
         <CopyToClipboardButton
           label="Copy package name"
           copiedText="Package copied!"
@@ -18,5 +21,5 @@ export default function Example() {
         />
       </DemoRow>
     </DemoFrame>
-  )
+  );
 }

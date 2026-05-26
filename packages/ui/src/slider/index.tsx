@@ -1,21 +1,25 @@
-import * as stylex from '@stylexjs/stylex'
-import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
-import { colors } from '../tokens/color.stylex'
-import { spacing } from '../tokens/spacing.stylex'
-import { typography } from '../tokens/typography.stylex'
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import type { ComponentPropsWithoutRef } from "react";
+import type { AccessibleNameProps } from "../accessibility";
+import { colors } from "../tokens/color.stylex";
+import { spacing } from "../tokens/spacing.stylex";
+import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<'input'>
+type BaseProps = ComponentPropsWithoutRef<"input">;
 
-export type SliderSize = 'sm' | 'md'
+export type SliderSize = "sm" | "md";
 
-export type SliderProps = Omit<BaseProps, 'className' | 'size' | 'style' | 'type'> & {
-  sx?: StyleXStyles
-  inputSx?: StyleXStyles
-  labelSx?: StyleXStyles
-  label?: ReactNode
-  size?: SliderSize
-}
+export type SliderProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "className" | "size" | "style" | "type"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    size?: SliderSize;
+  };
 
 /**
  * Renders a token-styled native range input.
@@ -33,14 +37,16 @@ export function Slider({
   labelSx,
   max = 100,
   min = 0,
-  size = 'md',
+  size = "md",
   step = 1,
   sx,
   ...props
 }: SliderProps) {
   return (
     <label {...stylex.props(rootStyles.root, sx)}>
-      {label ? <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span> : null}
+      {label ? (
+        <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span>
+      ) : null}
       <input
         {...props}
         disabled={disabled}
@@ -56,16 +62,16 @@ export function Slider({
         )}
       />
     </label>
-  )
+  );
 }
 
 const rootStyles = stylex.create({
   root: {
-    display: 'grid',
     gap: spacing.xs,
-    width: '100%',
+    display: "grid",
+    width: "100%",
   },
-})
+});
 
 const labelStyles = stylex.create({
   label: {
@@ -75,21 +81,21 @@ const labelStyles = stylex.create({
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
   },
-})
+});
 
 const inputStyles = stylex.create({
   base: {
-    width: '100%',
     margin: 0,
+    outline: "none",
     accentColor: colors.primary,
-    cursor: 'pointer',
-    outline: 'none',
     boxShadow: {
       default: null,
-      ':focus-visible': `0 0 0 3px ${colors.focusRing}`,
+      ":focus-visible": `0 0 0 3px ${colors.focusRing}`,
     },
+    cursor: "pointer",
+    width: "100%",
   },
-})
+});
 
 const sizeStyles = stylex.create({
   sm: {
@@ -98,11 +104,11 @@ const sizeStyles = stylex.create({
   md: {
     minHeight: spacing.xl,
   },
-})
+});
 
 const stateStyles = stylex.create({
   disabled: {
+    cursor: "not-allowed",
     opacity: 0.5,
-    cursor: 'not-allowed',
   },
-})
+});

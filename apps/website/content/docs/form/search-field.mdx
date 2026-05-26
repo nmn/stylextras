@@ -42,13 +42,13 @@ The public prop types are exported from `@stylextras/ui/search-field`. Most comp
 ```tsx
 export type SearchFieldProps = Omit<
   BaseProps,
-  "className" | "style" | "type"
-> & {
-  sx?: StyleXStyles;
-  inputSx?: StyleXStyles;
-  labelSx?: StyleXStyles;
-  label?: ReactNode;
-};
+  "aria-label" | "aria-labelledby" | "className" | "style" | "type"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+  };
 ```
 
 ## Customize styles

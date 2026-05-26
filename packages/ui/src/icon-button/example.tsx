@@ -1,12 +1,15 @@
-'use client'
+"use client";
 
-import { IconButton } from './index'
-import { DemoFrame, DemoRow } from '../example-theme/demo'
+import { IconButton } from "./index";
+import { DemoFrame, DemoRow } from "../example-theme/demo";
 
 export default function Example() {
   return (
     <>
-      <DemoFrame title="Sizes" description="Icon Button should show size differences directly.">
+      <DemoFrame
+        title="Sizes"
+        description="Icon Button should show size differences directly."
+      >
         <DemoRow>
           <IconButton label="Search" size="sm">
             S
@@ -23,5 +26,5 @@ export default function Example() {
         </DemoRow>
       </DemoFrame>
     </>
-  )
+  );
 }

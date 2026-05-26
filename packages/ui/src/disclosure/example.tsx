@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Disclosure } from './index'
-import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Disclosure } from "./index";
+import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
   return (
@@ -15,10 +15,11 @@ export default function Example() {
             It keeps the surfaced content local to the trigger.
           </Disclosure>
           <Disclosure open summary="When should this become a dialog?">
-            Use a dialog once the content becomes task-focused or needs stronger interruption.
+            Use a dialog once the content becomes task-focused or needs stronger
+            interruption.
           </Disclosure>
         </DemoStack>
       </DemoFrame>
     </>
-  )
+  );
 }

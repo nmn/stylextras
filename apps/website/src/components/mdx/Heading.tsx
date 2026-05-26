@@ -4,27 +4,27 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as stylex from '@stylexjs/stylex';
-import { Link } from 'lucide-react';
-import type { ComponentPropsWithoutRef, ReactElement } from 'react';
-import { headingMarker } from './mdx.stylex';
-import { vars } from '@/theming/vars.stylex';
+import * as stylex from "@stylexjs/stylex";
+import { Link } from "lucide-react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
+import { headingMarker } from "./mdx.stylex";
+import { vars } from "@/theming/vars.stylex";
 
-type Types = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+type Types = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 type HeadingProps<T extends Types> = Omit<
   ComponentPropsWithoutRef<T>,
-  'as' | 'className' | 'style'
+  "as" | "className" | "style"
 > & {
   as?: T;
   xstyle?: stylex.StyleXStyles;
 };
 
-export default function Heading<T extends Types = 'h1'>({
+export default function Heading<T extends Types = "h1">({
   as,
   xstyle,
   ...props
 }: HeadingProps<T>): ReactElement {
-  const As = as ?? 'h1';
+  const As = as ?? "h1";
 
   if (!props.id) return <As {...stylex.props(xstyle)} {...props} />;
 
@@ -49,32 +49,32 @@ export default function Heading<T extends Types = 'h1'>({
 
 const styles = stylex.create({
   heading: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     gap: 8,
-    alignItems: 'center',
-    marginTop: '1em',
-    scrollMarginTop: '7rem',
+    alignItems: "center",
+    marginTop: "1em",
+    scrollMarginTop: "7rem",
     // marginBottom: '0.5em',
   },
   anchor: {
-    display: 'inline-flex',
+    display: "inline-flex",
     gap: 8,
-    color: 'inherit',
-    textDecoration: 'none',
+    color: "inherit",
+    textDecoration: "none",
   },
   icon: {
     flexShrink: 0,
     width: 14,
     height: 14,
-    color: vars['--color-fd-muted-foreground'],
+    color: vars["--color-fd-muted-foreground"],
     opacity: {
       default: 0,
-      [stylex.when.ancestor(':hover', headingMarker)]: 1,
+      [stylex.when.ancestor(":hover", headingMarker)]: 1,
     },
-    transitionTimingFunction: 'ease',
-    transitionDuration: '0.15s',
-    transitionProperty: 'opacity',
+    transitionTimingFunction: "ease",
+    transitionDuration: "0.15s",
+    transitionProperty: "opacity",
   },
 });
 
@@ -86,7 +86,7 @@ const styles = stylex.create({
 // const TEXT_LG_LH = 'calc(1.75 / 1.125)';
 // const TEXT_2XL = '1.5rem';
 // const TEXT_2XL_LH = 'calc(2.5 / 1.5)';
-const TEXT_3XL = '1.875rem';
+const TEXT_3XL = "1.875rem";
 // const TEXT_3XL_LH = 'calc(3.5 / 1.875)';
 
 const sizes = stylex.create({
@@ -98,28 +98,28 @@ const sizes = stylex.create({
     // marginBottom: '0.8888889em',
   },
   h2: {
-    fontSize: '1.4em',
+    fontSize: "1.4em",
     fontWeight: 600,
     lineHeight: 1.3333333,
     // marginTop: '1.5em',
     // marginBottom: '0.5em',
   },
   h3: {
-    fontSize: '1.2em',
+    fontSize: "1.2em",
     fontWeight: 600,
     lineHeight: 1.6,
     // marginTop: '1.6em',
     // marginBottom: '0.6em',
   },
   h4: {
-    fontSize: '1em',
+    fontSize: "1em",
     fontWeight: 600,
     lineHeight: 1.5,
     // marginTop: '1.5em',
     // marginBottom: '0.5em',
   },
   h5: {
-    fontSize: '0.875em',
+    fontSize: "0.875em",
     fontWeight: 500,
     lineHeight: 1.5,
     // marginTop: '1.5em',

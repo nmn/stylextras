@@ -9,7 +9,10 @@ import { typography } from "../tokens/typography.stylex";
 
 type BaseProps = ComponentPropsWithoutRef<"input">;
 
-export type FileDropZoneProps = Omit<BaseProps, "className" | "style" | "type"> & {
+export type FileDropZoneProps = Omit<
+  BaseProps,
+  "className" | "style" | "type"
+> & {
   sx?: StyleXStyles;
   label?: ReactNode;
 };
@@ -23,7 +26,11 @@ export type FileDropZoneProps = Omit<BaseProps, "className" | "style" | "type"> 
  * - Does not fully implement drag-and-drop keyboard alternatives.
  * - Callers should pair it with a standard file input or trigger.
  */
-export function FileDropZone({ label = "Drop files here or choose files", sx, ...props }: FileDropZoneProps) {
+export function FileDropZone({
+  label = "Drop files here or choose files",
+  sx,
+  ...props
+}: FileDropZoneProps) {
   return (
     <label {...stylex.props(styles.zone, sx)}>
       <span>{label}</span>
@@ -34,20 +41,20 @@ export function FileDropZone({ label = "Drop files here or choose files", sx, ..
 
 const styles = stylex.create({
   zone: {
-    display: "grid",
-    placeItems: "center",
-    gap: spacing.xs,
-    minHeight: spacing["4xl"],
     padding: spacing.lg,
-    borderStyle: "dashed",
-    borderWidth: stroke.thin,
     borderColor: colors.borderStrong,
     borderRadius: radius.lg,
+    borderStyle: "dashed",
+    borderWidth: stroke.thin,
+    gap: spacing.xs,
+    placeItems: "center",
     backgroundColor: colors.bgSubtle,
     color: colors.fgSoft,
+    display: "grid",
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     textAlign: "center",
+    minHeight: spacing.xxxxl,
   },
   input: { width: "100%" },
 });

@@ -40,14 +40,14 @@ The public prop types are exported from `@stylextras/ui/slider`. Most components
 ```tsx
 export type SliderProps = Omit<
   BaseProps,
-  "className" | "size" | "style" | "type"
-> & {
-  sx?: StyleXStyles;
-  inputSx?: StyleXStyles;
-  labelSx?: StyleXStyles;
-  label?: ReactNode;
-  size?: SliderSize;
-};
+  "aria-label" | "aria-labelledby" | "className" | "size" | "style" | "type"
+> &
+  AccessibleNameProps & {
+    sx?: StyleXStyles;
+    inputSx?: StyleXStyles;
+    labelSx?: StyleXStyles;
+    size?: SliderSize;
+  };
 ```
 
 ## Customize styles

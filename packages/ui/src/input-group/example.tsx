@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { InputGroup } from './index'
-import { DemoFrame } from '../example-theme/demo'
-import { TextField } from '../text-field'
-import { Button } from '../button'
+import { InputGroup } from "./index";
+import { DemoFrame } from "../example-theme/demo";
+import { TextField } from "../text-field";
+import { Button } from "../button";
 
 export default function Example() {
   return (
@@ -18,5 +18,5 @@ export default function Example() {
         </InputGroup>
       </DemoFrame>
     </>
-  )
+  );
 }
