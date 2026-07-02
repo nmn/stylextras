@@ -1,5 +1,5 @@
-import type { VarGroup } from "@stylexjs/stylex";
-import * as stylex from "@stylexjs/stylex";
+import type { VarGroup } from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const round = (value: number) => Math.floor(value * 100) / 100;
 
@@ -63,16 +63,16 @@ type Tcolors = VarGroup<
 >;
 
 export const colors: Tcolors = stylex.defineVars({
-  bg: lightDark("oklch(99% 0.004 286)", "oklch(17% 0.01 286)"),
-  fg: lightDark("oklch(21% 0.01 286)", "oklch(97% 0.004 286)"),
+  bg: lightDark('oklch(99% 0.004 286)', 'oklch(17% 0.01 286)'),
+  fg: lightDark('oklch(21% 0.01 286)', 'oklch(97% 0.004 286)'),
 
-  tone: lightDark("oklch(56% 0.02 286)", "oklch(78% 0.025 286)"),
-  fgOnBrand: lightDark("#ffffff", "#0a0a0b"),
-  brand: lightDark("oklch(63% 0.19 292)", "oklch(74% 0.16 292)"),
-  info: lightDark("oklch(60% 0.15 255)", "oklch(73% 0.12 255)"),
-  success: lightDark("oklch(64% 0.15 155)", "oklch(77% 0.12 155)"),
-  warning: lightDark("oklch(78% 0.16 86)", "oklch(84% 0.13 86)"),
-  danger: lightDark("oklch(62% 0.19 28)", "oklch(74% 0.15 28)"),
+  tone: lightDark('oklch(56% 0.02 286)', 'oklch(78% 0.025 286)'),
+  fgOnBrand: lightDark('#ffffff', '#0a0a0b'),
+  brand: lightDark('oklch(63% 0.19 292)', 'oklch(74% 0.16 292)'),
+  info: lightDark('oklch(60% 0.15 255)', 'oklch(73% 0.12 255)'),
+  success: lightDark('oklch(64% 0.15 155)', 'oklch(77% 0.12 155)'),
+  warning: lightDark('oklch(78% 0.16 86)', 'oklch(84% 0.13 86)'),
+  danger: lightDark('oklch(62% 0.19 28)', 'oklch(74% 0.15 28)'),
 
   bgSubtle: () => mix(colors.bg, colors.tone, 97),
   bgRaised: () => mix(colors.bg, colors.tone, 94),

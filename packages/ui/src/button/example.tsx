@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Button } from "./index";
-import { DemoFrame, DemoRow, DemoStack } from "../example-theme/demo";
+import { Button } from './index';
+import { DemoFrame, DemoRow, DemoStack } from '../example-theme/demo';
 
 export function ButtonVariantsDemo() {
   return (
     <DemoFrame
       title="Variants"
       description="Button should show the available variants directly, without surrounding workflow noise."
-      showThemes={false}
+      showThemes={true}
     >
       <DemoRow>
         <Button variant="primary">Primary</Button>
@@ -17,8 +17,7 @@ export function ButtonVariantsDemo() {
         <Button variant="outline">Outline</Button>
         <Button variant="ghost">Ghost</Button>
         <Button variant="danger">Danger</Button>
-        <Button variant="critical">Critical</Button>
-        <Button variant="critical-outline">Critical outline</Button>
+        <Button variant="dangerOutline">Danger Outline</Button>
       </DemoRow>
     </DemoFrame>
   );
@@ -29,7 +28,7 @@ export function ButtonSizesDemo() {
     <DemoFrame
       title="States and sizes"
       description="A second frame shows common states at a glance."
-      showThemes={false}
+      showThemes={true}
     >
       <DemoRow>
         <Button size="sm">Small</Button>
