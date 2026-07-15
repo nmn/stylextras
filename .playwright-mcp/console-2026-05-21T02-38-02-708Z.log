@@ -1,0 +1,29 @@
+[    7196ms] [WARNING] <link rel=preload> must have a valid `as` value @ http://127.0.0.1:3001/docs/buttons/button-group:0
+[    7340ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:3001/node_modules/.vite/deps/react-dom_client.js?v=902827ed:20102
+[    8360ms] [ERROR] Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props. aria-label @ http://127.0.0.1:3001/node_modules/.vite/deps/react-dom_client.js?v=902827ed:4570
+[    8387ms] [ERROR] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  <Router>
+    <Root initialRscPath="R/docs/but..." initialRscParams={URLSearchParams}>
+      <meta>
+      <meta>
+      <meta>
+      <InnerRouter initialRoute={{path:"/doc...", ...}} httpStatus="200" routeInterceptor={undefined}>
+        <Slot id="root">
+          <DefaultRoot>
+            <ErrorBoundary>
+              <html
+-               className="light"
+-               style={{color-scheme:"light"}}
+              >
+ @ http://127.0.0.1:3001/node_modules/.vite/deps/react-dom_client.js?v=902827ed:4072

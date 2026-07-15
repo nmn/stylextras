@@ -1,0 +1,33 @@
+---
+title: "Migrating to 0.2"
+description: "Breaking changes for the native-first 0.2 prerelease."
+---
+
+
+Version 0.2 is intentionally breaking and ships no compatibility shims.
+
+| Before | 0.2 canonical path |
+| --- | --- |
+| `alert-callout` | `alert` |
+| `breadcrumbs` | `breadcrumb` |
+| `combo-box` | `combobox` |
+| `empty-state` | `empty` |
+| `text-area` | `textarea` |
+| `disclosure` | `collapsible` |
+| `disclosure-group` | `accordion` |
+| `progress-bar` | `progress` |
+| `window-splitter` | `resizable` |
+| `menu` | `dropdown-menu` |
+| `icon-button` | icon-sized `button` variants |
+
+## Behavioral changes
+
+- `Select` always renders a native `select`; use `Combobox` for filtering
+  and typeahead.
+- Dialogs use `commandfor` and explicit target IDs. Popovers use
+  `popovertarget`.
+- Native uncontrolled behavior is the default. Controlled dialog and popover
+  adapters are isolated under their `/client` entrypoints.
+- Themes are plain `stylex.createTheme()` objects. There is no theme provider or
+  wrapper component.
+- Incomplete advanced controls moved under `@stylextras/ui/experimental/*`.

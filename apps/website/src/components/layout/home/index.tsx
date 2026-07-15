@@ -4,22 +4,21 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { useMemo } from 'react';
 import {
   type BaseLayoutProps,
   getLinks,
   type LinkItemType,
   type NavOptions,
   StyleXAttributes,
-} from '../shared/index';
-import { LargeSearchToggle } from '../../search-toggle';
-import { ThemeToggle } from '../../theme-toggle';
-import Link from 'fumadocs-core/link';
-import { Navbar, NavbarLinkItem } from './client';
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import SidebarToggle from './SidebarToggle';
-import { vars } from '../../../theming/vars.stylex';
+} from "../shared/index";
+import { LargeSearchToggle } from "../../search-toggle";
+import { ThemeToggle } from "../../theme-toggle";
+import Link from "fumadocs-core/link";
+import { Navbar, NavbarLinkItem } from "./client";
+import * as React from "react";
+import * as stylex from "@stylexjs/stylex";
+import SidebarToggle from "./SidebarToggle";
+import { vars } from "../../../theming/vars.stylex";
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -69,21 +68,22 @@ export function Header({
   showSidebarToggle = true,
   disableShadowBlur,
 }: HomeLayoutProps) {
-  const finalLinks = useMemo(
-    () => getLinks(links, githubUrl),
-    [links, githubUrl],
-  );
+  const finalLinks = getLinks(links, githubUrl);
 
   const navItems = finalLinks.filter((item) =>
-    ['nav', 'all'].includes(item.on ?? 'all'),
+    ["nav", "all"].includes(item.on ?? "all"),
   );
 
   return (
     <Navbar disableShadowBlur={disableShadowBlur}>
       {showSidebarToggle && <SidebarToggle />}
-      <Link {...stylex.props(styles.navTitleLink)} href={nav.url ?? '/'}>
+      <a
+        aria-label="StyleXtras home"
+        {...stylex.props(styles.navTitleLink)}
+        href={nav.url ?? "/"}
+      >
         {nav.title}
-      </Link>
+      </a>
       {nav.children}
       <ul {...stylex.props(styles.navLinkList)}>
         {navItems
@@ -103,7 +103,7 @@ export function Header({
             item={item}
             key={i}
             xstyle={
-              item.type === 'icon'
+              item.type === "icon"
                 ? [
                     styles.endIconLink,
                     i === 0 && styles.firstEndIconLink,
@@ -123,61 +123,61 @@ export function Header({
 }
 
 function isSecondary(item: LinkItemType): boolean {
-  if ('secondary' in item && item.secondary != null) return item.secondary;
+  if ("secondary" in item && item.secondary != null) return item.secondary;
 
-  return item.type === 'icon';
+  return item.type === "icon";
 }
 
 const styles = stylex.create({
   main: {
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   navTitleLink: {
-    display: 'inline-flex',
+    display: "inline-flex",
     gap: 2.5 * 4,
-    alignItems: 'center',
+    alignItems: "center",
     fontWeight: 600,
   },
   navLinkList: {
-    display: { default: 'flex', '@media (max-width: 760px)': 'none' },
-    flexDirection: 'row',
+    display: { default: "flex", "@media (max-width: 760px)": "none" },
+    flexDirection: "row",
     gap: 2 * 4,
-    alignItems: 'center',
+    alignItems: "center",
   },
   navbarLinkItem: {
-    fontSize: '1rem',
+    fontSize: "1rem",
     lineHeight: 1.4,
-    outline: 'none',
+    outline: "none",
     boxShadow: {
-      default: 'none',
-      ':focus-visible': `0 0 0 2px ${vars['--color-fd-primary']}`,
+      default: "none",
+      ":focus-visible": `0 0 0 2px ${vars["--color-fd-primary"]}`,
     },
   },
   searchContainer: {
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
     flexBasis: 120,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 1.5 * 4,
-    alignItems: 'center',
-    justifyContent: 'end',
+    alignItems: "center",
+    justifyContent: "end",
     maxWidth: 240,
-    containerType: 'inline-size',
+    containerType: "inline-size",
   },
   grow: {
     flexGrow: 1,
   },
   endLinkList: {
     display: {
-      default: 'flex',
-      ':empty': 'none',
-      '@media (max-width: 360px)': 'none',
+      default: "flex",
+      ":empty": "none",
+      "@media (max-width: 360px)": "none",
     },
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 2 * 4,
-    alignItems: 'center',
+    alignItems: "center",
     marginInline: -8,
   },
   endIconLink: {

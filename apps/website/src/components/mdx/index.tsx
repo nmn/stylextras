@@ -5,36 +5,36 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Tabs, TabItem } from './Tabs';
-import Dial from '../Dial';
-import { DevInstallExample } from './PackageInstall';
-import { Card as WhenDemo } from './WhenDemo';
-import { Card, Cards } from './Cards';
-import Heading from './Heading';
-import type { HTMLAttributes, ComponentProps } from 'react';
-import { StyleXStyles } from '@stylexjs/stylex';
-import MDXLink from './Link';
-import * as stylex from '@stylexjs/stylex';
-import { Accordion, Accordions, Details, Summary } from './Details';
-import {
-  Callout,
-  CalloutContainer,
-  CalloutTitle,
-  CalloutDescription,
-} from './Callout';
-import { Li, Ol, P, Ul } from './core';
-import Image from './Image';
-import { CodeBlock, Pre } from './CodeBlock';
-import { LLMInstallationFile, LLMStylingFile } from './LLMFiles';
-import { preMarker } from './mdx.stylex';
-import { vars } from '@/theming/vars.stylex';
+import { CatalogEntry } from '@/components/catalog/CatalogEntry'
+import { CatalogExample } from '@/components/catalog/CatalogExample'
+import { ComponentPreview } from '@/components/catalog/ComponentPreview'
+import { ThemeGallery } from '@/components/catalog/ThemeGallery'
+import { vars } from '@/theming/vars.stylex'
+import { StyleXStyles } from '@stylexjs/stylex'
+import * as stylex from '@stylexjs/stylex'
+import { Button as AriaButton } from '@stylextras/ui/button'
+import type { ComponentProps, HTMLAttributes } from 'react'
+import Dial from '../Dial'
+import { Callout, CalloutContainer, CalloutDescription, CalloutTitle } from './Callout'
+import { Card, Cards } from './Cards'
+import { CodeBlock, Pre } from './CodeBlock'
+import { Accordion, Accordions, Details, Summary } from './Details'
+import Heading from './Heading'
+import Image from './Image'
+import { LLMInstallationFile, LLMStylingFile } from './LLMFiles'
+import MDXLink from './Link'
+import { DevInstallExample } from './PackageInstall'
+import { TabItem, Tabs } from './Tabs'
+import { Card as WhenDemo } from './WhenDemo'
+import { Li, Ol, P, Ul } from './core'
+import { preMarker } from './mdx.stylex'
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
   'className' | 'style'
 > & {
-  xstyle?: StyleXStyles;
-};
+  xstyle?: StyleXStyles
+}
 
 // PENDING ELEMENTS:
 //
@@ -42,24 +42,12 @@ type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
 
 export const mdxComponents = {
   a: MDXLink,
-  h1: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
-    <Heading as="h1" {...props} />
-  ),
-  h2: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
-    <Heading as="h2" {...props} />
-  ),
-  h3: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
-    <Heading as="h3" {...props} />
-  ),
-  h4: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
-    <Heading as="h4" {...props} />
-  ),
-  h5: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
-    <Heading as="h5" {...props} />
-  ),
-  h6: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
-    <Heading as="h6" {...props} />
-  ),
+  h1: (props: StyleXHTMLProps<HTMLHeadingElement>) => <Heading as="h1" {...props} />,
+  h2: (props: StyleXHTMLProps<HTMLHeadingElement>) => <Heading as="h2" {...props} />,
+  h3: (props: StyleXHTMLProps<HTMLHeadingElement>) => <Heading as="h3" {...props} />,
+  h4: (props: StyleXHTMLProps<HTMLHeadingElement>) => <Heading as="h4" {...props} />,
+  h5: (props: StyleXHTMLProps<HTMLHeadingElement>) => <Heading as="h5" {...props} />,
+  h6: (props: StyleXHTMLProps<HTMLHeadingElement>) => <Heading as="h6" {...props} />,
   code: (props: StyleXHTMLProps<HTMLElement>) => (
     <code {...props} {...stylex.props(styles.code, stylex.defaultMarker())} />
   ),
@@ -93,7 +81,12 @@ export const mdxComponents = {
   CodeBlock,
   LLMInstallationFile,
   LLMStylingFile,
-};
+  AriaButton,
+  CatalogEntry,
+  CatalogExample,
+  ComponentPreview,
+  ThemeGallery,
+}
 
 const styles = stylex.create({
   code: {
@@ -130,4 +123,4 @@ const styles = stylex.create({
     borderWidth: 1,
     borderRadius: 5,
   },
-});
+})

@@ -5,13 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as React from 'react';
-import { useEffect, useRef, useState, type SVGProps } from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { Menu, Item } from './Menu';
-import { ConfirmDialog } from './Dialogs';
-import { vars, playgroundVars } from '@/theming/vars.stylex';
-import { ChevronDownIcon } from 'lucide-react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type SVGProps,
+} from "react";
+import * as stylex from "@stylexjs/stylex";
+import { Menu, Item } from "./Menu";
+import { ConfirmDialog } from "./Dialogs";
+import { vars, playgroundVars } from "@/theming/vars.stylex";
+import { ChevronDownIcon } from "lucide-react";
 
 export function Tabs({
   files,
@@ -31,7 +36,7 @@ export function Tabs({
   activeFile: string;
   getDefaultFilename?: (_fileKind: string) => string;
   onSelectFile: (_filename: string) => void;
-  onCreateFile?: (_fileKind: 'component' | 'stylex', _name: string) => void;
+  onCreateFile?: (_fileKind: "component" | "stylex", _name: string) => void;
   onDeleteFile?: (_filename: string) => void;
   onRenameFile?: (_filename: string, _newName: string) => boolean | void;
   onFormat?: () => void;
@@ -59,7 +64,7 @@ export function Tabs({
     return () => observer.disconnect();
   }, [files]);
 
-  const handleCreateFile = (fileKind: 'component' | 'stylex') => {
+  const handleCreateFile = (fileKind: "component" | "stylex") => {
     if (!onCreateFile || !getDefaultFilename) return;
     const defaultName = getDefaultFilename(fileKind);
     onCreateFile(fileKind, defaultName);
@@ -175,18 +180,18 @@ function NewFileIcon() {
 function ShareButton() {
   const [copied, setCopied] = useState(false);
 
-  const handleShare = async (e: React.MouseEvent) => {
+  const handleShare = async (e: MouseEvent) => {
     e.stopPropagation();
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
     } catch {
-      const textArea = document.createElement('textarea');
+      const textArea = document.createElement("textarea");
       textArea.value = url;
-      textArea.style.cssText = 'position:fixed;left:-9999px';
+      textArea.style.cssText = "position:fixed;left:-9999px";
       document.body.appendChild(textArea);
       textArea.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(textArea);
     }
     setCopied(true);
@@ -197,7 +202,7 @@ function ShareButton() {
     <button
       {...stylex.props(styles.tabIconButton)}
       onClick={handleShare}
-      title={copied ? 'Copied!' : 'Copy link to share'}
+      title={copied ? "Copied!" : "Copy link to share"}
       type="button"
     >
       {copied ? <CheckIcon /> : <ShareIcon />}
@@ -255,7 +260,7 @@ function Tab({
 }: {
   filename: string;
   isActive: boolean;
-  onSelect: (_e: React.MouseEvent) => void;
+  onSelect: (_e: MouseEvent) => void;
   onRename?: (_filename: string, _newName: string) => boolean | void;
   onDelete?: (_filename: string) => void;
   immutable: boolean;
@@ -329,7 +334,7 @@ function Tab({
         {...stylex.props(styles.tabLabelButton)}
       >
         {!hideFileIcon &&
-          (filename.includes('.stylex.') ? (
+          (filename.includes(".stylex.") ? (
             <StyleXIcon
               {...stylex.props(
                 styles.fileIcon,
@@ -349,17 +354,17 @@ function Tab({
           {isRenaming && !readOnly && onRename ? (
             <>
               <span {...stylex.props(styles.renameMirror)}>
-                {draftName || ' '}
+                {draftName || " "}
               </span>
               <input
                 autoFocus
                 onBlur={commitRename}
                 onChange={(e) => setDraftName(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     e.preventDefault();
                     commitRename();
-                  } else if (e.key === 'Escape') {
+                  } else if (e.key === "Escape") {
                     e.preventDefault();
                     cancelRename();
                   }
@@ -403,9 +408,9 @@ function Tab({
 function NewFileButton({
   onCreateFile,
 }: {
-  onCreateFile: (_fileKind: 'component' | 'stylex') => void;
+  onCreateFile: (_fileKind: "component" | "stylex") => void;
 }) {
-  const id = 'new-file';
+  const id = "new-file";
 
   return (
     <>
@@ -419,8 +424,8 @@ function NewFileButton({
         <NewFileIcon />
       </button>
       <Menu id={id}>
-        <Item onClick={() => onCreateFile('component')}>Component file</Item>
-        <Item onClick={() => onCreateFile('stylex')}>Vars file</Item>
+        <Item onClick={() => onCreateFile("component")}>Component file</Item>
+        <Item onClick={() => onCreateFile("stylex")}>Vars file</Item>
       </Menu>
     </>
   );
@@ -428,96 +433,96 @@ function NewFileButton({
 
 const styles = stylex.create({
   tabs: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: playgroundVars['--pg-header-surface'],
-    borderBottomColor: playgroundVars['--pg-tabs-border'],
-    borderBottomStyle: 'solid',
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: playgroundVars["--pg-header-surface"],
+    borderBottomColor: playgroundVars["--pg-tabs-border"],
+    borderBottomStyle: "solid",
     borderBottomWidth: 1,
   },
 
   tabsScrollable: {
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
     flexShrink: 1,
     minWidth: 0,
     paddingInlineStart: 8,
-    overflowX: 'auto',
-    scrollbarWidth: 'none',
-    '::-webkit-scrollbar': {
-      display: 'none',
+    overflowX: "auto",
+    scrollbarWidth: "none",
+    "::-webkit-scrollbar": {
+      display: "none",
     },
   },
 
   tabsActions: {
-    position: 'relative',
-    display: 'flex',
+    position: "relative",
+    display: "flex",
     flexShrink: 0,
-    alignItems: 'center',
-    backgroundColor: playgroundVars['--pg-header-surface'],
+    alignItems: "center",
+    backgroundColor: playgroundVars["--pg-header-surface"],
   },
 
   tab: {
-    display: 'flex',
+    display: "flex",
     color: {
-      default: vars['--color-fd-muted-foreground'],
-      ':hover': `color-mix(in srgb, ${vars['--color-fd-foreground']} 80%, transparent)`,
+      default: vars["--color-fd-muted-foreground"],
+      ":hover": `color-mix(in srgb, ${vars["--color-fd-foreground"]} 80%, transparent)`,
     },
-    backgroundColor: 'transparent',
-    borderStyle: 'none',
+    backgroundColor: "transparent",
+    borderStyle: "none",
   },
 
   tabActive: {
-    color: vars['--color-fd-foreground'],
-    boxShadow: `0 -2px 0 0 ${vars['--color-fd-primary']} inset`,
+    color: vars["--color-fd-foreground"],
+    boxShadow: `0 -2px 0 0 ${vars["--color-fd-primary"]} inset`,
   },
 
   tabLabelButton: {
-    display: 'inline-flex',
+    display: "inline-flex",
     gap: 6,
-    alignItems: 'center',
+    alignItems: "center",
     paddingBlock: 14,
     paddingInline: 8,
     fontSize: 14,
-    fontStyle: 'inherit',
-    fontWeight: 'inherit',
-    color: 'inherit',
-    whiteSpace: 'nowrap',
-    backgroundColor: 'transparent',
-    borderStyle: 'none',
+    fontStyle: "inherit",
+    fontWeight: "inherit",
+    color: "inherit",
+    whiteSpace: "nowrap",
+    backgroundColor: "transparent",
+    borderStyle: "none",
   },
 
   filenameBox: {
-    position: 'relative',
-    display: 'inline-flex',
-    alignItems: 'center',
-    whiteSpace: 'pre',
+    position: "relative",
+    display: "inline-flex",
+    alignItems: "center",
+    whiteSpace: "pre",
   },
 
   renameMirror: {
     fontSize: 13,
     lineHeight: 1.4,
-    color: 'transparent',
-    whiteSpace: 'pre',
-    pointerEvents: 'none',
+    color: "transparent",
+    whiteSpace: "pre",
+    pointerEvents: "none",
   },
 
   renameInputOverlay: {
-    position: 'absolute',
+    position: "absolute",
     inset: 0,
-    width: '100%',
+    width: "100%",
     padding: 0,
     fontSize: 13,
     lineHeight: 1.4,
-    color: 'inherit',
-    outline: 'none',
-    backgroundColor: 'transparent',
-    borderStyle: 'none',
+    color: "inherit",
+    outline: "none",
+    backgroundColor: "transparent",
+    borderStyle: "none",
   },
 
   fileIcon: {
-    display: 'inline-flex',
+    display: "inline-flex",
     minWidth: 12,
   },
 
@@ -526,20 +531,20 @@ const styles = stylex.create({
   },
 
   tabIconButton: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     width: 42,
     height: 42,
     padding: 4,
     fontSize: 14,
     lineHeight: 1,
-    color: vars['--color-fd-foreground'],
+    color: vars["--color-fd-foreground"],
     backgroundColor: {
-      default: 'transparent',
-      ':hover': `color-mix(in srgb, ${vars['--color-fd-foreground']} 8%, transparent)`,
+      default: "transparent",
+      ":hover": `color-mix(in srgb, ${vars["--color-fd-foreground"]} 8%, transparent)`,
     },
-    borderStyle: 'none',
+    borderStyle: "none",
     borderRadius: 4,
   },
 
@@ -549,40 +554,40 @@ const styles = stylex.create({
     fontSize: 14,
     lineHeight: 1,
     color: {
-      default: vars['--color-fd-muted-foreground'],
-      ':hover': vars['--color-fd-foreground'],
+      default: vars["--color-fd-muted-foreground"],
+      ":hover": vars["--color-fd-foreground"],
     },
 
-    backgroundColor: 'transparent',
-    borderStyle: 'none',
+    backgroundColor: "transparent",
+    borderStyle: "none",
   },
 
   collapseIndicator: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     width: 28,
     height: 28,
     marginInlineEnd: 4,
-    color: vars['--color-fd-foreground'],
+    color: vars["--color-fd-foreground"],
   },
 
   chevron: {
     width: 24,
     height: 24,
-    transform: 'rotate(0deg)',
-    transitionTimingFunction: 'ease',
-    transitionDuration: '0.3s',
-    transitionProperty: 'transform',
+    transform: "rotate(0deg)",
+    transitionTimingFunction: "ease",
+    transitionDuration: "0.3s",
+    transitionProperty: "transform",
   },
 
   chevronCollapsed: {
-    transform: 'rotate(180deg)',
+    transform: "rotate(180deg)",
   },
 });
 
 function ReactIcon(props: SVGProps<SVGSVGElement>) {
-  const color = 'light-dark(#0891b2, #61DAFB)';
+  const color = "light-dark(#0891b2, #61DAFB)";
   return (
     <svg height="14" viewBox="-11.5 -10.232 23 20.463" width="14" {...props}>
       <circle cx="0" cy="0" fill={color} r="2.05" />

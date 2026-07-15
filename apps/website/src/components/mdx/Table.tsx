@@ -4,11 +4,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as stylex from '@stylexjs/stylex';
-import type { ComponentProps } from 'react';
+import * as stylex from "@stylexjs/stylex";
+import type { ComponentProps } from "react";
 
-export interface TableProps
-  extends Omit<ComponentProps<'table'>, 'className' | 'style'> {}
+export interface TableProps extends Omit<
+  ComponentProps<"table">,
+  "className" | "style"
+> {}
 
 export default function Table(props: TableProps) {
   return (
@@ -20,14 +22,14 @@ export default function Table(props: TableProps) {
 
 const styles = stylex.create({
   wrapper: {
-    position: 'relative',
+    position: "relative",
     marginBlock: 24,
-    overflowX: 'auto',
+    overflowX: "auto",
   },
   table: {
-    width: '100%',
+    width: "100%",
     fontSize: 14,
     lineHeight: 1.5,
-    borderCollapse: 'collapse',
+    borderCollapse: "collapse",
   },
 });

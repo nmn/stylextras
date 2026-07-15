@@ -1,0 +1,24 @@
+---
+title: "Recipes"
+description: "Integration guidance for feature engines that stay outside the component package."
+---
+
+
+Chart rendering, data-grid engines, and form-library adapters are recipes rather
+than runtime dependencies. They compose stable Stylextras components while the
+consumer retains ownership of data, validation, virtualization, and charting.
+
+## Data tables
+
+Use the semantic `Table` parts for rendering. Sorting, pagination, and
+virtualization remain in the consumer's chosen data engine.
+
+## Forms
+
+Native controls expose ordinary form names, values, validity, reset behavior,
+and refs. Form libraries can register them without a package-specific adapter.
+
+## Charts
+
+Use the color and typography variables from their public token entrypoints to
+style the output of any chart engine. Stylextras does not bundle a renderer.

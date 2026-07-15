@@ -4,12 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import * as Primitive from '@radix-ui/react-navigation-menu';
-import { StyleXComponentProps } from './layout/shared';
-import * as stylex from '@stylexjs/stylex';
-import { vars } from '@/theming/vars.stylex';
+import * as Primitive from "@radix-ui/react-navigation-menu";
+import { StyleXComponentProps } from "./layout/shared";
+import * as stylex from "@stylexjs/stylex";
+import { vars } from "@/theming/vars.stylex";
 
 const NavigationMenu = Primitive.Root;
 
@@ -17,41 +17,41 @@ const NavigationMenuList = Primitive.List;
 
 const commonStyles = stylex.create({
   listNone: {
-    listStyleType: 'none',
+    listStyleType: "none",
   },
   accent50: {
     backgroundColor: {
       default: null,
-      ':where([data-state=open])': `color-mix(in oklab, ${vars['--color-fd-accent']} 50%, transparent)`,
+      ":where([data-state=open])": `color-mix(in oklab, ${vars["--color-fd-accent"]} 50%, transparent)`,
     },
   },
   menuContent: {
-    position: 'absolute',
+    position: "absolute",
     insetInline: 0,
     top: 0,
-    maxHeight: '80svh',
-    overflow: 'auto',
-    '::-webkit-scrollbar': { width: 5, height: 5 },
-    '::-webkit-scrollbar-corner': { display: 'none' },
-    '::-webkit-scrollbar-thumb': {
-      backgroundColor: vars['--color-fd-border'],
+    maxHeight: "80svh",
+    overflow: "auto",
+    "::-webkit-scrollbar": { width: 5, height: 5 },
+    "::-webkit-scrollbar-corner": { display: "none" },
+    "::-webkit-scrollbar-thumb": {
+      backgroundColor: vars["--color-fd-border"],
       borderRadius: 5,
     },
-    '::-webkit-scrollbar-track': { backgroundColor: 'transparent' },
+    "::-webkit-scrollbar-track": { backgroundColor: "transparent" },
   },
   menuViewport: {
-    position: 'relative',
-    width: '100%',
-    height: 'var(--radix-navigation-menu-viewport-height)',
-    overflow: 'hidden',
-    transformOrigin: 'top center',
-    transitionDuration: '300ms',
-    transitionProperty: 'width, height',
+    position: "relative",
+    width: "100%",
+    height: "var(--radix-navigation-menu-viewport-height)",
+    overflow: "hidden",
+    transformOrigin: "top center",
+    transitionDuration: "300ms",
+    transitionProperty: "width, height",
   },
   menuViewportContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
   },
 });
 

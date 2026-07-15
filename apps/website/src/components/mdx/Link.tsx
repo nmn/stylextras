@@ -4,15 +4,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import BaseLink from 'fumadocs-core/link';
-import { ComponentProps } from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { vars } from '@/theming/vars.stylex';
+import BaseLink from "fumadocs-core/link";
+import { ComponentProps } from "react";
+import * as stylex from "@stylexjs/stylex";
+import { vars } from "@/theming/vars.stylex";
 
 export default function MDXLink({
   xstyle,
   ...props
-}: Omit<ComponentProps<typeof BaseLink>, 'className' | 'style'> & {
+}: Omit<ComponentProps<typeof BaseLink>, "className" | "style"> & {
   xstyle?: stylex.StyleXStyles;
 }) {
   return (
@@ -25,20 +25,20 @@ export default function MDXLink({
 const styles = stylex.create({
   base: {
     color: {
-      default: vars['--color-fd-primary'],
-      [stylex.when.descendant(':is(code)')]: vars['--color-code-green'],
+      default: vars["--color-fd-primary"],
+      [stylex.when.descendant(":is(code)")]: vars["--color-code-green"],
     },
     textDecoration: {
-      default: 'none',
-      ':focus-visible': 'underline',
-      ':hover': 'underline',
+      default: "none",
+      ":focus-visible": "underline",
+      ":hover": "underline",
     },
-    textDecorationThickness: '2px',
+    textDecorationThickness: "2px",
     textDecorationColor: {
-      default: 'transparent',
-      ':focus-visible': 'color-mix(in srgb, currentColor 50%, transparent)',
-      ':hover': 'color-mix(in srgb, currentColor 50%, transparent)',
+      default: "transparent",
+      ":focus-visible": "color-mix(in srgb, currentColor 50%, transparent)",
+      ":hover": "color-mix(in srgb, currentColor 50%, transparent)",
     },
-    textUnderlineOffset: '4px',
+    textUnderlineOffset: "4px",
   },
 });

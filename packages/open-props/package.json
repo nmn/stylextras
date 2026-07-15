@@ -33,7 +33,7 @@
     "build": "babel src/ --out-dir lib/ --copy-files"
   },
   "dependencies": {
-    "@stylexjs/stylex": "*"
+    "@stylexjs/stylex": "^0.18.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",

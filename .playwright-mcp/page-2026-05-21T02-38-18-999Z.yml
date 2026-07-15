@@ -1,0 +1,397 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e3]:
+    - navigation [ref=e5]:
+      - button [ref=e6]:
+        - img [ref=e7]
+      - link [ref=e9] [cursor=pointer]:
+        - /url: /
+        - img [ref=e10]
+      - list [ref=e14]:
+        - listitem [ref=e15]:
+          - link "Docs" [ref=e16] [cursor=pointer]:
+            - /url: /docs
+        - listitem [ref=e17]:
+          - link "API" [ref=e18] [cursor=pointer]:
+            - /url: /docs/api
+        - listitem [ref=e19]:
+          - link "Blog" [ref=e20] [cursor=pointer]:
+            - /url: /blog
+        - listitem [ref=e21]:
+          - link "Playground" [ref=e22] [cursor=pointer]:
+            - /url: /playground
+      - list [ref=e23]:
+        - listitem [ref=e24]:
+          - link "GitHub" [ref=e25] [cursor=pointer]:
+            - /url: https://github.com/facebook/stylex
+            - img [ref=e26]
+      - button "Search ⌘ K" [ref=e30]:
+        - img [ref=e31]
+        - generic [ref=e34]: Search
+        - generic [ref=e35]:
+          - generic [ref=e36]: ⌘
+          - generic [ref=e37]: K
+      - generic [ref=e38]:
+        - button "Light theme" [ref=e39]:
+          - img [ref=e40]
+        - button "Dark theme" [ref=e46]:
+          - img [ref=e47]
+        - button "System theme" [ref=e49]:
+          - img [ref=e50]
+  - main [ref=e54]:
+    - complementary [ref=e58]:
+      - link "Get Started" [ref=e59] [cursor=pointer]:
+        - /url: /docs/get-started
+      - group [ref=e60]:
+        - generic "Actions" [ref=e61]:
+          - paragraph [ref=e62]: Actions
+          - img [ref=e63]
+      - group [ref=e65]:
+        - generic "Inputs and forms" [ref=e66]:
+          - paragraph [ref=e67]: Inputs and forms
+          - img [ref=e68]
+      - group [ref=e70]:
+        - generic "Date and time" [ref=e71]:
+          - paragraph [ref=e72]: Date and time
+          - img [ref=e73]
+      - group [ref=e75]:
+        - generic "Color" [ref=e76]:
+          - paragraph [ref=e77]: Color
+          - img [ref=e78]
+      - group [ref=e80]:
+        - generic "Menus and collections" [ref=e81]:
+          - paragraph [ref=e82]: Menus and collections
+          - img [ref=e83]
+      - group [ref=e85]:
+        - generic "Dialogs and popovers" [ref=e86]:
+          - paragraph [ref=e87]: Dialogs and popovers
+          - img [ref=e88]
+      - group [ref=e90]:
+        - generic "Layout" [ref=e91]:
+          - paragraph [ref=e92]: Layout
+          - img [ref=e93]
+      - group [ref=e95]:
+        - generic "Navigation" [ref=e96]:
+          - paragraph [ref=e97]: Navigation
+          - img [ref=e98]
+      - group [ref=e100]:
+        - generic "Content and media" [ref=e101]:
+          - paragraph [ref=e102]: Content and media
+          - img [ref=e103]
+      - group [ref=e105]:
+        - generic "Feedback" [ref=e106]:
+          - paragraph [ref=e107]: Feedback
+          - img [ref=e108]
+    - main [ref=e112]:
+      - article [ref=e113]:
+        - heading "Drawer" [level=1] [ref=e114]
+        - paragraph [ref=e115]: Drawer provides a popup primitive for popup interactions.
+        - generic [ref=e116]:
+          - heading "Drawer" [level=1] [ref=e117]:
+            - link "Drawer" [ref=e118] [cursor=pointer]:
+              - /url: "#drawer"
+            - img [ref=e119]
+          - paragraph [ref=e122]:
+            - text: Use Drawer for side-panel dialogs. A drawer is a styled dialog content component, so it uses the same lazy
+            - code [ref=e123]: DialogTrigger
+            - text: and programmatic dialog API as
+            - code [ref=e124]: DialogContent
+            - text: .
+          - paragraph [ref=e125]: "The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them."
+          - heading "Import" [level=2] [ref=e126]:
+            - link "Import" [ref=e127] [cursor=pointer]:
+              - /url: "#import"
+            - img [ref=e128]
+          - figure [ref=e131]:
+            - button "Copy Text" [ref=e133]:
+              - img [ref=e134]
+            - region [ref=e137]:
+              - code [ref=e139]:
+                - generic [ref=e140]: "import {"
+                - generic [ref=e141]: DialogTrigger,
+                - generic [ref=e142]: DialogProgrammatic,
+                - generic [ref=e143]: DrawerContent,
+                - generic [ref=e144]: "} from \"@stylextras/ui/dialog\";"
+          - heading "Basic usage" [level=2] [ref=e145]:
+            - link "Basic usage" [ref=e146] [cursor=pointer]:
+              - /url: "#basic-usage"
+            - img [ref=e147]
+          - paragraph [ref=e150]: Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
+          - figure [ref=e151]:
+            - button "Copy Text" [ref=e153]:
+              - img [ref=e154]
+            - region [ref=e157]:
+              - code [ref=e159]:
+                - generic [ref=e160]: "import {"
+                - generic [ref=e161]: DialogTrigger,
+                - generic [ref=e162]: DrawerContent,
+                - generic [ref=e163]: type DrawerContentProps,
+                - generic [ref=e164]: "} from \"@stylextras/ui/dialog\";"
+                - generic [ref=e165]: "function DrawerExampleContent(props: DrawerContentProps) {"
+                - generic [ref=e166]: "return <DrawerContent {...props}>Details</DrawerContent>;"
+                - generic [ref=e167]: "}"
+                - generic [ref=e168]: "<DialogTrigger content={() => Promise.resolve(DrawerExampleContent)}>"
+                - generic [ref=e169]: Open Drawer
+                - generic [ref=e170]: </DialogTrigger>;
+          - heading "Props" [level=2] [ref=e171]:
+            - link "Props" [ref=e172] [cursor=pointer]:
+              - /url: "#props"
+            - img [ref=e173]
+          - paragraph [ref=e176]:
+            - text: The public prop types are exported from
+            - code [ref=e177]: "@stylextras/ui/drawer"
+            - text: . Most components also accept an
+            - code [ref=e178]: sx
+            - text: prop for custom styles and forward safe native HTML attributes for the underlying element.
+          - figure [ref=e179]:
+            - button "Copy Text" [ref=e181]:
+              - img [ref=e182]
+            - region [ref=e185]:
+              - code [ref=e187]:
+                - generic [ref=e188]: "export type DrawerContentProps = Omit<BaseProps, \"className\" | \"style\"> & {"
+                - generic [ref=e189]: "side?: DrawerSide;"
+                - generic [ref=e190]: "sx?: StyleXStyles;"
+                - generic [ref=e191]: "};"
+                - generic [ref=e192]: export type DialogTriggerProps<
+                - generic [ref=e193]: Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
+                - generic [ref=e194]: "> = Omit<ButtonProps, \"className\" | \"content\" | \"style\"> & {"
+                - generic [ref=e195]: "content: LazyComponentLoader<Props>;"
+                - generic [ref=e196]: "contentProps?: Omit<Props, \"ref\">;"
+                - generic [ref=e197]: "fallback?: React.ReactNode;"
+                - generic [ref=e198]: "};"
+                - generic [ref=e199]: export type DialogProgrammaticProps<
+                - generic [ref=e200]: Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
+                - generic [ref=e201]: "> = {"
+                - generic [ref=e202]: "content: LazyComponentLoader<Props>;"
+                - generic [ref=e203]: "contentProps?: Omit<Props, \"open\" | \"ref\">;"
+                - generic [ref=e204]: "defaultOpen?: boolean;"
+                - generic [ref=e205]: "fallback?: React.ReactNode;"
+                - generic [ref=e206]: "onOpenChange?: (open: boolean) => void;"
+                - generic [ref=e207]: "open?: boolean;"
+                - generic [ref=e208]: "};"
+          - heading "Customize styles" [level=2] [ref=e209]:
+            - link "Customize styles" [ref=e210] [cursor=pointer]:
+              - /url: "#customize-styles"
+            - img [ref=e211]
+          - paragraph [ref=e214]:
+            - text: Use the
+            - code [ref=e215]: sx
+            - text: prop to compose custom styles with the component's token-driven defaults.
+          - figure [ref=e216]:
+            - button "Copy Text" [ref=e218]:
+              - img [ref=e219]
+            - region [ref=e222]:
+              - code [ref=e224]:
+                - generic [ref=e225]: import * as stylex from "@stylexjs/stylex";
+                - generic [ref=e226]: "import { colors } from \"@stylextras/ui/tokens/color\";"
+                - generic [ref=e227]: "import { spacing } from \"@stylextras/ui/tokens/spacing\";"
+                - generic [ref=e228]: "import { DrawerContent } from \"@stylextras/ui/dialog\";"
+                - generic [ref=e229]: "<DrawerContent sx={styles.emphasis}>Example</DrawerContent>;"
+                - generic [ref=e230]: "const styles = stylex.create({"
+                - generic [ref=e231]: "emphasis: {"
+                - generic [ref=e232]: "backgroundColor: colors.bgSubtle,"
+                - generic [ref=e233]: "padding: spacing.md,"
+                - generic [ref=e234]: "},"
+                - generic [ref=e235]: "});"
+          - heading "Complete example" [level=2] [ref=e236]:
+            - link "Complete example" [ref=e237] [cursor=pointer]:
+              - /url: "#complete-example"
+            - img [ref=e238]
+          - paragraph [ref=e241]: This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+          - figure [ref=e242]:
+            - button "Copy Text" [ref=e244]:
+              - img [ref=e245]
+            - region [ref=e248]:
+              - code [ref=e250]:
+                - generic [ref=e251]: "import { Button } from \"@stylextras/ui/button\";"
+                - generic [ref=e252]: "import { ButtonGroupActions } from \"@stylextras/ui/button-group\";"
+                - generic [ref=e253]: "import { Typography } from \"@stylextras/ui/typography\";"
+                - generic [ref=e254]: "import {"
+                - generic [ref=e255]: DialogTrigger,
+                - generic [ref=e256]: DrawerContent,
+                - generic [ref=e257]: type DrawerContentProps,
+                - generic [ref=e258]: "} from \"@stylextras/ui/dialog\";"
+                - generic [ref=e259]: "function DrawerExampleContent(props: DrawerContentProps) {"
+                - generic [ref=e260]: return (
+                - generic [ref=e261]: "<DrawerContent {...props}>"
+                - generic [ref=e262]: <div>
+                - generic [ref=e263]: <Typography as="h3" scale="title">
+                - generic [ref=e264]: Page settings
+                - generic [ref=e265]: </Typography>
+                - generic [ref=e266]: <span>
+                - generic [ref=e267]: Use a drawer for nearby controls without leaving the current page.
+                - generic [ref=e268]: </span>
+                - generic [ref=e269]: <form method="dialog">
+                - generic [ref=e270]: <ButtonGroupActions
+                - generic [ref=e271]: "secondary={"
+                - generic [ref=e272]: <Button type="submit" variant="secondary">
+                - generic [ref=e273]: Close
+                - generic [ref=e274]: </Button>
+                - generic [ref=e275]: "}"
+                - generic [ref=e276]: "primary={<Button type=\"submit\">Save changes</Button>}"
+                - generic [ref=e277]: />
+                - generic [ref=e278]: </form>
+                - generic [ref=e279]: </div>
+                - generic [ref=e280]: </DrawerContent>
+                - generic [ref=e281]: );
+                - generic [ref=e282]: "}"
+                - generic [ref=e283]: "function DrawerExample() {"
+                - generic [ref=e284]: return (
+                - generic [ref=e285]: "<DialogTrigger content={() => Promise.resolve(DrawerExampleContent)}>"
+                - generic [ref=e286]: Open drawer
+                - generic [ref=e287]: </DialogTrigger>
+                - generic [ref=e288]: );
+                - generic [ref=e289]: "}"
+          - heading "Lazy trigger and content" [level=2] [ref=e290]:
+            - link "Lazy trigger and content" [ref=e291] [cursor=pointer]:
+              - /url: "#lazy-trigger-and-content"
+            - img [ref=e292]
+          - paragraph [ref=e295]: Pass a content loader to the trigger so the popup body can be prefetched and rendered only when needed.
+          - figure [ref=e296]:
+            - button "Copy Text" [ref=e298]:
+              - img [ref=e299]
+            - region [ref=e302]:
+              - code [ref=e304]:
+                - generic [ref=e305]: "import {"
+                - generic [ref=e306]: DialogTrigger,
+                - generic [ref=e307]: DrawerContent,
+                - generic [ref=e308]: type DrawerContentProps,
+                - generic [ref=e309]: "} from \"@stylextras/ui/dialog\";"
+                - generic [ref=e310]: "function DetailsContent(props: DrawerContentProps) {"
+                - generic [ref=e311]: return (
+                - generic [ref=e312]: "<DrawerContent {...props}>"
+                - generic [ref=e313]: <h2>Details</h2>
+                - generic [ref=e314]: <p>Render the content only after the trigger is activated.</p>
+                - generic [ref=e315]: </DrawerContent>
+                - generic [ref=e316]: );
+                - generic [ref=e317]: "}"
+                - generic [ref=e318]: "<DialogTrigger content={() => Promise.resolve(DetailsContent)}>"
+                - generic [ref=e319]: Open Drawer
+                - generic [ref=e320]: </DialogTrigger>;
+          - heading "Content rendered directly" [level=2] [ref=e321]:
+            - link "Content rendered directly" [ref=e322] [cursor=pointer]:
+              - /url: "#content-rendered-directly"
+            - img [ref=e323]
+          - paragraph [ref=e326]: Render the content component directly when another controller owns the open state.
+          - figure [ref=e327]:
+            - button "Copy Text" [ref=e329]:
+              - img [ref=e330]
+            - region [ref=e333]:
+              - code [ref=e335]:
+                - generic [ref=e336]: "import { DrawerContent } from \"@stylextras/ui/dialog\";"
+                - generic [ref=e337]: <DrawerContent>
+                - generic [ref=e338]: Content can still be rendered directly when another controller owns opening.
+                - generic [ref=e339]: </DrawerContent>;
+          - heading "Programmatic control" [level=2] [ref=e340]:
+            - link "Programmatic control" [ref=e341] [cursor=pointer]:
+              - /url: "#programmatic-control"
+            - img [ref=e342]
+          - paragraph [ref=e345]: Use the programmatic component when open state belongs to application state rather than a trigger.
+          - figure [ref=e346]:
+            - button "Copy Text" [ref=e348]:
+              - img [ref=e349]
+            - region [ref=e352]:
+              - code [ref=e354]:
+                - generic [ref=e355]: "import {"
+                - generic [ref=e356]: DialogProgrammatic,
+                - generic [ref=e357]: DrawerContent,
+                - generic [ref=e358]: type DrawerContentProps,
+                - generic [ref=e359]: "} from \"@stylextras/ui/dialog\";"
+                - generic [ref=e360]: "function ProgrammaticExample({ open, onOpenChange }) {"
+                - generic [ref=e361]: return (
+                - generic [ref=e362]: <DialogProgrammatic<DrawerContentProps>
+                - generic [ref=e363]: "open={open}"
+                - generic [ref=e364]: "onOpenChange={onOpenChange}"
+                - generic [ref=e365]: "content={() =>"
+                - generic [ref=e366]: "Promise.resolve((props: DrawerContentProps) => ("
+                - generic [ref=e367]: "<DrawerContent {...props}>Controlled content</DrawerContent>"
+                - generic [ref=e368]: ))
+                - generic [ref=e369]: "}"
+                - generic [ref=e370]: />
+                - generic [ref=e371]: );
+                - generic [ref=e372]: "}"
+          - heading "Accessibility notes" [level=2] [ref=e373]:
+            - link "Accessibility notes" [ref=e374] [cursor=pointer]:
+              - /url: "#accessibility-notes"
+            - img [ref=e375]
+          - paragraph [ref=e378]: Keep trigger text specific, label the popup content when it has a title, and prefer the platform dialog or popover behavior before adding custom focus management.
+          - heading "Implementation notes" [level=2] [ref=e379]:
+            - link "Implementation notes" [ref=e380] [cursor=pointer]:
+              - /url: "#implementation-notes"
+            - img [ref=e381]
+          - list [ref=e384]:
+            - listitem [ref=e385]:
+              - text: Styles use token variables from
+              - code [ref=e386]: "@stylextras/ui/tokens/*"
+              - text: .
+            - listitem [ref=e387]:
+              - text: The implementation lives in
+              - code [ref=e388]: packages/ui/src/drawer/index.tsx
+              - text: .
+        - generic [ref=e389]:
+          - link "Dialog" [ref=e390] [cursor=pointer]:
+            - /url: /docs/popups/dialog
+            - img [ref=e391]
+            - text: Dialog
+          - link "Hover Card" [ref=e393] [cursor=pointer]:
+            - /url: /docs/popups/hover-card
+            - text: Hover Card
+            - img [ref=e394]
+    - generic [ref=e397]:
+      - generic [ref=e398]:
+        - generic [ref=e399]:
+          - heading "Develop" [level=4] [ref=e400]
+          - list [ref=e401]:
+            - listitem [ref=e402]:
+              - link "Learn" [ref=e403] [cursor=pointer]:
+                - /url: /docs/learn
+            - listitem [ref=e404]:
+              - link "API" [ref=e405] [cursor=pointer]:
+                - /url: /docs/api
+        - generic [ref=e406]:
+          - heading "Explore" [level=4] [ref=e407]
+          - list [ref=e408]:
+            - listitem [ref=e409]:
+              - link "Playground" [ref=e410] [cursor=pointer]:
+                - /url: /playground
+            - listitem [ref=e411]:
+              - link "Blog" [ref=e412] [cursor=pointer]:
+                - /url: /blog
+        - generic [ref=e413]:
+          - heading "Participate" [level=4] [ref=e414]
+          - list [ref=e415]:
+            - listitem [ref=e416]:
+              - link "GitHub" [ref=e417] [cursor=pointer]:
+                - /url: https://github.com/facebook/stylex
+                - text: GitHub
+                - img [ref=e418]
+            - listitem [ref=e422]:
+              - link "Acknowledgements" [ref=e423] [cursor=pointer]:
+                - /url: /docs/acknowledgements
+        - generic [ref=e424]:
+          - heading "Legal" [level=4] [ref=e425]
+          - list [ref=e426]:
+            - listitem [ref=e427]:
+              - link "Privacy" [ref=e428] [cursor=pointer]:
+                - /url: https://opensource.fb.com/legal/privacy/
+                - text: Privacy
+                - img [ref=e429]
+            - listitem [ref=e433]:
+              - link "Terms" [ref=e434] [cursor=pointer]:
+                - /url: https://opensource.fb.com/legal/terms/
+                - text: Terms
+                - img [ref=e435]
+      - link [ref=e439] [cursor=pointer]:
+        - /url: https://opensource.fb.com
+        - img [ref=e440]
+      - generic [ref=e472]:
+        - generic [ref=e473]: Copyright © 2025 Meta Platforms, Inc.
+        - generic [ref=e474]:
+          - link [ref=e475] [cursor=pointer]:
+            - /url: https://github.com/facebook/stylex
+            - img [ref=e476]
+          - link [ref=e479] [cursor=pointer]:
+            - /url: https://x.com/stylexjs
+            - img [ref=e480]
+          - link "Bluesky" [ref=e482] [cursor=pointer]:
+            - /url: https://bsky.app/profile/stylexjs.bsky.social
+            - img "Bluesky" [ref=e483]

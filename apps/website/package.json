@@ -6,9 +6,17 @@
   "type": "module",
   "scripts": {
     "dev": "waku dev --host 0.0.0.0",
-    "build": "waku build",
+    "build": "waku build && bun scripts/fix-rsc-stylesheet-preloads.mjs",
+    "deploy:cloudflare": "bun run build && wrangler deploy",
+    "docs:generate": "bun scripts/generate-catalog-docs.mjs",
+    "preview:cloudflare": "bun run build && wrangler dev",
     "start": "waku start",
-    "postinstall": "fumadocs-mdx"
+    "postinstall": "bun run docs:generate && fumadocs-mdx",
+    "test": "bun run typecheck",
+    "test:e2e": "playwright test",
+    "test:e2e:chromium": "playwright test --project=chromium",
+    "test:e2e:update": "playwright test e2e/visual.spec.ts --project=chromium --update-snapshots",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@babel/standalone": "^7.28.5",
@@ -16,8 +24,9 @@
     "algoliasearch": "^5.46.2",
     "@codesandbox/sandpack-client": "^2.19.8",
     "@codesandbox/sandpack-react": "^2.20.0",
-    "@stylexjs/stylex": "0.17.5",
-    "@stylexjs/babel-plugin": "0.17.5",
+    "@stylextras/ui": "workspace:*",
+    "@stylexjs/stylex": "0.18.3",
+    "@stylexjs/babel-plugin": "0.18.3",
     "@monaco-editor/react": "^4.7.0",
     "marked": "^17.0.1",
     "lz-string": "^1.5.0",
@@ -41,14 +50,18 @@
     "use-query-params": "^2.2.2"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "0.17.5",
+    "@axe-core/playwright": "^4.12.1",
+    "@playwright/test": "^1.61.1",
+    "@stylexjs/unplugin": "0.18.3",
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.4",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "babel-plugin-react-compiler": "1.0.0",
     "typescript": "^5.9.3",
     "unplugin": "^2.3.10",
-    "vite": "^7.1.12",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite": "7.3.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "wrangler": "^4.111.0"
   }
 }

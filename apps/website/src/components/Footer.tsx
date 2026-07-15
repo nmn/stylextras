@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { GithubIcon, TwitterIcon } from 'lucide-react';
-import Bluesky from './icons/Bluesky';
-import MetaOpenSource from './icons/MetaOpenSource';
-import Link from 'fumadocs-core/link';
-import { vars } from '@/theming/vars.stylex';
+import * as stylex from "@stylexjs/stylex";
+import type { SVGProps } from "react";
+import { GithubIcon, TwitterIcon } from "lucide-react";
+import Bluesky from "./icons/Bluesky";
+import MetaOpenSource from "./icons/MetaOpenSource";
+import Link from "fumadocs-core/link";
+import { vars } from "@/theming/vars.stylex";
 
-function ExternalLinkIcon(props: React.SVGProps<SVGSVGElement>) {
+function ExternalLinkIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       fill="none"
@@ -34,30 +34,30 @@ function ExternalLinkIcon(props: React.SVGProps<SVGSVGElement>) {
 
 const footerLinks = {
   develop: [
-    { label: 'Learn', href: '/docs/learn' },
-    { label: 'API', href: '/docs/api' },
+    { label: "Learn", href: "/docs/learn" },
+    { label: "API", href: "/docs/api" },
   ],
   explore: [
-    { label: 'Playground', href: '/playground' },
-    { label: 'Blog', href: '/blog' },
+    { label: "Playground", href: "/playground" },
+    { label: "Blog", href: "/blog" },
   ],
   participate: [
     {
-      label: 'GitHub',
-      href: 'https://github.com/facebook/stylex',
+      label: "GitHub",
+      href: "https://github.com/facebook/stylex",
       external: true,
     },
-    { label: 'Acknowledgements', href: '/docs/acknowledgements' },
+    { label: "Acknowledgements", href: "/docs/acknowledgements" },
   ],
   legal: [
     {
-      label: 'Privacy',
-      href: 'https://opensource.fb.com/legal/privacy/',
+      label: "Privacy",
+      href: "https://opensource.fb.com/legal/privacy/",
       external: true,
     },
     {
-      label: 'Terms',
-      href: 'https://opensource.fb.com/legal/terms/',
+      label: "Terms",
+      href: "https://opensource.fb.com/legal/terms/",
       external: true,
     },
   ],
@@ -112,7 +112,7 @@ export default function Footer({
                       link.external && styles.externalLink,
                     )}
                     {...(link.external
-                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
                   >
                     {link.label}
@@ -139,7 +139,7 @@ export default function Footer({
                       link.external && styles.externalLink,
                     )}
                     {...(link.external
-                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
                   >
                     {link.label}
@@ -155,14 +155,15 @@ export default function Footer({
           </div>
         </div>
 
-        <Link
+        <a
+          aria-label="Meta Open Source"
           href="https://opensource.fb.com"
           rel="noopener noreferrer"
           target="_blank"
           {...stylex.props(styles.metaOpenSourceLink)}
         >
           <MetaOpenSource xstyle={styles.metaOpenSource} />
-        </Link>
+        </a>
 
         <div {...stylex.props(styles.bottom)}>
           <span {...stylex.props(styles.copyright)}>
@@ -172,30 +173,33 @@ export default function Footer({
           <div {...stylex.props(styles.bottomSpacer)} />
 
           <div {...stylex.props(styles.socialLinks)}>
-            <Link
+            <a
+              aria-label="StyleX on GitHub"
               href="https://github.com/facebook/stylex"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <GithubIcon {...stylex.props(styles.socialIcon)} />
-            </Link>
-            <Link
+            </a>
+            <a
+              aria-label="StyleX on X"
               href="https://x.com/stylexjs"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <TwitterIcon {...stylex.props(styles.socialIcon)} />
-            </Link>
-            <Link
+            </a>
+            <a
+              aria-label="StyleX on Bluesky"
               href="https://bsky.app/profile/stylexjs.bsky.social"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <Bluesky xstyle={styles.socialIcon} />
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -205,12 +209,12 @@ export default function Footer({
 
 const styles = stylex.create({
   footer: {
-    backgroundColor: vars['--color-fd-background'],
-    borderTopColor: vars['--color-fd-border'],
-    borderTopStyle: 'solid',
+    backgroundColor: vars["--color-fd-background"],
+    borderTopColor: vars["--color-fd-border"],
+    borderTopStyle: "solid",
     borderTopWidth: 1,
-    transitionDuration: '300ms',
-    transitionProperty: 'background-color, border-color',
+    transitionDuration: "300ms",
+    transitionProperty: "background-color, border-color",
   },
   footerNoBorder: {
     borderTopColor: null,
@@ -218,68 +222,68 @@ const styles = stylex.create({
     borderTopWidth: null,
   },
   container: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
     padding: 32,
     paddingTop: 48,
   },
   grid: {
-    display: 'grid',
+    display: "grid",
     gridTemplateColumns: {
-      default: 'repeat(2, 1fr)',
-      '@media (min-width: 768px)': 'repeat(4, 1fr)',
+      default: "repeat(2, 1fr)",
+      "@media (min-width: 768px)": "repeat(4, 1fr)",
     },
     gap: 32,
-    width: '100%',
+    width: "100%",
     maxWidth: 1280,
   },
   heading: {
     marginBottom: 16,
-    fontSize: '0.875rem',
+    fontSize: "0.875rem",
     fontWeight: 600,
-    color: vars['--color-fd-foreground'],
-    textAlign: 'center',
+    color: vars["--color-fd-foreground"],
+    textAlign: "center",
   },
   list: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 8,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 0,
     margin: 0,
-    listStyle: 'none',
+    listStyle: "none",
   },
   link: {
-    fontSize: '0.875rem',
+    fontSize: "0.875rem",
     color: {
-      default: vars['--color-fd-muted-foreground'],
-      ':hover': vars['--color-fd-foreground'],
+      default: vars["--color-fd-muted-foreground"],
+      ":hover": vars["--color-fd-foreground"],
     },
-    textDecoration: 'none',
-    transitionDuration: '150ms',
-    transitionProperty: 'color',
+    textDecoration: "none",
+    transitionDuration: "150ms",
+    transitionProperty: "color",
   },
   externalLink: {
-    display: 'inline-flex',
+    display: "inline-flex",
     gap: 4,
-    alignItems: 'center',
+    alignItems: "center",
   },
   externalIcon: {
     width: 12,
     height: 12,
   },
   bottom: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap",
     gap: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     // justifyContent: 'space-between',
-    width: '100%',
+    width: "100%",
     maxWidth: 1080,
   },
   bottomSpacer: {
@@ -290,33 +294,33 @@ const styles = stylex.create({
     marginTop: 16,
     opacity: {
       default: 0.5,
-      ':focus-visible': 1,
-      ':hover': 1,
+      ":focus-visible": 1,
+      ":hover": 1,
     },
-    transitionTimingFunction: 'ease-in-out',
-    transitionDuration: '150ms',
-    transitionProperty: 'opacity',
+    transitionTimingFunction: "ease-in-out",
+    transitionDuration: "150ms",
+    transitionProperty: "opacity",
   },
   metaOpenSource: {
     height: 68,
   },
   copyright: {
-    fontSize: '0.875rem',
-    color: vars['--color-fd-muted-foreground'],
+    fontSize: "0.875rem",
+    color: vars["--color-fd-muted-foreground"],
   },
   socialLinks: {
-    display: 'flex',
+    display: "flex",
     gap: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   socialLink: {
     padding: 8,
     color: {
-      default: vars['--color-fd-muted-foreground'],
-      ':hover': vars['--color-fd-foreground'],
+      default: vars["--color-fd-muted-foreground"],
+      ":hover": vars["--color-fd-foreground"],
     },
-    transitionDuration: '150ms',
-    transitionProperty: 'color',
+    transitionDuration: "150ms",
+    transitionProperty: "color",
   },
   socialIcon: {
     width: 20,

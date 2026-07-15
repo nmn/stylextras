@@ -4,53 +4,49 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
-
+"use client";
 import {
-  useState,
-  useEffect,
-  useMemo,
-  useRef,
-  useCallback,
   Fragment,
   type ReactNode,
+  useEffect,
   useEffectEvent,
-} from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
-import * as stylex from '@stylexjs/stylex';
-import scrollIntoView from 'scroll-into-view-if-needed';
-import { ChevronRight, Hash, Search } from 'lucide-react';
-import { useRouter } from 'waku';
-import { liteClient, type SearchForHitsOptions } from 'algoliasearch/lite';
+  useRef,
+  useState,
+} from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import * as stylex from "@stylexjs/stylex";
+import scrollIntoView from "scroll-into-view-if-needed";
+import { ChevronRight, Hash, Search } from "lucide-react";
+import { useRouter } from "waku";
+import { liteClient, type SearchForHitsOptions } from "algoliasearch/lite";
 import type {
   HighlightedText,
   ReactSortedResult,
   SortedResult,
-} from 'fumadocs-core/search';
-import { I18nLabel, useI18n } from 'fumadocs-ui/contexts/i18n';
+} from "fumadocs-core/search";
+import { I18nLabel, useI18n } from "fumadocs-ui/contexts/i18n";
 import type {
   SearchLink,
   SharedProps,
   TagItem,
-} from 'fumadocs-ui/contexts/search';
-import { ANIMATION_DURATIONS, EASINGS, vars } from '@/theming/vars.stylex';
-
+} from "fumadocs-ui/contexts/search";
+import { ANIMATION_DURATIONS, EASINGS, vars } from "@/theming/vars.stylex";
 type SearchItem =
-  | (ReactSortedResult & { external?: boolean })
+  | (ReactSortedResult & {
+      external?: boolean;
+    })
   | {
       id: string;
-      type: 'action';
+      type: "action";
       node: ReactNode;
       onSelect: () => void;
     };
-
 // eslint-disable-next-line no-useless-concat
-const appId = '94L' + 'A' + 'F81A4P';
+const appId = "94L" + "A" + "F81A4P";
 // Public API key it is safe to commit it
-const apiKey = 'd7b1348f1d8a68c1c5a868c54536759c';
-const indexName = 'stylexjs';
+const apiKey = "d7b1348f1d8a68c1c5a868c54536759c";
+const indexName = "stylexjs";
 const client = liteClient(appId, apiKey);
-
 // DocSearch hit structure from Algolia
 type DocSearchHit = {
   objectID: string;
@@ -59,14 +55,14 @@ type DocSearchHit = {
   anchor?: string;
   content: string | null;
   type:
-    | 'lvl0'
-    | 'lvl1'
-    | 'lvl2'
-    | 'lvl3'
-    | 'lvl4'
-    | 'lvl5'
-    | 'lvl6'
-    | 'content';
+    | "lvl0"
+    | "lvl1"
+    | "lvl2"
+    | "lvl3"
+    | "lvl4"
+    | "lvl5"
+    | "lvl6"
+    | "content";
   hierarchy: {
     lvl0: string | null;
     lvl1: string | null;
@@ -77,14 +73,13 @@ type DocSearchHit = {
     lvl6: string | null;
   };
 };
-
 // Convert absolute URLs to relative paths and normalize
 function toRelativeUrl(url: string): string {
   try {
     const parsed = new URL(url);
     // Normalize: remove trailing slash from pathname (but keep root /)
     let pathname = parsed.pathname;
-    if (pathname.length > 1 && pathname.endsWith('/')) {
+    if (pathname.length > 1 && pathname.endsWith("/")) {
       pathname = pathname.slice(0, -1);
     }
     return pathname + parsed.hash;
@@ -92,20 +87,19 @@ function toRelativeUrl(url: string): string {
     // If it's already a relative URL, normalize it
     let path = url;
     // Split path and hash
-    const hashIndex = path.indexOf('#');
-    let hash = '';
+    const hashIndex = path.indexOf("#");
+    let hash = "";
     if (hashIndex !== -1) {
       hash = path.slice(hashIndex);
       path = path.slice(0, hashIndex);
     }
     // Remove trailing slash
-    if (path.length > 1 && path.endsWith('/')) {
+    if (path.length > 1 && path.endsWith("/")) {
       path = path.slice(0, -1);
     }
     return path + hash;
   }
 }
-
 // Transform DocSearch results to fumadocs format
 function transformDocSearchResults(hits: DocSearchHit[]): SortedResult[] {
   const results: SortedResult[] = [];
@@ -113,21 +107,17 @@ function transformDocSearchResults(hits: DocSearchHit[]): SortedResult[] {
   const seenUrls = new Set<string>();
   // Track seen page URLs (without anchor) for page-level deduplication
   const seenPageUrls = new Set<string>();
-
   for (const hit of hits) {
     const fullUrl = toRelativeUrl(hit.url);
     const baseUrl = toRelativeUrl(hit.url_without_anchor || hit.url);
-
     // Skip the blog index page (but not individual blog posts)
-    if (baseUrl.includes('/blog')) {
+    if (baseUrl.includes("/blog")) {
       continue;
     }
-
     // Skip if we've already seen this exact URL
     if (seenUrls.has(fullUrl)) {
       continue;
     }
-
     // Build breadcrumbs from hierarchy (all non-null levels)
     const breadcrumbs = [
       hit.hierarchy.lvl0,
@@ -138,30 +128,28 @@ function transformDocSearchResults(hits: DocSearchHit[]): SortedResult[] {
       hit.hierarchy.lvl5,
       hit.hierarchy.lvl6,
     ].filter((level): level is string => level != null);
-
     // Get the page title (usually lvl1, fallback to lvl0)
-    const pageTitle = hit.hierarchy.lvl1 || hit.hierarchy.lvl0 || 'Untitled';
-
+    const pageTitle = hit.hierarchy.lvl1 || hit.hierarchy.lvl0 || "Untitled";
     // If this is a page-level hit (lvl0 or lvl1) and we haven't seen this page yet
     if (
-      (hit.type === 'lvl0' || hit.type === 'lvl1') &&
+      (hit.type === "lvl0" || hit.type === "lvl1") &&
       !seenPageUrls.has(baseUrl)
     ) {
       seenPageUrls.add(baseUrl);
       seenUrls.add(fullUrl);
       results.push({
-        type: 'page',
+        type: "page",
         id: hit.objectID,
         url: baseUrl,
         content: pageTitle,
         // For pages, breadcrumbs are just lvl0 (the section/category)
         breadcrumbs: hit.hierarchy.lvl0 ? [hit.hierarchy.lvl0] : [],
       });
-    } else if (hit.type === 'content' && hit.content) {
+    } else if (hit.type === "content" && hit.content) {
       // Content-level hit - show with page context
       seenUrls.add(fullUrl);
       results.push({
-        type: 'text',
+        type: "text",
         id: hit.objectID,
         url: fullUrl,
         content: hit.content,
@@ -169,16 +157,16 @@ function transformDocSearchResults(hits: DocSearchHit[]): SortedResult[] {
         breadcrumbs,
       });
     } else if (
-      hit.type.startsWith('lvl') &&
-      hit.type !== 'lvl0' &&
-      hit.type !== 'lvl1'
+      hit.type.startsWith("lvl") &&
+      hit.type !== "lvl0" &&
+      hit.type !== "lvl1"
     ) {
       // Heading-level hit (lvl2, lvl3, lvl4, etc.)
       seenUrls.add(fullUrl);
       const headingText =
         hit.hierarchy[hit.type as keyof typeof hit.hierarchy] ?? pageTitle;
       results.push({
-        type: 'heading',
+        type: "heading",
         id: hit.objectID,
         url: fullUrl,
         content: headingText,
@@ -187,18 +175,15 @@ function transformDocSearchResults(hits: DocSearchHit[]): SortedResult[] {
       });
     }
   }
-
   return results;
 }
-
 // Custom search function for DocSearch-formatted Algolia index
 async function searchAlgoliaDocSearch(
   query: string,
-): Promise<SortedResult[] | 'empty'> {
+): Promise<SortedResult[] | "empty"> {
   if (query.trim().length === 0) {
-    return 'empty';
+    return "empty";
   }
-
   const result = await client.searchForHits({
     requests: [
       {
@@ -209,18 +194,15 @@ async function searchAlgoliaDocSearch(
       } as SearchForHitsOptions,
     ],
   });
-
   const hits = result.results[0]?.hits as unknown as DocSearchHit[];
   if (!hits || hits.length === 0) {
     return [];
   }
-
   return transformDocSearchResults(hits);
 }
-
 export type SearchDialogProps = SharedProps & {
   links?: SearchLink[];
-  type?: 'fetch' | 'static';
+  type?: "fetch" | "static";
   defaultTag?: string;
   tags?: TagItem[];
   api?: string;
@@ -228,7 +210,6 @@ export type SearchDialogProps = SharedProps & {
   footer?: ReactNode;
   allowClear?: boolean;
 };
-
 export function SearchDialog({
   open,
   onOpenChange,
@@ -244,24 +225,20 @@ export function SearchDialog({
   const { text } = useI18n();
   const router = useRouter();
   const [tag, setTag] = useState(defaultTag);
-
   // Custom search state management for DocSearch-formatted Algolia index
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [query, setQuery] = useState<{
     isLoading: boolean;
-    data?: SortedResult[] | 'empty';
+    data?: SortedResult[] | "empty";
     error?: Error;
-  }>({ isLoading: false, data: 'empty' });
-
+  }>({ isLoading: false, data: "empty" });
   // Debounced search effect
   useEffect(() => {
     if (search.trim().length === 0) {
-      setQuery({ isLoading: false, data: 'empty' });
+      setQuery({ isLoading: false, data: "empty" });
       return;
     }
-
     setQuery((prev) => ({ ...prev, isLoading: true }));
-
     const timeoutId = setTimeout(async () => {
       try {
         const results = await searchAlgoliaDocSearch(search);
@@ -270,62 +247,46 @@ export function SearchDialog({
         setQuery({ isLoading: false, error: error as Error });
       }
     }, 100);
-
     return () => clearTimeout(timeoutId);
   }, [search]);
-
   useEffect(() => {
     setTag(defaultTag);
   }, [defaultTag]);
-
-  const defaultItems = useMemo<SearchItem[] | null>(() => {
-    if (links.length === 0) {
-      return null;
-    }
-    return links.map(([name, href]) => ({
-      type: 'page',
-      id: name,
-      content: name,
-      url: href,
-    }));
-  }, [links]);
-
-  const items = useMemo(() => {
-    if (query.data === 'empty') {
-      return defaultItems;
-    }
-    if (!query.data) {
-      return null;
-    }
-    return query.data as SearchItem[];
-  }, [defaultItems, query.data]);
-
+  const defaultItems: SearchItem[] | null =
+    links.length === 0
+      ? null
+      : links.map(([name, href]) => ({
+          type: "page",
+          id: name,
+          content: name,
+          url: href,
+        }));
+  const items =
+    query.data === "empty"
+      ? defaultItems
+      : query.data
+        ? (query.data as SearchItem[])
+        : null;
   const [activeId, setActiveId] = useState<string | null>(null);
   const itemsRef = useRef<SearchItem[] | null>(null);
   const listContainerRef = useRef<HTMLDivElement | null>(null);
   const listViewportRef = useRef<HTMLDivElement | null>(null);
-
-  const onOpenItem = useCallback(
-    (item: SearchItem) => {
-      if (item.type === 'action') {
-        item.onSelect();
-        onOpenChange(false);
-        return;
-      }
-      if (item.external) {
-        window.open(item.url, '_blank', 'noopener,noreferrer');
-        onOpenChange(false);
-        return;
-      }
-      const [pathname, hash] = item.url.split('#');
-      const url = [pathname?.replaceAll('%20', '-'), hash].join('#');
-
-      router.push(url);
+  function onOpenItem(item: SearchItem) {
+    if (item.type === "action") {
+      item.onSelect();
       onOpenChange(false);
-    },
-    [onOpenChange, router],
-  );
-
+      return;
+    }
+    if (item.external) {
+      window.open(item.url, "_blank", "noopener,noreferrer");
+      onOpenChange(false);
+      return;
+    }
+    const [pathname, hash] = item.url.split("#");
+    const url = [pathname?.replaceAll("%20", "-"), hash].join("#");
+    router.push(url);
+    onOpenChange(false);
+  }
   useEffect(() => {
     itemsRef.current = items;
     if (items && items.length > 0) {
@@ -334,26 +295,24 @@ export function SearchDialog({
       setActiveId(null);
     }
   }, [items]);
-
   const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
     const currentItems = itemsRef.current;
     if (!currentItems || currentItems.length === 0 || e.isComposing) {
       return;
     }
-
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       let index = currentItems.findIndex((item) => item.id === activeId);
       if (index === -1) {
         index = 0;
       }
       index =
-        e.key === 'ArrowDown'
+        e.key === "ArrowDown"
           ? (index + 1) % currentItems.length
           : (index - 1 + currentItems.length) % currentItems.length;
       setActiveId(currentItems[index]?.id ?? null);
       e.preventDefault();
     }
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       const selected = currentItems.find((item) => item.id === activeId);
       if (selected) {
         onOpenItem(selected);
@@ -361,17 +320,15 @@ export function SearchDialog({
       }
     }
   });
-
   useEffect(() => {
     if (!open) {
       return;
     }
-    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [open, onKeyDown]);
-
   useEffect(() => {
     const container = listContainerRef.current;
     const viewport = listViewportRef.current;
@@ -380,7 +337,7 @@ export function SearchDialog({
     }
     const updateHeight = () => {
       container.style.setProperty(
-        '--fd-animated-height',
+        "--fd-animated-height",
         `${viewport.clientHeight}px`,
       );
     };
@@ -389,7 +346,6 @@ export function SearchDialog({
     observer.observe(viewport);
     return () => observer.disconnect();
   }, [items]);
-
   useEffect(() => {
     if (!listViewportRef.current || !activeId) {
       return;
@@ -399,15 +355,13 @@ export function SearchDialog({
     );
     if (element) {
       scrollIntoView(element, {
-        scrollMode: 'if-needed',
-        block: 'nearest',
+        scrollMode: "if-needed",
+        block: "nearest",
         boundary: listViewportRef.current,
       });
     }
   }, [activeId]);
-
   const showFooter = tags.length > 0 || footer != null;
-
   return (
     <Dialog.Root onOpenChange={onOpenChange} open={open}>
       <Dialog.Portal>
@@ -460,7 +414,7 @@ export function SearchDialog({
               )}
               {items?.map((item) => {
                 const active = item.id === activeId;
-                if (item.type === 'action') {
+                if (item.type === "action") {
                   return (
                     <button
                       aria-selected={active}
@@ -478,11 +432,9 @@ export function SearchDialog({
                     </button>
                   );
                 }
-
                 const content = item.contentWithHighlights
-                  ? renderHighlights(item.contentWithHighlights)
+                  ? <SearchHighlights highlights={item.contentWithHighlights} />
                   : item.content;
-
                 return (
                   <button
                     aria-selected={active}
@@ -513,13 +465,13 @@ export function SearchDialog({
                     <p
                       {...stylex.props(
                         styles.itemContent,
-                        item.type !== 'page' && styles.itemContentIndented,
-                        item.type === 'page' || item.type === 'heading'
+                        item.type !== "page" && styles.itemContentIndented,
+                        item.type === "page" || item.type === "heading"
                           ? styles.itemContentStrong
                           : styles.itemContentMuted,
                       )}
                     >
-                      {item.type === 'heading' && (
+                      {item.type === "heading" && (
                         <Hash {...stylex.props(styles.hashIcon)} />
                       )}
                       {content}
@@ -563,258 +515,259 @@ export function SearchDialog({
     </Dialog.Root>
   );
 }
-
-function renderHighlights(highlights: HighlightedText<ReactNode>[]) {
-  return highlights.map((node, index) => {
-    if (node.styles?.highlight) {
-      return (
-        <span key={index} {...stylex.props(styles.highlight)}>
-          {node.content}
-        </span>
-      );
-    }
-    return <Fragment key={index}>{node.content}</Fragment>;
-  });
+function SearchHighlights({
+  highlights,
+}: {
+  highlights: HighlightedText<ReactNode>[];
+}) {
+  return highlights.map((node, index) =>
+    node.styles?.highlight ? (
+      <span key={index} {...stylex.props(styles.highlight)}>
+        {node.content}
+      </span>
+    ) : (
+      <Fragment key={index}>{node.content}</Fragment>
+    ),
+  );
 }
-
 const styles = stylex.create({
   overlay: {
-    position: 'fixed',
+    position: "fixed",
     inset: 0,
     zIndex: 50,
-    backgroundColor: vars['--color-fd-overlay'],
-    backdropFilter: 'blur(4px)',
+    backgroundColor: vars["--color-fd-overlay"],
+    backdropFilter: "blur(4px)",
   },
   content: {
-    position: 'fixed',
+    position: "fixed",
     top: {
       default: 4 * 4,
-      '@media (min-width: 768px)': 'calc(50% - 250px)',
+      "@media (min-width: 768px)": "calc(50% - 250px)",
     },
-    left: '50%',
+    left: "50%",
     zIndex: 51,
-    width: 'calc(100% - 16px)',
+    width: "calc(100% - 16px)",
     maxWidth: 640,
-    overflow: 'hidden',
-    color: vars['--color-fd-popover-foreground'],
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-popover']} 35%, transparent)`,
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    overflow: "hidden",
+    color: vars["--color-fd-popover-foreground"],
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-popover"]} 35%, transparent)`,
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 12,
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-    transform: 'translateX(-50%)',
+    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+    transform: "translateX(-50%)",
     animationName: {
       default: null,
-      ':where([data-state="closed"])': vars['--animate-fd-dialog-out'],
-      ':where([data-state="open"])': vars['--animate-fd-dialog-in'],
+      ':where([data-state="closed"])': vars["--animate-fd-dialog-out"],
+      ':where([data-state="open"])': vars["--animate-fd-dialog-in"],
     },
-    animationDuration: '300ms',
+    animationDuration: "300ms",
     animationTimingFunction: EASINGS.dialog,
   },
   bgBlurContainer: {
-    position: 'absolute',
+    position: "absolute",
     inset: 0,
-    overflow: 'clip',
+    overflow: "clip",
   },
   bgBlur: {
-    position: 'absolute',
+    position: "absolute",
     inset: -64,
-    backdropFilter: 'blur(48px) saturate(400%)',
+    backdropFilter: "blur(48px) saturate(400%)",
   },
   visuallyHidden: {
-    position: 'absolute',
+    position: "absolute",
     width: 1,
     height: 1,
     padding: 0,
     margin: -1,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
+    overflow: "hidden",
+    whiteSpace: "nowrap",
     borderWidth: 0,
-    clip: 'rect(0, 0, 0, 0)',
+    clip: "rect(0, 0, 0, 0)",
   },
   header: {
-    position: 'relative',
-    display: 'flex',
+    position: "relative",
+    display: "flex",
     gap: 2 * 4,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 3 * 4,
-    borderBottomColor: vars['--color-fd-border'],
-    borderBottomStyle: 'solid',
+    borderBottomColor: vars["--color-fd-border"],
+    borderBottomStyle: "solid",
     borderBottomWidth: 1,
   },
   searchIcon: {
     width: 20,
     height: 20,
-    color: vars['--color-fd-muted-foreground'],
+    color: vars["--color-fd-muted-foreground"],
   },
   searchIconLoading: {
-    animationName: vars['--animate-pulse'],
+    animationName: vars["--animate-pulse"],
     animationDuration: ANIMATION_DURATIONS.pulse,
     animationTimingFunction: EASINGS.pulse,
-    animationIterationCount: 'infinite',
+    animationIterationCount: "infinite",
   },
   input: {
     flexGrow: 1,
     minWidth: 0,
     fontSize: `${18 / 16}rem`,
     color: {
-      default: vars['--color-fd-popover-foreground'],
-      '::placeholder': vars['--color-fd-muted-foreground'],
+      default: vars["--color-fd-popover-foreground"],
+      "::placeholder": vars["--color-fd-muted-foreground"],
     },
-    outline: 'none',
-    backgroundColor: 'transparent',
+    outline: "none",
+    backgroundColor: "transparent",
     borderWidth: 0,
   },
   closeButton: {
     paddingBlock: 0.5 * 4,
     paddingInline: 1.5 * 4,
-    fontFamily: 'var(--font-mono)',
+    fontFamily: "var(--font-mono)",
     fontSize: `${12 / 16}rem`,
     color: {
-      default: vars['--color-fd-muted-foreground'],
-      ':hover': vars['--color-fd-accent-foreground'],
+      default: vars["--color-fd-muted-foreground"],
+      ":hover": vars["--color-fd-accent-foreground"],
     },
-    outline: 'none',
+    outline: "none",
     backgroundColor: {
-      default: vars['--color-fd-background'],
-      ':hover': 'color-mix(in oklab, var(--color-fd-accent) 80%, transparent)',
+      default: vars["--color-fd-background"],
+      ":hover": "color-mix(in oklab, var(--color-fd-accent) 80%, transparent)",
     },
     borderColor: {
-      default: vars['--color-fd-border'],
-      ':focus-visible': vars['--color-fd-primary'],
-      ':hover': vars['--color-fd-primary'],
+      default: vars["--color-fd-border"],
+      ":focus-visible": vars["--color-fd-primary"],
+      ":hover": vars["--color-fd-primary"],
     },
-    borderStyle: 'solid',
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 6,
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '150ms',
-    transitionProperty: 'color, background-color, border-color',
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "150ms",
+    transitionProperty: "color, background-color, border-color",
   },
   listContainer: {
-    position: 'relative',
+    position: "relative",
     // eslint-disable-next-line @stylexjs/valid-styles
-    ['--fd-animated-height' as any]: '0px',
-    height: 'var(--fd-animated-height)',
-    overflow: 'hidden',
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '150ms',
-    transitionProperty: 'height',
+    ["--fd-animated-height" as any]: "0px",
+    height: "var(--fd-animated-height)",
+    overflow: "hidden",
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "150ms",
+    transitionProperty: "height",
   },
   listViewport: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     maxHeight: 460,
     padding: 1 * 4,
-    overflowY: 'auto',
+    overflowY: "auto",
   },
   listViewportHidden: {
-    display: 'none',
+    display: "none",
   },
   emptyState: {
     paddingBlock: 12 * 4,
     fontSize: `${14 / 16}rem`,
-    color: vars['--color-fd-muted-foreground'],
-    textAlign: 'center',
+    color: vars["--color-fd-muted-foreground"],
+    textAlign: "center",
   },
   itemButton: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
     gap: 0.5 * 4,
-    alignItems: 'flex-start',
-    width: '100%',
+    alignItems: "flex-start",
+    width: "100%",
     paddingBlock: 2 * 4,
     paddingInline: 2.5 * 4,
     fontSize: `${14 / 16}rem`,
-    color: vars['--color-fd-popover-foreground'],
-    textAlign: 'start',
+    color: vars["--color-fd-popover-foreground"],
+    textAlign: "start",
     backgroundColor: {
-      default: 'transparent',
-      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 45%, transparent)`,
+      default: "transparent",
+      ":hover": `color-mix(in oklab, ${vars["--color-fd-accent"]} 45%, transparent)`,
     },
     borderRadius: 8,
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '150ms',
-    transitionProperty: 'background-color, color',
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "150ms",
+    transitionProperty: "background-color, color",
   },
   itemButtonActive: {
-    color: vars['--color-fd-accent-foreground'],
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-accent']} 45%, transparent)`,
+    color: vars["--color-fd-accent-foreground"],
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-accent"]} 45%, transparent)`,
   },
   breadcrumbs: {
-    display: 'inline-flex',
+    display: "inline-flex",
     gap: 1 * 4,
-    alignItems: 'center',
+    alignItems: "center",
     fontSize: `${10 / 16}rem`,
-    color: vars['--color-fd-muted-foreground'],
+    color: vars["--color-fd-muted-foreground"],
   },
   breadcrumbIcon: {
     width: 16,
     height: 16,
-    color: vars['--color-fd-muted-foreground'],
+    color: vars["--color-fd-muted-foreground"],
   },
   itemContent: {
-    display: 'block',
-    width: '100%',
+    display: "block",
+    width: "100%",
     minWidth: 0,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    color: vars['--color-fd-foreground'],
-    whiteSpace: 'nowrap',
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    color: vars["--color-fd-foreground"],
+    whiteSpace: "nowrap",
   },
   itemContentIndented: {},
   itemContentStrong: {
     fontWeight: 500,
   },
   itemContentMuted: {
-    color: `color-mix(in oklab, ${vars['--color-fd-popover-foreground']} 80%, transparent)`,
+    color: `color-mix(in oklab, ${vars["--color-fd-popover-foreground"]} 80%, transparent)`,
   },
   hashIcon: {
     width: 16,
     height: 16,
     marginInlineEnd: 1 * 4,
-    color: vars['--color-fd-muted-foreground'],
+    color: vars["--color-fd-muted-foreground"],
   },
   highlight: {
-    color: vars['--color-fd-primary'],
-    textDecorationLine: 'underline',
+    color: vars["--color-fd-primary"],
+    textDecorationLine: "underline",
   },
   footer: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
     gap: 2 * 4,
     padding: 3 * 4,
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-secondary']} 50%, transparent)`,
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-secondary"]} 50%, transparent)`,
   },
   tagList: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap",
     gap: 1 * 4,
-    alignItems: 'center',
+    alignItems: "center",
   },
   tagButton: {
     paddingBlock: 0.5 * 4,
     paddingInline: 2 * 4,
     fontSize: `${12 / 16}rem`,
     fontWeight: 500,
-    color: vars['--color-fd-muted-foreground'],
+    color: vars["--color-fd-muted-foreground"],
     backgroundColor: {
-      default: 'transparent',
-      ':hover': vars['--color-fd-accent'],
+      default: "transparent",
+      ":hover": vars["--color-fd-accent"],
     },
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 6,
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '150ms',
-    transitionProperty: 'color, background-color, border-color',
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "150ms",
+    transitionProperty: "color, background-color, border-color",
   },
   tagButtonActive: {
-    color: vars['--color-fd-accent-foreground'],
-    backgroundColor: vars['--color-fd-accent'],
+    color: vars["--color-fd-accent-foreground"],
+    backgroundColor: vars["--color-fd-accent"],
   },
 });

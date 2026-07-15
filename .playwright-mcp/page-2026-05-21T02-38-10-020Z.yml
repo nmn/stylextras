@@ -1,0 +1,505 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e3]:
+    - navigation [ref=e5]:
+      - button [ref=e6]:
+        - img [ref=e7]
+      - link [ref=e9] [cursor=pointer]:
+        - /url: /
+        - img [ref=e10]
+      - list [ref=e14]:
+        - listitem [ref=e15]:
+          - link "Docs" [ref=e16] [cursor=pointer]:
+            - /url: /docs
+        - listitem [ref=e17]:
+          - link "API" [ref=e18] [cursor=pointer]:
+            - /url: /docs/api
+        - listitem [ref=e19]:
+          - link "Blog" [ref=e20] [cursor=pointer]:
+            - /url: /blog
+        - listitem [ref=e21]:
+          - link "Playground" [ref=e22] [cursor=pointer]:
+            - /url: /playground
+      - list [ref=e23]:
+        - listitem [ref=e24]:
+          - link "GitHub" [ref=e25] [cursor=pointer]:
+            - /url: https://github.com/facebook/stylex
+            - img [ref=e26]
+      - button "Search ⌘ K" [ref=e30]:
+        - img [ref=e31]
+        - generic [ref=e34]: Search
+        - generic [ref=e35]:
+          - generic [ref=e36]: ⌘
+          - generic [ref=e37]: K
+      - generic [ref=e38]:
+        - button "Light theme" [ref=e39]:
+          - img [ref=e40]
+        - button "Dark theme" [ref=e46]:
+          - img [ref=e47]
+        - button "System theme" [ref=e49]:
+          - img [ref=e50]
+  - main [ref=e54]:
+    - complementary [ref=e58]:
+      - link "Get Started" [ref=e59] [cursor=pointer]:
+        - /url: /docs/get-started
+      - group [ref=e60]:
+        - generic "Actions" [ref=e61]:
+          - paragraph [ref=e62]: Actions
+          - img [ref=e63]
+      - group [ref=e65]:
+        - generic "Inputs and forms" [ref=e66]:
+          - paragraph [ref=e67]: Inputs and forms
+          - img [ref=e68]
+      - group [ref=e70]:
+        - generic "Date and time" [ref=e71]:
+          - paragraph [ref=e72]: Date and time
+          - img [ref=e73]
+      - group [ref=e75]:
+        - generic "Color" [ref=e76]:
+          - paragraph [ref=e77]: Color
+          - img [ref=e78]
+      - group [ref=e80]:
+        - generic "Menus and collections" [ref=e81]:
+          - paragraph [ref=e82]: Menus and collections
+          - img [ref=e83]
+      - group [ref=e85]:
+        - generic "Dialogs and popovers" [ref=e86]:
+          - paragraph [ref=e87]: Dialogs and popovers
+          - img [ref=e88]
+      - group [ref=e90]:
+        - generic "Layout" [ref=e91]:
+          - paragraph [ref=e92]: Layout
+          - img [ref=e93]
+      - group [ref=e95]:
+        - generic "Navigation" [ref=e96]:
+          - paragraph [ref=e97]: Navigation
+          - img [ref=e98]
+      - group [ref=e100]:
+        - generic "Content and media" [ref=e101]:
+          - paragraph [ref=e102]: Content and media
+          - img [ref=e103]
+      - group [ref=e105]:
+        - generic "Feedback" [ref=e106]:
+          - paragraph [ref=e107]: Feedback
+          - img [ref=e108]
+    - main [ref=e112]:
+      - article [ref=e113]:
+        - heading "Button Group" [level=1] [ref=e114]
+        - paragraph [ref=e115]: Button Group provides an action primitive for button and control interfaces.
+        - generic [ref=e116]:
+          - heading "Button Group" [level=1] [ref=e117]:
+            - link "Button Group" [ref=e118] [cursor=pointer]:
+              - /url: "#button-group"
+            - img [ref=e119]
+          - paragraph [ref=e122]: Use Button Group when related buttons should read as one control cluster. Use the action-row variant for dialog footers and confirmation rows where the primary and secondary actions should be equal width and aligned to the end.
+          - paragraph [ref=e123]: "The implementation is intentionally small: visual defaults come from token variables, and the public props keep native HTML attributes available where the underlying element supports them."
+          - heading "Import" [level=2] [ref=e124]:
+            - link "Import" [ref=e125] [cursor=pointer]:
+              - /url: "#import"
+            - img [ref=e126]
+          - figure [ref=e129]:
+            - button "Copy Text" [ref=e131]:
+              - img [ref=e132]
+            - region [ref=e135]:
+              - code [ref=e137]:
+                - generic [ref=e138]: "import { ButtonGroup, ButtonGroupActions } from \"@stylextras/ui/button-group\";"
+          - heading "Basic usage" [level=2] [ref=e139]:
+            - link "Basic usage" [ref=e140] [cursor=pointer]:
+              - /url: "#basic-usage"
+            - img [ref=e141]
+          - paragraph [ref=e144]: Start here when wiring the component into an interface. The demo shows the expected behavior, and the code block shows the smallest useful invocation.
+          - generic [ref=e145]:
+            - generic [ref=e146]:
+              - heading "Grouped actions" [level=2] [ref=e147]
+              - paragraph [ref=e148]: Button Group only needs a simple grouped specimen.
+            - generic [ref=e149]:
+              - generic [ref=e150]:
+                - generic [ref=e151]: Color
+                - combobox "Color" [ref=e152]:
+                  - option "base" [selected]
+                  - option "mono"
+                  - option "ocean"
+                  - option "sunset"
+                  - option "danger"
+                  - option "forest"
+                  - option "rose"
+                  - option "cobalt"
+                  - option "paper"
+                  - option "terminal"
+                  - option "citrus"
+                  - option "plum"
+                  - option "candy"
+                  - option "clay"
+                  - option "mint"
+                  - option "amber"
+                  - option "lavender"
+                  - option "cherry"
+                  - option "teal"
+                  - option "sky"
+                  - option "sepia"
+                  - option "noir"
+                  - option "neon"
+                  - option "lagoon"
+                  - option "sand"
+              - generic [ref=e153]:
+                - generic [ref=e154]: Spacing
+                - combobox "Spacing" [ref=e155]:
+                  - option "base" [selected]
+                  - option "tight"
+                  - option "compact"
+                  - option "cozy"
+                  - option "roomy"
+                  - option "poster"
+              - generic [ref=e156]:
+                - generic [ref=e157]: Radius
+                - combobox "Radius" [ref=e158]:
+                  - option "base" [selected]
+                  - option "sharp"
+                  - option "rounded"
+                  - option "soft"
+                  - option "pill"
+              - generic [ref=e159]:
+                - generic [ref=e160]: Stroke
+                - combobox "Stroke" [ref=e161]:
+                  - option "base" [selected]
+                  - option "bold"
+                  - option "poster"
+                  - option "brutal"
+              - generic [ref=e162]:
+                - generic [ref=e163]: Shadow
+                - combobox "Shadow" [ref=e164]:
+                  - option "base" [selected]
+                  - option "soft"
+                  - option "float"
+                  - option "hard"
+                  - option "poster"
+              - generic [ref=e165]:
+                - generic [ref=e166]: Typography
+                - combobox "Typography" [ref=e167]:
+                  - option "ui" [selected]
+                  - option "editorial"
+                  - option "mono"
+                  - option "industrial"
+            - group [ref=e169]:
+              - button "Approve" [ref=e170]
+              - button "Comment" [ref=e171]
+              - button "Request changes" [ref=e172]
+          - generic [ref=e173]:
+            - generic [ref=e174]:
+              - heading "Dialog actions" [level=2] [ref=e175]
+              - paragraph [ref=e176]: Action rows keep the primary and secondary buttons equal width and aligned to the end.
+            - generic [ref=e177]:
+              - generic [ref=e178]:
+                - generic [ref=e179]: Color
+                - combobox "Color" [ref=e180]:
+                  - option "base" [selected]
+                  - option "mono"
+                  - option "ocean"
+                  - option "sunset"
+                  - option "danger"
+                  - option "forest"
+                  - option "rose"
+                  - option "cobalt"
+                  - option "paper"
+                  - option "terminal"
+                  - option "citrus"
+                  - option "plum"
+                  - option "candy"
+                  - option "clay"
+                  - option "mint"
+                  - option "amber"
+                  - option "lavender"
+                  - option "cherry"
+                  - option "teal"
+                  - option "sky"
+                  - option "sepia"
+                  - option "noir"
+                  - option "neon"
+                  - option "lagoon"
+                  - option "sand"
+              - generic [ref=e181]:
+                - generic [ref=e182]: Spacing
+                - combobox "Spacing" [ref=e183]:
+                  - option "base" [selected]
+                  - option "tight"
+                  - option "compact"
+                  - option "cozy"
+                  - option "roomy"
+                  - option "poster"
+              - generic [ref=e184]:
+                - generic [ref=e185]: Radius
+                - combobox "Radius" [ref=e186]:
+                  - option "base" [selected]
+                  - option "sharp"
+                  - option "rounded"
+                  - option "soft"
+                  - option "pill"
+              - generic [ref=e187]:
+                - generic [ref=e188]: Stroke
+                - combobox "Stroke" [ref=e189]:
+                  - option "base" [selected]
+                  - option "bold"
+                  - option "poster"
+                  - option "brutal"
+              - generic [ref=e190]:
+                - generic [ref=e191]: Shadow
+                - combobox "Shadow" [ref=e192]:
+                  - option "base" [selected]
+                  - option "soft"
+                  - option "float"
+                  - option "hard"
+                  - option "poster"
+              - generic [ref=e193]:
+                - generic [ref=e194]: Typography
+                - combobox "Typography" [ref=e195]:
+                  - option "ui" [selected]
+                  - option "editorial"
+                  - option "mono"
+                  - option "industrial"
+            - generic [ref=e196]:
+              - group [ref=e197]:
+                - button "Cancel" [ref=e199]
+                - button "Save changes" [ref=e201]
+              - group [ref=e202]:
+                - button "More actions" [ref=e204] [cursor=pointer]: +
+                - button "Back" [ref=e206]
+                - button "Continue" [ref=e208]
+          - figure [ref=e209]:
+            - button "Copy Text" [ref=e211]:
+              - img [ref=e212]
+            - region [ref=e215]:
+              - code [ref=e217]:
+                - generic [ref=e218]: "import { Button } from \"@stylextras/ui/button\";"
+                - generic [ref=e219]: "import { ButtonGroup } from \"@stylextras/ui/button-group\";"
+                - generic [ref=e220]: <ButtonGroup>
+                - generic [ref=e221]: <Button>Approve</Button>
+                - generic [ref=e222]: <Button variant="secondary">Comment</Button>
+                - generic [ref=e223]: <Button variant="outline">Request changes</Button>
+                - generic [ref=e224]: </ButtonGroup>;
+          - heading "Action row" [level=2] [ref=e225]:
+            - link "Action row" [ref=e226] [cursor=pointer]:
+              - /url: "#action-row"
+            - img [ref=e227]
+          - paragraph [ref=e230]:
+            - text: Use
+            - code [ref=e231]: ButtonGroupActions
+            - text: when the buttons should keep a gap instead of sharing borders. The primary and secondary buttons are equal width and right-aligned; a leading button can be added for a tertiary action or icon-only affordance.
+          - figure [ref=e232]:
+            - button "Copy Text" [ref=e234]:
+              - img [ref=e235]
+            - region [ref=e238]:
+              - code [ref=e240]:
+                - generic [ref=e241]: "import { Button } from \"@stylextras/ui/button\";"
+                - generic [ref=e242]: "import { ButtonGroupActions } from \"@stylextras/ui/button-group\";"
+                - generic [ref=e243]: "import { IconButton } from \"@stylextras/ui/icon-button\";"
+                - generic [ref=e244]: <ButtonGroupActions
+                - generic [ref=e245]: "leading={<IconButton label=\"More actions\">+</IconButton>}"
+                - generic [ref=e246]: "secondary={<Button variant=\"secondary\">Cancel</Button>}"
+                - generic [ref=e247]: "primary={<Button>Save changes</Button>}"
+                - generic [ref=e248]: />;
+          - heading "Props" [level=2] [ref=e249]:
+            - link "Props" [ref=e250] [cursor=pointer]:
+              - /url: "#props"
+            - img [ref=e251]
+          - paragraph [ref=e254]:
+            - text: The public prop types are exported from
+            - code [ref=e255]: "@stylextras/ui/button-group"
+            - text: . Most components also accept an
+            - code [ref=e256]: sx
+            - text: prop for custom styles and forward safe native HTML attributes for the underlying element.
+          - figure [ref=e257]:
+            - button "Copy Text" [ref=e259]:
+              - img [ref=e260]
+            - region [ref=e263]:
+              - code [ref=e265]:
+                - generic [ref=e266]: "export type ButtonGroupProps = Omit<BaseProps, \"className\" | \"style\"> & {"
+                - generic [ref=e267]: "sx?: StyleXStyles;"
+                - generic [ref=e268]: "};"
+                - generic [ref=e269]: export type ButtonGroupActionsProps = Omit<
+                - generic [ref=e270]: BaseProps,
+                - generic [ref=e271]: "\"children\" | \"className\" | \"style\""
+                - generic [ref=e272]: "> & {"
+                - generic [ref=e273]: "leading?: ReactNode;"
+                - generic [ref=e274]: "primary: ReactNode;"
+                - generic [ref=e275]: "secondary: ReactNode;"
+                - generic [ref=e276]: "sx?: StyleXStyles;"
+                - generic [ref=e277]: "};"
+          - heading "Customize styles" [level=2] [ref=e278]:
+            - link "Customize styles" [ref=e279] [cursor=pointer]:
+              - /url: "#customize-styles"
+            - img [ref=e280]
+          - paragraph [ref=e283]:
+            - text: Use the
+            - code [ref=e284]: sx
+            - text: prop to compose custom styles with the component's token-driven defaults.
+          - figure [ref=e285]:
+            - button "Copy Text" [ref=e287]:
+              - img [ref=e288]
+            - region [ref=e291]:
+              - code [ref=e293]:
+                - generic [ref=e294]: import * as stylex from "@stylexjs/stylex";
+                - generic [ref=e295]: "import { colors } from \"@stylextras/ui/tokens/color\";"
+                - generic [ref=e296]: "import { spacing } from \"@stylextras/ui/tokens/spacing\";"
+                - generic [ref=e297]: "import { Button } from \"@stylextras/ui/button\";"
+                - generic [ref=e298]: "import { ButtonGroup } from \"@stylextras/ui/button-group\";"
+                - generic [ref=e299]: "<ButtonGroup sx={styles.emphasis}>"
+                - generic [ref=e300]: <Button>One</Button>
+                - generic [ref=e301]: <Button variant="secondary">Two</Button>
+                - generic [ref=e302]: </ButtonGroup>;
+                - generic [ref=e303]: "const styles = stylex.create({"
+                - generic [ref=e304]: "emphasis: {"
+                - generic [ref=e305]: "backgroundColor: colors.bgSubtle,"
+                - generic [ref=e306]: "padding: spacing.md,"
+                - generic [ref=e307]: "},"
+                - generic [ref=e308]: "});"
+          - heading "Complete example" [level=2] [ref=e309]:
+            - link "Complete example" [ref=e310] [cursor=pointer]:
+              - /url: "#complete-example"
+            - img [ref=e311]
+          - paragraph [ref=e314]: This example shows the component in a fuller composition with the surrounding pieces it usually needs.
+          - figure [ref=e315]:
+            - button "Copy Text" [ref=e317]:
+              - img [ref=e318]
+            - region [ref=e321]:
+              - code [ref=e323]:
+                - generic [ref=e324]: "import { Button } from \"@stylextras/ui/button\";"
+                - generic [ref=e325]: "import { ButtonGroup, ButtonGroupActions } from \"@stylextras/ui/button-group\";"
+                - generic [ref=e326]: "import { IconButton } from \"@stylextras/ui/icon-button\";"
+                - generic [ref=e327]: "function ButtonGroupExample() {"
+                - generic [ref=e328]: return (
+                - generic [ref=e329]: <div>
+                - generic [ref=e330]: <ButtonGroup>
+                - generic [ref=e331]: <Button>Approve</Button>
+                - generic [ref=e332]: <Button variant="secondary">Comment</Button>
+                - generic [ref=e333]: <Button variant="outline">Request changes</Button>
+                - generic [ref=e334]: </ButtonGroup>
+                - generic [ref=e335]: <ButtonGroupActions
+                - generic [ref=e336]: "leading={<IconButton label=\"More actions\">+</IconButton>}"
+                - generic [ref=e337]: "secondary={<Button variant=\"secondary\">Cancel</Button>}"
+                - generic [ref=e338]: "primary={<Button>Save changes</Button>}"
+                - generic [ref=e339]: />
+                - generic [ref=e340]: </div>
+                - generic [ref=e341]: );
+                - generic [ref=e342]: "}"
+          - heading "Grouped composition" [level=2] [ref=e343]:
+            - link "Grouped composition" [ref=e344] [cursor=pointer]:
+              - /url: "#grouped-composition"
+            - img [ref=e345]
+          - paragraph [ref=e348]: Group related items when the collection should scan as a single unit.
+          - figure [ref=e349]:
+            - button "Copy Text" [ref=e351]:
+              - img [ref=e352]
+            - region [ref=e355]:
+              - code [ref=e357]:
+                - generic [ref=e358]: "import { ButtonGroup } from \"@stylextras/ui/button-group\";"
+                - generic [ref=e359]: <ButtonGroup>
+                - generic [ref=e360]: <Button>One</Button>
+                - generic [ref=e361]: <Button variant="secondary">Two</Button>
+                - generic [ref=e362]: </ButtonGroup>;
+          - heading "Dialog actions" [level=2] [ref=e363]:
+            - link "Dialog actions" [ref=e364] [cursor=pointer]:
+              - /url: "#dialog-actions"
+            - img [ref=e365]
+          - paragraph [ref=e368]: Use action rows for dialogs and drawers because they preserve a visible gap between the buttons and keep the primary action easy to scan.
+          - figure [ref=e369]:
+            - button "Copy Text" [ref=e371]:
+              - img [ref=e372]
+            - region [ref=e375]:
+              - code [ref=e377]:
+                - generic [ref=e378]: "import { Button } from \"@stylextras/ui/button\";"
+                - generic [ref=e379]: "import { ButtonGroupActions } from \"@stylextras/ui/button-group\";"
+                - generic [ref=e380]: <form method="dialog">
+                - generic [ref=e381]: <ButtonGroupActions
+                - generic [ref=e382]: "secondary={"
+                - generic [ref=e383]: <Button type="submit" variant="secondary">
+                - generic [ref=e384]: Cancel
+                - generic [ref=e385]: </Button>
+                - generic [ref=e386]: "}"
+                - generic [ref=e387]: "primary={<Button type=\"submit\">Save</Button>}"
+                - generic [ref=e388]: />
+                - generic [ref=e389]: </form>;
+          - heading "Accessibility notes" [level=2] [ref=e390]:
+            - link "Accessibility notes" [ref=e391] [cursor=pointer]:
+              - /url: "#accessibility-notes"
+            - img [ref=e392]
+          - paragraph [ref=e395]: Prefer explicit visible text for actions. For icon-only controls, use the component props that require an accessible label instead of relying on the icon alone.
+          - heading "Implementation notes" [level=2] [ref=e396]:
+            - link "Implementation notes" [ref=e397] [cursor=pointer]:
+              - /url: "#implementation-notes"
+            - img [ref=e398]
+          - list [ref=e401]:
+            - listitem [ref=e402]:
+              - text: Styles use token variables from
+              - code [ref=e403]: "@stylextras/ui/tokens/*"
+              - text: .
+            - listitem [ref=e404]:
+              - text: The implementation lives in
+              - code [ref=e405]: packages/ui/src/button-group/index.tsx
+              - text: .
+        - generic [ref=e406]:
+          - link "Get Started" [ref=e407] [cursor=pointer]:
+            - /url: /docs/get-started
+            - img [ref=e408]
+            - text: Get Started
+          - link "Button" [ref=e410] [cursor=pointer]:
+            - /url: /docs/buttons/button
+            - text: Button
+            - img [ref=e411]
+    - generic [ref=e414]:
+      - generic [ref=e415]:
+        - generic [ref=e416]:
+          - heading "Develop" [level=4] [ref=e417]
+          - list [ref=e418]:
+            - listitem [ref=e419]:
+              - link "Learn" [ref=e420] [cursor=pointer]:
+                - /url: /docs/learn
+            - listitem [ref=e421]:
+              - link "API" [ref=e422] [cursor=pointer]:
+                - /url: /docs/api
+        - generic [ref=e423]:
+          - heading "Explore" [level=4] [ref=e424]
+          - list [ref=e425]:
+            - listitem [ref=e426]:
+              - link "Playground" [ref=e427] [cursor=pointer]:
+                - /url: /playground
+            - listitem [ref=e428]:
+              - link "Blog" [ref=e429] [cursor=pointer]:
+                - /url: /blog
+        - generic [ref=e430]:
+          - heading "Participate" [level=4] [ref=e431]
+          - list [ref=e432]:
+            - listitem [ref=e433]:
+              - link "GitHub" [ref=e434] [cursor=pointer]:
+                - /url: https://github.com/facebook/stylex
+                - text: GitHub
+                - img [ref=e435]
+            - listitem [ref=e439]:
+              - link "Acknowledgements" [ref=e440] [cursor=pointer]:
+                - /url: /docs/acknowledgements
+        - generic [ref=e441]:
+          - heading "Legal" [level=4] [ref=e442]
+          - list [ref=e443]:
+            - listitem [ref=e444]:
+              - link "Privacy" [ref=e445] [cursor=pointer]:
+                - /url: https://opensource.fb.com/legal/privacy/
+                - text: Privacy
+                - img [ref=e446]
+            - listitem [ref=e450]:
+              - link "Terms" [ref=e451] [cursor=pointer]:
+                - /url: https://opensource.fb.com/legal/terms/
+                - text: Terms
+                - img [ref=e452]
+      - link [ref=e456] [cursor=pointer]:
+        - /url: https://opensource.fb.com
+        - img [ref=e457]
+      - generic [ref=e489]:
+        - generic [ref=e490]: Copyright © 2025 Meta Platforms, Inc.
+        - generic [ref=e491]:
+          - link [ref=e492] [cursor=pointer]:
+            - /url: https://github.com/facebook/stylex
+            - img [ref=e493]
+          - link [ref=e496] [cursor=pointer]:
+            - /url: https://x.com/stylexjs
+            - img [ref=e497]
+          - link "Bluesky" [ref=e499] [cursor=pointer]:
+            - /url: https://bsky.app/profile/stylexjs.bsky.social
+            - img "Bluesky" [ref=e500]

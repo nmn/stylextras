@@ -4,29 +4,29 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import type { SVGProps } from 'react';
-import { useTheme } from 'next-themes';
-import { useLayoutEffect, useState } from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { StyleXAttributes } from './layout/shared';
-import { vars } from '@/theming/vars.stylex';
+import type { SVGProps } from "react";
+import { useTheme } from "next-themes";
+import { useLayoutEffect, useState } from "react";
+import * as stylex from "@stylexjs/stylex";
+import { StyleXAttributes } from "./layout/shared";
+import { vars } from "@/theming/vars.stylex";
 
-type ThemeKey = 'light' | 'dark' | 'system';
+type ThemeKey = "light" | "dark" | "system";
 
 const items: { key: ThemeKey; Icon: typeof SunIcon; label: string }[] = [
-  { key: 'light', Icon: SunIcon, label: 'Light theme' },
-  { key: 'dark', Icon: MoonIcon, label: 'Dark theme' },
-  { key: 'system', Icon: SparklesIcon, label: 'System theme' },
+  { key: "light", Icon: SunIcon, label: "Light theme" },
+  { key: "dark", Icon: MoonIcon, label: "Dark theme" },
+  { key: "system", Icon: SparklesIcon, label: "System theme" },
 ];
 
 export function ThemeToggle({
   xstyle,
-  mode = 'light-dark-system',
+  mode = "light-dark-system",
   ...props
 }: StyleXAttributes<HTMLElement> & {
-  mode?: 'light-dark' | 'light-dark-system';
+  mode?: "light-dark" | "light-dark-system";
 }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -36,7 +36,7 @@ export function ThemeToggle({
   }, []);
 
   const current =
-    mode === 'light-dark'
+    mode === "light-dark"
       ? mounted
         ? (resolvedTheme ?? null)
         : null
@@ -45,7 +45,7 @@ export function ThemeToggle({
         : null;
 
   const visibleItems =
-    mode === 'light-dark' ? items.filter((i) => i.key !== 'system') : items;
+    mode === "light-dark" ? items.filter((i) => i.key !== "system") : items;
 
   return (
     <div
@@ -57,7 +57,7 @@ export function ThemeToggle({
         const isActive = current === key;
 
         const nextTheme =
-          mode === 'light-dark' && key === 'system' ? 'system' : key;
+          mode === "light-dark" && key === "system" ? "system" : key;
 
         return (
           <button
@@ -143,49 +143,49 @@ function SparklesIcon(props: SVGProps<SVGSVGElement>) {
 
 const styles = stylex.create({
   container: {
-    display: { default: 'inline-flex', '@media (max-width: 420px)': 'none' },
+    display: { default: "inline-flex", "@media (max-width: 420px)": "none" },
     gap: 2,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 0.5 * 4,
-    overflow: 'hidden',
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    overflow: "hidden",
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 999,
   },
   item: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     minWidth: 7 * 4,
     minHeight: 7 * 4,
     color: {
-      default: vars['--color-fd-muted-foreground'],
-      ':focus-visible': vars['--color-fd-foreground'],
-      ':hover': vars['--color-fd-foreground'],
+      default: vars["--color-fd-muted-foreground"],
+      ":focus-visible": vars["--color-fd-foreground"],
+      ":hover": vars["--color-fd-foreground"],
     },
-    outline: 'none',
+    outline: "none",
     backgroundColor: {
-      default: 'transparent',
-      ':hover': `color-mix(in oklab, ${vars['--color-fd-primary']} 10%, ${vars['--color-fd-background']})`,
+      default: "transparent",
+      ":hover": `color-mix(in oklab, ${vars["--color-fd-primary"]} 10%, ${vars["--color-fd-background"]})`,
     },
     borderWidth: 0,
     borderRadius: 999,
     boxShadow: {
-      default: 'none',
-      ':focus-visible': `0 0 0 2px ${vars['--color-fd-primary']}`,
+      default: "none",
+      ":focus-visible": `0 0 0 2px ${vars["--color-fd-primary"]}`,
     },
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDuration: '150ms',
-    transitionProperty: 'background-color, color, box-shadow',
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    transitionDuration: "150ms",
+    transitionProperty: "background-color, color, box-shadow",
   },
   itemGrow: {
     flexGrow: 1,
-    width: 'auto',
+    width: "auto",
   },
   itemActive: {
-    color: vars['--color-fd-primary'],
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-primary']} 12%, ${vars['--color-fd-background']})`,
+    color: vars["--color-fd-primary"],
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-primary"]} 12%, ${vars["--color-fd-background"]})`,
   },
   icon: {
     width: 16,

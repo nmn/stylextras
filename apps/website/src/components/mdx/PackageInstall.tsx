@@ -7,36 +7,36 @@
  * @format
  */
 
-import { Tabs, TabItem } from './Tabs';
-import { versionTag } from './VersionTag';
-import * as stylex from '@stylexjs/stylex';
-import { CodeBlock, Pre } from './CodeBlock';
+import { Tabs, TabItem } from "./Tabs";
+import { versionTag } from "./VersionTag";
+import * as stylex from "@stylexjs/stylex";
+import { CodeBlock, Pre } from "./CodeBlock";
 
 const codeForCLI = ({ prod, dev }: { prod: string[]; dev: string[] }) => ({
   npm: [
-    prod?.length > 0 ? `npm install --save ${prod.join(' ')}` : null,
-    dev?.length > 0 ? `npm install --save-dev ${dev.join(' ')}` : null,
+    prod?.length > 0 ? `npm install --save ${prod.join(" ")}` : null,
+    dev?.length > 0 ? `npm install --save-dev ${dev.join(" ")}` : null,
   ]
     .filter(Boolean)
-    .join('\n'),
+    .join("\n"),
   pnpm: [
-    prod?.length > 0 ? `pnpm add ${prod.join(' ')}` : null,
-    dev?.length > 0 ? `pnpm add -D ${dev.join(' ')}` : null,
+    prod?.length > 0 ? `pnpm add ${prod.join(" ")}` : null,
+    dev?.length > 0 ? `pnpm add -D ${dev.join(" ")}` : null,
   ]
     .filter(Boolean)
-    .join('\n'),
+    .join("\n"),
   yarn: [
-    prod?.length > 0 ? `yarn add ${prod.join(' ')}` : null,
-    dev?.length > 0 ? `yarn add -D ${dev.join(' ')}` : null,
+    prod?.length > 0 ? `yarn add ${prod.join(" ")}` : null,
+    dev?.length > 0 ? `yarn add -D ${dev.join(" ")}` : null,
   ]
     .filter(Boolean)
-    .join('\n'),
+    .join("\n"),
   bun: [
-    prod?.length > 0 ? `bun add ${prod.join(' ')}` : null,
-    dev?.length > 0 ? `bun add -D ${dev.join(' ')}` : null,
+    prod?.length > 0 ? `bun add ${prod.join(" ")}` : null,
+    dev?.length > 0 ? `bun add -D ${dev.join(" ")}` : null,
   ]
     .filter(Boolean)
-    .join('\n'),
+    .join("\n"),
 });
 
 export function DevInstallExample({ prod = [], dev = [] }) {

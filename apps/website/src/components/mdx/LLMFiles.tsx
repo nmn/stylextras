@@ -5,33 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { ScrollableCodeBlock } from './ScrollableCodeBlock';
-
-function getFileContent(filename: string): string {
-  const filePath = join(process.cwd(), 'static', 'llm', filename);
-  return readFileSync(filePath, 'utf-8');
-}
+import stylexAuthoring from '../../../static/llm/stylex-authoring.md?raw'
+import stylexInstallation from '../../../static/llm/stylex-installation.md?raw'
+import { ScrollableCodeBlock } from './ScrollableCodeBlock'
 
 export function LLMInstallationFile() {
-  const content = getFileContent('stylex-installation.md');
   return (
     <ScrollableCodeBlock
-      content={content}
+      content={stylexInstallation}
       maxHeight={400}
       title="stylex-installation.md"
     />
-  );
+  )
 }
 
 export function LLMStylingFile() {
-  const content = getFileContent('stylex-authoring.md');
   return (
-    <ScrollableCodeBlock
-      content={content}
-      maxHeight={400}
-      title="stylex-authoring.md"
-    />
-  );
+    <ScrollableCodeBlock content={stylexAuthoring} maxHeight={400} title="stylex-authoring.md" />
+  )
 }

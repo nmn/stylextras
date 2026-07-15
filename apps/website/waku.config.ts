@@ -4,48 +4,89 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import fs from 'node:fs';
-import path from 'node:path';
-import { createRequire } from 'node:module';
-import { defineConfig } from 'waku/config';
-import mdx from 'fumadocs-mdx/vite';
-import * as MdxConfig from './source.config.js';
-import tsconfigPaths from 'vite-tsconfig-paths';
-import stylex from '@stylexjs/unplugin';
+import fs from "node:fs";
+import path from "node:path";
+import { createRequire } from "node:module";
+import { defineConfig } from "waku/config";
+import mdx from "fumadocs-mdx/vite";
+import * as MdxConfig from "./source.config.js";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { createRunnableDevEnvironment } from "vite";
+import stylex from "@stylexjs/unplugin";
+import type { Plugin } from "vite";
 // import lightningcss from 'lightningcss';
-import { browserslistToTargets } from 'lightningcss';
-import browserslist from 'browserslist';
+import { browserslistToTargets } from "lightningcss";
+import browserslist from "browserslist";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
+type ReactBabelOptions = {
+  plugins: unknown[];
+};
+
+type ReactBabelContext = {
+  ssr: boolean;
+};
+
+const reactCompilerPlugin: Plugin = {
+  name: "stylextras:react-compiler",
+  api: {
+    reactBabel(babelConfig: ReactBabelOptions, context: ReactBabelContext) {
+      if (!context.ssr) {
+        babelConfig.plugins.push("babel-plugin-react-compiler");
+      }
+    },
+  },
+};
+
+const playgroundSsrStubId = "\0stylextras:playground-ssr";
+const playgroundSsrPlugin: Plugin = {
+  name: "stylextras:playground-ssr",
+  enforce: "pre",
+  resolveId(id, importer, options) {
+    if (
+      options.ssr &&
+      id === "./index" &&
+      importer?.endsWith("/components/Playground/DynamicPlayground.tsx")
+    ) {
+      return playgroundSsrStubId;
+    }
+  },
+  load(id) {
+    if (id === playgroundSsrStubId) {
+      return "export default function Playground() { return null; }";
+    }
+  },
+};
+
 // Inline playground sources/types so Monaco and Sandpack can resolve them.
 const playgroundDefines = (() => {
-  const stylexFilename = require.resolve('@stylexjs/stylex');
-  const stylexSource = fs.readFileSync(stylexFilename, 'utf8');
+  const stylexFilename = require.resolve("@stylexjs/stylex");
+  const stylexSource = fs.readFileSync(stylexFilename, "utf8");
   const stylexDir = path.dirname(stylexFilename);
   const stylexTypes: Record<string, string> = {};
 
   for (const file of fs.readdirSync(stylexDir, { recursive: true })) {
     const fileName = String(file);
-    if (!fileName.endsWith('.d.ts')) {
+    if (!fileName.endsWith(".d.ts")) {
       continue;
     }
-    const normalizedFile = fileName.split(path.sep).join('/');
+    const normalizedFile = fileName.split(path.sep).join("/");
     stylexTypes[`file:///node_modules/@stylexjs/stylex/${normalizedFile}`] =
-      fs.readFileSync(path.join(stylexDir, fileName), 'utf8');
+      fs.readFileSync(path.join(stylexDir, fileName), "utf8");
   }
 
   const reactTypesDir = path.dirname(
-    require.resolve('@types/react/package.json'),
+    require.resolve("@types/react/package.json"),
   );
   const reactTypes = fs.readFileSync(
-    path.join(reactTypesDir, 'index.d.ts'),
-    'utf8',
+    path.join(reactTypesDir, "index.d.ts"),
+    "utf8",
   );
   const reactJsxRuntimeTypes = fs.readFileSync(
-    path.join(reactTypesDir, 'jsx-runtime.d.ts'),
-    'utf8',
+    path.join(reactTypesDir, "jsx-runtime.d.ts"),
+    "utf8",
   );
 
   return {
@@ -57,22 +98,39 @@ const playgroundDefines = (() => {
 })();
 
 export default defineConfig({
+  unstable_adapter: "waku/adapters/cloudflare",
   vite: {
+    environments: {
+      ssr: {
+        dev: {
+          createEnvironment(name, config) {
+            // Waku carries its own Vite copy, while this runnable environment
+            // helper comes from the workspace Vite dependency.
+            return createRunnableDevEnvironment(name, config as never) as never;
+          },
+        },
+      },
+    },
     optimizeDeps: {
+      exclude: ["@stylextras/ui"],
       include: [
-        '@stylexjs/babel-plugin',
-        '@babel/standalone',
-        'use-query-params',
-        'serialize-query-params',
-        'path-browserify',
-        'lz-string',
+        "@stylexjs/babel-plugin",
+        "@babel/standalone",
+        "use-query-params",
+        "serialize-query-params",
+        "path-browserify",
+        "lz-string",
       ],
     },
     ssr: {
       // Force these CJS modules to be bundled during SSR so they work properly
-      noExternal: ['use-query-params', 'serialize-query-params'],
+      noExternal: [
+        "@stylextras/ui",
+        "use-query-params",
+        "serialize-query-params",
+      ],
       optimizeDeps: {
-        include: ['use-query-params', 'serialize-query-params'],
+        include: ["use-query-params", "serialize-query-params"],
       },
     },
     define: {
@@ -84,22 +142,24 @@ export default defineConfig({
       ),
     },
     plugins: [
+      reactCompilerPlugin,
+      playgroundSsrPlugin,
       // @ts-ignore
       stylex.vite({
-        debug: process.env.NODE_ENV === 'development',
+        debug: process.env.NODE_ENV === "development",
         treeshakeCompensation: true,
         enableDebugClassNames: false,
         enableDevClassNames: false,
         useCSSLayers: true,
-        devMode: 'css-only',
+        devMode: "css-only",
         devPersistToDisk: true,
         runtimeInjection: false,
         aliases: {
-          '@/*': [path.join(__dirname, 'src/*')],
+          "@/*": [path.join(__dirname, "src/*")],
         },
         lightningcssOptions: {
-          minify: process.env.NODE_ENV !== 'development',
-          targets: browserslistToTargets(browserslist('>= 5%')),
+          minify: process.env.NODE_ENV !== "development",
+          targets: browserslistToTargets(browserslist(">= 5%")),
         },
       }),
       // @ts-ignore

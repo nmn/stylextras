@@ -4,14 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import { vars } from '@/theming/vars.stylex';
-import * as stylex from '@stylexjs/stylex';
-import { ChevronDown } from 'lucide-react';
-import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { useId, createContext, Children, use } from 'react';
-import { accordionContainerMarker } from './mdx.stylex';
+import { vars } from "@/theming/vars.stylex";
+import * as stylex from "@stylexjs/stylex";
+import { ChevronDown } from "lucide-react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { useId, createContext, Children, use } from "react";
+import { accordionContainerMarker } from "./mdx.stylex";
 
 const AccordionContext = createContext<string | null>(null);
 
@@ -19,14 +19,14 @@ export function Accordions({
   type,
   children,
 }: {
-  type: 'single' | 'multiple';
+  type: "single" | "multiple";
   children: ReactNode;
 }) {
   const id = useId();
 
   return (
     <div {...stylex.props(styles.group, accordionContainerMarker)}>
-      {type === 'single' ? (
+      {type === "single" ? (
         <AccordionContext value={id}>{children}</AccordionContext>
       ) : (
         children
@@ -38,7 +38,7 @@ export function Accordions({
 export function Details({
   children,
   ...props
-}: Omit<ComponentPropsWithoutRef<'details'>, 'className' | 'style'>) {
+}: Omit<ComponentPropsWithoutRef<"details">, "className" | "style">) {
   const id = use(AccordionContext);
   const [summary, ...content] = Children.toArray(children);
 
@@ -80,7 +80,7 @@ export function Accordion({
 export function Summary({
   children,
   ...props
-}: Omit<ComponentPropsWithoutRef<'summary'>, 'className' | 'style'> & {
+}: Omit<ComponentPropsWithoutRef<"summary">, "className" | "style"> & {
   children: ReactNode;
 }) {
   return (
@@ -91,98 +91,98 @@ export function Summary({
   );
 }
 
-const DURATION = '0.3s';
-const EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+const DURATION = "0.3s";
+const EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
 const styles = stylex.create({
   group: {
-    overflow: 'hidden',
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    overflow: "hidden",
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 16,
-    cornerShape: 'squircle',
+    cornerShape: "squircle",
   },
   container: {
-    interpolateSize: 'allow-keywords',
+    interpolateSize: "allow-keywords",
     paddingBlock: 8,
     paddingInline: 16,
-    backgroundColor: vars['--color-fd-card'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
+    backgroundColor: vars["--color-fd-card"],
+    borderColor: vars["--color-fd-border"],
+    borderStyle: "solid",
     borderWidth: {
       default: 1,
-      [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: 0,
+      [stylex.when.ancestor(":where(*)", accordionContainerMarker)]: 0,
     },
     borderTopWidth: {
       default: 1,
       // eslint-disable-next-line @stylexjs/valid-styles
-      [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: {
+      [stylex.when.ancestor(":where(*)", accordionContainerMarker)]: {
         default: 1,
-        ':first-child': 0,
+        ":first-child": 0,
       },
     },
     borderRadius: {
       default: 8,
-      [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: 0,
+      [stylex.when.ancestor(":where(*)", accordionContainerMarker)]: 0,
     },
-    cornerShape: 'squircle',
+    cornerShape: "squircle",
     // eslint-disable-next-line @stylexjs/valid-styles
-    '::details-content': {
-      display: 'block',
-      contentVisibility: 'visible',
+    "::details-content": {
+      display: "block",
+      contentVisibility: "visible",
     },
   },
   grouped: {
-    borderTopWidth: { default: 0, ':first-child': 1 },
-    borderStartStartRadius: { default: 0, ':first-child': 8 },
-    borderStartEndRadius: { default: 0, ':first-child': 8 },
-    borderEndStartRadius: { default: 0, ':last-child': 8 },
-    borderEndEndRadius: { default: 0, ':last-child': 8 },
+    borderTopWidth: { default: 0, ":first-child": 1 },
+    borderStartStartRadius: { default: 0, ":first-child": 8 },
+    borderStartEndRadius: { default: 0, ":first-child": 8 },
+    borderEndStartRadius: { default: 0, ":last-child": 8 },
+    borderEndEndRadius: { default: 0, ":last-child": 8 },
   },
   content: {
-    display: 'grid',
+    display: "grid",
     gridTemplateRows: {
-      default: '0fr',
-      [stylex.when.ancestor(':is([open])')]: '1fr',
+      default: "0fr",
+      [stylex.when.ancestor(":is([open])")]: "1fr",
     },
     transitionTimingFunction: EASING,
     transitionDuration: DURATION,
-    transitionProperty: 'grid-template-rows',
+    transitionProperty: "grid-template-rows",
   },
   contentInner: {
-    overflow: 'hidden',
+    overflow: "hidden",
     opacity: {
       default: 0,
-      [stylex.when.ancestor(':is([open])')]: 1,
+      [stylex.when.ancestor(":is([open])")]: 1,
     },
     transitionTimingFunction: EASING,
     transitionDuration: DURATION,
-    transitionProperty: 'opacity',
+    transitionProperty: "opacity",
   },
   summary: {
-    position: 'relative',
+    position: "relative",
     paddingInlineStart: 24,
     fontWeight: 500,
-    color: vars['--color-fd-card-foreground'],
-    cursor: 'default',
-    listStyleType: 'none',
+    color: vars["--color-fd-card-foreground"],
+    cursor: "default",
+    listStyleType: "none",
     // margin: '-1rem',
     // marginBottom: 'var(--summary-gap)',
     // paddingInlineStart: '2.2rem',
     // padding: '1rem',
   },
   chevron: {
-    position: 'absolute',
+    position: "absolute",
     insetInlineStart: 0,
     top: 6,
     width: 16,
     height: 16,
     transform: {
-      default: 'rotate(-90deg)',
-      [stylex.when.ancestor(':is([open])')]: 'rotate(0deg)',
+      default: "rotate(-90deg)",
+      [stylex.when.ancestor(":is([open])")]: "rotate(0deg)",
     },
     transitionTimingFunction: EASING,
     transitionDuration: DURATION,
-    transitionProperty: 'transform',
+    transitionProperty: "transform",
   },
 });

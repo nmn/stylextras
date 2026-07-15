@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from "@stylexjs/stylex";
 
 export const cardMarker = stylex.defineMarker();
 export const btnMarker = stylex.defineMarker();

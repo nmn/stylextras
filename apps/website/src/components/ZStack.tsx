@@ -4,39 +4,44 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import React from 'react';
-import * as stylex from '@stylexjs/stylex';
-
-const { useEffect, useState } = React;
+import {
+  Children,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import type { ReactNode } from "react";
+import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
   container: {
-    display: 'inline-grid',
+    display: "inline-grid",
   },
   item: {
-    gridArea: '1 / 1',
+    gridArea: "1 / 1",
     opacity: 0,
-    transitionTimingFunction: 'linear',
-    transitionDuration: '0.5s',
-    transitionProperty: 'opacity',
+    transitionTimingFunction: "linear",
+    transitionDuration: "0.5s",
+    transitionProperty: "opacity",
   },
   visible: {
     opacity: 1,
   },
 });
 
-const ActiveItemContext = React.createContext(false);
+const ActiveItemContext = createContext(false);
 
 export function ZStack({
   children: _children,
   xstyle,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   xstyle?: stylex.StyleXStyles;
 }) {
-  const children = React.Children.toArray(_children);
+  const children = Children.toArray(_children);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -63,10 +68,10 @@ export function ZStackItem({
   children,
   style,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   style: stylex.StyleXStyles;
 }) {
-  const active = React.useContext(ActiveItemContext);
+  const active = useContext(ActiveItemContext);
   return (
     <span {...stylex.props(styles.item, active && styles.visible, style)}>
       {children}

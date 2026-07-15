@@ -1,0 +1,70 @@
+---
+title: "Get started"
+description: "Install the native-first Stylextras UI package and apply its StyleX themes."
+---
+
+Stylextras combines implementation and tokenized styling in each public component.
+There is no unstyled primitive layer, provider, or theme root.
+
+## Install
+
+```sh
+bun add @stylextras/ui @stylexjs/stylex react
+```
+
+Import the compiled component CSS once at your application root.
+
+```tsx
+import "@stylextras/ui/styles.css";
+```
+
+## Import components
+
+Every stable component has a canonical subpath and there is no package barrel.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+import { Select } from "@stylextras/ui/select";
+
+export function Example() {
+  return (
+    <form>
+      <Select name="priority" defaultValue="normal">
+        <option value="normal">Normal</option>
+        <option value="urgent">Urgent</option>
+      </Select>
+      <Button type="submit">Save</Button>
+    </form>
+  );
+}
+```
+
+## Apply themes directly
+
+Theme exports are ordinary StyleX style objects. Apply any combination to any
+element; no provider, context, or client JavaScript is involved.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colorThemes } from "@stylextras/ui/color-themes";
+import { radiusThemes } from "@stylextras/ui/radius-themes";
+import { spacingThemes } from "@stylextras/ui/spacing-themes";
+
+export function ThemeBoundary({ children }) {
+  return (
+    <section
+      {...stylex.props(
+        colorThemes.zinc,
+        spacingThemes.compact,
+        radiusThemes.rounded,
+      )}
+    >
+      {children}
+    </section>
+  );
+}
+```
+
+The independent variable groups are colors, spacing, radius, stroke,
+typography, elevation, blur, and motion. Each group keeps its themeable core and
+same-set derived values together.

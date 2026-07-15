@@ -4,14 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 function DevStyleXHMR() {
   useEffect(() => {
     // @ts-ignore
-    import('virtual:stylex:css-only');
+    import("virtual:stylex:css-only");
   }, []);
   return <link href="/virtual:stylex.css" rel="stylesheet" />;
 }
