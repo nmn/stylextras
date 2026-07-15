@@ -17,6 +17,7 @@ export default function SidebarToggle() {
 
   return (
     <button
+      aria-label="Toggle documentation sidebar"
       onClick={() => {
         setOpen((old) => {
           if (old === null) {

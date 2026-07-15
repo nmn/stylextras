@@ -5,6 +5,8 @@ type Tstroke = VarGroup<
   Readonly<{
     hairline: string;
     heavy: string;
+    focusRing: string;
+    focusRingOffset: string;
     thick: string;
     thin: string;
   }>
@@ -19,4 +21,6 @@ export const stroke: Tstroke = stylex.defineVars({
   },
   thick: () => `calc(${stroke.thin} * 2)`,
   heavy: () => `calc(${stroke.thin} * 3)`,
+  focusRing: () => `calc(${stroke.thin} * 2)`,
+  focusRingOffset: () => stroke.thin,
 });

@@ -4,24 +4,24 @@ import { spacing } from "../tokens/spacing.stylex";
 export const baseTheme = stylex.createTheme(spacing, {});
 
 export const tightTheme = stylex.createTheme(spacing, {
-  base: "2px",
+  base: "3px",
 });
 export const microTheme = tightTheme;
 
 export const compactTheme = stylex.createTheme(spacing, {
-  base: "3px",
+  base: "3.5px",
 });
 
 export const cozyTheme = stylex.createTheme(spacing, {
-  base: "4px",
+  base: "4.5px",
 });
 
 export const roomyTheme = stylex.createTheme(spacing, {
-  base: "6px",
+  base: "5px",
 });
 
 export const posterTheme = stylex.createTheme(spacing, {
-  base: "8px",
+  base: "6px",
 });
 
 export const spacingThemes = {

@@ -1,23 +1,15 @@
 "use client";
 
 import * as stylex from "@stylexjs/stylex";
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import type { MouseEvent, ReactNode } from "react";
-import { IconButton, type IconButtonProps } from "../icon-button/index";
-import { showPopoverWithSource } from "../lazy-component";
-import {
-  attachPopoverPolyfills,
-  hidePopoverElement,
-  isPopoverOpen,
-} from "../platform-polyfills";
+import { Button, type ButtonProps } from "../button/index";
+import { showPopoverWithSource } from "../platform-polyfills/popover-source";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
-export type CopyToClipboardButtonProps = Omit<
-  IconButtonProps,
-  "children" | "label"
-> & {
+export type CopyToClipboardButtonProps = Omit<ButtonProps, "children"> & {
   copiedText?: ReactNode;
   icon?: ReactNode;
   label?: string;
@@ -40,8 +32,9 @@ export function CopyToClipboardButton({
   label = "Copy to clipboard",
   onClick,
   onCopy,
+  ref,
   resetAfterMs = 1500,
-  size = "md",
+  size = "icon",
   sx,
   type = "button",
   value,
@@ -49,9 +42,10 @@ export function CopyToClipboardButton({
 }: CopyToClipboardButtonProps) {
   const timeoutRef = useRef<number | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const popoverId = `stylextras-copy-${useId().replaceAll(":", "")}`;
   function setPopoverRef(node: HTMLDivElement | null) {
     popoverRef.current = node;
-    attachPopoverPolyfills(node);
     return () => {
       if (timeoutRef.current !== null) {
         window.clearTimeout(timeoutRef.current);
@@ -64,15 +58,16 @@ export function CopyToClipboardButton({
     if (!element) {
       return;
     }
-    if (!isPopoverOpen(element)) {
-      showPopoverWithSource(element, null);
+    if (!element.matches(":popover-open")) {
+      const source = triggerRef.current;
+      showPopoverWithSource(element, source ?? undefined);
     }
     if (timeoutRef.current !== null) {
       window.clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = window.setTimeout(() => {
-      if (isPopoverOpen(element)) {
-        hidePopoverElement(element);
+      if (element.matches(":popover-open")) {
+        element.hidePopover();
       }
     }, resetAfterMs);
   }
@@ -92,17 +87,23 @@ export function CopyToClipboardButton({
   }
   return (
     <span {...stylex.props(rootStyles.base)}>
-      <IconButton
+      <Button
+        ref={(node) => {
+          triggerRef.current = node;
+          if (typeof ref === "function") ref(node);
+          else if (ref) ref.current = node;
+        }}
         {...props}
-        label={label}
+        aria-label={label}
         onClick={handleClick}
         size={size}
         sx={[triggerStyles.base, sx]}
         type={type}
       >
         {icon}
-      </IconButton>
+      </Button>
       <div
+        id={popoverId}
         ref={setPopoverRef}
         popover="manual"
         role="status"

@@ -1,22 +1,22 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithoutRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"nav">;
+type BaseProps = ComponentPropsWithoutRef<'nav'>
 
 export type TableOfContentsItem = {
-  href: string;
-  label: string;
-};
+  href: string
+  label: string
+}
 
-export type TableOfContentsProps = Omit<BaseProps, "className" | "style"> & {
-  items: TableOfContentsItem[];
-  sx?: StyleXStyles;
-  title?: string;
-};
+export type TableOfContentsProps = Omit<BaseProps, 'className' | 'style'> & {
+  items: TableOfContentsItem[]
+  sx?: StyleXStyles
+  title?: string
+}
 
 /**
  * Renders an anchored list of in-page links.
@@ -30,7 +30,7 @@ export type TableOfContentsProps = Omit<BaseProps, "className" | "style"> & {
 export function TableOfContents({
   items,
   sx,
-  title = "On this page",
+  title = 'On this page',
   ...props
 }: TableOfContentsProps) {
   return (
@@ -46,24 +46,24 @@ export function TableOfContents({
         ))}
       </ol>
     </nav>
-  );
+  )
 }
 
 const rootStyles = stylex.create({
   base: {
     gap: spacing.sm,
-    display: "grid",
+    display: 'grid',
   },
-});
+})
 
 const listStyles = stylex.create({
   base: {
     margin: 0,
     gap: spacing.xs,
-    display: "grid",
-    paddingLeft: spacing.md,
+    display: 'grid',
+    paddingInlineStart: spacing.md,
   },
-});
+})
 
 const textStyles = stylex.create({
   title: {
@@ -73,9 +73,9 @@ const textStyles = stylex.create({
     fontWeight: typography.weightSemibold,
   },
   link: {
-    textDecoration: "none",
+    textDecoration: 'none',
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
   },
-});
+})

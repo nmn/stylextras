@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import { Kbd } from "./index";
-import { DemoFrame, DemoRow } from "../example-theme/demo";
+import { Kbd } from './index'
+import { DemoFrame, DemoRow, DemoStack } from '../example-theme/demo'
 
 export default function Example() {
   return (
-    <>
+    <DemoStack>
       <DemoFrame
         title="Shortcuts"
         description="Kbd should show common shortcut combinations directly."
@@ -19,6 +19,17 @@ export default function Example() {
           <Kbd>enter</Kbd>
         </DemoRow>
       </DemoFrame>
-    </>
-  );
+      <DemoFrame
+        title="Key sizes"
+        description="Compact keys fit inline hints; medium keys suit shortcut references."
+      >
+        <DemoRow>
+          <Kbd size="sm">esc</Kbd>
+          <Kbd size="sm">/</Kbd>
+          <Kbd size="md">shift</Kbd>
+          <Kbd size="md">enter</Kbd>
+        </DemoRow>
+      </DemoFrame>
+    </DemoStack>
+  )
 }

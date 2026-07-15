@@ -1,139 +1,164 @@
-import { Suspense, useRef, useState } from "react";
-import type { ReactNode } from "react";
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithRef } from "react";
-import { Button, type ButtonProps } from "../button";
-import { DialogProgrammatic, type DialogProgrammaticProps } from "../dialog";
-import {
-  type LazyComponentLoader,
-  type ReactComponent,
-  useLazyComponent,
-} from "../lazy-component";
-import { colors } from "../tokens/color.stylex";
-import { elevation } from "../tokens/elevation.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-type BaseProps = ComponentPropsWithRef<"dialog">;
-export type AlertDialogProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
-export type AlertDialogContentProps = AlertDialogProps;
-export type AlertDialogTriggerProps = Omit<
-  ButtonProps,
-  "className" | "content" | "style"
-> & {
-  content: LazyComponentLoader<AlertDialogContentProps>;
-  contentProps?: Omit<AlertDialogContentProps, "ref">;
-  fallback?: ReactNode;
-};
-export type AlertDialogComponent = ReactComponent<AlertDialogContentProps>;
-export type AlertDialogProgrammaticProps =
-  DialogProgrammaticProps<AlertDialogContentProps>;
-/**
- * Renders an alert-focused modal surface using the native dialog element.
- *
- * Search aliases: alert dialog, confirm dialog, destructive dialog, modal alert.
- *
- * A11y notes:
- * - Relies on native <dialog> behavior for focus and modality.
- * - Does not add a custom focus trap, trigger restore, or stacked dialog management layer.
- */
-export function AlertDialogContent({
-  ref,
-  sx,
-  ...props
-}: AlertDialogContentProps) {
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { Button, type ButtonProps } from '../button'
+import { blur } from '../tokens/blur.stylex'
+import { colors } from '../tokens/color.stylex'
+import { elevation } from '../tokens/elevation.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
+
+type SxProp = { sx?: StyleXStyles }
+
+export type AlertDialogProps = Omit<
+  ComponentPropsWithRef<'dialog'>,
+  'className' | 'role' | 'style'
+> &
+  SxProp
+export type AlertDialogTriggerProps = ButtonProps & { target: string }
+export type AlertDialogCancelProps = ButtonProps & { target: string }
+export type AlertDialogActionProps = ButtonProps & { target: string }
+export type AlertDialogHeaderProps = Omit<ComponentPropsWithRef<'header'>, 'className' | 'style'> &
+  SxProp
+export type AlertDialogFooterProps = Omit<ComponentPropsWithRef<'footer'>, 'className' | 'style'> &
+  SxProp
+export type AlertDialogTitleProps = Omit<ComponentPropsWithRef<'h2'>, 'className' | 'style'> &
+  SxProp
+export type AlertDialogDescriptionProps = Omit<ComponentPropsWithRef<'p'>, 'className' | 'style'> &
+  SxProp
+
+const commandProps = (target: string, command: 'show-modal' | 'request-close') =>
+  ({ command, commandfor: target }) as Record<string, string>
+
+export function AlertDialog({ ref, sx, ...props }: AlertDialogProps) {
+  const closedByProps = { closedby: 'any' } as Record<string, string>
   return (
     <dialog
       ref={ref}
       role="alertdialog"
+      {...closedByProps}
       {...props}
-      {...stylex.props(styles.base, sx)}
+      {...stylex.props(styles.dialog, sx)}
     />
-  );
+  )
 }
-export function AlertDialogTrigger({
-  children,
-  content,
-  contentProps,
-  fallback = null,
-  onClick,
-  onFocus,
-  onPointerEnter,
-  type = "button",
-  ...props
-}: AlertDialogTriggerProps) {
-  const [mounted, setMounted] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const shouldOpenRef = useRef(false);
-  const { LazyContent, preload } = useLazyComponent(content);
-  function openDialog() {
-    shouldOpenRef.current = true;
-    setMounted(true);
-    const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
-      dialog.showModal();
-      shouldOpenRef.current = false;
-    }
-  }
-  function setDialogRef(node: HTMLDialogElement | null) {
-    dialogRef.current = node;
-    if (node && shouldOpenRef.current && !node.open) {
-      node.showModal();
-      shouldOpenRef.current = false;
-    }
-    return () => {
-      if (dialogRef.current === node) {
-        dialogRef.current = null;
-      }
-    };
-  }
+
+export function AlertDialogTrigger({ target, type = 'button', ...props }: AlertDialogTriggerProps) {
   return (
-    <>
-      <Button
-        {...props}
-        onClick={(event) => {
-          onClick?.(event);
-          if (!event.defaultPrevented) {
-            openDialog();
-          }
-        }}
-        onFocus={(event) => {
-          onFocus?.(event);
-          void preload();
-        }}
-        onPointerEnter={(event) => {
-          onPointerEnter?.(event);
-          void preload();
-        }}
-        type={type}
-      >
-        {children}
-      </Button>
-      {mounted ? (
-        <Suspense fallback={fallback}>
-          <LazyContent {...contentProps} ref={setDialogRef} />
-        </Suspense>
-      ) : null}
-    </>
-  );
+    <Button type={type} aria-haspopup="dialog" {...props} {...commandProps(target, 'show-modal')} />
+  )
 }
-export function AlertDialogProgrammatic(props: AlertDialogProgrammaticProps) {
-  return <DialogProgrammatic<AlertDialogContentProps> {...props} />;
+
+export function AlertDialogCancel({
+  target,
+  type = 'button',
+  variant = 'outline',
+  ...props
+}: AlertDialogCancelProps) {
+  return (
+    <Button type={type} variant={variant} {...props} {...commandProps(target, 'request-close')} />
+  )
 }
-export const AlertDialog = AlertDialogContent;
+
+export function AlertDialogAction({
+  target,
+  type = 'button',
+  variant = 'danger',
+  ...props
+}: AlertDialogActionProps) {
+  return (
+    <Button type={type} variant={variant} {...props} {...commandProps(target, 'request-close')} />
+  )
+}
+
+export function AlertDialogHeader({ ref, sx, ...props }: AlertDialogHeaderProps) {
+  return <header ref={ref} {...props} {...stylex.props(styles.header, sx)} />
+}
+
+export function AlertDialogTitle({ ref, sx, ...props }: AlertDialogTitleProps) {
+  return <h2 ref={ref} {...props} {...stylex.props(styles.title, sx)} />
+}
+
+export function AlertDialogDescription({ ref, sx, ...props }: AlertDialogDescriptionProps) {
+  return <p ref={ref} {...props} {...stylex.props(styles.description, sx)} />
+}
+
+export function AlertDialogFooter({ ref, sx, ...props }: AlertDialogFooterProps) {
+  return <footer ref={ref} {...props} {...stylex.props(styles.footer, sx)} />
+}
+
+/* eslint-disable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */
 const styles = stylex.create({
-  base: {
-    margin: "auto",
-    padding: spacing.lg,
-    borderColor: colors.border,
-    borderRadius: radius.xl,
-    borderStyle: "solid",
+  dialog: {
+    backgroundColor: colors.popover,
+    borderColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
+    borderRadius: radius.lg,
+    borderStyle: 'solid',
     borderWidth: stroke.thin,
-    backgroundColor: colors.bgRaised,
     boxShadow: elevation.lg,
-    color: colors.fg,
+    color: colors.popoverForeground,
+    margin: 'auto',
+    maxWidth: 'calc(100vw - 2rem)',
+    opacity: { default: 0, ':open': 1 },
+    padding: spacing.lg,
+    transform: {
+      default: 'scale(0.98)',
+      ':open': 'scale(1)',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    transitionBehavior: 'allow-discrete',
+    transitionDuration: {
+      default: motion.durationModerate,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'display, opacity, overlay, transform',
+    transitionTimingFunction: motion.easeEmphasized,
+    width: 'min(28rem, calc(100vw - 2rem))',
+    '::backdrop': {
+      backdropFilter: `blur(${blur.sm})`,
+      backgroundColor: colors.overlay,
+      opacity: 0,
+      transitionBehavior: 'allow-discrete',
+      transitionDuration: {
+        default: motion.durationModerate,
+        '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+      },
+      transitionProperty: 'backdrop-filter, display, opacity, overlay',
+      transitionTimingFunction: motion.easeStandard,
+    },
+    ':open::backdrop': {
+      opacity: 1,
+    },
   },
-});
+  header: {
+    display: 'grid',
+    gap: spacing.xs,
+  },
+  title: {
+    fontFamily: typography.fontDisplay,
+    fontSize: typography.step1,
+    fontWeight: typography.weightSemibold,
+    lineHeight: typography.lineHeightTight,
+    margin: 0,
+  },
+  description: {
+    color: colors.fgMuted,
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    lineHeight: typography.lineHeightBody,
+    margin: 0,
+  },
+  footer: {
+    display: 'flex',
+    gap: spacing.sm,
+    justifyContent: 'flex-end',
+    marginBlockStart: spacing.lg,
+  },
+})
+/* eslint-enable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */

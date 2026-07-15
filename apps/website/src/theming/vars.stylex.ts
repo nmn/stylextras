@@ -120,7 +120,7 @@ export const vars = stylex.defineVars({
   "--color-fd-foreground": lightDark("hsl(0, 0%, 3.9%)", "hsl(0, 0%, 92%)"),
   "--color-fd-muted": lightDark("hsl(0, 0%, 96.1%)", "hsl(0, 0%, 12.9%)"),
   "--color-fd-muted-foreground": lightDark(
-    "hsl(0, 0%, 45.1%)",
+    "hsl(0, 0%, 42%)",
     "hsla(0, 0%, 70%, 0.8)",
   ),
   "--color-fd-popover": lightDark("hsl(0, 0%, 98%)", "hsl(0, 0%, 11.6%)"),
@@ -138,9 +138,9 @@ export const vars = stylex.defineVars({
     "hsla(0, 0%, 30%, 25%)",
   ),
 
-  "--color-fd-primary": lightDark("hsl(266, 58%, 61.8%)", "hsl(270, 72%, 77%)"),
+  "--color-fd-primary": lightDark("hsl(266, 58%, 57%)", "hsl(270, 72%, 77%)"),
   "--color-fd-primary-foreground": lightDark(
-    "hsl(234, 16%, 35%)",
+    "hsl(0, 0%, 100%)",
     "hsl(240, 23%, 9%)",
   ),
   "--color-fd-secondary": lightDark("hsl(0, 0%, 93.1%)", "hsl(0, 0%, 12.9%)"),

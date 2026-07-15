@@ -1,0 +1,36 @@
+import * as stylex from '@stylexjs/stylex'
+import { motion } from '../tokens/motion.stylex'
+
+export const standardTheme = stylex.createTheme(motion, {})
+
+export const snappyTheme = stylex.createTheme(motion, {
+  durationBase: '120ms',
+  easeStandard: 'cubic-bezier(0.2, 0, 0, 1)',
+  easeEmphasized: 'cubic-bezier(0.16, 1, 0.3, 1)',
+})
+
+export const gentleTheme = stylex.createTheme(motion, {
+  durationBase: '200ms',
+  easeStandard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  easeEmphasized: 'cubic-bezier(0.22, 1, 0.36, 1)',
+})
+
+export const expressiveTheme = stylex.createTheme(motion, {
+  durationBase: '180ms',
+  easeStandard: 'cubic-bezier(0.3, 0, 0.2, 1)',
+  easeEmphasized: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+})
+
+export const instantTheme = stylex.createTheme(motion, {
+  durationBase: '0ms',
+})
+
+export const motionThemes = {
+  standard: standardTheme,
+  snappy: snappyTheme,
+  gentle: gentleTheme,
+  expressive: expressiveTheme,
+  instant: instantTheme,
+} as const
+
+export type MotionThemeName = keyof typeof motionThemes

@@ -1,126 +1,91 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ElementType } from "react";
-import { colors } from "../tokens/color.stylex";
-import { typography } from "../tokens/typography.stylex";
-
-type BaseProps = ComponentPropsWithoutRef<"p">;
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef, ElementType } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { typography } from '../tokens/typography.stylex'
 
 export type TypographyTone =
-  | "default"
-  | "soft"
-  | "muted"
-  | "brand"
-  | "info"
-  | "success"
-  | "warning"
-  | "danger";
+  | 'default'
+  | 'soft'
+  | 'muted'
+  | 'brand'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
 
-export type TypographyScale = "label" | "body" | "title" | "display";
+export type TypographyScale = 'label' | 'body' | 'title' | 'display'
 
-export type TypographyProps = Omit<BaseProps, "className" | "style"> & {
-  as?: ElementType;
-  sx?: StyleXStyles;
-  tone?: TypographyTone;
-  scale?: TypographyScale;
-  mono?: boolean;
-};
+export type TypographyProps<T extends ElementType = 'p'> = Omit<
+  ComponentPropsWithRef<T>,
+  'className' | 'style'
+> & {
+  as?: T
+  mono?: boolean
+  scale?: TypographyScale
+  sx?: StyleXStyles
+  tone?: TypographyTone
+}
 
-/**
- * Renders token-driven type styles across body, title, label, and display scales.
- *
- * Search aliases: typography, type, text styles, heading text.
- *
- * A11y notes:
- * - Inherits semantics from the chosen underlying element.
- * - The caller must choose an appropriate element for headings, paragraphs, and document structure.
- */
-export function Typography({
-  as: Component = "p",
+export function Typography<T extends ElementType = 'p'>({
+  as,
   mono = false,
-  scale = "body",
+  scale = 'body',
   sx,
-  tone = "default",
+  tone = 'default',
   ...props
-}: TypographyProps) {
+}: TypographyProps<T>) {
+  const Component = as ?? 'p'
   return (
     <Component
       {...props}
       {...stylex.props(
-        baseStyles.base,
+        styles.base,
         scaleStyles[scale],
         toneStyles[tone],
-        mono && fontStyles.mono,
+        mono && styles.mono,
         sx,
       )}
     />
-  );
+  )
 }
 
-const baseStyles = stylex.create({
+const styles = stylex.create({
   base: {
-    margin: 0,
     color: colors.fg,
     fontFamily: typography.fontSans,
     fontWeight: typography.weightRegular,
     letterSpacing: typography.trackingNormal,
     lineHeight: typography.lineHeightBody,
+    margin: 0,
   },
-});
-
-const fontStyles = stylex.create({
-  mono: {
-    fontFamily: typography.fontMono,
-  },
-});
+  mono: { fontFamily: typography.fontMono },
+})
 
 const toneStyles = stylex.create({
-  default: {
-    color: colors.fg,
-  },
-  soft: {
-    color: colors.fgSoft,
-  },
-  muted: {
-    color: colors.fgMuted,
-  },
-  brand: {
-    color: colors.brand,
-  },
-  info: {
-    color: colors.info,
-  },
-  success: {
-    color: colors.success,
-  },
-  warning: {
-    color: colors.warning,
-  },
-  danger: {
-    color: colors.danger,
-  },
-});
+  default: { color: colors.fg },
+  soft: { color: colors.fgSoft },
+  muted: { color: colors.fgMuted },
+  brand: { color: colors.brand },
+  info: { color: colors.info },
+  success: { color: colors.success },
+  warning: { color: colors.warning },
+  danger: { color: colors.danger },
+})
 
 const scaleStyles = stylex.create({
   label: {
-    fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     fontWeight: typography.weightMedium,
     letterSpacing: typography.trackingWide,
     lineHeight: typography.lineHeightSnug,
   },
   body: {
-    fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    fontWeight: typography.weightRegular,
-    letterSpacing: typography.trackingNormal,
-    lineHeight: typography.lineHeightBody,
   },
   title: {
-    fontFamily: typography.fontSans,
     fontSize: typography.step1,
     fontWeight: typography.weightSemibold,
-    letterSpacing: typography.trackingNormal,
     lineHeight: typography.lineHeightTight,
   },
   display: {
@@ -130,4 +95,4 @@ const scaleStyles = stylex.create({
     letterSpacing: typography.trackingTight,
     lineHeight: typography.lineHeightTight,
   },
-});
+})

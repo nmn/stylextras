@@ -4,10 +4,10 @@ import { typography } from "../tokens/typography.stylex";
 export const uiTheme = stylex.createTheme(typography, {});
 
 export const editorialTheme = stylex.createTheme(typography, {
-  fontSizeMin: "19px",
-  fontSizeMax: "21px",
-  scaleMin: "1.18",
-  scaleMax: "1.24",
+  fontSizeMin: "15px",
+  fontSizeMax: "16px",
+  scaleMin: "1.15",
+  scaleMax: "1.2",
   fontSans: `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif`,
   fontDisplay: `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif`,
   lineHeightTight: "1.1",
@@ -19,10 +19,10 @@ export const editorialTheme = stylex.createTheme(typography, {
 });
 
 export const monoTheme = stylex.createTheme(typography, {
-  fontSizeMin: "17px",
-  fontSizeMax: "19px",
-  scaleMin: "1.14",
-  scaleMax: "1.18",
+  fontSizeMin: "13px",
+  fontSizeMax: "14px",
+  scaleMin: "1.12",
+  scaleMax: "1.16",
   fontSans: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
   fontDisplay: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
   fontMono: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
@@ -35,12 +35,12 @@ export const monoTheme = stylex.createTheme(typography, {
 });
 
 export const industrialTheme = stylex.createTheme(typography, {
-  fontSizeMin: "18px",
-  fontSizeMax: "22px",
-  scaleMin: "1.24",
-  scaleMax: "1.32",
-  fontSans: `"Arial Narrow", "Helvetica Neue", Arial, sans-serif`,
-  fontDisplay: `"Arial Narrow", "Helvetica Neue", Arial, sans-serif`,
+  fontSizeMin: "14px",
+  fontSizeMax: "15px",
+  scaleMin: "1.14",
+  scaleMax: "1.2",
+  fontSans: `"DIN Alternate", "Avenir Next Condensed", "Helvetica Neue", sans-serif`,
+  fontDisplay: `"DIN Alternate", "Avenir Next Condensed", "Helvetica Neue", sans-serif`,
   lineHeightTight: "1.05",
   lineHeightSnug: "1.18",
   lineHeightBody: "1.42",

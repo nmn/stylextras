@@ -1,49 +1,36 @@
-"use client";
+'use client'
 
-import { Button } from "../button";
-import { ButtonGroup } from "../button-group";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
-import { SearchField } from "../search-field";
-import { Typography } from "../typography";
+import { DemoFrame } from '../example-theme/demo'
 import {
-  CommandContent,
-  type CommandContentProps,
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
   CommandTrigger,
-} from "./index";
+} from './index'
 
-function CommandExampleContent(props: CommandContentProps) {
-  return (
-    <CommandContent {...props}>
-      <DemoStack>
-        <Typography as="h3" scale="title">
-          Quick jump
-        </Typography>
-        <SearchField label="Search" placeholder="button, tokens, examples" />
-        <form method="dialog">
-          <ButtonGroup>
-            <Button type="button">Open button docs</Button>
-            <Button type="button" variant="secondary">
-              Jump to tokens
-            </Button>
-            <Button type="submit" variant="outline">
-              Close
-            </Button>
-          </ButtonGroup>
-        </form>
-      </DemoStack>
-    </CommandContent>
-  );
-}
+const commandId = 'quick-jump-command'
 
 export default function Example() {
   return (
-    <DemoFrame
-      title="Quick jump"
-      description="Click the trigger to open the command surface."
-    >
-      <CommandTrigger content={() => Promise.resolve(CommandExampleContent)}>
-        Open command menu
-      </CommandTrigger>
+    <DemoFrame title="Quick jump" description="Filter and run commands with the keyboard.">
+      <CommandTrigger target={commandId}>Open command menu</CommandTrigger>
+      <Command id={commandId} aria-label="Quick jump">
+        <CommandInput autoFocus placeholder="Search commands…" />
+        <CommandList>
+          <CommandItem value="button-docs" keywords="components actions">
+            Open button docs
+          </CommandItem>
+          <CommandItem value="tokens" keywords="theme variables">
+            Jump to tokens
+          </CommandItem>
+          <CommandItem value="examples" keywords="gallery demos">
+            Browse examples
+          </CommandItem>
+          <CommandEmpty />
+        </CommandList>
+      </Command>
     </DemoFrame>
-  );
+  )
 }

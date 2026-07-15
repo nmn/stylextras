@@ -1,81 +1,52 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+export type SeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'className' | 'style'> & {
+  decorative?: boolean
+  emphasis?: 'subtle' | 'strong'
+  orientation?: 'horizontal' | 'vertical'
+  sx?: StyleXStyles
+}
 
-export type SeparatorOrientation = "horizontal" | "vertical";
-export type SeparatorEmphasis = "subtle" | "strong";
-
-export type SeparatorProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  orientation?: SeparatorOrientation;
-  emphasis?: SeparatorEmphasis;
-  decorative?: boolean;
-};
-
-/**
- * Renders a horizontal or vertical separator.
- *
- * Search aliases: separator, divider, rule, line.
- *
- * A11y notes:
- * - Can render as decorative or semantic.
- * - The caller must opt into semantic separator behavior when it conveys structure.
- */
 export function Separator({
   decorative = true,
-  emphasis = "subtle",
-  orientation = "horizontal",
+  emphasis = 'subtle',
+  orientation = 'horizontal',
+  ref,
   sx,
   ...props
 }: SeparatorProps) {
   return (
-    <div
-      {...props}
+    <hr
+      ref={ref}
       aria-hidden={decorative || undefined}
       aria-orientation={decorative ? undefined : orientation}
-      role={decorative ? undefined : "separator"}
-      {...stylex.props(
-        baseStyles.base,
-        orientationStyles[orientation],
-        emphasisStyles[emphasis],
-        sx,
-      )}
+      {...props}
+      {...stylex.props(styles.base, orientationStyles[orientation], emphasisStyles[emphasis], sx)}
     />
-  );
+  )
 }
 
-const baseStyles = stylex.create({
+const styles = stylex.create({
   base: {
-    backgroundColor: colors.border,
-    display: "block",
+    borderColor: 'transparent',
+    borderStyle: 'none',
+    borderWidth: 0,
+    display: 'block',
     flexShrink: 0,
   },
-});
+})
 
 const orientationStyles = stylex.create({
-  horizontal: {
-    marginBlock: spacing.md,
-    height: stroke.thin,
-    width: "100%",
-  },
-  vertical: {
-    marginInline: spacing.md,
-    height: "100%",
-    minHeight: spacing.xxxl,
-    width: stroke.thin,
-  },
-});
+  horizontal: { height: stroke.thin, marginBlock: spacing.md, width: '100%' },
+  vertical: { alignSelf: 'stretch', marginInline: spacing.md, width: stroke.thin },
+})
 
 const emphasisStyles = stylex.create({
-  subtle: {
-    backgroundColor: colors.border,
-  },
-  strong: {
-    backgroundColor: colors.borderStrong,
-  },
-});
+  subtle: { backgroundColor: colors.border },
+  strong: { backgroundColor: colors.borderStrong },
+})

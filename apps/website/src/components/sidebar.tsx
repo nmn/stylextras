@@ -13,7 +13,6 @@ import {
   type Dispatch,
   createContext,
   type FC,
-  Fragment,
   type ReactNode,
   type SetStateAction,
   useContext,
@@ -634,59 +633,81 @@ export function SidebarPageTree(props: {
   components?: Partial<SidebarComponents>;
 }) {
   const { root } = useTreeContext();
+  return (
+    <SidebarPageTreeList
+      components={props.components}
+      items={root.children}
+      level={1}
+    />
+  );
+}
 
-  const { Separator, Item, Folder } = props.components ?? {};
+function SidebarPageTreeList({
+  components,
+  items,
+  level,
+}: {
+  components?: Partial<SidebarComponents>;
+  items: PageTree.Node[];
+  level: number;
+}) {
+  return items.map((item, index) => (
+    <SidebarPageTreeNode
+      components={components}
+      index={index}
+      item={item}
+      key={item.$id}
+      level={level}
+    />
+  ));
+}
 
-  function renderSidebarList(
-    items: PageTree.Node[],
-    level: number,
-  ): ReactNode[] {
-    return items.map((item, i) => {
-      if (item.type === "separator") {
-        if (Separator) return <Separator item={item} key={i} />;
-        return (
-          <SidebarSeparator
-            key={i}
-            {...stylex.props(i !== 0 && treeStyles.mt6)}
-          >
-            {item.icon}
-            {item.name}
-          </SidebarSeparator>
-        );
-      }
+function SidebarPageTreeNode({
+  components,
+  index,
+  item,
+  level,
+}: {
+  components?: Partial<SidebarComponents>;
+  index: number;
+  item: PageTree.Node;
+  level: number;
+}) {
+  const { Folder, Item, Separator } = components ?? {};
 
-      if (item.type === "folder") {
-        const children = renderSidebarList(item.children, level + 1);
-
-        if (Folder)
-          return (
-            <Folder item={item} key={i} level={level}>
-              {children}
-            </Folder>
-          );
-        return (
-          <PageTreeFolder item={item} key={i}>
-            {children}
-          </PageTreeFolder>
-        );
-      }
-
-      if (Item) return <Item item={item} key={item.url} />;
-      return (
-        <SidebarItem
-          external={item.external}
-          href={item.url}
-          icon={item.icon}
-          key={item.url}
-        >
-          {item.name}
-        </SidebarItem>
-      );
-    });
+  if (item.type === "separator") {
+    if (Separator) return <Separator item={item} />;
+    return (
+      <SidebarSeparator {...stylex.props(index !== 0 && treeStyles.mt6)}>
+        {item.icon}
+        {item.name}
+      </SidebarSeparator>
+    );
   }
 
+  if (item.type === "folder") {
+    const children = (
+      <SidebarPageTreeList
+        components={components}
+        items={item.children}
+        level={level + 1}
+      />
+    );
+    if (Folder) {
+      return (
+        <Folder item={item} level={level}>
+          {children}
+        </Folder>
+      );
+    }
+    return <PageTreeFolder item={item}>{children}</PageTreeFolder>;
+  }
+
+  if (Item) return <Item item={item} />;
   return (
-    <Fragment key={root.$id}>{renderSidebarList(root.children, 1)}</Fragment>
+    <SidebarItem external={item.external} href={item.url} icon={item.icon}>
+      {item.name}
+    </SidebarItem>
   );
 }
 const treeStyles = stylex.create({

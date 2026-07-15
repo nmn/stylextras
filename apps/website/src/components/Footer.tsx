@@ -155,14 +155,15 @@ export default function Footer({
           </div>
         </div>
 
-        <Link
+        <a
+          aria-label="Meta Open Source"
           href="https://opensource.fb.com"
           rel="noopener noreferrer"
           target="_blank"
           {...stylex.props(styles.metaOpenSourceLink)}
         >
           <MetaOpenSource xstyle={styles.metaOpenSource} />
-        </Link>
+        </a>
 
         <div {...stylex.props(styles.bottom)}>
           <span {...stylex.props(styles.copyright)}>
@@ -172,30 +173,33 @@ export default function Footer({
           <div {...stylex.props(styles.bottomSpacer)} />
 
           <div {...stylex.props(styles.socialLinks)}>
-            <Link
+            <a
+              aria-label="StyleX on GitHub"
               href="https://github.com/facebook/stylex"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <GithubIcon {...stylex.props(styles.socialIcon)} />
-            </Link>
-            <Link
+            </a>
+            <a
+              aria-label="StyleX on X"
               href="https://x.com/stylexjs"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <TwitterIcon {...stylex.props(styles.socialIcon)} />
-            </Link>
-            <Link
+            </a>
+            <a
+              aria-label="StyleX on Bluesky"
               href="https://bsky.app/profile/stylexjs.bsky.social"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <Bluesky xstyle={styles.socialIcon} />
-            </Link>
+            </a>
           </div>
         </div>
       </div>

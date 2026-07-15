@@ -1,15 +1,10 @@
 {
   "pages": [
     "./get-started.mdx",
-    "./buttons",
-    "./form",
-    "./date-and-time",
-    "./color",
-    "./collections",
-    "./popups",
-    "./layout",
-    "./navigation",
-    "./content",
-    "./status"
+    "./themes.mdx",
+    "./migration-0.2.mdx",
+    "./components",
+    "./experimental",
+    "./recipes.mdx"
   ]
 }

@@ -1,99 +1,62 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"fieldset">;
+type SxProp = { sx?: StyleXStyles }
+export type RadioGroupProps = Omit<ComponentPropsWithRef<'fieldset'>, 'className' | 'style'> &
+  SxProp
+export type RadioGroupLegendProps = Omit<
+  ComponentPropsWithRef<'legend'>,
+  'className' | 'style'
+> &
+  SxProp
+export type RadioGroupItemProps = Omit<
+  ComponentPropsWithRef<'input'>,
+  'className' | 'style' | 'type'
+> &
+  SxProp
 
-type RadioOption = string | { label: string; value: string };
-
-export type RadioGroupProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  legendSx?: StyleXStyles;
-  optionSx?: StyleXStyles;
-  legend?: ReactNode;
-  name?: string;
-  options?: RadioOption[];
-};
-
-const defaultOptions = [
-  { label: "Small", value: "small" },
-  { label: "Medium", value: "medium" },
-  { label: "Large", value: "large" },
-];
-
-/**
- * Renders a grouped set of native radio controls.
- *
- * Search aliases: radio group, radio buttons, single select group, choice group.
- *
- * A11y notes:
- * - Relies on native fieldset and radio semantics.
- * - It does not add advanced keyboard management beyond what the browser provides.
- */
-export function RadioGroup({
-  children,
-  legend = "Options",
-  legendSx,
-  name = "radio-group",
-  optionSx,
-  options = defaultOptions,
-  sx,
-  ...props
-}: RadioGroupProps) {
-  return (
-    <fieldset {...props} {...stylex.props(rootStyles.base, sx)}>
-      <legend {...stylex.props(legendStyles.base, legendSx)}>{legend}</legend>
-      {children ??
-        options.map((option) => {
-          const normalizedOption =
-            typeof option === "string"
-              ? { label: option, value: option }
-              : option;
-
-          return (
-            <label
-              key={normalizedOption.value}
-              {...stylex.props(optionStyles.base, optionSx)}
-            >
-              <input name={name} type="radio" value={normalizedOption.value} />
-              <span>{normalizedOption.label}</span>
-            </label>
-          );
-        })}
-    </fieldset>
-  );
+export function RadioGroup({ ref, sx, ...props }: RadioGroupProps) {
+  return <fieldset ref={ref} {...props} {...stylex.props(styles.group, sx)} />
 }
 
-const rootStyles = stylex.create({
-  base: {
+export function RadioGroupLegend({ ref, sx, ...props }: RadioGroupLegendProps) {
+  return <legend ref={ref} {...props} {...stylex.props(styles.legend, sx)} />
+}
+
+export function RadioGroupItem({ ref, sx, ...props }: RadioGroupItemProps) {
+  return <input ref={ref} type="radio" {...props} {...stylex.props(styles.item, sx)} />
+}
+
+const styles = stylex.create({
+  group: {
+    borderColor: 'transparent',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    display: 'grid',
+    gap: spacing.sm,
     margin: 0,
     padding: 0,
-    borderColor: "transparent",
-    borderStyle: "solid",
-    borderWidth: 0,
-    gap: spacing.xs,
-    display: "grid",
   },
-});
-const legendStyles = stylex.create({
-  base: {
-    color: colors.fgSoft,
-    fontFamily: typography.fontSans,
-    fontSize: typography.stepMinus1,
-    fontWeight: typography.weightMedium,
-    marginBottom: spacing.xs,
-  },
-});
-const optionStyles = stylex.create({
-  base: {
-    gap: spacing.xs,
-    alignItems: "center",
-    display: "inline-flex",
+  legend: {
+    color: colors.fg,
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    lineHeight: typography.lineHeightBody,
+    fontWeight: typography.weightMedium,
+    marginBlockEnd: spacing.xs,
   },
-});
+  item: {
+    accentColor: colors.primary,
+    height: spacing.lg,
+    margin: 0,
+    outlineColor: colors.focusRing,
+    width: spacing.lg,
+    borderRadius: radius.round,
+    borderWidth: stroke.thin,
+  },
+})

@@ -6,9 +6,15 @@
   "type": "module",
   "scripts": {
     "dev": "waku dev --host 0.0.0.0",
-    "build": "waku build",
+    "build": "waku build && bun scripts/fix-rsc-stylesheet-preloads.mjs",
+    "docs:generate": "bun scripts/generate-catalog-docs.mjs",
     "start": "waku start",
-    "postinstall": "fumadocs-mdx"
+    "postinstall": "bun run docs:generate && fumadocs-mdx",
+    "test": "bun run typecheck",
+    "test:e2e": "playwright test",
+    "test:e2e:chromium": "playwright test --project=chromium",
+    "test:e2e:update": "playwright test e2e/visual.spec.ts --project=chromium --update-snapshots",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@babel/standalone": "^7.28.5",
@@ -42,6 +48,8 @@
     "use-query-params": "^2.2.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@playwright/test": "^1.61.1",
     "@stylexjs/unplugin": "0.18.3",
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.4",

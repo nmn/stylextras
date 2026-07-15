@@ -1,411 +1,242 @@
-import { Suspense, useId, useRef, useState } from "react";
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithRef, ReactNode } from "react";
-import { Button } from "../button";
-import type { ButtonProps } from "../button";
-import {
-  attachFocusgroupPolyfill,
-  focusgroupAttributes,
-  focusgroupRef,
-} from "../focusgroup";
-import {
-  type LazyComponentLoader,
-  type ReactComponent,
-  showPopoverWithSource,
-  useLazyComponent,
-} from "../lazy-component";
-import { attachPopoverPolyfills, isPopoverOpen } from "../platform-polyfills";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-import { typography } from "../tokens/typography.stylex";
+'use client'
 
-type BaseProps = ComponentPropsWithRef<"div">;
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { Button, type ButtonProps } from '../button'
+import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
+import { colors } from '../tokens/color.stylex'
+import { elevation } from '../tokens/elevation.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-export type DropdownMenuPlacement = "bottom" | "top" | "right" | "left";
-export type DropdownMenuBehavior = "auto" | "manual";
+type SxProp = { sx?: StyleXStyles }
 
-export type DropdownMenuProps = Omit<
-  BaseProps,
-  "className" | "style" | "popover"
-> & {
-  behavior?: DropdownMenuBehavior;
-  label?: ReactNode;
-  menuSx?: StyleXStyles;
-  placement?: DropdownMenuPlacement;
-  sx?: StyleXStyles;
-  triggerSx?: StyleXStyles;
-};
-
-export type DropdownMenuContentProps = Omit<
-  BaseProps,
-  "className" | "style" | "popover"
-> & {
-  behavior?: DropdownMenuBehavior;
-  placement?: DropdownMenuPlacement;
-  sx?: StyleXStyles;
-};
-
+export type DropdownMenuProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
 export type DropdownMenuTriggerProps = Omit<
   ButtonProps,
-  "className" | "content" | "style"
+  'popoverTarget' | 'popoverTargetAction'
 > & {
-  content: LazyComponentLoader<DropdownMenuContentProps>;
-  contentProps?: Omit<DropdownMenuContentProps, "ref">;
-  fallback?: ReactNode;
-};
+  target: string
+}
+export type DropdownMenuPlacement = 'bottom' | 'top' | 'end' | 'start'
+export type DropdownMenuContentProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'popover' | 'role' | 'style'
+> &
+  SxProp & { placement?: DropdownMenuPlacement }
+export type DropdownMenuItemProps = Omit<
+  ComponentPropsWithRef<'button'>,
+  'className' | 'role' | 'style'
+> &
+  SxProp & { closeOnSelect?: boolean }
+export type DropdownMenuLabelProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> &
+  SxProp
+export type DropdownMenuSeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'className' | 'style'> &
+  SxProp
+export type DropdownMenuShortcutProps = Omit<ComponentPropsWithRef<'kbd'>, 'className' | 'style'> &
+  SxProp
 
-export type DropdownMenuComponent = ReactComponent<DropdownMenuContentProps>;
+export function DropdownMenu({ ref, sx, ...props }: DropdownMenuProps) {
+  return <div ref={ref} {...props} {...stylex.props(styles.root, sx)} />
+}
 
-const bottomFallback = stylex.positionTry({ positionArea: "top" });
-const topFallback = stylex.positionTry({ positionArea: "bottom" });
-const rightFallback = stylex.positionTry({ positionArea: "left" });
-const leftFallback = stylex.positionTry({ positionArea: "right" });
-
-/**
- * Renders a trigger and menu surface using native popover and anchor positioning.
- *
- * Search aliases: dropdown menu, menu button, popup menu, action menu.
- *
- * A11y notes:
- * - Uses menu semantics on the surfaced content.
- * - Arrow-key focus movement is provided by focusgroup with a lazy polyfill.
- */
-export function DropdownMenu({
-  behavior = "auto",
-  children,
-  label = "Menu",
-  menuSx,
-  placement = "bottom",
-  sx,
-  triggerSx,
+export function DropdownMenuTrigger({
+  target,
+  type = 'button',
+  variant = 'outline',
   ...props
-}: DropdownMenuProps) {
-  const popoverId = useId();
-
-  function setMenuRef(node: HTMLDivElement | null) {
-    attachFocusgroupPolyfill(node);
-    attachPopoverPolyfills(node);
-  }
-
+}: DropdownMenuTriggerProps) {
   return (
-    <div {...props} {...stylex.props(rootStyles.base, sx)}>
-      <Button
-        popoverTarget={popoverId}
-        size="sm"
-        type="button"
-        variant="outline"
-        sx={triggerSx}
-      >
-        {label}
-      </Button>
-      <div
-        id={popoverId}
-        popover={behavior}
-        ref={setMenuRef}
-        role="menu"
-        {...focusgroupAttributes("menu")}
-        {...stylex.props(
-          menuStyles.base,
-          placementStyles[placement],
-          fallbackStyles[placement],
-          menuSx,
-        )}
-      >
-        {children ?? (
-          <>
-            <button
-              role="menuitem"
-              type="button"
-              {...stylex.props(itemStyles.base)}
-            >
-              Item one
-            </button>
-            <button
-              role="menuitem"
-              type="button"
-              {...stylex.props(itemStyles.base)}
-            >
-              Item two
-            </button>
-          </>
-        )}
-      </div>
-    </div>
-  );
+    <Button
+      type={type}
+      variant={variant}
+      aria-haspopup="menu"
+      popoverTarget={target}
+      popoverTargetAction="toggle"
+      {...props}
+    />
+  )
 }
 
 export function DropdownMenuContent({
-  behavior = "auto",
-  children,
-  placement = "bottom",
+  onToggle,
+  placement = 'bottom',
   ref,
   sx,
   ...props
 }: DropdownMenuContentProps) {
-  function setContentRef(node: HTMLDivElement | null) {
-    focusgroupRef(ref)(node);
-    attachPopoverPolyfills(node);
-  }
-
+  const setRef = focusgroupRef(ref)
   return (
     <div
-      ref={setContentRef}
-      {...props}
-      popover={behavior}
+      ref={setRef}
+      popover="auto"
       role="menu"
-      {...focusgroupAttributes("menu")}
-      {...stylex.props(
-        menuStyles.base,
-        placementStyles[placement],
-        fallbackStyles[placement],
-        sx,
-      )}
-    >
-      {children ?? (
-        <>
-          <button
-            role="menuitem"
-            type="button"
-            {...stylex.props(itemStyles.base)}
-          >
-            Item one
-          </button>
-          <button
-            role="menuitem"
-            type="button"
-            {...stylex.props(itemStyles.base)}
-          >
-            Item two
-          </button>
-        </>
-      )}
-    </div>
-  );
+      {...focusgroupAttributes('menu')}
+      onToggle={(event) => {
+        onToggle?.(event)
+        const menu = event.currentTarget
+        if (menu.matches(':popover-open')) {
+          const focusFirstItem = () => {
+            if (!menu.matches(':popover-open')) return
+            const firstItem = menu.querySelector<HTMLElement>(
+              '[role^="menuitem"]:not([aria-disabled="true"]):not(:disabled)',
+            )
+            firstItem?.focus()
+          }
+          const ready = ensureFocusgroupPolyfill(menu)
+          if (ready) void ready.then(focusFirstItem)
+          else focusFirstItem()
+        }
+      }}
+      {...props}
+      {...stylex.props(styles.content, placementStyles[placement], sx)}
+    />
+  )
 }
 
-export function DropdownMenuTrigger({
-  children,
-  content,
-  contentProps,
-  fallback = null,
+export function DropdownMenuItem({
+  closeOnSelect = true,
   onClick,
-  onFocus,
-  onKeyDown,
-  onMouseEnter,
-  onPointerEnter,
-  type = "button",
+  ref,
+  sx,
+  type = 'button',
   ...props
-}: DropdownMenuTriggerProps) {
-  const [mounted, setMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const pendingFocusRef = useRef<"first" | "last" | null>(null);
-  const shouldOpenRef = useRef(false);
-  const { LazyContent, preload } = useLazyComponent(content);
-
-  function focusMenuItem(menu: HTMLElement, position: "first" | "last") {
-    const items = Array.from(
-      menu.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), a[href], [role="menuitem"]:not([aria-disabled="true"]), [tabindex]:not([tabindex="-1"])',
-      ),
-    ).filter((item) => item.offsetParent !== null);
-    const item = position === "first" ? items[0] : items.at(-1);
-    item?.focus();
-  }
-
-  function openMenu(focusItem?: "first" | "last") {
-    shouldOpenRef.current = true;
-    pendingFocusRef.current = focusItem ?? null;
-    setMounted(true);
-
-    const menu = menuRef.current;
-    if (menu && !isPopoverOpen(menu)) {
-      showPopoverWithSource(menu, triggerRef.current);
-      shouldOpenRef.current = false;
-      setIsOpen(true);
-      if (focusItem) {
-        queueMicrotask(() => focusMenuItem(menu, focusItem));
-      }
-    }
-  }
-
-  function openPeerMenubarMenu() {
-    const trigger = triggerRef.current;
-    const menubar = trigger?.closest('[role="menubar"]');
-
-    if (!menubar) {
-      return;
-    }
-
-    const hasOpenMenu = Array.from(
-      menubar.querySelectorAll<HTMLElement>("[popover]"),
-    ).some(isPopoverOpen);
-    if (hasOpenMenu) {
-      openMenu();
-    }
-  }
-
-  function setMenuRef(node: HTMLDivElement | null) {
-    menuRef.current = node;
-    attachFocusgroupPolyfill(node);
-    attachPopoverPolyfills(node);
-
-    function handleToggle(event: Event) {
-      const state = (event as Event & { newState?: string }).newState;
-      setIsOpen(state ? state === "open" : node ? isPopoverOpen(node) : false);
-    }
-
-    if (node && shouldOpenRef.current && !isPopoverOpen(node)) {
-      showPopoverWithSource(node, triggerRef.current);
-      shouldOpenRef.current = false;
-      setIsOpen(true);
-      if (pendingFocusRef.current) {
-        const focusItem = pendingFocusRef.current;
-        pendingFocusRef.current = null;
-        queueMicrotask(() => focusMenuItem(node, focusItem));
-      }
-    }
-
-    if (node) {
-      node.addEventListener("toggle", handleToggle);
-    }
-
-    return () => {
-      node?.removeEventListener("toggle", handleToggle);
-      if (menuRef.current === node) {
-        menuRef.current = null;
-      }
-    };
-  }
-
+}: DropdownMenuItemProps) {
   return (
-    <>
-      <Button
-        {...props}
-        aria-expanded={isOpen}
-        aria-haspopup="menu"
-        data-menu-keep-open="true"
-        onClick={(event) => {
-          onClick?.(event);
-          if (!event.defaultPrevented) {
-            openMenu();
-          }
-        }}
-        onFocus={(event) => {
-          onFocus?.(event);
-          void preload();
-        }}
-        onKeyDown={(event) => {
-          onKeyDown?.(event);
-          if (event.defaultPrevented) {
-            return;
-          }
-
-          const opensFirst =
-            event.key === "ArrowDown" ||
-            (event.key === "ArrowRight" &&
-              !!triggerRef.current?.closest('[role="menu"]'));
-          const opensLast = event.key === "ArrowUp";
-
-          if (opensFirst || opensLast) {
-            event.preventDefault();
-            openMenu(opensLast ? "last" : "first");
-          }
-        }}
-        onMouseEnter={(event) => {
-          onMouseEnter?.(event);
-          void preload();
-          if (!event.defaultPrevented) {
-            openPeerMenubarMenu();
-          }
-        }}
-        onPointerEnter={(event) => {
-          onPointerEnter?.(event);
-          void preload();
-          if (!event.defaultPrevented) {
-            openPeerMenubarMenu();
-          }
-        }}
-        ref={triggerRef}
-        type={type}
-      >
-        {children}
-      </Button>
-      {mounted ? (
-        <Suspense fallback={fallback}>
-          <LazyContent {...contentProps} ref={setMenuRef} />
-        </Suspense>
-      ) : null}
-    </>
-  );
+    <button
+      ref={ref}
+      type={type}
+      role="menuitem"
+      onClick={(event) => {
+        onClick?.(event)
+        if (!event.defaultPrevented && closeOnSelect) {
+          event.currentTarget.closest<HTMLElement>('[popover]')?.hidePopover()
+        }
+      }}
+      {...props}
+      {...stylex.props(styles.item, sx)}
+    />
+  )
 }
 
-const rootStyles = stylex.create({
-  base: {
-    display: "inline-grid",
-  },
-});
+export function DropdownMenuLabel({ ref, sx, ...props }: DropdownMenuLabelProps) {
+  return <div ref={ref} {...props} {...stylex.props(styles.label, sx)} />
+}
 
-const menuStyles = stylex.create({
-  base: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    positionAnchor: "auto",
-    margin: 0,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
-    backgroundColor: colors.bgRaised,
-    color: colors.fg,
-    display: {
-      default: null,
-      ":popover-open": "grid",
-    },
-    position: "fixed",
-    minWidth: spacing.xxxxl,
+export function DropdownMenuSeparator({ ref, sx, ...props }: DropdownMenuSeparatorProps) {
+  return <hr ref={ref} {...props} {...stylex.props(styles.separator, sx)} />
+}
+
+export function DropdownMenuShortcut({ ref, sx, ...props }: DropdownMenuShortcutProps) {
+  return <kbd ref={ref} {...props} {...stylex.props(styles.shortcut, sx)} />
+}
+
+/* eslint-disable @stylexjs/valid-styles */
+const styles = stylex.create({
+  root: {
+    display: 'inline-flex',
   },
-});
+  content: {
+    backgroundColor: colors.popover,
+    borderColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
+    borderRadius: radius.sm,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    boxShadow: elevation.md,
+    color: colors.popoverForeground,
+    display: { default: 'none', ':popover-open': 'grid' },
+    gap: spacing.xxxs,
+    inset: 'auto',
+    margin: spacing.xs,
+    minWidth: '12rem',
+    opacity: { default: 0, ':popover-open': 1 },
+    padding: spacing.xxs,
+    position: 'fixed',
+    positionAnchor: 'auto',
+    transform: {
+      default: 'translateY(-4px)',
+      ':popover-open': 'translateY(0)',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    transitionBehavior: 'allow-discrete',
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'display, opacity, overlay, transform',
+    transitionTimingFunction: motion.easeEmphasized,
+  },
+  item: {
+    alignItems: 'center',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': colors.accent,
+      ':focus-visible': colors.accent,
+      ':disabled': 'transparent',
+    },
+    borderColor: 'transparent',
+    borderRadius: radius.xs,
+    borderStyle: 'solid',
+    borderWidth: 0,
+    color: colors.accentForeground,
+    cursor: { default: 'default', ':disabled': 'not-allowed' },
+    display: 'flex',
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    gap: spacing.sm,
+    minHeight: spacing.controlSm,
+    opacity: { default: 1, ':disabled': 0.5 },
+    outline: 'none',
+    paddingInline: spacing.sm,
+    textAlign: 'start',
+    width: '100%',
+  },
+  label: {
+    color: colors.fg,
+    fontFamily: typography.fontSans,
+    fontSize: typography.stepMinus1,
+    fontWeight: typography.weightSemibold,
+    paddingBlock: spacing.xxs,
+    paddingInline: spacing.sm,
+  },
+  separator: {
+    borderColor: colors.border,
+    borderStyle: 'solid',
+    borderWidth: `${stroke.thin} 0 0`,
+    marginBlock: spacing.xxs,
+    width: '100%',
+  },
+  shortcut: {
+    color: colors.fgMuted,
+    fontFamily: typography.fontMono,
+    fontSize: typography.stepMinus2,
+    marginInlineStart: 'auto',
+  },
+})
 
 const placementStyles = stylex.create({
   bottom: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    positionArea: "bottom",
+    positionArea: 'bottom span-self-x-end',
+    positionTryFallbacks: 'flip-block',
   },
   top: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    positionArea: "top",
+    positionArea: 'top span-self-x-end',
+    positionTryFallbacks: 'flip-block',
   },
-  right: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    positionArea: "right",
+  end: {
+    positionArea: 'self-x-end span-bottom',
+    positionTryFallbacks: 'flip-inline',
   },
-  left: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    positionArea: "left",
+  start: {
+    positionArea: 'self-x-start span-bottom',
+    positionTryFallbacks: 'flip-inline',
   },
-});
-
-const fallbackStyles = stylex.create({
-  bottom: { positionTryFallbacks: bottomFallback },
-  top: { positionTryFallbacks: topFallback },
-  right: { positionTryFallbacks: rightFallback },
-  left: { positionTryFallbacks: leftFallback },
-});
-
-const itemStyles = stylex.create({
-  base: {
-    borderRadius: radius.sm,
-    borderWidth: 0,
-    paddingBlock: spacing.xs,
-    paddingInline: spacing.sm,
-    backgroundColor: "transparent",
-    color: colors.fg,
-    fontFamily: typography.fontSans,
-    fontSize: typography.step0,
-    textAlign: "left",
-  },
-});
+})
+/* eslint-enable @stylexjs/valid-styles */

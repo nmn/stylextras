@@ -52,13 +52,13 @@ type Ttypography = VarGroup<
 >;
 
 export const typography: Ttypography = stylex.defineVars({
-  fontSizeMin: "16px",
-  fontSizeMax: "18px",
-  scaleMin: "1.25",
-  scaleMax: "1.414",
+  fontSizeMin: "14px",
+  fontSizeMax: "14px",
+  scaleMin: "1.125",
+  scaleMax: "1.2",
   fontSans: [
-    "InterVariable",
-    "Inter",
+    "Geist",
+    "Geist Sans",
     "ui-sans-serif",
     "system-ui",
     "sans-serif",
@@ -66,8 +66,8 @@ export const typography: Ttypography = stylex.defineVars({
     .map((font) => (font.includes(" ") ? `"${font}"` : font))
     .join(", "),
   fontDisplay: [
-    "InterVariable",
-    "Inter",
+    "Geist",
+    "Geist Sans",
     "ui-sans-serif",
     "system-ui",
     "sans-serif",
@@ -85,12 +85,12 @@ export const typography: Ttypography = stylex.defineVars({
   ]
     .map((font) => (font.includes(" ") ? `"${font}"` : font))
     .join(", "),
-  lineHeightTight: "1.15",
-  lineHeightSnug: "1.3",
+  lineHeightTight: "1.2",
+  lineHeightSnug: "1.35",
   lineHeightBody: "1.5",
-  trackingTight: "-0.02em",
+  trackingTight: "-0.015em",
   trackingNormal: "0em",
-  trackingWide: "0.02em",
+  trackingWide: "0.015em",
   weightRegular: "400",
   weightMedium: "500",
   weightSemibold: "600",

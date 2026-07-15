@@ -83,7 +83,9 @@ export default defineConfig({
       ssr: {
         dev: {
           createEnvironment(name, config) {
-            return createRunnableDevEnvironment(name, config);
+            // Waku carries its own Vite copy, while this runnable environment
+            // helper comes from the workspace Vite dependency.
+            return createRunnableDevEnvironment(name, config as never) as never;
           },
         },
       },

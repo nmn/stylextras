@@ -1,119 +1,80 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentProps, ReactNode } from "react";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-import { ButtonInGroupContext } from "../button/contex";
-import { focusgroupProps } from "../focusgroup";
-import { spacing } from "../tokens/spacing.stylex";
+import * as stylex from '@stylexjs/stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
+import type { ComponentPropsWithRef } from 'react';
+import { focusgroupAttributes, focusgroupRef } from '../focusgroup';
+import { colors } from '../tokens/color.stylex';
+import { radius } from '../tokens/radius.stylex';
+import { spacing } from '../tokens/spacing.stylex';
+import { stroke } from '../tokens/stroke.stylex';
 
-type BaseProps = ComponentProps<"div">;
-
-export type ButtonGroupProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
-
-export type ButtonGroupActionsProps = Omit<
-  BaseProps,
-  "children" | "className" | "style"
+export type ButtonGroupProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'role' | 'style'
 > & {
-  leading?: ReactNode;
-  primary: ReactNode;
-  secondary: ReactNode;
+  orientation?: 'horizontal' | 'vertical';
   sx?: StyleXStyles;
+  variant?: 'toolbar' | 'actions';
 };
 
-/**
- * Renders a layout wrapper for visually grouped buttons.
- *
- * Search aliases: button group, actions row, control group, button cluster.
- *
- * A11y notes:
- * - Uses group semantics.
- * - Arrow-key focus movement is provided by focusgroup with a lazy polyfill.
- */
-export function ButtonGroup({ sx, ...props }: ButtonGroupProps) {
-  return (
-    <div
-      {...props}
-      role="group"
-      {...focusgroupProps<HTMLDivElement>("toolbar")}
-      {...stylex.props(styles.base, sx)}
-    >
-      <ButtonInGroupContext value={true}>{props.children}</ButtonInGroupContext>
-    </div>
-  );
-}
-
-/**
- * Renders a gapped action row for dialog footers and confirmation rows.
- *
- * Search aliases: button actions, dialog actions, action row, footer actions.
- *
- * A11y notes:
- * - Uses group semantics.
- * - Keeps the supplied button JSX intact so each button owns its label and type.
- */
-export function ButtonGroupActions({
-  leading,
-  primary,
-  secondary,
+export function ButtonGroup({
+  orientation = 'horizontal',
+  ref,
   sx,
+  variant = 'toolbar',
   ...props
-}: ButtonGroupActionsProps) {
+}: ButtonGroupProps) {
+  const isToolbar = variant === 'toolbar';
+  const setRef = focusgroupRef(ref);
   return (
     <div
+      ref={isToolbar ? setRef : ref}
+      role={isToolbar ? 'toolbar' : 'group'}
+      aria-orientation={isToolbar ? orientation : undefined}
+      {...(isToolbar ? focusgroupAttributes('toolbar') : {})}
       {...props}
-      role="group"
       {...stylex.props(
-        styles.actions,
-        Boolean(leading) && styles.actionsWithLeading,
+        styles.group,
+        variant === 'actions' && styles.actions,
+        orientation === 'vertical' && styles.vertical,
+        variant === 'actions' &&
+          orientation === 'vertical' &&
+          styles.actionsVertical,
         sx,
       )}
-    >
-      {leading ? (
-        <span {...stylex.props(styles.leadingSlot)}>{leading}</span>
-      ) : null}
-      <span {...stylex.props(styles.actionSlot)}>{secondary}</span>
-      <span {...stylex.props(styles.actionSlot)}>{primary}</span>
-    </div>
+    />
   );
 }
 
 const styles = stylex.create({
-  actionSlot: {
-    display: "grid",
-    minWidth: "min(10rem, 100%)",
+  group: {
+    alignItems: 'center',
+    backgroundColor: colors.bgSubtle,
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    display: 'inline-flex',
+    gap: spacing.xxxs,
+    padding: spacing.xxxs,
+  },
+  vertical: {
+    alignItems: 'stretch',
+    flexDirection: 'column',
   },
   actions: {
+    padding: 0,
+    borderWidth: 0,
     gap: spacing.sm,
-    alignItems: "center",
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-    justifyContent: "end",
-    marginInlineStart: "auto",
-    maxWidth: "100%",
-    width: "min(22rem, 100%)",
+    backgroundColor: 'transparent',
+    display: 'inline-grid',
+    gridAutoColumns: '1fr',
+    gridAutoFlow: 'column',
+    justifySelf: 'end',
+    maxWidth: '100%',
+    width: 'fit-content',
   },
-  actionsWithLeading: {
-    gridTemplateColumns: "auto minmax(0, 1fr) minmax(0, 1fr)",
-    width: "100%",
-  },
-  base: {
-    borderColor: colors.borderStrong,
-    borderRadius: radius.md,
-    overflow: "hidden",
-    paddingInline: `calc(${stroke.thin} / 2)`,
-    alignItems: "center",
-    backgroundColor: colors.bgRaised,
-    columnGap: 0,
-    display: "inline-flex",
-    flexWrap: "nowrap",
-    rowGap: 0,
-  },
-  leadingSlot: {
-    display: "grid",
-    marginInlineEnd: "auto",
+  actionsVertical: {
+    gridAutoFlow: 'row',
+    gridTemplateColumns: 'minmax(0, 1fr)',
   },
 });

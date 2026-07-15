@@ -4,11 +4,15 @@ import { radius } from "../tokens/radius.stylex";
 export const baseTheme = stylex.createTheme(radius, {});
 
 export const sharpTheme = stylex.createTheme(radius, {
-  base: "2px",
+  base: "0px",
 });
 
 export const roundedTheme = stylex.createTheme(radius, {
   base: "10px",
+});
+
+export const subtleTheme = stylex.createTheme(radius, {
+  base: "6px",
 });
 
 export const softTheme = stylex.createTheme(radius, {
@@ -16,12 +20,13 @@ export const softTheme = stylex.createTheme(radius, {
 });
 
 export const pillTheme = stylex.createTheme(radius, {
-  base: "18px",
+  base: "20px",
 });
 
 export const radiusThemes = {
   base: baseTheme,
   sharp: sharpTheme,
+  subtle: subtleTheme,
   rounded: roundedTheme,
   soft: softTheme,
   pill: pillTheme,

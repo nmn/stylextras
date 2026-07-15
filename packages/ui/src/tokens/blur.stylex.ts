@@ -12,9 +12,9 @@ type Tblur = VarGroup<
 >;
 
 export const blur: Tblur = stylex.defineVars({
-  md: "8px",
+  md: "4px",
   xs: () => `calc(${blur.md} / 4)`,
   sm: () => `calc(${blur.md} / 2)`,
   lg: () => `calc(${blur.md} * 1.5)`,
-  xl: () => `calc(${blur.md} * 2.5)`,
+  xl: () => `calc(${blur.md} * 2)`,
 });

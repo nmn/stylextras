@@ -37,7 +37,7 @@ export function Navbar({
   const [value, setValue] = useState("");
   return (
     <NavigationMenu asChild onValueChange={setValue} value={value}>
-      <>
+      <nav>
         <div {...stylex.props(navbarStyles.gap)} />
         <header
           id="nd-nav"
@@ -64,11 +64,11 @@ export function Navbar({
             {...stylex.props(navbarStyles.menuList, xstyle)}
             asChild
           >
-            <nav {...stylex.props(navbarStyles.nav)}>{props.children}</nav>
+            <div {...stylex.props(navbarStyles.nav)}>{props.children}</div>
           </NavigationMenuList>
           <div {...stylex.props(navbarStyles.overlayBlur)} />
         </header>
-      </>
+      </nav>
     </NavigationMenu>
   );
 }

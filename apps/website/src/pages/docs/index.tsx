@@ -4,219 +4,280 @@ import {
   DocsPage,
   DocsTitle,
 } from "@/components/layout/page";
+import { ReferenceGallery } from "@/components/catalog/ReferenceGallery";
 import { Link } from "fumadocs-core/framework";
 import * as stylex from "@stylexjs/stylex";
+import {
+  experimentalCatalog,
+  stableCatalog,
+  type BrowserMode,
+} from "@stylextras/ui/catalog";
 import { vars } from "@/theming/vars.stylex";
 
-const groups = [
+const groups: Array<{
+  description: string;
+  mode: BrowserMode;
+  title: string;
+}> = [
   {
-    title: "Buttons",
-    items: [
-      ["Button", "/docs/buttons/button"],
-      ["Button Group", "/docs/buttons/button-group"],
-      ["CopyToClipboardButton", "/docs/buttons/copy-to-clipboard-button"],
-      ["Icon Button", "/docs/buttons/icon-button"],
-      ["Segmented Control", "/docs/buttons/segmented-control"],
-      ["Toggle Button", "/docs/buttons/toggle"],
-      ["Toggle Button Group", "/docs/buttons/toggle-group"],
-    ],
+    description:
+      "Semantic HTML and CSS own behavior, validation, form state, and interaction.",
+    mode: "native",
+    title: "Native / zero behavior JS",
   },
   {
-    title: "Collections",
-    items: [
-      ["Command Menu", "/docs/collections/command"],
-      ["Context Menu", "/docs/collections/context-menu"],
-      ["Data Table", "/docs/collections/data-table"],
-      ["Dropdown Menu", "/docs/collections/dropdown-menu"],
-      ["List Box", "/docs/collections/listbox"],
-      ["Menu", "/docs/collections/menu"],
-      ["Menu Content", "/docs/collections/menu-content"],
-      ["Menubar", "/docs/collections/menubar"],
-      ["Table", "/docs/collections/table"],
-      ["Tag Group", "/docs/collections/tag-group"],
-      ["Tree", "/docs/collections/tree"],
-    ],
+    description:
+      "New platform APIs enhance a native baseline with narrow feature-detected fallbacks.",
+    mode: "enhanced",
+    title: "Native enhanced",
   },
   {
-    title: "Color",
-    items: [
-      ["Color Area", "/docs/color/color-area"],
-      ["Color Field", "/docs/color/color-field"],
-      ["Color Picker", "/docs/color/color-picker"],
-      ["Color Slider", "/docs/color/color-slider"],
-      ["Color Swatch", "/docs/color/color-swatch"],
-      ["Color Swatch Picker", "/docs/color/color-swatch-picker"],
-      ["Color Wheel", "/docs/color/color-wheel"],
-    ],
+    description:
+      "Focused controllers cover composite state that the browser does not yet provide.",
+    mode: "client",
+    title: "Client composites",
   },
-  {
-    title: "Content",
-    items: [
-      ["Aspect Ratio", "/docs/content/aspect-ratio"],
-      ["Avatar", "/docs/content/avatar"],
-      ["Card", "/docs/content/card"],
-      ["Content", "/docs/content/content"],
-      ["Editable Text", "/docs/content/editable-text"],
-      ["Empty State", "/docs/content/empty-state"],
-      ["ImageCropper", "/docs/content/image-cropper"],
-      ["Kbd", "/docs/content/kbd"],
-      ["Separator", "/docs/content/separator"],
-      ["Text", "/docs/content/text"],
-      ["Typography", "/docs/content/typography"],
-    ],
-  },
-  {
-    title: "Date and time",
-    items: [
-      ["Calendar", "/docs/date-and-time/calendar"],
-      ["Date Field", "/docs/date-and-time/date-field"],
-      ["Date Picker", "/docs/date-and-time/date-picker"],
-      ["Date Range Picker", "/docs/date-and-time/date-range-picker"],
-      ["Range Calendar", "/docs/date-and-time/range-calendar"],
-      ["Time Field", "/docs/date-and-time/time-field"],
-    ],
-  },
-  {
-    title: "Form",
-    items: [
-      ["Checkbox", "/docs/form/checkbox"],
-      ["Combo Box", "/docs/form/combo-box"],
-      ["Field Errors", "/docs/form/field-errors"],
-      ["File Drop Zone", "/docs/form/file-drop-zone"],
-      ["File Trigger", "/docs/form/file-trigger"],
-      ["Form", "/docs/form/form"],
-      ["Input Fields", "/docs/form/input-fields"],
-      ["Input Group", "/docs/form/input-group"],
-      ["Label", "/docs/form/label"],
-      ["Number Field", "/docs/form/number-field"],
-      ["Radio", "/docs/form/radio"],
-      ["Radio Group", "/docs/form/radio-group"],
-      ["Search Field", "/docs/form/search-field"],
-      ["Select", "/docs/form/select"],
-      ["Slider", "/docs/form/slider"],
-      ["Switch", "/docs/form/switch"],
-      ["Text Area", "/docs/form/text-area"],
-      ["Text Field", "/docs/form/text-field"],
-    ],
-  },
-  {
-    title: "Layout",
-    items: [
-      ["Flex", "/docs/layout/flex"],
-      ["Grid", "/docs/layout/grid"],
-      ["Toolbar", "/docs/layout/toolbar"],
-      ["Window Splitter", "/docs/layout/window-splitter"],
-    ],
-  },
-  {
-    title: "Navigation",
-    items: [
-      ["Breadcrumbs", "/docs/navigation/breadcrumbs"],
-      ["Disclosure", "/docs/navigation/disclosure"],
-      ["Disclosure Group", "/docs/navigation/disclosure-group"],
-      ["Footer", "/docs/navigation/footer"],
-      ["HeaderLayout", "/docs/navigation/header-layout"],
-      ["Link", "/docs/navigation/link"],
-      ["Navbar", "/docs/navigation/navbar"],
-      ["Pagination", "/docs/navigation/pagination"],
-      ["Sidebar", "/docs/navigation/sidebar"],
-      ["SidebarLayout", "/docs/navigation/sidebar-layout"],
-      ["TableOfContents", "/docs/navigation/table-of-contents"],
-      ["Tabs", "/docs/navigation/tabs"],
-    ],
-  },
-  {
-    title: "Popups",
-    items: [
-      ["Alert Dialog", "/docs/popups/alert-dialog"],
-      ["Dialog", "/docs/popups/dialog"],
-      ["Drawer", "/docs/popups/drawer"],
-      ["Hover Card", "/docs/popups/hover-card"],
-      ["Popover", "/docs/popups/popover"],
-      ["Tooltip", "/docs/popups/tooltip"],
-    ],
-  },
-  {
-    title: "Status",
-    items: [
-      ["Alert", "/docs/status/alert"],
-      ["Badge", "/docs/status/badge"],
-      ["Meter", "/docs/status/meter"],
-      ["Progress Bar", "/docs/status/progress-bar"],
-      ["Progress Circle", "/docs/status/progress-circle"],
-      ["Skeleton", "/docs/status/skeleton"],
-      ["Spinner", "/docs/status/spinner"],
-      ["Toast", "/docs/status/toast"],
-    ],
-  },
-] as const;
+];
 
 export default function DocsIndexPage() {
   return (
     <DocsPage>
-      <title>Docs | StyleX</title>
-      <DocsTitle>Components</DocsTitle>
+      <title>Components | StyleXtras</title>
+      <DocsTitle>Native-first components</DocsTitle>
       <DocsDescription>
-        Browse the component library from the sidebar or jump into a category
-        below.
+        Styled native elements, same-set StyleX variables, and small controllers
+        only where the platform still has a real gap.
       </DocsDescription>
       <DocsBody>
-        <div {...stylex.props(styles.grid)}>
-          {groups.map((group) => (
-            <section key={group.title} {...stylex.props(styles.card)}>
-              <h2 {...stylex.props(styles.heading)}>{group.title}</h2>
-              <ul {...stylex.props(styles.list)}>
-                {group.items.map(([label, href]) => (
-                  <li key={href}>
-                    <Link href={href} {...stylex.props(styles.link)}>
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
+        <ReferenceGallery />
+
+        <section {...stylex.props(styles.catalog)}>
+          <header {...stylex.props(styles.catalogHeader)}>
+            <div>
+              <h2 {...stylex.props(styles.catalogTitle)}>Stable catalog</h2>
+              <p {...stylex.props(styles.catalogDescription)}>
+                {stableCatalog.length} canonical entrypoints generated from the
+                package manifest.
+              </p>
+            </div>
+            <Link href="/docs/migration-0.2" {...stylex.props(styles.migration)}>
+              0.2 migration guide
+            </Link>
+          </header>
+
+          <div {...stylex.props(styles.groups)}>
+            {groups.map((group) => {
+              const entries = stableCatalog.filter(
+                (entry) => entry.mode === group.mode,
+              );
+              return (
+                <section key={group.mode} {...stylex.props(styles.group)}>
+                  <div {...stylex.props(styles.groupHeader)}>
+                    <h3 {...stylex.props(styles.groupTitle)}>{group.title}</h3>
+                    <span {...stylex.props(styles.count)}>{entries.length}</span>
+                  </div>
+                  <p {...stylex.props(styles.groupDescription)}>
+                    {group.description}
+                  </p>
+                  <ul {...stylex.props(styles.list)}>
+                    {entries.map((entry) => (
+                      <li key={entry.export}>
+                        <Link
+                          href={`/docs/components/${entry.export}`}
+                          {...stylex.props(styles.link)}
+                        >
+                          <span {...stylex.props(styles.linkName)}>{entry.name}</span>
+                          <span {...stylex.props(styles.fallback)}>
+                            {entry.fallback}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            })}
+          </div>
+        </section>
+
+        <section {...stylex.props(styles.experimental)}>
+          <div>
+            <h2 {...stylex.props(styles.catalogTitle)}>Experimental catalog</h2>
+            <p {...stylex.props(styles.catalogDescription)}>
+              Advanced controls stay namespaced until their accessibility,
+              browser, visual, and size gates are satisfied.
+            </p>
+          </div>
+          <div {...stylex.props(styles.experimentalLinks)}>
+            {experimentalCatalog.map((entry) => (
+              <Link
+                href={`/docs/experimental/${entry.export.replace("experimental/", "")}`}
+                key={entry.export}
+                {...stylex.props(styles.experimentalLink)}
+              >
+                {entry.name}
+              </Link>
+            ))}
+          </div>
+        </section>
       </DocsBody>
     </DocsPage>
   );
 }
 
 const styles = stylex.create({
-  grid: {
+  catalog: {
     display: "grid",
-    gridTemplateColumns: {
-      default: "1fr",
-      "@media (min-width: 960px)": "repeat(2, minmax(0, 1fr))",
-    },
-    gap: 16,
+    gap: 18,
+    marginBlockStart: 36,
   },
-  card: {
-    padding: 16,
-    borderWidth: 1,
-    borderStyle: "solid",
+  catalogHeader: {
+    alignItems: {
+      default: "start",
+      "@media (min-width: 680px)": "end",
+    },
+    display: "flex",
+    flexDirection: {
+      default: "column",
+      "@media (min-width: 680px)": "row",
+    },
+    gap: 12,
+    justifyContent: "space-between",
+  },
+  catalogTitle: {
+    color: vars["--color-fd-foreground"],
+    fontSize: 24,
+    fontWeight: 650,
+    lineHeight: 1.25,
+    margin: 0,
+  },
+  catalogDescription: {
+    color: vars["--color-fd-muted-foreground"],
+    fontSize: 14,
+    lineHeight: 1.55,
+    marginBlock: "6px 0",
+  },
+  migration: {
     borderColor: vars["--color-fd-border"],
     borderRadius: 8,
-    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-background"]} 92%, ${vars["--color-fd-muted"]})`,
-  },
-  heading: {
-    marginTop: 0,
-    marginBottom: 12,
-    fontSize: "1.125rem",
-    lineHeight: 1.3,
-    color: vars["--color-fd-foreground"],
-  },
-  list: {
-    margin: 0,
-    paddingLeft: 18,
-    display: "grid",
-    gap: 6,
-  },
-  link: {
+    borderStyle: "solid",
+    borderWidth: 1,
     color: vars["--color-fd-primary"],
+    fontSize: 13,
+    fontWeight: 600,
+    paddingBlock: 8,
+    paddingInline: 11,
     textDecoration: "none",
     ":hover": {
-      textDecoration: "underline",
+      backgroundColor: vars["--color-fd-muted"],
+    },
+  },
+  groups: {
+    display: "grid",
+    gap: 12,
+    gridTemplateColumns: {
+      default: "minmax(0, 1fr)",
+      "@media (min-width: 760px)": "repeat(3, minmax(0, 1fr))",
+    },
+  },
+  group: {
+    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-background"]} 94%, ${vars["--color-fd-muted"]})`,
+    borderColor: vars["--color-fd-border"],
+    borderRadius: 10,
+    borderStyle: "solid",
+    borderWidth: 1,
+    minWidth: 0,
+    padding: 14,
+  },
+  groupHeader: {
+    alignItems: "center",
+    display: "flex",
+    gap: 8,
+    justifyContent: "space-between",
+  },
+  groupTitle: {
+    color: vars["--color-fd-foreground"],
+    fontSize: 15,
+    fontWeight: 650,
+    margin: 0,
+  },
+  count: {
+    backgroundColor: vars["--color-fd-muted"],
+    borderRadius: 999,
+    color: vars["--color-fd-muted-foreground"],
+    fontFamily: "var(--default-mono-font-family)",
+    fontSize: 11,
+    lineHeight: 1,
+    paddingBlock: 5,
+    paddingInline: 7,
+  },
+  groupDescription: {
+    color: vars["--color-fd-muted-foreground"],
+    fontSize: 12,
+    lineHeight: 1.5,
+    marginBlock: "7px 12px",
+    minHeight: 54,
+  },
+  list: {
+    display: "grid",
+    gap: 3,
+    listStyle: "none",
+    margin: 0,
+    padding: 0,
+  },
+  link: {
+    alignItems: "center",
+    borderRadius: 7,
+    color: vars["--color-fd-foreground"],
+    display: "flex",
+    fontSize: 13,
+    gap: 8,
+    justifyContent: "space-between",
+    paddingBlock: 7,
+    paddingInline: 8,
+    textDecoration: "none",
+    ":hover": {
+      backgroundColor: vars["--color-fd-muted"],
+    },
+  },
+  linkName: {
+    fontWeight: 550,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  fallback: {
+    color: vars["--color-fd-muted-foreground"],
+    fontFamily: "var(--default-mono-font-family)",
+    fontSize: 10,
+  },
+  experimental: {
+    borderBlockStartColor: vars["--color-fd-border"],
+    borderBlockStartStyle: "solid",
+    borderBlockStartWidth: 1,
+    display: "grid",
+    gap: 14,
+    marginBlockStart: 36,
+    paddingBlockStart: 28,
+  },
+  experimentalLinks: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 7,
+  },
+  experimentalLink: {
+    backgroundColor: vars["--color-fd-muted"],
+    borderColor: vars["--color-fd-border"],
+    borderRadius: 7,
+    borderStyle: "solid",
+    borderWidth: 1,
+    color: vars["--color-fd-foreground"],
+    fontSize: 12,
+    paddingBlock: 7,
+    paddingInline: 9,
+    textDecoration: "none",
+    ":hover": {
+      borderColor: vars["--color-fd-primary"],
     },
   },
 });

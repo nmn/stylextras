@@ -77,9 +77,13 @@ export function Header({
   return (
     <Navbar disableShadowBlur={disableShadowBlur}>
       {showSidebarToggle && <SidebarToggle />}
-      <Link {...stylex.props(styles.navTitleLink)} href={nav.url ?? "/"}>
+      <a
+        aria-label="StyleXtras home"
+        {...stylex.props(styles.navTitleLink)}
+        href={nav.url ?? "/"}
+      >
         {nav.title}
-      </Link>
+      </a>
       {nav.children}
       <ul {...stylex.props(styles.navLinkList)}>
         {navItems

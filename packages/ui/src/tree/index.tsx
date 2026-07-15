@@ -1,225 +1,168 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import { Children, Fragment, isValidElement } from "react";
-import type {
-  ComponentPropsWithoutRef,
-  Key,
-  ReactElement,
-  ReactNode,
-} from "react";
-import { focusgroupProps } from "../focusgroup";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { focusgroupAttributes, focusgroupRef } from '../focusgroup'
+import { colors } from '../tokens/color.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type SxProp = { sx?: StyleXStyles }
 
-export type TreeProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
+export type TreeProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'role' | 'style'> &
+  SxProp
+export type TreeGroupProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'role' | 'style'
+> &
+  SxProp
+export type TreeBranchProps = Omit<ComponentPropsWithRef<'details'>, 'className' | 'style'> &
+  SxProp
+export type TreeBranchTriggerProps = Omit<
+  ComponentPropsWithRef<'summary'>,
+  'className' | 'role' | 'style'
+> &
+  SxProp
+export type TreeBranchContentProps = TreeGroupProps
+export type TreeItemProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'role' | 'style'
+> &
+  SxProp
 
-/**
- * Renders a simplified hierarchical tree container.
- *
- * Search aliases: tree, tree view, outline, hierarchy.
- *
- * A11y notes:
- * - Uses native details/summary disclosure instead of a full ARIA tree pattern.
- * - Arrow-key focus movement is provided by focusgroup with a lazy polyfill.
- */
-export function Tree({ children, sx, ...props }: TreeProps) {
+/** Native disclosure tree composed from explicit, individually styled parts. */
+export function Tree({ ref, sx, ...props }: TreeProps) {
   return (
     <div
-      {...props}
+      ref={focusgroupRef(ref)}
       role="tree"
-      {...focusgroupProps<HTMLDivElement>("tree")}
-      {...stylex.props(rootStyles.base, sx)}
-    >
-      {renderTreeChildren(children, 0)}
-    </div>
-  );
+      {...focusgroupAttributes('tree')}
+      {...props}
+      {...stylex.props(styles.root, sx)}
+    />
+  )
 }
 
-function renderTreeChildren(children: ReactNode, depth: number): ReactNode {
-  return Children.toArray(children).map((child, index) => {
-    if (!isValidElement(child)) {
-      return child;
-    }
-
-    if (child.type === Fragment) {
-      const fragment = child as ReactElement<{ children?: ReactNode }>;
-      return (
-        <Fragment key={index}>
-          {renderTreeChildren(fragment.props.children, depth)}
-        </Fragment>
-      );
-    }
-
-    if (typeof child.type === "string" && child.type === "ul") {
-      const list = child as ReactElement<{ children?: ReactNode }>;
-      return (
-        <div
-          key={index}
-          {...stylex.props(levelStyles.base, getDepthStyle(depth))}
-        >
-          {renderTreeChildren(list.props.children, depth)}
-        </div>
-      );
-    }
-
-    if (typeof child.type === "string" && child.type === "li") {
-      return renderTreeItem(
-        child as ReactElement<{ children?: ReactNode }>,
-        depth,
-        index,
-      );
-    }
-
-    return child;
-  });
+export function TreeGroup({ ref, sx, ...props }: TreeGroupProps) {
+  return <div ref={ref} role="group" {...props} {...stylex.props(styles.group, sx)} />
 }
 
-function renderTreeItem(
-  child: ReactElement<{ children?: ReactNode }>,
-  depth: number,
-  key: Key,
-): ReactNode {
-  const parts = Children.toArray(child.props.children);
-  const nestedList = parts.find(
-    (part) =>
-      isValidElement(part) &&
-      typeof part.type === "string" &&
-      part.type === "ul",
-  );
-  const labelParts = parts.filter((part) => part !== nestedList);
-  const labelContent =
-    labelParts.length > 0 ? labelParts : child.props.children;
+export function TreeBranch({ ref, sx, ...props }: TreeBranchProps) {
+  return <details ref={ref} {...props} {...stylex.props(styles.branch, sx)} />
+}
 
-  if (nestedList && isValidElement(nestedList)) {
-    return (
-      <details
-        key={key}
-        {...stylex.props(branchStyles.base, getDepthStyle(depth))}
-      >
-        <summary {...stylex.props(branchStyles.summary)}>
-          <span {...stylex.props(branchStyles.label)}>{labelContent}</span>
-        </summary>
-        <div {...stylex.props(branchStyles.children)}>
-          {renderTreeChildren(
-            (nestedList as ReactElement<{ children?: ReactNode }>).props
-              .children,
-            depth + 1,
-          )}
-        </div>
-      </details>
-    );
-  }
+export function TreeBranchTrigger({ ref, sx, ...props }: TreeBranchTriggerProps) {
+  return (
+    <summary
+      ref={ref}
+      role="treeitem"
+      {...props}
+      {...stylex.props(styles.branchTrigger, sx)}
+    />
+  )
+}
 
+export function TreeBranchContent({ ref, sx, ...props }: TreeBranchContentProps) {
   return (
     <div
-      key={key}
+      ref={ref}
+      role="group"
+      {...props}
+      {...stylex.props(styles.branchContent, sx)}
+    />
+  )
+}
+
+export function TreeItem({ ref, sx, tabIndex = 0, ...props }: TreeItemProps) {
+  return (
+    <div
+      ref={ref}
       role="treeitem"
-      tabIndex={0}
-      {...stylex.props(leafStyles.base, getDepthStyle(depth))}
-    >
-      {labelContent}
-    </div>
-  );
+      tabIndex={tabIndex}
+      {...props}
+      {...stylex.props(styles.item, sx)}
+    />
+  )
 }
 
-function getDepthStyle(depth: number) {
-  if (depth === 0) {
-    return depthStyles[0];
-  }
-
-  if (depth === 1) {
-    return depthStyles[1];
-  }
-
-  if (depth === 2) {
-    return depthStyles[2];
-  }
-
-  if (depth === 3) {
-    return depthStyles[3];
-  }
-
-  return depthStyles.deep;
-}
-
-const rootStyles = stylex.create({
-  base: {
+const styles = stylex.create({
+  root: {
+    display: 'grid',
+    gap: spacing.xxxs,
     margin: 0,
-    gap: spacing.xxxs,
-    display: "grid",
+    minWidth: 0,
+    width: '100%',
   },
-});
-
-const levelStyles = stylex.create({
-  base: {
+  group: {
+    display: 'grid',
     gap: spacing.xxxs,
-    display: "grid",
+    minWidth: 0,
   },
-});
-
-const branchStyles = stylex.create({
-  base: {
+  branch: {
+    display: 'grid',
     gap: spacing.xxxs,
-    display: "grid",
+    minWidth: 0,
   },
-  summary: {
-    borderRadius: radius.md,
-    paddingInline: spacing.sm,
+  branchTrigger: {
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': colors.accent,
+      ':focus-visible': colors.accent,
+    },
+    borderRadius: radius.sm,
+    boxShadow: {
+      default: 'none',
+      ':focus-visible': `0 0 0 ${stroke.focusRing} ${colors.focusRing}`,
+    },
     color: colors.fg,
-    cursor: "pointer",
-    display: "list-item",
+    cursor: 'pointer',
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
-    listStylePosition: "inside",
-    listStyleType: "disclosure-closed",
-    minHeight: spacing.xxl,
-  },
-  label: {
-    minWidth: 0,
-  },
-  children: {
-    gap: spacing.xxxs,
-    display: "grid",
-    paddingLeft: spacing.md,
-  },
-});
-
-const leafStyles = stylex.create({
-  base: {
-    borderRadius: radius.md,
+    listStylePosition: 'inside',
+    minHeight: spacing.controlSm,
+    outline: 'none',
+    paddingBlock: spacing.xxs,
     paddingInline: spacing.sm,
-    alignItems: "center",
+    transitionDuration: motion.durationFast,
+    transitionProperty: 'background-color, box-shadow',
+    transitionTimingFunction: motion.easeStandard,
+    width: '100%',
+  },
+  branchContent: {
+    display: 'grid',
+    gap: spacing.xxxs,
+    minWidth: 0,
+    paddingInlineStart: spacing.lg,
+  },
+  item: {
+    alignItems: 'center',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': colors.accent,
+      ':focus-visible': colors.accent,
+    },
+    borderRadius: radius.sm,
+    boxShadow: {
+      default: 'none',
+      ':focus-visible': `0 0 0 ${stroke.focusRing} ${colors.focusRing}`,
+    },
     color: colors.fgSoft,
-    display: "flex",
+    display: 'flex',
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     lineHeight: typography.lineHeightSnug,
-    minHeight: spacing.xxl,
+    minHeight: spacing.controlSm,
+    minWidth: 0,
+    outline: 'none',
+    paddingBlock: spacing.xxs,
+    paddingInline: spacing.sm,
+    transitionDuration: motion.durationFast,
+    transitionProperty: 'background-color, box-shadow, color',
+    transitionTimingFunction: motion.easeStandard,
+    width: '100%',
   },
-});
-
-const depthStyles = stylex.create({
-  0: {
-    marginLeft: 0,
-  },
-  1: {
-    marginLeft: spacing.sm,
-  },
-  2: {
-    marginLeft: spacing.md,
-  },
-  3: {
-    marginLeft: spacing.lg,
-  },
-  deep: {
-    marginLeft: spacing.lg,
-  },
-});
+})

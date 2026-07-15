@@ -1,261 +1,172 @@
 # @stylextras/ui
 
-Token-driven UI primitives built with StyleX and native HTML/CSS features.
+Native-first React components with their StyleX styling built in. The package uses native controls, `<dialog>`, the Popover API, invoker commands, anchor positioning, and focusgroup before adding JavaScript.
 
-## Status
+This is the breaking `0.2.0-beta.0` redesign. React and StyleX are peer dependencies; Radix UI, Base UI, and React Aria are not runtime dependencies.
 
-- Component entrypoints are exported by subpath. There is no package barrel.
-- Components accept `sx?: StyleXStyles` and intentionally do not expose `className` or `style`.
-- Most components are thin wrappers around native elements and browser behavior.
-- Dialog-style components use native `<dialog>`.
-- Floating components use the `popover` attribute and CSS anchor positioning.
-- Components should keep working without JavaScript wherever the platform gives us a native behavior.
+## Install
 
-## Installation
-
-```bash
-bun add @stylextras/ui @stylexjs/stylex react react-dom
+```sh
+bun add @stylextras/ui@0.2.0-beta.0 @stylexjs/stylex react
 ```
 
-## Usage
+Import the compiled package CSS once:
+
+```tsx
+import "@stylextras/ui/styles.css";
+```
+
+Components use canonical subpath imports. There is intentionally no package barrel:
 
 ```tsx
 import { Button } from "@stylextras/ui/button";
-import { Card } from "@stylextras/ui/card";
-import { Typography } from "@stylextras/ui/typography";
+import { Card, CardContent, CardTitle } from "@stylextras/ui/card";
 
 export function Example() {
   return (
-    <Card elevation="sm">
-      <Typography scale="title">StyleXtras UI</Typography>
-      <Button variant="primary">Continue</Button>
+    <Card>
+      <CardTitle>Native-first UI</CardTitle>
+      <CardContent>
+        <Button>Continue</Button>
+      </CardContent>
     </Card>
   );
 }
 ```
 
-## Package Conventions
+Every component renders and styles its actual element, extends that element's native props, forwards its React 19 ref, and composes `sx` last. `className` and inline `style` are intentionally omitted.
 
-- Import each component from its own subpath.
-- Prefer the canonical dashed exports in docs: `combo-box`, `text-area`, `time-field`, `date-range-picker`, `breadcrumbs`, `empty-state`, and `alert`.
-- Legacy aliases still exist for compatibility and search only: `combobox`, `textarea`, `timefield`, `range-date-picker`, `breadcrumb`, `empty`, and `alert-callout`. They should not get separate docs pages.
-- Use StyleX and token variables for all component styling.
-- Prefer platform primitives first: native form controls, `<details>`, `<dialog>`, `popover`, CSS anchor positioning, semantic tables, and semantic lists.
-- Do not introduce portals for dialog, popover, menu, tooltip, or hover-card primitives.
+## Themes and variables
 
-## Tokens And Themes
+There is no provider, context, or `ThemeRoot`. Themes are ordinary `stylex.createTheme()` objects and can be applied to any element:
 
-Token exports:
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { colorThemes } from "@stylextras/ui/color-themes";
+import { radiusThemes } from "@stylextras/ui/radius-themes";
+import { spacingThemes } from "@stylextras/ui/spacing-themes";
 
-- `@stylextras/ui/tokens/color`
-- `@stylextras/ui/tokens/spacing`
-- `@stylextras/ui/tokens/radius`
-- `@stylextras/ui/tokens/stroke`
-- `@stylextras/ui/tokens/typography`
-- `@stylextras/ui/tokens/elevation`
-- `@stylextras/ui/tokens/blur`
-- `@stylextras/ui/tokens/motion`
-- `@stylextras/ui/tokens/components`
+export function ThemeBoundary({ children }: { children: React.ReactNode }) {
+  return (
+    <section
+      {...stylex.props(
+        colorThemes.zinc,
+        spacingThemes.compact,
+        radiusThemes.rounded,
+      )}
+    >
+      {children}
+    </section>
+  );
+}
+```
 
-Theme exports:
+The color catalog includes neutral bases plus amber, blue, cyan, emerald, fuchsia, green, indigo, lime, orange, pink, purple, red, rose, sky, teal, violet, and yellow accents. Independent theme maps are exported for color, spacing, radius, stroke, typography, elevation, blur, and motion. Each set keeps a small themeable core and same-set derived values; there is no foundation/semantic/component-token layering.
 
-- `@stylextras/ui/color-themes`
-- `@stylextras/ui/spacing-themes`
-- `@stylextras/ui/radius-themes`
-- `@stylextras/ui/typography-themes`
-- `@stylextras/ui/example-theme`
+```tsx
+import { colors } from "@stylextras/ui/tokens/color";
+import { spacing } from "@stylextras/ui/tokens/spacing";
+```
 
-## Component Groups
+## Select is native
 
-### Actions
+`Select` always renders a native `<select>`. Options and groups are native children, so submission, validation, reset, autofill, keyboard behavior, accessibility, and platform pickers remain intact.
 
-- `button`
-- `button-group`
-- `copy-to-clipboard-button`
-- `icon-button`
-- `segmented-control`
-- `toggle`
-- `toggle-group`
+```tsx
+import { Select } from "@stylextras/ui/select";
 
-### Inputs And Forms
+<Select name="region" required defaultValue="">
+  <option value="" disabled>Choose a region</option>
+  <optgroup label="Americas">
+    <option value="pdx">Portland</option>
+    <option value="nyc">New York</option>
+  </optgroup>
+</Select>;
+```
 
-- `checkbox`
-- `combo-box`
-- `field-errors`
-- `file-drop-zone`
-- `file-trigger`
-- `form`
-- `input-fields`
-- `input-group`
-- `label`
-- `number-field`
-- `radio`
-- `radio-group`
-- `search-field`
-- `select`
-- `slider`
-- `switch`
-- `text-area`
-- `text-field`
+Supporting Chromium versions receive customizable-select styling through `appearance: base-select`, `::picker(select)`, option checkmarks, and discrete transitions. Other engines retain a polished conventional native select; touch-first devices keep their platform picker.
 
-### Date And Time
+## Combobox is the custom typeahead
 
-- `calendar`
-- `date-field`
-- `date-picker`
-- `date-range-picker`
-- `range-calendar`
-- `time-field`
+`Combobox` is the separate enhanced input/listbox control. It uses a text input, `popover="auto"`, anchor positioning, `aria-activedescendant`, native form integration, filtering, keyboard selection, and reset behavior.
 
-### Color
+```tsx
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+} from "@stylextras/ui/combobox";
 
-- `color-area`
-- `color-field`
-- `color-picker`
-- `color-slider`
-- `color-swatch`
-- `color-swatch-picker`
-- `color-wheel`
+<Combobox name="framework" defaultValue="react">
+  <ComboboxInput aria-label="Framework" />
+  <ComboboxContent>
+    <ComboboxItem value="react">React</ComboboxItem>
+    <ComboboxItem value="svelte">Svelte</ComboboxItem>
+    <ComboboxEmpty>No results found.</ComboboxEmpty>
+  </ComboboxContent>
+</Combobox>;
+```
 
-### Menus And Collections
+## Native layers
 
-- `command`
-- `context-menu`
-- `data-table`
-- `dropdown-menu`
-- `listbox`
-- `menu`
-- `menu/menu-content`
-- `menubar`
-- `table`
-- `tag-group`
-- `tree`
+Dialog and popover relationships are explicit and remain server-renderable:
 
-### Dialogs And Popovers
+```tsx
+import { Dialog, DialogClose, DialogTrigger } from "@stylextras/ui/dialog";
 
-- `alert-dialog`
-- `dialog`
-- `drawer`
-- `hover-card`
-- `popover`
-- `tooltip`
+<>
+  <DialogTrigger target="rename">Rename</DialogTrigger>
+  <Dialog id="rename" aria-labelledby="rename-title">
+    <h2 id="rename-title">Rename project</h2>
+    <DialogClose target="rename">Done</DialogClose>
+  </Dialog>
+</>;
+```
 
-### Layout
+The default dialog and popover entries do not own React state. Applications needing controlled state or the focused cross-engine nested-layer bridge can opt into `@stylextras/ui/dialog/client` or `@stylextras/ui/popover/client`.
 
-- `flex`
-- `grid`
-- `header-layout`
-- `sidebar-layout`
-- `toolbar`
-- `window-splitter`
+Focusgroup and interest-invoker behavior is feature detected. Unsupported engines lazy-load only focused bridges; anchor-positioning fallback is usable fixed placement rather than a large layout polyfill.
 
-### Navigation
+## Catalog
 
-- `breadcrumbs`
-- `disclosure`
-- `disclosure-group`
-- `footer`
-- `link`
-- `navbar`
-- `pagination`
-- `sidebar`
-- `table-of-contents`
-- `tabs`
+Stable entries include Accordion, Alert, AlertDialog, AspectRatio, Avatar, Badge, Breadcrumb, Button, ButtonGroup, Calendar, Card, Carousel, Checkbox, Collapsible, Combobox, Command, ContextMenu, DatePicker, Dialog, Direction, Drawer, DropdownMenu, Empty, Field, HoverCard, Input, InputGroup, InputOTP, Item, Kbd, Label, Menubar, NavigationMenu, Popover, Progress, RadioGroup, Resizable, ScrollArea, Select, Separator, Sheet, Sidebar, Skeleton, Slider, Spinner, Switch, Table, Tabs, Textarea, Toast, Toggle, ToggleGroup, Tooltip, and Typography.
 
-### Content And Media
+Advanced color controls, range date/time controls, editable text, file drop zones, image cropper, tag group, and tree are available only from `@stylextras/ui/experimental/*` until they meet the stable accessibility, browser, visual, and size gates.
 
-- `aspect-ratio`
-- `avatar`
-- `card`
-- `content`
-- `editable-text`
-- `empty-state`
-- `image-cropper`
-- `kbd`
-- `separator`
-- `text`
-- `typography`
+## Browser behavior
 
-### Feedback
+- Current Chromium receives the newest native presentation enhancements when supported without flags.
+- Safari and Firefox preserve semantic, form, and keyboard behavior with simpler placement or presentation where platform APIs differ.
+- Reduced motion, forced colors, RTL, zoom, and narrow layouts are part of the browser test matrix.
+- Native-only entries contain no `"use client"` boundary.
 
-- `alert`
-- `badge`
-- `meter`
-- `progress-bar`
-- `progress-circle`
-- `skeleton`
-- `spinner`
-- `toast`
+## Migrating from 0.1
 
-## JavaScript Dependency Inventory
+There are no compatibility aliases in 0.2.
 
-These components currently use JavaScript for layout or core behavior and should be the first targets when reducing runtime requirements.
+| Removed import | Replacement |
+| --- | --- |
+| `alert-callout` | `alert` |
+| `breadcrumbs` | `breadcrumb` |
+| `combo-box` | `combobox` |
+| `empty-state` | `empty` |
+| `text-area` | `textarea` |
+| `disclosure` | `collapsible` |
+| `disclosure-group` | `accordion` |
+| `progress-bar` | `progress` |
+| `window-splitter` | `resizable` |
+| `icon-button` | `Button` with an icon size |
+| `menu` | `dropdown-menu` |
 
-| Component                                          | Current JS use                                                                                                                    | Platform-first direction                                                                                                              |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `window-splitter`                                  | Tracks pointer position, computes percentages from `getBoundingClientRect`, and stores uncontrolled split state.                  | Keep the semantic separator, but explore CSS grid/custom-property patterns and native range fallbacks for non-JS layouts.             |
-| `dialog`, `alert-dialog`, `drawer`, `command`      | Trigger variants lazy-load content and call `showModal()`. Programmatic dialogs hold open state in React.                         | Keep content components as plain `<dialog>` surfaces. Prefer declarative rendered content and platform close behavior where possible. |
-| `popover`, `dropdown-menu`, `menu`, `context-menu` | Trigger variants lazy-load content and call `showPopover({ source })`; menu items close parent popovers with DOM lookups.         | Prefer static `popovertarget` wiring when lazy loading is not needed. Keep CSS anchor positioning as the placement layer.             |
-| `tooltip`                                          | Hover/focus triggers mount lazy content and call `showPopover`.                                                                   | Prefer CSS-only disclosure for simple labels and reserve JS for lazy content.                                                         |
-| `hover-card`                                       | Hover/focus opens an inert tooltip preview, ArrowDown or preview hover upgrades it to `showModal()`, and dismissal returns focus. | Keep the tooltip-to-dialog split; reduce JS only where platform popover/dialog and anchor behavior can take over directly.            |
-| `menubar`                                          | Depends on menu trigger behavior so sibling menus open on hover after one menu is active.                                         | Keep markup semantic and use JS only for the cross-trigger hover handoff.                                                             |
-| `tabs`                                             | Uses React state to switch active tab and panel content.                                                                          | Consider a radio-backed or anchor-backed variant so baseline content remains navigable without hydration.                             |
-| `segmented-control`                                | Uses React state for uncontrolled value management, while the underlying controls are native radios.                              | Keep the radio foundation; avoid adding layout JS.                                                                                    |
-| `color-swatch-picker`                              | Uses React state for uncontrolled selected swatch.                                                                                | Keep the radio foundation and make form submission useful without hydration.                                                          |
-| `copy-to-clipboard-button`                         | Uses `navigator.clipboard`, timeout state, and popover feedback.                                                                  | Clipboard requires JS; keep feedback optional and avoid layout work.                                                                  |
-| `editable-text`                                    | Uses a paste handler and `document.execCommand` to force plain-text insertion.                                                    | Keep native `contenteditable`; replace deprecated paste handling when a better platform path is available.                            |
-| `lazy-component`                                   | Caches `React.lazy` components and preloads async content.                                                                        | Keep this as an optional trigger helper, not a requirement for content components.                                                    |
+The old component-token export and source/example production exports are removed. Import `@stylextras/ui/styles.css`, switch to canonical subpaths, and apply theme objects directly with `stylex.props()`.
 
-Low-JS or no-JS components include the structural wrappers, native inputs, `disclosure`, `disclosure-group`, `meter`, `progress-bar`, `table`, typography/content components, and most layout shells. They should remain mostly declarative.
+## Verification
 
-Demo-only state exists in examples and theme demos. That state should not be treated as required component behavior.
+```sh
+bun run test
+bun run test:package
+```
 
-## Variant Types
-
-- `ButtonVariant`: `primary`, `secondary`, `outline`, `ghost`, `danger`
-- `ButtonSize`: `sm`, `md`, `lg`
-- `CardElevation`: `flat`, `sm`, `md`, `lg`
-- `TypographyScale`: `label`, `body`, `title`, `display`
-- `TypographyTone`: `default`, `soft`, `muted`, `brand`, `info`, `success`, `warning`, `danger`
-- `PopoverBehavior`: `auto`, `manual`
-- `PopoverPlacement`: `bottom`, `top`, `right`, `left`
-- `PopoverSize`: `sm`, `md`, `lg`
-- `DropdownMenuBehavior`: `auto`, `manual`
-- `DropdownMenuPlacement`: `bottom`, `top`, `right`, `left`
-- `ContextMenuBehavior`: `auto`, `manual`
-- `ContextMenuPlacement`: `bottom`, `top`, `right`, `left`
-- `TooltipPlacement`: `bottom`, `top`, `right`, `left`
-- `HoverCardPlacement`: `bottom`, `top`, `right`, `left`
-- `DialogSize`: `sm`, `md`, `lg`
-- `DrawerSide`: `left`, `right`
-- `AspectRatioValue`: `square`, `video`, `portrait`, `landscape`
-- `ImageCropperRatio`: `square`, `video`, `portrait`, `landscape`
-- `ImageCropperPosition`: `center`, `top`, `bottom`, `left`, `right`
-- `SeparatorOrientation`: `horizontal`, `vertical`
-- `SeparatorEmphasis`: `subtle`, `strong`
-- `FlexDirection`: `row`, `column`
-- `FlexAlign`: `start`, `center`, `end`, `stretch`
-- `FlexJustify`: `start`, `center`, `end`, `between`
-- `FlexGap`: `sm`, `md`, `lg`
-- `GridCols`: `1`, `2`, `3`, `4`
-- `ProgressCircleSize`: `sm`, `md`, `lg`
-
-## Current Limitations
-
-- These components are intentionally minimal. Many are structural or styling primitives rather than full interaction systems.
-- Keyboard navigation, roving focus, typeahead, collision handling, and advanced dismissal logic are limited in several composite components.
-- Menu-like and popover-like components require modern browser support for `popover` and CSS anchor positioning.
-- Dialog-like components rely on native `<dialog>` behavior and do not add a custom focus-management layer beyond the platform.
-- Date/time/color primitives lean heavily on native inputs or simplified UI instead of a custom interaction model.
-- Some alias exports remain for naming compatibility, but canonical docs should prefer the dashed names listed above.
-
-## Notes For Contributors
-
-- Keep new components token-driven and prefer direct use of core token constants over unnecessary component-level indirection.
-- Use function declarations for component exports.
-- Prefer native platform elements and browser features first.
-- Use ref callback cleanup instead of effects when a small DOM bridge is required.
-- Keep JavaScript out of layout unless the component cannot work without measurement or pointer tracking.
-- Do not add `useCallback` or `useMemo`; React Compiler handles memoization.
-- Do not introduce portals for dialog, popover, menu, tooltip, hover-card, drawer, or command primitives.
-- Use StyleX anchor-positioning APIs for floating surfaces.
+The package build emits tree-shakable ESM, declarations, compiled CSS, and a size report. The packed-artifact test installs the tarball into a clean consumer, checks public imports and types, and rejects leaked TSX/example source.

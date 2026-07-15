@@ -23,12 +23,12 @@ type Tradius = VarGroup<
 >;
 
 export const radius: Tradius = stylex.defineVars({
-  base: "8px",
-  xs: () => divide(radius.base, 4),
-  sm: () => divide(radius.base, 2),
+  base: "10px",
+  xs: () => divide(radius.base, 2.5),
+  sm: () => multiply(radius.base, 0.6),
   md: () => radius.base,
-  lg: () => multiply(radius.base, 1.5),
-  xl: () => multiply(radius.base, 2),
-  xxl: () => multiply(radius.base, 3),
+  lg: () => multiply(radius.base, 1.2),
+  xl: () => multiply(radius.base, 1.6),
+  xxl: () => multiply(radius.base, 2.4),
   round: "9999px",
 });

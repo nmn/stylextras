@@ -2,7 +2,6 @@
 
 import { Toolbar } from "./index";
 import { Button } from "../button";
-import { IconButton } from "../icon-button";
 import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
@@ -13,8 +12,8 @@ export default function Example() {
         description="Toolbar should show a short cluster of local actions."
       >
         <Toolbar>
-          <IconButton label="Undo">U</IconButton>
-          <IconButton label="Redo">R</IconButton>
+          <Button size="icon" variant="outline" aria-label="Undo">U</Button>
+          <Button size="icon" variant="outline" aria-label="Redo">R</Button>
           <Button variant="secondary">Preview</Button>
           <Button>Publish</Button>
         </Toolbar>

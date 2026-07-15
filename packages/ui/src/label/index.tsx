@@ -1,34 +1,23 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { colors } from "../tokens/color.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"label">;
+export type LabelProps = Omit<ComponentPropsWithRef<'label'>, 'className' | 'style'> & {
+  sx?: StyleXStyles
+}
 
-export type LabelProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
-
-/**
- * Renders a token-styled label element.
- *
- * Search aliases: label, field label, input label, form label.
- *
- * A11y notes:
- * - Uses native label semantics when associated correctly.
- * - The caller must connect it to an input with nesting or htmlFor.
- */
-export function Label({ sx, ...props }: LabelProps) {
-  return <label {...props} {...stylex.props(styles.base, sx)} />;
+export function Label({ ref, sx, ...props }: LabelProps) {
+  return <label ref={ref} {...props} {...stylex.props(styles.base, sx)} />
 }
 
 const styles = stylex.create({
   base: {
-    color: colors.fgSoft,
+    color: colors.fg,
     fontFamily: typography.fontSans,
-    fontSize: typography.stepMinus1,
+    fontSize: typography.step0,
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
   },
-});
+})

@@ -1,9 +1,9 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type InputGroupProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
@@ -18,8 +18,8 @@ export type InputGroupProps = Omit<BaseProps, "className" | "style"> & {
  * - Provides grouping layout only.
  * - Does not automatically apply fieldset, legend, or describedby relationships.
  */
-export function InputGroup({ sx, ...props }: InputGroupProps) {
-  return <div {...props} {...stylex.props(styles.base, sx)} />;
+export function InputGroup({ ref, sx, ...props }: InputGroupProps) {
+  return <div ref={ref} {...props} {...stylex.props(styles.base, sx)} />;
 }
 
 const styles = stylex.create({

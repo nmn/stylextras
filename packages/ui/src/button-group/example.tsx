@@ -1,53 +1,50 @@
-"use client";
-
-import { Button } from "../button";
-import { IconButton } from "../icon-button";
-import { ButtonGroup, ButtonGroupActions } from "./index";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Button } from '../button'
+import { DemoFrame, DemoMuted, DemoStack } from '../example-theme/demo'
+import { ButtonGroup } from './index'
 
 export default function Example() {
   return (
-    <>
+    <DemoStack>
       <DemoFrame
-        title="Grouped actions"
-        description="Button Group only needs a simple grouped specimen."
+        title="Toolbar group"
+        description="A focusgroup-enhanced toolbar for compact related commands."
+      >
+        <ButtonGroup aria-label="Text alignment">
+          <Button size="icon-sm" variant="ghost" aria-label="Align start">
+            ≡
+          </Button>
+          <Button size="icon-sm" variant="ghost" aria-label="Align center">
+            ≣
+          </Button>
+          <Button size="icon-sm" variant="ghost" aria-label="Align end">
+            ≡
+          </Button>
+        </ButtonGroup>
+      </DemoFrame>
+
+      <DemoFrame
+        title="Equal action choices"
+        description="The actions variant uses inline-grid so every decision has equal visual weight."
       >
         <DemoStack>
-          <ButtonGroup>
-            <Button>Approve</Button>
-            <Button variant="secondary">Comment</Button>
-            <Button variant="outline">Request changes</Button>
+          <DemoMuted>Dialog footer</DemoMuted>
+          <ButtonGroup variant="actions" aria-label="Confirm changes">
+            <Button variant="outline">Cancel</Button>
+            <Button>Done</Button>
           </ButtonGroup>
         </DemoStack>
       </DemoFrame>
+
       <DemoFrame
-        title="Dialog actions"
-        description="Action rows keep the primary and secondary buttons equal width and aligned to the end."
+        title="Vertical actions"
+        description="The same equal-width treatment adapts to narrow layouts."
       >
-        <DemoStack>
-          <ButtonGroupActions
-            secondary={
-              <Button type="button" variant="secondary">
-                Cancel
-              </Button>
-            }
-            primary={<Button type="button">Save changes</Button>}
-          />
-          <ButtonGroupActions
-            leading={
-              <IconButton label="More actions" type="button">
-                +
-              </IconButton>
-            }
-            secondary={
-              <Button type="button" variant="secondary">
-                Back
-              </Button>
-            }
-            primary={<Button type="button">Continue</Button>}
-          />
-        </DemoStack>
+        <ButtonGroup variant="actions" orientation="vertical" aria-label="Document actions">
+          <Button variant="outline">Save draft</Button>
+          <Button>Publish</Button>
+        </ButtonGroup>
       </DemoFrame>
-    </>
-  );
+    </DemoStack>
+  )
 }
+;('use client')

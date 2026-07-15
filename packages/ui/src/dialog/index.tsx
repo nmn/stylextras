@@ -1,262 +1,190 @@
-import { Suspense, createElement, useRef, useState } from "react";
-import type { ComponentType, ReactNode, SyntheticEvent } from "react";
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithRef } from "react";
-import { Button, type ButtonProps } from "../button";
-import {
-  type LazyComponentLoader,
-  type ReactComponent,
-  useLazyComponent,
-} from "../lazy-component";
-import { colors } from "../tokens/color.stylex";
-import { elevation } from "../tokens/elevation.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-type BaseProps = ComponentPropsWithRef<"dialog">;
-export type DialogSize = "sm" | "md" | "lg";
-export type DrawerSide = "left" | "right";
-export type DialogProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  size?: DialogSize;
-};
-export type DialogContentProps = DialogProps;
-export type DrawerContentProps = Omit<BaseProps, "className" | "style"> & {
-  side?: DrawerSide;
-  sx?: StyleXStyles;
-};
-export type DialogTriggerProps<
-  Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
-> = Omit<ButtonProps, "className" | "content" | "style"> & {
-  content: LazyComponentLoader<Props>;
-  contentProps?: Omit<Props, "ref">;
-  fallback?: ReactNode;
-};
-export type DialogComponent = ReactComponent<DialogContentProps>;
-export type DrawerComponent = ReactComponent<DrawerContentProps>;
-export type DialogProgrammaticProps<
-  Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
-> = {
-  content: LazyComponentLoader<Props>;
-  contentProps?: Omit<Props, "open" | "ref">;
-  defaultOpen?: boolean;
-  fallback?: ReactNode;
-  onOpenChange?: (open: boolean) => void;
-  open?: boolean;
-};
-/**
- * Renders a modal or non-modal surface using the native dialog element.
- *
- * Search aliases: dialog, modal, modal dialog, popup dialog.
- *
- * A11y notes:
- * - Relies on native <dialog> behavior for focus and modality.
- * - Does not add custom focus restoration, layered dismissal, or inert polyfills.
- */
-export function DialogContent({
-  ref,
-  size = "md",
-  sx,
-  ...props
-}: DialogContentProps) {
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { Button, type ButtonProps } from '../button'
+import { blur } from '../tokens/blur.stylex'
+import { colors } from '../tokens/color.stylex'
+import { elevation } from '../tokens/elevation.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
+
+type SxProp = { sx?: StyleXStyles }
+
+export type DialogSize = 'sm' | 'md' | 'lg'
+export type DialogProps = Omit<ComponentPropsWithRef<'dialog'>, 'className' | 'style'> &
+  SxProp & {
+    closedBy?: 'any' | 'closerequest' | 'none'
+    size?: DialogSize
+  }
+export type DialogTriggerProps = Omit<ButtonProps, 'popoverTarget' | 'popoverTargetAction'> & {
+  target: string
+}
+export type DialogCloseProps = ButtonProps & {
+  target: string
+}
+export type DialogHeaderProps = Omit<ComponentPropsWithRef<'header'>, 'className' | 'style'> &
+  SxProp
+export type DialogTitleProps = Omit<ComponentPropsWithRef<'h2'>, 'className' | 'style'> & SxProp
+export type DialogDescriptionProps = Omit<ComponentPropsWithRef<'p'>, 'className' | 'style'> &
+  SxProp
+export type DialogBodyProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
+export type DialogFooterProps = Omit<ComponentPropsWithRef<'footer'>, 'className' | 'style'> &
+  SxProp
+
+const commandProps = (target: string, command: 'show-modal' | 'request-close') =>
+  ({ command, commandfor: target }) as Record<string, string>
+
+/** A native dialog surface controlled by explicit invoker targets. */
+export function Dialog({ closedBy = 'any', ref, size = 'md', sx, ...props }: DialogProps) {
+  const closedByProps = { closedby: closedBy } as Record<string, string>
   return (
     <dialog
       ref={ref}
+      {...closedByProps}
       {...props}
-      {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
+      {...stylex.props(styles.dialog, sizeStyles[size], sx)}
     />
-  );
+  )
 }
-export function DrawerContent({
-  ref,
-  side = "right",
-  sx,
+
+export function DialogTrigger({
+  target,
+  type = 'button',
+  variant = 'outline',
   ...props
-}: DrawerContentProps) {
+}: DialogTriggerProps) {
   return (
-    <dialog
-      ref={ref}
+    <Button
+      type={type}
+      variant={variant}
+      aria-haspopup="dialog"
       {...props}
-      {...stylex.props(drawerStyles.base, drawerSideStyles[side], sx)}
+      {...commandProps(target, 'show-modal')}
     />
-  );
+  )
 }
-export function DialogTrigger<
-  Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
->({
-  children,
-  content,
-  contentProps,
-  fallback = null,
-  onClick,
-  onFocus,
-  onPointerEnter,
-  type = "button",
+
+export function DialogClose({
+  target,
+  type = 'button',
+  variant = 'outline',
   ...props
-}: DialogTriggerProps<Props>) {
-  const [mounted, setMounted] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const shouldOpenRef = useRef(false);
-  const { LazyContent, preload } = useLazyComponent(content);
-  function openDialog() {
-    shouldOpenRef.current = true;
-    setMounted(true);
-    const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
-      dialog.showModal();
-      shouldOpenRef.current = false;
-    }
-  }
-  function setDialogRef(node: HTMLDialogElement | null) {
-    dialogRef.current = node;
-    if (node && shouldOpenRef.current && !node.open) {
-      node.showModal();
-      shouldOpenRef.current = false;
-    }
-    return () => {
-      if (dialogRef.current === node) {
-        dialogRef.current = null;
-      }
-    };
-  }
+}: DialogCloseProps) {
   return (
-    <>
-      <Button
-        {...props}
-        onClick={(event) => {
-          onClick?.(event);
-          if (!event.defaultPrevented) {
-            openDialog();
-          }
-        }}
-        onFocus={(event) => {
-          onFocus?.(event);
-          void preload();
-        }}
-        onPointerEnter={(event) => {
-          onPointerEnter?.(event);
-          void preload();
-        }}
-        type={type}
-      >
-        {children}
-      </Button>
-      {mounted ? (
-        <Suspense fallback={fallback}>
-          {createElement(
-            LazyContent as ComponentType<Record<string, unknown>>,
-            {
-              ...(contentProps as Record<string, unknown>),
-              ref: setDialogRef,
-            },
-          )}
-        </Suspense>
-      ) : null}
-    </>
-  );
+    <Button type={type} variant={variant} {...props} {...commandProps(target, 'request-close')} />
+  )
 }
-export function DialogProgrammatic<
-  Props extends ComponentPropsWithRef<"dialog"> = DialogContentProps,
->({
-  content,
-  contentProps,
-  defaultOpen = false,
-  fallback = null,
-  onOpenChange,
-  open,
-}: DialogProgrammaticProps<Props>) {
-  const isControlled = open !== undefined;
-  const [internalOpen, setInternalOpen] = useState(defaultOpen);
-  const isOpen = open ?? internalOpen;
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const { LazyContent } = useLazyComponent(content);
-  function setOpen(nextOpen: boolean) {
-    if (!isControlled) {
-      setInternalOpen(nextOpen);
-    }
-    onOpenChange?.(nextOpen);
-  }
-  function setDialogRef(node: HTMLDialogElement | null) {
-    dialogRef.current = node;
-    if (node && !node.open) {
-      node.showModal();
-    }
-    return () => {
-      if (dialogRef.current === node) {
-        dialogRef.current = null;
-      }
-    };
-  }
-  if (!isOpen) {
-    return null;
-  }
-  return (
-    <Suspense fallback={fallback}>
-      {createElement(LazyContent as ComponentType<Record<string, unknown>>, {
-        ...(contentProps as Record<string, unknown>),
-        onClose: (event: SyntheticEvent<HTMLDialogElement>) => {
-          contentProps?.onClose?.(event);
-          setOpen(false);
-        },
-        ref: setDialogRef,
-      })}
-    </Suspense>
-  );
+
+export function DialogHeader({ ref, sx, ...props }: DialogHeaderProps) {
+  return <header ref={ref} {...props} {...stylex.props(styles.header, sx)} />
 }
-export const Dialog = DialogContent;
-export const Drawer = DrawerContent;
-const baseStyles = stylex.create({
-  base: {
-    margin: "auto",
-    padding: spacing.lg,
-    borderColor: colors.border,
-    borderRadius: radius.xl,
-    borderStyle: "solid",
+
+export function DialogTitle({ ref, sx, ...props }: DialogTitleProps) {
+  return <h2 ref={ref} {...props} {...stylex.props(styles.title, sx)} />
+}
+
+export function DialogDescription({ ref, sx, ...props }: DialogDescriptionProps) {
+  return <p ref={ref} {...props} {...stylex.props(styles.description, sx)} />
+}
+
+export function DialogBody({ ref, sx, ...props }: DialogBodyProps) {
+  return <div ref={ref} {...props} {...stylex.props(styles.body, sx)} />
+}
+
+export function DialogFooter({ ref, sx, ...props }: DialogFooterProps) {
+  return <footer ref={ref} {...props} {...stylex.props(styles.footer, sx)} />
+}
+
+/* eslint-disable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */
+const styles = stylex.create({
+  dialog: {
+    backgroundColor: colors.popover,
+    borderColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
+    borderRadius: radius.lg,
+    borderStyle: 'solid',
     borderWidth: stroke.thin,
-    backgroundColor: colors.bgRaised,
     boxShadow: elevation.lg,
-    color: colors.fg,
+    color: colors.popoverForeground,
+    margin: 'auto',
+    maxHeight: 'min(85dvh, 48rem)',
+    maxWidth: 'calc(100vw - 2rem)',
+    opacity: {
+      default: 0,
+      ':open': 1,
+    },
+    overflow: 'auto',
+    padding: 0,
+    transform: {
+      default: 'translateY(8px) scale(0.98)',
+      ':open': 'translateY(0) scale(1)',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    transitionBehavior: 'allow-discrete',
+    transitionDuration: {
+      default: motion.durationModerate,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'display, opacity, overlay, transform',
+    transitionTimingFunction: motion.easeEmphasized,
+    '::backdrop': {
+      backdropFilter: `blur(${blur.sm})`,
+      backgroundColor: colors.overlay,
+      opacity: 0,
+      transitionBehavior: 'allow-discrete',
+      transitionDuration: {
+        default: motion.durationModerate,
+        '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+      },
+      transitionProperty: 'backdrop-filter, display, opacity, overlay',
+      transitionTimingFunction: motion.easeStandard,
+    },
+    ':open::backdrop': {
+      opacity: 1,
+    },
   },
-});
-const drawerStyles = stylex.create({
-  base: {
+  header: {
+    display: 'grid',
+    gap: spacing.xs,
+    paddingBlock: `${spacing.lg} 0`,
+    paddingInline: spacing.lg,
+  },
+  title: {
+    color: colors.fg,
+    fontFamily: typography.fontDisplay,
+    fontSize: typography.step1,
+    fontWeight: typography.weightSemibold,
+    lineHeight: typography.lineHeightTight,
     margin: 0,
+  },
+  description: {
+    color: colors.fgMuted,
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    lineHeight: typography.lineHeightBody,
+    margin: 0,
+  },
+  body: {
     padding: spacing.lg,
-    borderColor: "transparent",
-    borderStyle: "solid",
-    borderWidth: 0,
-    backgroundColor: colors.bgRaised,
-    boxShadow: elevation.lg,
-    color: colors.fg,
-    position: "fixed",
-    minHeight: "100vh",
-    top: 0,
-    width: "min(420px, 100vw)",
   },
-});
-const drawerSideStyles = stylex.create({
-  left: {
-    borderRightColor: colors.border,
-    borderRightStyle: "solid",
-    borderRightWidth: stroke.thin,
-    left: 0,
+  footer: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: spacing.sm,
+    justifyContent: 'flex-end',
+    paddingBlock: `0 ${spacing.lg}`,
+    paddingInline: spacing.lg,
   },
-  right: {
-    borderLeftColor: colors.border,
-    borderLeftStyle: "solid",
-    borderLeftWidth: stroke.thin,
-    right: 0,
-  },
-});
+})
+/* eslint-enable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */
+
 const sizeStyles = stylex.create({
-  sm: {
-    width: "min(360px, calc(100vw - 32px))",
-  },
-  md: {
-    width: "min(480px, calc(100vw - 32px))",
-  },
-  lg: {
-    width: "min(640px, calc(100vw - 32px))",
-  },
-});
+  sm: { width: 'min(24rem, calc(100vw - 2rem))' },
+  md: { width: 'min(32rem, calc(100vw - 2rem))' },
+  lg: { width: 'min(44rem, calc(100vw - 2rem))' },
+})

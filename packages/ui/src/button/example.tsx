@@ -13,11 +13,10 @@ export function ButtonVariantsDemo() {
       <DemoRow>
         <Button variant="primary">Primary</Button>
         <Button variant="secondary">Secondary</Button>
-        <Button variant="tertiary">Tertiary</Button>
         <Button variant="outline">Outline</Button>
         <Button variant="ghost">Ghost</Button>
+        <Button variant="link">Link</Button>
         <Button variant="danger">Danger</Button>
-        <Button variant="dangerOutline">Danger Outline</Button>
       </DemoRow>
     </DemoFrame>
   );
@@ -34,6 +33,9 @@ export function ButtonSizesDemo() {
         <Button size="sm">Small</Button>
         <Button size="md">Medium</Button>
         <Button size="lg">Large</Button>
+        <Button size="icon" aria-label="Add item">
+          +
+        </Button>
         <Button disabled>Disabled</Button>
       </DemoRow>
     </DemoFrame>

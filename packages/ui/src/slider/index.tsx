@@ -1,114 +1,72 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import type { AccessibleNameProps } from "../accessibility";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"input">;
-
-export type SliderSize = "sm" | "md";
-
-export type SliderProps = Omit<
-  BaseProps,
-  "aria-label" | "aria-labelledby" | "className" | "size" | "style" | "type"
-> &
-  AccessibleNameProps & {
-    sx?: StyleXStyles;
-    inputSx?: StyleXStyles;
-    labelSx?: StyleXStyles;
-    size?: SliderSize;
-  };
-
-/**
- * Renders a token-styled native range input.
- *
- * Search aliases: slider, range input, track control, value slider.
- *
- * A11y notes:
- * - Uses native range input semantics.
- * - Value text, units, and marks need to be supplied externally where required.
- */
-export function Slider({
-  disabled,
-  inputSx,
-  label,
-  labelSx,
-  max = 100,
-  min = 0,
-  size = "md",
-  step = 1,
-  sx,
-  ...props
-}: SliderProps) {
-  return (
-    <label {...stylex.props(rootStyles.root, sx)}>
-      {label ? (
-        <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span>
-      ) : null}
-      <input
-        {...props}
-        disabled={disabled}
-        max={max}
-        min={min}
-        step={step}
-        type="range"
-        {...stylex.props(
-          inputStyles.base,
-          sizeStyles[size],
-          disabled && stateStyles.disabled,
-          inputSx,
-        )}
-      />
-    </label>
-  );
+export type SliderProps = Omit<ComponentPropsWithRef<'input'>, 'className' | 'style' | 'type'> & {
+  sx?: StyleXStyles
 }
 
-const rootStyles = stylex.create({
-  root: {
-    gap: spacing.xs,
-    display: "grid",
-    width: "100%",
-  },
-});
+export function Slider({ max = 100, min = 0, ref, step = 1, sx, ...props }: SliderProps) {
+  return (
+    <input
+      ref={ref}
+      type="range"
+      min={min}
+      max={max}
+      step={step}
+      {...props}
+      {...stylex.props(styles.slider, sx)}
+    />
+  )
+}
 
-const labelStyles = stylex.create({
-  label: {
-    color: colors.fgSoft,
-    fontFamily: typography.fontSans,
-    fontSize: typography.stepMinus1,
-    fontWeight: typography.weightMedium,
-    lineHeight: typography.lineHeightSnug,
-  },
-});
-
-const inputStyles = stylex.create({
-  base: {
-    margin: 0,
-    outline: "none",
+/* eslint-disable @stylexjs/valid-styles */
+const styles = stylex.create({
+  slider: {
     accentColor: colors.primary,
+    appearance: 'none',
+    backgroundColor: colors.secondary,
+    borderRadius: radius.round,
     boxShadow: {
-      default: null,
-      ":focus-visible": `0 0 0 3px ${colors.focusRing}`,
+      default: 'none',
+      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
     },
-    cursor: "pointer",
-    width: "100%",
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    height: spacing.xs,
+    margin: `${spacing.sm} 0`,
+    opacity: { default: 1, ':disabled': 0.5 },
+    outline: 'none',
+    transitionDuration: motion.durationFast,
+    transitionProperty: 'box-shadow, opacity',
+    transitionTimingFunction: motion.easeStandard,
+    width: '100%',
+    '::-webkit-slider-thumb': {
+      appearance: 'none',
+      backgroundColor: colors.bgOverlay,
+      borderColor: colors.primary,
+      borderRadius: radius.round,
+      borderStyle: 'solid',
+      borderWidth: stroke.thick,
+      boxShadow: `0 1px 2px ${colors.overlay}`,
+      height: spacing.lg,
+      transitionDuration: motion.durationFast,
+      width: spacing.lg,
+    },
+    '::-moz-range-thumb': {
+      backgroundColor: colors.bgOverlay,
+      borderColor: colors.primary,
+      borderRadius: radius.round,
+      borderStyle: 'solid',
+      borderWidth: stroke.thick,
+      boxShadow: `0 1px 2px ${colors.overlay}`,
+      height: spacing.lg,
+      width: spacing.lg,
+    },
   },
-});
-
-const sizeStyles = stylex.create({
-  sm: {
-    minHeight: spacing.lg,
-  },
-  md: {
-    minHeight: spacing.xl,
-  },
-});
-
-const stateStyles = stylex.create({
-  disabled: {
-    cursor: "not-allowed",
-    opacity: 0.5,
-  },
-});
+})
+/* eslint-enable @stylexjs/valid-styles */

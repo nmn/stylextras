@@ -1,82 +1,79 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"nav">;
+type SxProp = { sx?: StyleXStyles }
 
-type BreadcrumbItem = { label: ReactNode; href?: string };
+export type BreadcrumbProps = Omit<ComponentPropsWithRef<'nav'>, 'className' | 'style'> & SxProp
+export type BreadcrumbListProps = Omit<ComponentPropsWithRef<'ol'>, 'className' | 'style'> &
+  SxProp
+export type BreadcrumbItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> &
+  SxProp
+export type BreadcrumbLinkProps = Omit<ComponentPropsWithRef<'a'>, 'className' | 'style'> &
+  SxProp
+export type BreadcrumbPageProps = Omit<ComponentPropsWithRef<'span'>, 'className' | 'style'> &
+  SxProp
+export type BreadcrumbSeparatorProps = Omit<
+  ComponentPropsWithRef<'li'>,
+  'aria-hidden' | 'className' | 'style'
+> &
+  SxProp
 
-export type BreadcrumbProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  items?: BreadcrumbItem[];
-};
-
-const defaultItems = [
-  { label: "Docs", href: "#" },
-  { label: "Components", href: "#" },
-  { label: "Button" },
-];
-
-/**
- * Renders a breadcrumb navigation container.
- *
- * Search aliases: breadcrumb, breadcrumbs, path nav, trail navigation.
- *
- * A11y notes:
- * - Does not generate item markup automatically.
- * - Callers must provide meaningful link text and current-page indication.
- */
-export function Breadcrumb({
-  items = defaultItems,
-  sx,
-  ...props
-}: BreadcrumbProps) {
-  return (
-    <nav
-      {...props}
-      aria-label="Breadcrumb"
-      {...stylex.props(navStyles.base, sx)}
-    >
-      <ol {...stylex.props(listStyles.base)}>
-        {items.map((item, index) => (
-          <li key={index} {...stylex.props(itemStyles.base)}>
-            {item.href ? (
-              <a href={item.href}>{item.label}</a>
-            ) : (
-              <span>{item.label}</span>
-            )}
-            {index < items.length - 1 ? (
-              <span {...stylex.props(separatorStyles.base)}>/</span>
-            ) : null}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
+export function Breadcrumb({ 'aria-label': ariaLabel = 'Breadcrumb', ref, sx, ...props }: BreadcrumbProps) {
+  return <nav ref={ref} aria-label={ariaLabel} {...props} {...stylex.props(styles.nav, sx)} />
 }
 
-const navStyles = stylex.create({
-  base: {
-    color: colors.fgSoft,
+export function BreadcrumbList({ ref, sx, ...props }: BreadcrumbListProps) {
+  return <ol ref={ref} {...props} {...stylex.props(styles.list, sx)} />
+}
+
+export function BreadcrumbItem({ ref, sx, ...props }: BreadcrumbItemProps) {
+  return <li ref={ref} {...props} {...stylex.props(styles.item, sx)} />
+}
+
+export function BreadcrumbLink({ ref, sx, ...props }: BreadcrumbLinkProps) {
+  return <a ref={ref} {...props} {...stylex.props(styles.link, sx)} />
+}
+
+export function BreadcrumbPage({ ref, sx, ...props }: BreadcrumbPageProps) {
+  return <span ref={ref} aria-current="page" {...props} {...stylex.props(styles.page, sx)} />
+}
+
+export function BreadcrumbSeparator({ children = '/', ref, sx, ...props }: BreadcrumbSeparatorProps) {
+  return (
+    <li ref={ref} aria-hidden="true" {...props} {...stylex.props(styles.separator, sx)}>
+      {children}
+    </li>
+  )
+}
+
+const styles = stylex.create({
+  nav: {
+    color: colors.fgMuted,
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
   },
-});
-const listStyles = stylex.create({
-  base: {
+  list: {
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    listStyle: 'none',
     margin: 0,
     padding: 0,
-    gap: spacing.xs,
-    listStyle: "none",
-    alignItems: "center",
-    display: "flex",
-    flexWrap: "wrap",
   },
-});
-const itemStyles = stylex.create({
-  base: { gap: spacing.xs, alignItems: "center", display: "inline-flex" },
-});
-const separatorStyles = stylex.create({ base: { color: colors.fgMuted } });
+  item: {
+    alignItems: 'center',
+    display: 'inline-flex',
+  },
+  link: {
+    color: colors.fgMuted,
+    textDecoration: { default: 'none', ':hover': 'underline' },
+    textUnderlineOffset: 4,
+  },
+  page: { color: colors.fg, fontWeight: typography.weightMedium },
+  separator: { color: colors.fgDisabled, userSelect: 'none' },
+})

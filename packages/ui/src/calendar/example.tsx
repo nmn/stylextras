@@ -1,19 +1,21 @@
 "use client";
 
 import { Calendar } from "./index";
-import { DemoFrame, DemoRow } from "../example-theme/demo";
+import { DemoFrame } from "../example-theme/demo";
 
 export default function Example() {
   return (
     <>
       <DemoFrame
-        title="Native date inputs"
-        description="Calendar is currently a lightweight date-input wrapper."
+        title="Release calendar"
+        description="An Intl-backed calendar grid with roving focus and bounded date selection."
       >
-        <DemoRow>
-          <Calendar aria-label="Start date" defaultValue="2026-04-10" />
-          <Calendar aria-label="Review date" defaultValue="2026-04-18" />
-        </DemoRow>
+        <Calendar
+          aria-label="Choose a release date"
+          defaultValue="2026-07-11"
+          min="2026-07-01"
+          max="2026-08-31"
+        />
       </DemoFrame>
     </>
   );

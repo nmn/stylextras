@@ -1,19 +1,37 @@
 "use client";
 
 import { DatePicker } from "./index";
-import { DemoFrame, DemoRow } from "../example-theme/demo";
+import { DemoFrame, DemoGrid } from "../example-theme/demo";
+import { Field, FieldDescription, FieldLabel } from "../field";
 
 export default function Example() {
   return (
     <>
       <DemoFrame
-        title="Date pickers"
-        description="Date Picker is currently a lightweight native date control wrapper."
+        title="Project dates"
+        description="A form-compatible readonly input opens the shared calendar in a native popover."
       >
-        <DemoRow>
-          <DatePicker aria-label="Publish date" defaultValue="2026-04-12" />
-          <DatePicker aria-label="Archive date" defaultValue="2026-04-20" />
-        </DemoRow>
+        <DemoGrid>
+          <Field>
+            <FieldLabel htmlFor="publish-date">Publish date</FieldLabel>
+            <DatePicker
+              inputId="publish-date"
+              name="publishDate"
+              defaultValue="2026-07-12"
+            />
+            <FieldDescription>Select a day with the calendar or keyboard.</FieldDescription>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="archive-date">Archive date</FieldLabel>
+            <DatePicker
+              inputId="archive-date"
+              name="archiveDate"
+              defaultValue="2026-07-20"
+              min="2026-07-12"
+            />
+            <FieldDescription>Dates before publishing are unavailable.</FieldDescription>
+          </Field>
+        </DemoGrid>
       </DemoFrame>
     </>
   );

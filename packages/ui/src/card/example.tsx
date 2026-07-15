@@ -1,96 +1,70 @@
-"use client";
+'use client'
 
-import { AspectRatio } from "../aspect-ratio";
-import { Badge } from "../badge";
-import { Button } from "../button";
-import { Card } from "./index";
+import { Button } from '../button'
+import { DemoFrame, DemoGrid, DemoStack } from '../example-theme/demo'
 import {
-  DemoFrame,
-  DemoGrid,
-  DemoMuted,
-  DemoStack,
-} from "../example-theme/demo";
-import { Typography } from "../typography";
-
-export function CardElevationsDemo() {
-  return (
-    <DemoFrame
-      title="Elevations"
-      description="Card is one of the few components where composition helps show the component clearly."
-      showThemes={false}
-    >
-      <DemoGrid>
-        <Card elevation="flat">
-          <DemoStack>
-            <Badge>Flat</Badge>
-            <Typography as="h3" scale="title">
-              Flat card
-            </Typography>
-            <DemoMuted>Dense surfaces.</DemoMuted>
-          </DemoStack>
-        </Card>
-        <Card elevation="sm">
-          <DemoStack>
-            <Badge>Small</Badge>
-            <Typography as="h3" scale="title">
-              Small card
-            </Typography>
-            <DemoMuted>Light separation.</DemoMuted>
-          </DemoStack>
-        </Card>
-        <Card elevation="md">
-          <DemoStack>
-            <Badge>Medium</Badge>
-            <Typography as="h3" scale="title">
-              Medium card
-            </Typography>
-            <DemoMuted>Balanced default.</DemoMuted>
-          </DemoStack>
-        </Card>
-        <Card elevation="lg">
-          <DemoStack>
-            <Badge>Large</Badge>
-            <Typography as="h3" scale="title">
-              Large card
-            </Typography>
-            <DemoMuted>Focused surface.</DemoMuted>
-          </DemoStack>
-        </Card>
-      </DemoGrid>
-    </DemoFrame>
-  );
-}
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from './index'
 
 export function CardCompositionDemo() {
   return (
     <DemoFrame
-      title="Composed content"
-      description="A second frame shows the card with typical content."
+      title="Card composition"
+      description="Individually styled card parts keep spacing predictable without an unstyled primitive layer."
       showThemes={false}
     >
-      <Card elevation="sm">
-        <DemoStack>
-          <AspectRatio ratio="video">Preview</AspectRatio>
-          <Badge>Experimental</Badge>
-          <Typography as="h3" scale="title">
-            Native popups
-          </Typography>
-          <DemoMuted>
-            Use card composition to see how spacing, radius, and elevation work
-            together.
-          </DemoMuted>
-          <Button>Read more</Button>
-        </DemoStack>
-      </Card>
+      <DemoGrid>
+        <Card aria-label="Native popups card">
+          <CardHeader>
+            <CardTitle>Native popups</CardTitle>
+            <CardDescription>Popover behavior with much less JavaScript.</CardDescription>
+            <CardAction>
+              <Button size="icon-sm" variant="ghost" aria-label="Card options">
+                ···
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>Use explicit trigger and target relationships.</CardContent>
+          <CardFooter>
+            <Button size="sm">Read more</Button>
+            <Button size="sm" variant="outline">
+              Dismiss
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card aria-label="Token-driven surface card">
+          <CardHeader>
+            <CardTitle>Token-driven surface</CardTitle>
+            <CardDescription>
+              Every nested layer gets lighter in dark mode and keeps the active tint.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Card aria-label="Nested layer card">
+              <CardHeader>
+                <CardTitle>Nested layer</CardTitle>
+                <CardDescription>
+                  Raised surfaces compound naturally without contextual JavaScript.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </CardContent>
+        </Card>
+      </DemoGrid>
     </DemoFrame>
-  );
+  )
 }
 
 export default function Example() {
   return (
     <DemoStack>
-      <CardElevationsDemo />
       <CardCompositionDemo />
     </DemoStack>
-  );
+  )
 }

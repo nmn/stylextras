@@ -1,94 +1,78 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import type { AccessibleNameProps } from "../accessibility";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"input">;
-
-export type CheckboxSize = "sm" | "md";
-
-export type CheckboxProps = Omit<
-  BaseProps,
-  "aria-label" | "aria-labelledby" | "className" | "style" | "type" | "size"
-> &
-  AccessibleNameProps & {
-    sx?: StyleXStyles;
-    inputSx?: StyleXStyles;
-    labelSx?: StyleXStyles;
-    size?: CheckboxSize;
-  };
-
-/**
- * Renders a token-styled native checkbox control.
- *
- * Search aliases: checkbox, check, toggle box, boolean field.
- *
- * A11y notes:
- * - Uses native checkbox semantics.
- * - Grouped selection patterns and validation messaging must be composed by the caller.
- */
-export function Checkbox({
-  label,
-  labelSx,
-  inputSx,
-  size = "md",
-  sx,
-  ...props
-}: CheckboxProps) {
-  return (
-    <label {...stylex.props(rootStyles.base, sx)}>
-      <input
-        {...props}
-        type="checkbox"
-        {...stylex.props(inputStyles.base, sizeStyles[size], inputSx)}
-      />
-      {label ? (
-        <span {...stylex.props(labelStyles.base, labelSx)}>{label}</span>
-      ) : null}
-    </label>
-  );
+export type CheckboxProps = Omit<ComponentPropsWithRef<'input'>, 'className' | 'style' | 'type'> & {
+  controlSize?: 'sm' | 'md'
+  sx?: StyleXStyles
 }
 
-const rootStyles = stylex.create({
-  base: {
-    gap: spacing.xs,
-    alignItems: "center",
-    color: colors.fg,
-    display: "inline-flex",
-  },
-});
+export function Checkbox({ controlSize = 'md', ref, sx, ...props }: CheckboxProps) {
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      {...props}
+      {...stylex.props(styles.checkbox, sizeStyles[controlSize], sx)}
+    />
+  )
+}
 
-const inputStyles = stylex.create({
-  base: {
-    margin: 0,
-    accentColor: colors.primary,
+const styles = stylex.create({
+  checkbox: {
+    appearance: 'none',
+    backgroundColor: {
+      default: colors.control,
+      ':checked': colors.primary,
+      ':indeterminate': colors.primary,
+    },
+    borderColor: {
+      default: colors.borderStrong,
+      ':checked': colors.primary,
+      ':indeterminate': colors.primary,
+    },
+    borderRadius: radius.xs,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
     boxShadow: {
-      default: null,
-      ":focus-visible": `0 0 0 ${stroke.thick} ${colors.focusRing}`,
+      default: 'none',
+      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
+    },
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    color: colors.primaryForeground,
+    display: 'grid',
+    flexShrink: 0,
+    margin: 0,
+    opacity: { default: 1, ':disabled': 0.5 },
+    outline: 'none',
+    placeItems: 'center',
+    transitionDuration: motion.durationFast,
+    transitionProperty: 'background-color, border-color, box-shadow',
+    transitionTimingFunction: motion.easeStandard,
+    '::before': {
+      backgroundColor: 'currentColor',
+      clipPath: 'polygon(14% 44%, 0 59%, 40% 100%, 100% 18%, 84% 4%, 38% 70%)',
+      content: '""',
+      height: '60%',
+      opacity: 0,
+      width: '60%',
+    },
+    ':checked::before': {
+      opacity: 1,
+    },
+    ':indeterminate::before': {
+      clipPath: 'inset(42% 12%)',
+      opacity: 1,
     },
   },
-});
+})
 
 const sizeStyles = stylex.create({
-  sm: {
-    height: spacing.md,
-    width: spacing.md,
-  },
-  md: {
-    height: spacing.lg,
-    width: spacing.lg,
-  },
-});
-
-const labelStyles = stylex.create({
-  base: {
-    color: colors.fg,
-    fontFamily: typography.fontSans,
-    fontSize: typography.step0,
-    lineHeight: typography.lineHeightBody,
-  },
-});
+  sm: { height: spacing.md, width: spacing.md },
+  md: { height: spacing.lg, width: spacing.lg },
+})

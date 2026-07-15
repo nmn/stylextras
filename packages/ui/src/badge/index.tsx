@@ -1,13 +1,13 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"span">;
+type BaseProps = ComponentPropsWithRef<"span">;
 
 export type BadgeVariant =
   | "neutral"
@@ -35,6 +35,7 @@ export type BadgeProps = Omit<BaseProps, "className" | "style"> & {
  * - Does not expose live updates or status announcements automatically.
  */
 export function Badge({
+  ref,
   size = "md",
   sx,
   variant = "neutral",
@@ -42,6 +43,7 @@ export function Badge({
 }: BadgeProps) {
   return (
     <span
+      ref={ref}
       {...props}
       {...stylex.props(
         baseStyles.base,
@@ -87,31 +89,31 @@ const variantStyles = stylex.create({
   neutral: {
     borderColor: colors.border,
     backgroundColor: colors.bgSubtle,
-    color: colors.fgSoft,
+    color: `color-mix(in oklab, ${colors.fg} 92%, ${colors.fgMuted})`,
   },
   brand: {
     borderColor: colors.primary,
     backgroundColor: colors.primary,
-    color: colors.primaryForeground,
+    color: `color-mix(in oklab, ${colors.primaryForeground} 94%, ${colors.primary})`,
   },
   info: {
     borderColor: colors.info,
     backgroundColor: colors.infoSoft,
-    color: colors.info,
+    color: `color-mix(in oklab, ${colors.fg} 92%, ${colors.info})`,
   },
   success: {
     borderColor: colors.success,
     backgroundColor: colors.successSoft,
-    color: colors.success,
+    color: `color-mix(in oklab, ${colors.fg} 92%, ${colors.success})`,
   },
   warning: {
     borderColor: colors.warning,
     backgroundColor: colors.warningSoft,
-    color: colors.warning,
+    color: `color-mix(in oklab, ${colors.fg} 92%, ${colors.warning})`,
   },
   danger: {
     borderColor: colors.danger,
     backgroundColor: colors.dangerSoft,
-    color: colors.danger,
+    color: `color-mix(in oklab, ${colors.fg} 92%, ${colors.danger})`,
   },
 });

@@ -1,28 +1,19 @@
-"use client";
+'use client'
 
-import { Textarea } from "./index";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Field, FieldDescription, FieldLabel } from '../field'
+import { Textarea } from './index'
 
 export default function Example() {
   return (
-    <>
-      <DemoFrame
-        title="Textarea forms"
-        description="Textarea should show a short and a longer multiline field."
-      >
-        <DemoStack>
-          <Textarea
-            label="Summary"
-            rows={4}
-            defaultValue="Short multiline content."
-          />
-          <Textarea
-            label="Notes"
-            rows={6}
-            defaultValue="Longer multiline content helps show the rhythm, spacing, and line height of the component without extra layout noise."
-          />
-        </DemoStack>
-      </DemoFrame>
-    </>
-  );
+    <DemoFrame title="Textarea" description="A styled native multiline control.">
+      <DemoStack>
+        <Field>
+          <FieldLabel htmlFor="summary">Summary</FieldLabel>
+          <Textarea id="summary" name="summary" rows={4} placeholder="Add a summary…" />
+          <FieldDescription>Plain native props remain available.</FieldDescription>
+        </Field>
+      </DemoStack>
+    </DemoFrame>
+  )
 }

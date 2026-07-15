@@ -1,79 +1,57 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { focusgroupProps } from "../focusgroup";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
+'use client'
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { focusgroupRef } from '../focusgroup'
+import { colors } from '../tokens/color.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 
-export type MenubarProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
+export type MenubarProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'role' | 'style'> & {
+  sx?: StyleXStyles
+}
 
-/**
- * Renders a horizontal menubar container.
- *
- * Search aliases: menubar, menu bar, app menu, top menu.
- *
- * A11y notes:
- * - Uses menubar semantics.
- * - Arrow-key focus movement is provided by focusgroup with a lazy polyfill.
- */
-export function Menubar({ onMouseOver, sx, ...props }: MenubarProps) {
+/** A focusgroup-enhanced menubar. Menus remain explicit DropdownMenu siblings. */
+export function Menubar({ onPointerMove, ref, sx, ...props }: MenubarProps) {
+  const setRef = focusgroupRef(ref)
+  const focusgroup = { focusgroup: 'menubar' } as Record<string, string>
   return (
     <div
-      {...props}
-      onMouseOver={(event) => {
-        onMouseOver?.(event);
-
-        if (event.defaultPrevented) {
-          return;
-        }
-
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) {
-          return;
-        }
-
-        const trigger = target.closest<HTMLButtonElement>(
-          'button[aria-haspopup="menu"]',
-        );
-        if (!trigger || !event.currentTarget.contains(trigger)) {
-          return;
-        }
-
-        const openMenu = event.currentTarget.querySelector(
-          "[popover]:popover-open",
-        );
-        if (!openMenu || trigger.nextElementSibling === openMenu) {
-          return;
-        }
-
-        trigger.click();
-      }}
+      ref={setRef}
       role="menubar"
-      {...focusgroupProps<HTMLDivElement>("menubar")}
+      {...focusgroup}
+      onPointerMove={(event) => {
+        onPointerMove?.(event)
+        if (event.defaultPrevented || event.pointerType === 'touch') return
+        const trigger = (event.target as Element).closest<HTMLButtonElement>(
+          'button[aria-haspopup="menu"][popovertarget]',
+        )
+        if (!trigger || !event.currentTarget.contains(trigger)) return
+        const openMenu = event.currentTarget.querySelector<HTMLElement>('[popover]:popover-open')
+        if (!openMenu || trigger.popoverTargetElement === openMenu) return
+        trigger.click()
+      }}
+      {...props}
       {...stylex.props(styles.base, sx)}
     />
-  );
+  )
 }
 
 const styles = stylex.create({
   base: {
-    padding: spacing.xxs,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderStyle: "solid",
-    borderWidth: stroke.thin,
-    gap: spacing.xxs,
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: colors.bgSubtle,
-    display: "flex",
-    flexWrap: "wrap",
-    maxWidth: "100%",
-    width: "fit-content",
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: spacing.xxs,
+    maxWidth: '100%',
+    padding: spacing.xxs,
+    width: 'fit-content',
   },
-});
+})

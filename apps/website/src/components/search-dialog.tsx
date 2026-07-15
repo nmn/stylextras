@@ -433,7 +433,7 @@ export function SearchDialog({
                   );
                 }
                 const content = item.contentWithHighlights
-                  ? renderHighlights(item.contentWithHighlights)
+                  ? <SearchHighlights highlights={item.contentWithHighlights} />
                   : item.content;
                 return (
                   <button
@@ -515,17 +515,20 @@ export function SearchDialog({
     </Dialog.Root>
   );
 }
-function renderHighlights(highlights: HighlightedText<ReactNode>[]) {
-  return highlights.map((node, index) => {
-    if (node.styles?.highlight) {
-      return (
-        <span key={index} {...stylex.props(styles.highlight)}>
-          {node.content}
-        </span>
-      );
-    }
-    return <Fragment key={index}>{node.content}</Fragment>;
-  });
+function SearchHighlights({
+  highlights,
+}: {
+  highlights: HighlightedText<ReactNode>[];
+}) {
+  return highlights.map((node, index) =>
+    node.styles?.highlight ? (
+      <span key={index} {...stylex.props(styles.highlight)}>
+        {node.content}
+      </span>
+    ) : (
+      <Fragment key={index}>{node.content}</Fragment>
+    ),
+  );
 }
 const styles = stylex.create({
   overlay: {

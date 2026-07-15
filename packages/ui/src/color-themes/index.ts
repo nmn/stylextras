@@ -1,300 +1,212 @@
-import * as stylex from "@stylexjs/stylex";
-import { colors } from "../tokens/color.stylex";
+import * as stylex from '@stylexjs/stylex'
+import { colors } from '../tokens/color.stylex'
 
-const lightDark = (light: string, dark: string) =>
-  `light-dark(${light}, ${dark})`;
+const lightDark = (light: string, dark: string) => `light-dark(${light}, ${dark})`
 
-export const baseTheme = stylex.createTheme(colors, {});
-export const monoTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0 0)", "oklch(12% 0 0)"),
-  fg: lightDark("oklch(18% 0 0)", "oklch(96% 0 0)"),
-  tone: lightDark("oklch(52% 0 0)", "oklch(76% 0 0)"),
-  fgOnBrand: lightDark("oklch(98% 0 0)", "oklch(10% 0 0)"),
-  brand: lightDark("oklch(20% 0 0)", "oklch(92% 0 0)"),
-  info: lightDark("oklch(44% 0 0)", "oklch(82% 0 0)"),
-  success: lightDark("oklch(44% 0 0)", "oklch(82% 0 0)"),
-  warning: lightDark("oklch(44% 0 0)", "oklch(82% 0 0)"),
-  danger: lightDark("oklch(44% 0 0)", "oklch(82% 0 0)"),
-});
-export const oceanTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.012 216)", "oklch(20% 0.022 226)"),
-  fg: lightDark("oklch(28% 0.03 230)", "oklch(95% 0.012 206)"),
-  tone: lightDark("oklch(58% 0.05 214)", "oklch(76% 0.04 196)"),
-  fgOnBrand: lightDark("oklch(98% 0.004 220)", "oklch(11% 0.01 220)"),
-  brand: lightDark("oklch(64% 0.15 220)", "oklch(74% 0.12 196)"),
-  info: lightDark("oklch(60% 0.14 242)", "oklch(74% 0.11 230)"),
-  success: lightDark("oklch(68% 0.14 170)", "oklch(78% 0.11 168)"),
-  warning: lightDark("oklch(82% 0.14 90)", "oklch(86% 0.12 92)"),
-  danger: lightDark("oklch(66% 0.16 28)", "oklch(75% 0.13 24)"),
-});
-export const sunsetTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.02 75)", "oklch(22% 0.025 32)"),
-  fg: lightDark("oklch(30% 0.04 35)", "oklch(95% 0.012 70)"),
-  tone: lightDark("oklch(62% 0.08 40)", "oklch(79% 0.06 58)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 70)", "oklch(14% 0.01 32)"),
-  brand: lightDark("oklch(70% 0.17 42)", "oklch(78% 0.14 58)"),
-  info: lightDark("oklch(60% 0.13 250)", "oklch(72% 0.11 242)"),
-  success: lightDark("oklch(68% 0.13 155)", "oklch(79% 0.1 150)"),
-  warning: lightDark("oklch(82% 0.16 88)", "oklch(88% 0.13 86)"),
-  danger: lightDark("oklch(65% 0.18 26)", "oklch(76% 0.14 28)"),
-});
-export const dangerTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.012 18)", "oklch(18% 0.018 18)"),
-  fg: lightDark("oklch(28% 0.05 24)", "oklch(96% 0.01 20)"),
-  tone: lightDark("oklch(62% 0.19 28)", "oklch(74% 0.15 28)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 18)", "oklch(12% 0.015 18)"),
-  brand: lightDark("oklch(62% 0.19 28)", "oklch(74% 0.15 28)"),
-  info: lightDark("oklch(58% 0.11 250)", "oklch(71% 0.1 242)"),
-  success: lightDark("oklch(66% 0.13 160)", "oklch(77% 0.11 158)"),
-  warning: lightDark("oklch(80% 0.15 88)", "oklch(86% 0.13 86)"),
-  danger: lightDark("oklch(62% 0.19 28)", "oklch(74% 0.15 28)"),
-});
-export const forestTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.012 150)", "oklch(19% 0.018 154)"),
-  fg: lightDark("oklch(27% 0.03 154)", "oklch(96% 0.01 150)"),
-  tone: lightDark("oklch(56% 0.06 152)", "oklch(76% 0.05 150)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 150)", "oklch(12% 0.01 154)"),
-  brand: lightDark("oklch(58% 0.16 152)", "oklch(73% 0.13 150)"),
-  info: lightDark("oklch(60% 0.12 235)", "oklch(72% 0.1 230)"),
-  success: lightDark("oklch(61% 0.17 150)", "oklch(76% 0.12 150)"),
-  warning: lightDark("oklch(80% 0.15 92)", "oklch(86% 0.12 92)"),
-  danger: lightDark("oklch(62% 0.18 28)", "oklch(74% 0.14 28)"),
-});
-export const roseTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.012 8)", "oklch(20% 0.015 350)"),
-  fg: lightDark("oklch(26% 0.04 350)", "oklch(96% 0.01 8)"),
-  tone: lightDark("oklch(58% 0.08 356)", "oklch(79% 0.06 356)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 8)", "oklch(12% 0.01 350)"),
-  brand: lightDark("oklch(67% 0.18 356)", "oklch(77% 0.13 356)"),
-  info: lightDark("oklch(59% 0.13 245)", "oklch(72% 0.11 242)"),
-  success: lightDark("oklch(64% 0.14 155)", "oklch(77% 0.11 152)"),
-  warning: lightDark("oklch(81% 0.15 86)", "oklch(87% 0.12 86)"),
-  danger: lightDark("oklch(67% 0.18 18)", "oklch(76% 0.14 22)"),
-});
-export const cobaltTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.01 258)", "oklch(18% 0.02 262)"),
-  fg: lightDark("oklch(25% 0.05 262)", "oklch(97% 0.008 258)"),
-  tone: lightDark("oklch(55% 0.1 262)", "oklch(76% 0.08 258)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 258)", "oklch(10% 0.012 262)"),
-  brand: lightDark("oklch(56% 0.2 264)", "oklch(72% 0.16 262)"),
-  info: lightDark("oklch(60% 0.16 242)", "oklch(73% 0.12 238)"),
-  success: lightDark("oklch(66% 0.15 160)", "oklch(77% 0.11 160)"),
-  warning: lightDark("oklch(79% 0.15 88)", "oklch(85% 0.12 90)"),
-  danger: lightDark("oklch(63% 0.18 26)", "oklch(74% 0.14 28)"),
-});
-export const paperTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.002 85)", "oklch(24% 0.008 65)"),
-  fg: lightDark("oklch(28% 0.015 55)", "oklch(96% 0.004 85)"),
-  tone: lightDark("oklch(54% 0.02 75)", "oklch(78% 0.018 78)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 80)", "oklch(14% 0.008 60)"),
-  brand: lightDark("oklch(42% 0.07 55)", "oklch(80% 0.035 80)"),
-  info: lightDark("oklch(55% 0.11 240)", "oklch(72% 0.09 236)"),
-  success: lightDark("oklch(55% 0.11 150)", "oklch(76% 0.08 152)"),
-  warning: lightDark("oklch(78% 0.12 88)", "oklch(85% 0.1 88)"),
-  danger: lightDark("oklch(58% 0.14 28)", "oklch(74% 0.1 28)"),
-});
-export const terminalTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(96% 0.004 150)", "oklch(14% 0.018 150)"),
-  fg: lightDark("oklch(18% 0.03 150)", "oklch(92% 0.06 150)"),
-  tone: lightDark("oklch(48% 0.06 150)", "oklch(74% 0.07 150)"),
-  fgOnBrand: lightDark("oklch(98% 0.004 150)", "oklch(10% 0.015 150)"),
-  brand: lightDark("oklch(54% 0.17 150)", "oklch(74% 0.14 150)"),
-  info: lightDark("oklch(55% 0.12 240)", "oklch(72% 0.1 236)"),
-  success: lightDark("oklch(54% 0.17 150)", "oklch(74% 0.14 150)"),
-  warning: lightDark("oklch(79% 0.14 90)", "oklch(85% 0.12 90)"),
-  danger: lightDark("oklch(60% 0.17 28)", "oklch(73% 0.13 28)"),
-});
-export const citrusTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.01 105)", "oklch(20% 0.02 105)"),
-  fg: lightDark("oklch(25% 0.03 90)", "oklch(96% 0.008 105)"),
-  tone: lightDark("oklch(62% 0.08 105)", "oklch(78% 0.07 102)"),
-  fgOnBrand: lightDark("oklch(98% 0.004 105)", "oklch(12% 0.01 105)"),
-  brand: lightDark("oklch(74% 0.19 108)", "oklch(81% 0.15 106)"),
-  info: lightDark("oklch(58% 0.13 245)", "oklch(72% 0.11 240)"),
-  success: lightDark("oklch(66% 0.14 155)", "oklch(78% 0.1 155)"),
-  warning: lightDark("oklch(79% 0.18 90)", "oklch(86% 0.14 90)"),
-  danger: lightDark("oklch(62% 0.18 28)", "oklch(74% 0.13 28)"),
-});
-export const plumTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.01 320)", "oklch(18% 0.02 320)"),
-  fg: lightDark("oklch(24% 0.04 320)", "oklch(96% 0.008 320)"),
-  tone: lightDark("oklch(56% 0.08 318)", "oklch(78% 0.06 318)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 320)", "oklch(12% 0.01 320)"),
-  brand: lightDark("oklch(58% 0.17 318)", "oklch(74% 0.13 318)"),
-  info: lightDark("oklch(59% 0.13 245)", "oklch(72% 0.11 242)"),
-  success: lightDark("oklch(64% 0.14 155)", "oklch(77% 0.11 155)"),
-  warning: lightDark("oklch(80% 0.15 88)", "oklch(86% 0.12 88)"),
-  danger: lightDark("oklch(63% 0.18 28)", "oklch(74% 0.14 28)"),
-});
-export const candyTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.012 345)", "oklch(22% 0.02 330)"),
-  fg: lightDark("oklch(28% 0.05 340)", "oklch(97% 0.008 345)"),
-  tone: lightDark("oklch(62% 0.1 338)", "oklch(80% 0.07 338)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 345)", "oklch(12% 0.01 330)"),
-  brand: lightDark("oklch(71% 0.2 338)", "oklch(79% 0.14 338)"),
-  info: lightDark("oklch(61% 0.15 250)", "oklch(73% 0.11 245)"),
-  success: lightDark("oklch(66% 0.14 160)", "oklch(78% 0.1 160)"),
-  warning: lightDark("oklch(82% 0.16 92)", "oklch(87% 0.13 92)"),
-  danger: lightDark("oklch(68% 0.18 20)", "oklch(76% 0.14 24)"),
-});
-export const clayTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.006 40)", "oklch(23% 0.015 38)"),
-  fg: lightDark("oklch(26% 0.025 35)", "oklch(96% 0.006 40)"),
-  tone: lightDark("oklch(54% 0.04 38)", "oklch(78% 0.03 38)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 40)", "oklch(14% 0.008 38)"),
-  brand: lightDark("oklch(55% 0.12 34)", "oklch(74% 0.09 34)"),
-  info: lightDark("oklch(58% 0.12 245)", "oklch(72% 0.1 240)"),
-  success: lightDark("oklch(64% 0.13 155)", "oklch(77% 0.1 155)"),
-  warning: lightDark("oklch(79% 0.14 88)", "oklch(85% 0.11 88)"),
-  danger: lightDark("oklch(61% 0.16 28)", "oklch(74% 0.12 28)"),
-});
-export const mintTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.008 168)", "oklch(18% 0.02 168)"),
-  fg: lightDark("oklch(22% 0.03 176)", "oklch(96% 0.008 168)"),
-  tone: lightDark("oklch(56% 0.06 172)", "oklch(78% 0.05 170)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 170)", "oklch(11% 0.01 170)"),
-  brand: lightDark("oklch(70% 0.15 170)", "oklch(79% 0.11 170)"),
-  info: lightDark("oklch(59% 0.13 245)", "oklch(72% 0.11 240)"),
-  success: lightDark("oklch(68% 0.15 166)", "oklch(79% 0.11 166)"),
-  warning: lightDark("oklch(80% 0.15 92)", "oklch(86% 0.12 92)"),
-  danger: lightDark("oklch(62% 0.17 28)", "oklch(74% 0.13 28)"),
-});
+const accentBackground = (accent: string) =>
+  lightDark(`color-mix(in oklab, oklch(100% 0 0) 97%, ${accent})`, 'oklch(14.5% 0 0)')
+
+/** The default achromatic palette. */
+export const neutralTheme = stylex.createTheme(colors, {})
+
+/** Warm mineral neutrals. */
+export const stoneTheme = stylex.createTheme(colors, {
+  bg: lightDark('oklch(100% 0 0)', 'oklch(14.7% 0.004 49.25)'),
+  fg: lightDark('oklch(14.7% 0.004 49.25)', 'oklch(98.5% 0.001 106.42)'),
+  tone: lightDark('oklch(55.3% 0.013 58.07)', 'oklch(70.9% 0.01 56.26)'),
+  brand: lightDark('oklch(21.6% 0.006 56.04)', 'oklch(92.3% 0.003 48.72)'),
+  fgOnBrand: lightDark('oklch(98.5% 0.001 106.42)', 'oklch(21.6% 0.006 56.04)'),
+})
+
+/** Cool graphite neutrals. */
+export const zincTheme = stylex.createTheme(colors, {
+  bg: lightDark('oklch(100% 0 0)', 'oklch(14.1% 0.005 285.82)'),
+  fg: lightDark('oklch(14.1% 0.005 285.82)', 'oklch(98.5% 0 0)'),
+  tone: lightDark('oklch(55.2% 0.016 285.94)', 'oklch(70.5% 0.015 286.07)'),
+  brand: lightDark('oklch(21% 0.006 285.89)', 'oklch(92% 0.004 286.32)'),
+  fgOnBrand: lightDark('oklch(98.5% 0 0)', 'oklch(21% 0.006 285.89)'),
+})
+
+/** Plum-leaning neutral surfaces. */
+export const mauveTheme = stylex.createTheme(colors, {
+  bg: lightDark('oklch(100% 0 0)', 'oklch(14.5% 0.008 326)'),
+  fg: lightDark('oklch(14.5% 0.008 326)', 'oklch(98.5% 0 0)'),
+  tone: lightDark('oklch(54.2% 0.034 322.5)', 'oklch(71.1% 0.019 323.02)'),
+  brand: lightDark('oklch(21.2% 0.019 322.12)', 'oklch(92.2% 0.005 325.62)'),
+  fgOnBrand: lightDark('oklch(98.5% 0 0)', 'oklch(21.2% 0.019 322.12)'),
+})
+
+/** Botanical gray-green neutrals. */
+export const oliveTheme = stylex.createTheme(colors, {
+  bg: lightDark('oklch(100% 0 0)', 'oklch(15.3% 0.006 107.1)'),
+  fg: lightDark('oklch(15.3% 0.006 107.1)', 'oklch(98.8% 0.003 106.5)'),
+  tone: lightDark('oklch(58% 0.031 107.3)', 'oklch(73.7% 0.021 106.9)'),
+  brand: lightDark('oklch(22.8% 0.013 107.4)', 'oklch(93% 0.007 106.5)'),
+  fgOnBrand: lightDark('oklch(98.8% 0.003 106.5)', 'oklch(22.8% 0.013 107.4)'),
+})
+
+/** Airy blue-gray neutrals. */
+export const mistTheme = stylex.createTheme(colors, {
+  bg: lightDark('oklch(100% 0 0)', 'oklch(14.8% 0.004 228.8)'),
+  fg: lightDark('oklch(14.8% 0.004 228.8)', 'oklch(98.7% 0.002 197.1)'),
+  tone: lightDark('oklch(56% 0.021 213.5)', 'oklch(72.3% 0.014 214.4)'),
+  brand: lightDark('oklch(21.8% 0.008 223.9)', 'oklch(92.5% 0.005 214.3)'),
+  fgOnBrand: lightDark('oklch(98.7% 0.002 197.1)', 'oklch(21.8% 0.008 223.9)'),
+})
+
+/** Earthy brown-gray neutrals. */
+export const taupeTheme = stylex.createTheme(colors, {
+  bg: lightDark('oklch(100% 0 0)', 'oklch(14.8% 0.004 49.3)'),
+  fg: lightDark('oklch(14.8% 0.004 49.3)', 'oklch(98.6% 0.002 67.8)'),
+  tone: lightDark('oklch(55.6% 0.014 58.1)', 'oklch(71% 0.012 56.3)'),
+  brand: lightDark('oklch(21.4% 0.009 43.1)', 'oklch(92.2% 0.005 34.3)'),
+  fgOnBrand: lightDark('oklch(98.6% 0.002 67.8)', 'oklch(21.4% 0.009 43.1)'),
+})
+
 export const amberTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.008 85)", "oklch(20% 0.018 70)"),
-  fg: lightDark("oklch(24% 0.03 62)", "oklch(96% 0.008 84)"),
-  tone: lightDark("oklch(58% 0.07 72)", "oklch(80% 0.06 78)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 80)", "oklch(12% 0.01 70)"),
-  brand: lightDark("oklch(72% 0.16 74)", "oklch(81% 0.12 78)"),
-  info: lightDark("oklch(58% 0.13 245)", "oklch(72% 0.11 240)"),
-  success: lightDark("oklch(65% 0.13 155)", "oklch(77% 0.1 155)"),
-  warning: lightDark("oklch(76% 0.17 78)", "oklch(84% 0.13 80)"),
-  danger: lightDark("oklch(63% 0.18 28)", "oklch(74% 0.14 28)"),
-});
-export const lavenderTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.01 300)", "oklch(18% 0.018 300)"),
-  fg: lightDark("oklch(24% 0.03 300)", "oklch(96% 0.008 300)"),
-  tone: lightDark("oklch(60% 0.06 302)", "oklch(80% 0.05 300)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 300)", "oklch(12% 0.01 300)"),
-  brand: lightDark("oklch(69% 0.13 302)", "oklch(79% 0.1 302)"),
-  info: lightDark("oklch(60% 0.13 245)", "oklch(72% 0.11 240)"),
-  success: lightDark("oklch(65% 0.13 155)", "oklch(77% 0.1 155)"),
-  warning: lightDark("oklch(80% 0.15 88)", "oklch(86% 0.12 88)"),
-  danger: lightDark("oklch(63% 0.17 28)", "oklch(74% 0.13 28)"),
-});
-export const cherryTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.01 18)", "oklch(17% 0.02 12)"),
-  fg: lightDark("oklch(22% 0.05 18)", "oklch(96% 0.008 18)"),
-  tone: lightDark("oklch(55% 0.09 18)", "oklch(77% 0.07 18)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 18)", "oklch(11% 0.012 12)"),
-  brand: lightDark("oklch(58% 0.21 20)", "oklch(73% 0.16 20)"),
-  info: lightDark("oklch(58% 0.13 245)", "oklch(72% 0.11 240)"),
-  success: lightDark("oklch(65% 0.13 155)", "oklch(77% 0.1 155)"),
-  warning: lightDark("oklch(80% 0.16 88)", "oklch(86% 0.13 88)"),
-  danger: lightDark("oklch(58% 0.21 20)", "oklch(73% 0.16 20)"),
-});
-export const tealTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.008 210)", "oklch(18% 0.02 210)"),
-  fg: lightDark("oklch(22% 0.03 215)", "oklch(96% 0.008 210)"),
-  tone: lightDark("oklch(56% 0.07 212)", "oklch(78% 0.06 210)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 210)", "oklch(11% 0.01 210)"),
-  brand: lightDark("oklch(64% 0.13 214)", "oklch(77% 0.1 210)"),
-  info: lightDark("oklch(60% 0.14 242)", "oklch(73% 0.11 238)"),
-  success: lightDark("oklch(66% 0.14 165)", "oklch(78% 0.1 165)"),
-  warning: lightDark("oklch(80% 0.15 90)", "oklch(86% 0.12 90)"),
-  danger: lightDark("oklch(62% 0.18 28)", "oklch(74% 0.14 28)"),
-});
-export const skyTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.006 240)", "oklch(18% 0.02 244)"),
-  fg: lightDark("oklch(22% 0.03 244)", "oklch(97% 0.006 240)"),
-  tone: lightDark("oklch(58% 0.06 242)", "oklch(79% 0.05 240)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 240)", "oklch(11% 0.01 244)"),
-  brand: lightDark("oklch(72% 0.12 244)", "oklch(80% 0.09 244)"),
-  info: lightDark("oklch(63% 0.13 244)", "oklch(75% 0.1 242)"),
-  success: lightDark("oklch(66% 0.13 155)", "oklch(77% 0.1 155)"),
-  warning: lightDark("oklch(80% 0.15 88)", "oklch(86% 0.12 88)"),
-  danger: lightDark("oklch(63% 0.18 28)", "oklch(74% 0.14 28)"),
-});
-export const sepiaTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.004 70)", "oklch(21% 0.012 55)"),
-  fg: lightDark("oklch(25% 0.02 55)", "oklch(95% 0.005 70)"),
-  tone: lightDark("oklch(52% 0.03 55)", "oklch(77% 0.025 60)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 70)", "oklch(13% 0.008 55)"),
-  brand: lightDark("oklch(48% 0.09 45)", "oklch(76% 0.06 52)"),
-  info: lightDark("oklch(58% 0.12 245)", "oklch(72% 0.1 240)"),
-  success: lightDark("oklch(63% 0.12 155)", "oklch(76% 0.09 155)"),
-  warning: lightDark("oklch(78% 0.14 88)", "oklch(85% 0.11 88)"),
-  danger: lightDark("oklch(60% 0.16 28)", "oklch(74% 0.12 28)"),
-});
-export const noirTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(97% 0.002 260)", "oklch(10% 0.006 260)"),
-  fg: lightDark("oklch(16% 0.004 260)", "oklch(98% 0.002 260)"),
-  tone: lightDark("oklch(46% 0.008 260)", "oklch(82% 0.01 260)"),
-  fgOnBrand: lightDark("oklch(99% 0.002 260)", "oklch(6% 0.004 260)"),
-  brand: lightDark("oklch(14% 0.01 260)", "oklch(92% 0.008 260)"),
-  info: lightDark("oklch(44% 0.02 242)", "oklch(82% 0.03 242)"),
-  success: lightDark("oklch(44% 0.03 155)", "oklch(82% 0.04 155)"),
-  warning: lightDark("oklch(54% 0.05 88)", "oklch(86% 0.06 88)"),
-  danger: lightDark("oklch(48% 0.08 24)", "oklch(82% 0.08 24)"),
-});
-export const neonTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.012 140)", "oklch(12% 0.03 150)"),
-  fg: lightDark("oklch(18% 0.04 150)", "oklch(96% 0.015 140)"),
-  tone: lightDark("oklch(60% 0.12 150)", "oklch(80% 0.12 150)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 145)", "oklch(7% 0.02 150)"),
-  brand: lightDark("oklch(78% 0.24 145)", "oklch(84% 0.2 145)"),
-  info: lightDark("oklch(70% 0.19 225)", "oklch(79% 0.16 225)"),
-  success: lightDark("oklch(78% 0.24 145)", "oklch(84% 0.2 145)"),
-  warning: lightDark("oklch(84% 0.2 100)", "oklch(88% 0.16 100)"),
-  danger: lightDark("oklch(72% 0.22 20)", "oklch(80% 0.18 20)"),
-});
-export const lagoonTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(98% 0.01 190)", "oklch(18% 0.022 196)"),
-  fg: lightDark("oklch(23% 0.03 196)", "oklch(96% 0.008 190)"),
-  tone: lightDark("oklch(57% 0.08 194)", "oklch(78% 0.06 192)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 190)", "oklch(11% 0.01 196)"),
-  brand: lightDark("oklch(66% 0.16 194)", "oklch(77% 0.12 192)"),
-  info: lightDark("oklch(60% 0.14 238)", "oklch(73% 0.11 236)"),
-  success: lightDark("oklch(67% 0.14 165)", "oklch(78% 0.11 165)"),
-  warning: lightDark("oklch(80% 0.15 90)", "oklch(86% 0.12 90)"),
-  danger: lightDark("oklch(62% 0.18 28)", "oklch(74% 0.13 28)"),
-});
-export const sandTheme = stylex.createTheme(colors, {
-  bg: lightDark("oklch(99% 0.004 95)", "oklch(23% 0.012 85)"),
-  fg: lightDark("oklch(26% 0.02 80)", "oklch(96% 0.005 95)"),
-  tone: lightDark("oklch(54% 0.03 88)", "oklch(78% 0.025 92)"),
-  fgOnBrand: lightDark("oklch(99% 0.004 95)", "oklch(14% 0.008 85)"),
-  brand: lightDark("oklch(60% 0.08 85)", "oklch(78% 0.06 88)"),
-  info: lightDark("oklch(58% 0.12 242)", "oklch(72% 0.1 238)"),
-  success: lightDark("oklch(63% 0.12 155)", "oklch(76% 0.09 155)"),
-  warning: lightDark("oklch(80% 0.14 88)", "oklch(86% 0.11 88)"),
-  danger: lightDark("oklch(60% 0.16 28)", "oklch(74% 0.12 28)"),
-});
-export const colorThemes = {
-  base: baseTheme,
-  mono: monoTheme,
-  ocean: oceanTheme,
-  sunset: sunsetTheme,
-  danger: dangerTheme,
-  forest: forestTheme,
-  rose: roseTheme,
-  cobalt: cobaltTheme,
-  paper: paperTheme,
-  terminal: terminalTheme,
-  citrus: citrusTheme,
-  plum: plumTheme,
-  candy: candyTheme,
-  clay: clayTheme,
-  mint: mintTheme,
-  amber: amberTheme,
-  lavender: lavenderTheme,
-  cherry: cherryTheme,
-  teal: tealTheme,
-  sky: skyTheme,
-  sepia: sepiaTheme,
-  noir: noirTheme,
-  neon: neonTheme,
-  lagoon: lagoonTheme,
-  sand: sandTheme,
-} as const;
+  bg: accentBackground('oklch(55.5% 0.163 49)'),
+  tone: lightDark('oklch(66.6% 0.035 58.3)', 'oklch(79.5% 0.04 86.1)'),
+  brand: lightDark('oklch(55.5% 0.163 49)', 'oklch(47.3% 0.137 46.2)'),
+  fgOnBrand: lightDark('oklch(98.7% 0.022 95.3)', 'oklch(98.7% 0.022 95.3)'),
+})
 
-export type ColorThemeName = keyof typeof colorThemes;
+export const blueTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(48.8% 0.243 264.38)'),
+  tone: lightDark('oklch(54.6% 0.04 262.9)', 'oklch(70.7% 0.035 254.6)'),
+  brand: lightDark('oklch(48.8% 0.243 264.38)', 'oklch(42.4% 0.199 265.64)'),
+  fgOnBrand: lightDark('oklch(97% 0.014 254.6)', 'oklch(97% 0.014 254.6)'),
+})
+
+export const cyanTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(52% 0.105 223.13)'),
+  tone: lightDark('oklch(60.9% 0.03 221.72)', 'oklch(78.9% 0.035 211.53)'),
+  brand: lightDark('oklch(52% 0.105 223.13)', 'oklch(45% 0.085 224.28)'),
+  fgOnBrand: lightDark('oklch(98.4% 0.019 200.87)', 'oklch(98.4% 0.019 200.87)'),
+})
+
+export const emeraldTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(50.8% 0.118 165.61)'),
+  tone: lightDark('oklch(59.6% 0.03 163.23)', 'oklch(76.5% 0.035 163.22)'),
+  brand: lightDark('oklch(50.8% 0.118 165.61)', 'oklch(43.2% 0.095 166.91)'),
+  fgOnBrand: lightDark('oklch(97.9% 0.021 166.11)', 'oklch(97.9% 0.021 166.11)'),
+})
+
+export const fuchsiaTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(51.8% 0.253 323.95)'),
+  tone: lightDark('oklch(59.1% 0.045 322.9)', 'oklch(74% 0.04 322.16)'),
+  brand: lightDark('oklch(51.8% 0.253 323.95)', 'oklch(45.2% 0.211 324.59)'),
+  fgOnBrand: lightDark('oklch(97.7% 0.017 320.06)', 'oklch(97.7% 0.017 320.06)'),
+})
+
+export const greenTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(52.7% 0.154 150.07)'),
+  tone: lightDark('oklch(62.7% 0.035 149.21)', 'oklch(79.2% 0.04 151.71)'),
+  brand: lightDark('oklch(52.7% 0.154 150.07)', 'oklch(44.8% 0.119 151.33)'),
+  fgOnBrand: lightDark('oklch(98.2% 0.018 155.83)', 'oklch(98.2% 0.018 155.83)'),
+})
+
+export const indigoTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(45.7% 0.24 277.02)'),
+  tone: lightDark('oklch(51.1% 0.04 276.97)', 'oklch(68.5% 0.035 277.73)'),
+  brand: lightDark('oklch(45.7% 0.24 277.02)', 'oklch(39.8% 0.195 277.37)'),
+  fgOnBrand: lightDark('oklch(96.2% 0.018 272.31)', 'oklch(96.2% 0.018 272.31)'),
+})
+
+export const limeTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(84.1% 0.238 128.85)'),
+  tone: lightDark('oklch(64.8% 0.035 131.68)', 'oklch(86.5% 0.04 128.4)'),
+  brand: lightDark('oklch(84.1% 0.238 128.85)', 'oklch(76.8% 0.233 130.85)'),
+  fgOnBrand: lightDark('oklch(40.5% 0.101 131.06)', 'oklch(40.5% 0.101 131.06)'),
+})
+
+export const orangeTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(55.3% 0.195 38.4)'),
+  tone: lightDark('oklch(64.6% 0.04 41.12)', 'oklch(75% 0.035 55.93)'),
+  brand: lightDark('oklch(55.3% 0.195 38.4)', 'oklch(47% 0.157 37.3)'),
+  fgOnBrand: lightDark('oklch(98% 0.016 73.68)', 'oklch(98% 0.016 73.68)'),
+})
+
+export const pinkTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(52.5% 0.223 3.96)'),
+  tone: lightDark('oklch(59.2% 0.04 0.58)', 'oklch(71.8% 0.04 349.76)'),
+  brand: lightDark('oklch(52.5% 0.223 3.96)', 'oklch(45.9% 0.187 3.82)'),
+  fgOnBrand: lightDark('oklch(97.1% 0.014 343.2)', 'oklch(97.1% 0.014 343.2)'),
+})
+
+export const purpleTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(49.6% 0.265 301.92)'),
+  tone: lightDark('oklch(55.8% 0.045 302.32)', 'oklch(71.4% 0.04 305.5)'),
+  brand: lightDark('oklch(49.6% 0.265 301.92)', 'oklch(43.8% 0.218 303.72)'),
+  fgOnBrand: lightDark('oklch(97.7% 0.014 308.3)', 'oklch(97.7% 0.014 308.3)'),
+})
+
+export const redTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(50.5% 0.213 27.52)'),
+  tone: lightDark('oklch(57.7% 0.04 27.33)', 'oklch(70.4% 0.04 22.22)'),
+  brand: lightDark('oklch(50.5% 0.213 27.52)', 'oklch(44.4% 0.177 26.9)'),
+  fgOnBrand: lightDark('oklch(97.1% 0.013 17.38)', 'oklch(97.1% 0.013 17.38)'),
+})
+
+export const roseTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(51.4% 0.222 16.94)'),
+  tone: lightDark('oklch(58.6% 0.04 17.59)', 'oklch(71.2% 0.04 13.43)'),
+  brand: lightDark('oklch(51.4% 0.222 16.94)', 'oklch(45.5% 0.188 13.7)'),
+  fgOnBrand: lightDark('oklch(96.9% 0.015 12.42)', 'oklch(96.9% 0.015 12.42)'),
+})
+
+export const skyTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(50% 0.134 242.75)'),
+  tone: lightDark('oklch(58.8% 0.03 241.97)', 'oklch(74.6% 0.035 232.66)'),
+  brand: lightDark('oklch(50% 0.134 242.75)', 'oklch(44.3% 0.11 240.79)'),
+  fgOnBrand: lightDark('oklch(97.7% 0.013 236.62)', 'oklch(97.7% 0.013 236.62)'),
+})
+
+export const tealTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(51.1% 0.096 186.39)'),
+  tone: lightDark('oklch(60% 0.025 184.7)', 'oklch(77.7% 0.03 181.91)'),
+  brand: lightDark('oklch(51.1% 0.096 186.39)', 'oklch(43.7% 0.078 188.22)'),
+  fgOnBrand: lightDark('oklch(98.4% 0.014 180.72)', 'oklch(98.4% 0.014 180.72)'),
+})
+
+export const violetTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(49.1% 0.27 292.58)'),
+  tone: lightDark('oklch(54.1% 0.045 293.01)', 'oklch(70.2% 0.04 293.54)'),
+  brand: lightDark('oklch(49.1% 0.27 292.58)', 'oklch(43.2% 0.232 292.76)'),
+  fgOnBrand: lightDark('oklch(96.9% 0.016 293.76)', 'oklch(96.9% 0.016 293.76)'),
+})
+
+export const yellowTheme = stylex.createTheme(colors, {
+  bg: accentBackground('oklch(85.2% 0.199 91.94)'),
+  tone: lightDark('oklch(68.1% 0.035 75.83)', 'oklch(85.2% 0.04 91.94)'),
+  brand: lightDark('oklch(85.2% 0.199 91.94)', 'oklch(79.5% 0.184 86.05)'),
+  fgOnBrand: lightDark('oklch(42.1% 0.095 57.71)', 'oklch(42.1% 0.095 57.71)'),
+})
+
+export const colorThemes = {
+  neutral: neutralTheme,
+  stone: stoneTheme,
+  zinc: zincTheme,
+  mauve: mauveTheme,
+  olive: oliveTheme,
+  mist: mistTheme,
+  taupe: taupeTheme,
+  amber: amberTheme,
+  blue: blueTheme,
+  cyan: cyanTheme,
+  emerald: emeraldTheme,
+  fuchsia: fuchsiaTheme,
+  green: greenTheme,
+  indigo: indigoTheme,
+  lime: limeTheme,
+  orange: orangeTheme,
+  pink: pinkTheme,
+  purple: purpleTheme,
+  red: redTheme,
+  rose: roseTheme,
+  sky: skyTheme,
+  teal: tealTheme,
+  violet: violetTheme,
+  yellow: yellowTheme,
+} as const
+
+export type ColorThemeName = keyof typeof colorThemes

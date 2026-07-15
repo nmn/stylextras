@@ -30,7 +30,7 @@ type ExampleThemeFrameProps = {
  * - Theme controls are minimal and may not cover all announced state needs.
  */
 export function ExampleThemeFrame({ children }: ExampleThemeFrameProps) {
-  const [colorTheme, setColorTheme] = useState<ColorThemeName>("base");
+  const [colorTheme, setColorTheme] = useState<ColorThemeName>("neutral");
   const [spacingTheme, setSpacingTheme] = useState<SpacingThemeName>("base");
   const [radiusTheme, setRadiusTheme] = useState<RadiusThemeName>("base");
   const [typographyTheme, setTypographyTheme] =

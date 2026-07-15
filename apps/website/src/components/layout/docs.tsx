@@ -85,16 +85,6 @@ function Sidebar() {
   const { root } = useTreeContext();
   const [open] = use(SidebarContext);
 
-  function renderItems(items: PageTree.Node[]) {
-    return items.map((item) => (
-      <SidebarItem item={item} key={item.$id}>
-        {item.type === "folder" ? renderItems(item.children) : null}
-      </SidebarItem>
-    ));
-  }
-
-  const children = renderItems(root.children);
-
   const sidebarRef = useRef<HTMLElement>(null);
 
   return (
@@ -110,12 +100,22 @@ function Sidebar() {
       </div>
 
       <aside {...stylex.props(sidebarStyles.base)} ref={sidebarRef}>
-        {children}
+        <SidebarTreeItems items={root.children} />
       </aside>
 
       <div {...stylex.props(sidebarStyles.overlayBlur)} />
     </div>
   );
+}
+
+function SidebarTreeItems({ items }: { items: PageTree.Node[] }) {
+  return items.map((item) => (
+    <SidebarItem item={item} key={item.$id}>
+      {item.type === "folder" ? (
+        <SidebarTreeItems items={item.children} />
+      ) : null}
+    </SidebarItem>
+  ));
 }
 const sidebarStyles = stylex.create({
   container: {

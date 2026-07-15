@@ -1,21 +1,20 @@
-"use client";
-
-import { Switch } from "./index";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
+import * as stylex from '@stylexjs/stylex'
+import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Label } from '../label'
+import { spacing } from '../tokens/spacing.stylex'
+import { Switch } from './index'
 
 export default function Example() {
   return (
-    <>
-      <DemoFrame
-        title="Switch states"
-        description="Switch should show checked, unchecked, and size differences directly."
-      >
-        <DemoStack>
-          <Switch defaultChecked label="Enabled" />
-          <Switch label="Disabled" />
-          <Switch size="sm" defaultChecked label="Small switch" />
-        </DemoStack>
-      </DemoFrame>
-    </>
-  );
+    <DemoFrame title="Switch" description="A styled native checkbox with switch semantics.">
+      <DemoStack>
+        <Label sx={styles.option}><Switch defaultChecked /> Notifications</Label>
+        <Label sx={styles.option}><Switch /> Public profile</Label>
+        <Label sx={styles.option}><Switch controlSize="sm" /> Compact mode</Label>
+      </DemoStack>
+    </DemoFrame>
+  )
 }
+
+const styles = stylex.create({ option: { alignItems: 'center', display: 'flex', gap: spacing.sm } })
+'use client'

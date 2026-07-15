@@ -1,45 +1,33 @@
-'use client';
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import { use, type ComponentPropsWithRef } from 'react';
-import { colors } from '../tokens/color.stylex';
-import { radius } from '../tokens/radius.stylex';
-import { spacing } from '../tokens/spacing.stylex';
-import { stroke } from '../tokens/stroke.stylex';
-import { typography } from '../tokens/typography.stylex';
-import { ButtonInGroupContext } from './contex';
-
-type BaseProps = ComponentPropsWithRef<'button'>;
+type NativeButtonProps = ComponentPropsWithRef<'button'>
 
 export type ButtonVariant =
   | 'primary'
   | 'secondary'
-  | 'tertiary'
   | 'outline'
   | 'ghost'
+  | 'link'
   | 'danger'
-  | 'dangerOutline';
 
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon-sm' | 'icon' | 'icon-lg'
 
-export type ButtonProps = Omit<BaseProps, 'className' | 'style'> & {
-  sx?: StyleXStyles;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-};
+export type ButtonProps = Omit<NativeButtonProps, 'className' | 'style'> & {
+  size?: ButtonSize
+  sx?: StyleXStyles
+  variant?: ButtonVariant
+}
 
-/**
- * Renders a token-driven native button element.
- *
- * Search aliases: button, action button, cta, push button.
- *
- * A11y notes:
- * - Uses native button semantics.
- * - Does not provide loading announcements, async busy state, or keyboard shortcut affordances on its own.
- */
+/** A styled native button. Icon-only buttons use an icon size and an aria-label. */
 export function Button({
-  disabled,
   ref,
   size = 'md',
   sx,
@@ -47,158 +35,145 @@ export function Button({
   variant = 'primary',
   ...props
 }: ButtonProps) {
-  const isInGroup = use(ButtonInGroupContext);
   return (
     <button
       ref={ref}
-      {...props}
-      disabled={disabled}
       type={type}
-      {...stylex.props(
-        baseStyles.base,
-        sizeStyles[size],
-        variantStyles[variant],
-        disabled && stateStyles.disabled,
-        isInGroup && baseStyles.inGroup,
-        sx,
-      )}
+      {...props}
+      {...stylex.props(baseStyles.base, sizeStyles[size], variantStyles[variant], sx)}
     />
-  );
+  )
 }
 
 const baseStyles = stylex.create({
   base: {
-    borderRadius: radius.md,
+    alignItems: 'center',
+    appearance: 'none',
+    borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    gap: spacing.xs,
-    outline: 'none',
-    alignItems: 'center',
-
-    appearance: 'none',
-    boxShadow: {
-      default: null,
-      ':focus-visible': `0 0 0 ${stroke.thick} ${colors.accent} inset`,
+    boxSizing: 'border-box',
+    cursor: {
+      default: 'pointer',
+      ':disabled': 'not-allowed',
     },
-
     display: 'inline-flex',
+    flexShrink: 0,
     fontFamily: typography.fontSans,
-    fontWeight: typography.weightRegular,
+    fontWeight: typography.weightMedium,
+    gap: spacing.controlGap,
     justifyContent: 'center',
     lineHeight: typography.lineHeightSnug,
+    opacity: {
+      default: 1,
+      ':disabled': 0.5,
+    },
+    outline: 'none',
     scale: {
-      default: null,
-      ':active': '99%',
+      default: '1',
+      ':active': '0.98',
+      ':disabled': '1',
     },
-    transitionDuration: '150ms',
-    transitionProperty: 'background-color, scale',
-    transitionTimingFunction: 'ease-in-out',
+    textDecoration: 'none',
+    transitionDuration: motion.durationFast,
+    transitionProperty: 'background-color, border-color, box-shadow, color, opacity, scale',
+    transitionTimingFunction: motion.easeStandard,
+    userSelect: 'none',
     whiteSpace: 'nowrap',
-  },
-  inGroup: {
-    borderRadius: {
-      default: null,
-      ':first-child': `${radius.md} 0 0 ${radius.md}`,
-      ':last-child': `0 ${radius.md} ${radius.md} 0`,
-    },
-    marginInline: `calc(${stroke.thin} / -2)`,
-    position: 'relative',
-    zIndex: {
-      default: 0,
-      ':focus-visible': 1,
+    boxShadow: {
+      default: 'none',
+      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
     },
   },
-});
+})
 
 const sizeStyles = stylex.create({
   sm: {
-    paddingBlock: spacing.xxs,
-    paddingInline: spacing.sm,
     fontSize: typography.stepMinus1,
-    minHeight: spacing.xxl,
+    minHeight: spacing.controlSm,
+    paddingInline: spacing.sm,
   },
   md: {
-    paddingBlock: spacing.xs,
-    paddingInline: spacing.md,
     fontSize: typography.step0,
-    minHeight: spacing.xxl,
+    minHeight: spacing.controlMd,
+    paddingInline: spacing.md,
   },
   lg: {
-    paddingBlock: spacing.sm,
+    fontSize: typography.step0,
+    minHeight: spacing.controlLg,
     paddingInline: spacing.lg,
-    fontSize: typography.step1,
-    minHeight: spacing.xxxl,
   },
-});
+  'icon-sm': {
+    height: spacing.controlSm,
+    padding: 0,
+    width: spacing.controlSm,
+  },
+  icon: {
+    height: spacing.controlMd,
+    padding: 0,
+    width: spacing.controlMd,
+  },
+  'icon-lg': {
+    height: spacing.controlLg,
+    padding: 0,
+    width: spacing.controlLg,
+  },
+})
 
 const variantStyles = stylex.create({
   primary: {
-    borderColor: colors.primaryActive,
     backgroundColor: {
       default: colors.primary,
       ':hover': colors.primaryHover,
       ':active': colors.primaryActive,
     },
+    borderColor: 'transparent',
     color: colors.primaryForeground,
   },
   secondary: {
-    borderColor: colors.borderStrong,
     backgroundColor: {
       default: colors.secondary,
       ':hover': colors.secondaryHover,
       ':active': colors.secondaryActive,
     },
-    color: colors.fg,
-  },
-  tertiary: {
     borderColor: 'transparent',
-    backgroundColor: {
-      default: 'transparent',
-      ':hover': colors.bgRaised,
-      ':active': colors.bgInset,
-    },
-    color: colors.fg,
+    color: colors.secondaryForeground,
   },
   outline: {
-    borderColor: colors.borderStrong,
     backgroundColor: {
-      default: 'transparent',
-      ':hover': colors.secondaryHover,
+      default: colors.control,
+      ':hover': colors.accent,
       ':active': colors.secondaryActive,
     },
+    borderColor: colors.border,
     color: colors.fg,
   },
   ghost: {
-    borderColor: 'transparent',
     backgroundColor: {
       default: 'transparent',
-      ':hover': colors.secondaryHover,
+      ':hover': colors.accent,
       ':active': colors.secondaryActive,
     },
-    color: colors.fgSoft,
+    borderColor: 'transparent',
+    color: colors.fg,
+  },
+  link: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    color: colors.fg,
+    textDecoration: {
+      default: 'none',
+      ':hover': 'underline',
+    },
+    textUnderlineOffset: '4px',
   },
   danger: {
-    borderColor: colors.danger,
     backgroundColor: {
       default: colors.danger,
       ':hover': colors.dangerHover,
       ':active': colors.dangerActive,
     },
+    borderColor: 'transparent',
     color: colors.fgOnBrand,
   },
-  dangerOutline: {
-    borderColor: colors.danger,
-    backgroundColor: {
-      default: 'transparent',
-      ':hover': colors.dangerSoft,
-      ':active': colors.selection,
-    },
-    color: colors.danger,
-  },
-});
-
-const stateStyles = stylex.create({
-  disabled: {
-    opacity: 0.5,
-  },
-});
+})

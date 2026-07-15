@@ -1,31 +1,16 @@
-"use client";
+import { DemoFrame } from '../example-theme/demo'
+import { Tooltip, TooltipTrigger } from './index'
 
-import { DemoFrame, DemoStack } from "../example-theme/demo";
-import {
-  TooltipContent,
-  type TooltipContentProps,
-  TooltipTrigger,
-} from "./index";
-
-function TooltipExampleContent(props: TooltipContentProps) {
-  return (
-    <TooltipContent {...props}>
-      Creates a static JSON snapshot of the current theme.
-    </TooltipContent>
-  );
-}
+const tooltipId = 'archive-tooltip'
 
 export default function Example() {
   return (
-    <DemoFrame
-      title="Tooltip surface"
-      description="Hover or focus the trigger to show the tooltip."
-    >
-      <DemoStack>
-        <TooltipTrigger content={() => Promise.resolve(TooltipExampleContent)}>
-          Export token snapshot
-        </TooltipTrigger>
-      </DemoStack>
+    <DemoFrame title="Tooltip" description="Interest invokers enhance hover and focus; click is the touch fallback.">
+      <TooltipTrigger target={tooltipId} size="icon" aria-label="Archive">
+        ↧
+      </TooltipTrigger>
+      <Tooltip id={tooltipId}>Archive item</Tooltip>
     </DemoFrame>
-  );
+  )
 }
+'use client'

@@ -2,8 +2,9 @@
 
 import { InputGroup } from "./index";
 import { DemoFrame } from "../example-theme/demo";
-import { TextField } from "../text-field";
 import { Button } from "../button";
+import { Field, FieldDescription, FieldLabel } from "../field";
+import { Input } from "../input";
 
 export default function Example() {
   return (
@@ -12,10 +13,20 @@ export default function Example() {
         title="Grouped input"
         description="Input Group is another case where minimal composition is the point of the component."
       >
-        <InputGroup>
-          <TextField label="Invite email" placeholder="teammate@example.com" />
-          <Button>Invite</Button>
-        </InputGroup>
+        <Field>
+          <FieldLabel htmlFor="invite-email">Invite email</FieldLabel>
+          <InputGroup>
+            <Input
+              id="invite-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="teammate@example.com"
+            />
+            <Button>Invite</Button>
+          </InputGroup>
+          <FieldDescription>The label and validation remain attached to the native input.</FieldDescription>
+        </Field>
       </DemoFrame>
     </>
   );

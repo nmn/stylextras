@@ -1,47 +1,54 @@
-"use client";
+'use client'
 
-import { Tree } from "./index";
-import { DemoFrame } from "../example-theme/demo";
+import { DemoFrame } from '../example-theme/demo'
+import {
+  Tree,
+  TreeBranch,
+  TreeBranchContent,
+  TreeBranchTrigger,
+  TreeGroup,
+  TreeItem,
+} from './index'
 
 export default function Example() {
   return (
     <DemoFrame
       title="Tree"
-      description="Tree should show nested branches with expandable sections."
+      description="Explicit branch, group, trigger, and item parts preserve native disclosure behavior."
     >
-      <Tree>
-        <ul>
-          <li>
-            tokens
-            <ul>
-              <li>
-                color
-                <ul>
-                  <li>brand</li>
-                  <li>bg</li>
-                  <li>fg</li>
-                </ul>
-              </li>
-              <li>
-                spacing
-                <ul>
-                  <li>base</li>
-                  <li>sm</li>
-                  <li>lg</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>
-            components
-            <ul>
-              <li>button</li>
-              <li>card</li>
-              <li>dialog</li>
-            </ul>
-          </li>
-        </ul>
+      <Tree aria-label="Package explorer">
+        <TreeGroup>
+          <TreeBranch open>
+            <TreeBranchTrigger>tokens</TreeBranchTrigger>
+            <TreeBranchContent>
+              <TreeBranch open>
+                <TreeBranchTrigger>color</TreeBranchTrigger>
+                <TreeBranchContent>
+                  <TreeItem>brand</TreeItem>
+                  <TreeItem>background</TreeItem>
+                  <TreeItem>foreground</TreeItem>
+                </TreeBranchContent>
+              </TreeBranch>
+              <TreeBranch>
+                <TreeBranchTrigger>spacing</TreeBranchTrigger>
+                <TreeBranchContent>
+                  <TreeItem>base</TreeItem>
+                  <TreeItem>small</TreeItem>
+                  <TreeItem>large</TreeItem>
+                </TreeBranchContent>
+              </TreeBranch>
+            </TreeBranchContent>
+          </TreeBranch>
+          <TreeBranch>
+            <TreeBranchTrigger>components</TreeBranchTrigger>
+            <TreeBranchContent>
+              <TreeItem>button</TreeItem>
+              <TreeItem>card</TreeItem>
+              <TreeItem>dialog</TreeItem>
+            </TreeBranchContent>
+          </TreeBranch>
+        </TreeGroup>
       </Tree>
     </DemoFrame>
-  );
+  )
 }

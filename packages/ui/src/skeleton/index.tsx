@@ -1,36 +1,37 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
-
-export type SkeletonProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
-
-/**
- * Renders a placeholder block for loading states.
- *
- * Search aliases: skeleton, loading placeholder, shimmer block, loading stub.
- *
- * A11y notes:
- * - Primarily visual.
- * - It does not announce loading state or busy status automatically.
- */
-export function Skeleton({ sx, ...props }: SkeletonProps) {
-  return (
-    <div {...props} aria-hidden="true" {...stylex.props(styles.base, sx)} />
-  );
+export type SkeletonProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & {
+  sx?: StyleXStyles
 }
+
+export function Skeleton({ ref, sx, ...props }: SkeletonProps) {
+  return <div ref={ref} aria-hidden="true" {...props} {...stylex.props(styles.base, sx)} />
+}
+
+const pulse = stylex.keyframes({
+  '0%, 100%': { opacity: 0.18 },
+  '50%': { opacity: 0.42 },
+})
 
 const styles = stylex.create({
   base: {
-    borderRadius: radius.md,
-    backgroundColor: colors.bgInset,
+    animationDuration: `calc(${motion.durationBase} * 10)`,
+    animationIterationCount: 'infinite',
+    animationName: {
+      default: pulse,
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    animationTimingFunction: motion.easeStandard,
+    backgroundColor: colors.fgDisabled,
+    borderRadius: radius.sm,
     minHeight: spacing.lg,
-    width: "100%",
+    opacity: 0.28,
+    width: '100%',
   },
-});
+})

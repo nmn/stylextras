@@ -1,44 +1,60 @@
-"use client";
+import { ButtonGroup } from '../button-group'
+import { DemoFrame, DemoStack } from '../example-theme/demo'
+import { Field, FieldLabel } from '../field'
+import { Input } from '../input'
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  type DialogSize,
+} from './index'
 
-import { Button } from "../button";
-import { ButtonGroupActions } from "../button-group";
-import { DemoFrame, DemoStack } from "../example-theme/demo";
-import { TextField } from "../text-field";
-import { Typography } from "../typography";
-import { DialogContent, type DialogContentProps, DialogTrigger } from "./index";
-
-function DialogExampleContent(props: DialogContentProps) {
+function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
   return (
-    <DialogContent {...props}>
-      <DemoStack>
-        <Typography as="h3" scale="title">
-          Rename component
-        </Typography>
-        <TextField label="Display name" defaultValue="Segmented Control" />
-        <form method="dialog">
-          <ButtonGroupActions
-            secondary={
-              <Button type="submit" variant="secondary">
-                Cancel
-              </Button>
-            }
-            primary={<Button type="submit">Save</Button>}
-          />
-        </form>
-      </DemoStack>
-    </DialogContent>
-  );
+    <Dialog id={id} size={size} aria-labelledby={`${id}-title`}>
+      <DialogHeader>
+        <DialogTitle id={`${id}-title`}>Rename component</DialogTitle>
+        <DialogDescription>Choose a concise display name.</DialogDescription>
+      </DialogHeader>
+      <DialogBody>
+        <Field>
+          <FieldLabel htmlFor={`${id}-display-name`}>Display name</FieldLabel>
+          <Input id={`${id}-display-name`} name="displayName" defaultValue="Segmented Control" />
+        </Field>
+      </DialogBody>
+      <DialogFooter>
+        <ButtonGroup variant="actions" aria-label="Rename component actions">
+          <DialogClose target={id}>Cancel</DialogClose>
+          <DialogClose target={id} variant="primary">
+            Done
+          </DialogClose>
+        </ButtonGroup>
+      </DialogFooter>
+    </Dialog>
+  )
 }
 
 export default function Example() {
   return (
-    <DemoFrame
-      title="Editing dialog"
-      description="Click the trigger to open the dialog."
-    >
-      <DialogTrigger content={() => Promise.resolve(DialogExampleContent)}>
-        Open dialog
-      </DialogTrigger>
-    </DemoFrame>
-  );
+    <DemoStack>
+      <DemoFrame title="Small dialog" description="Compact confirmations and single-field tasks.">
+        <DialogTrigger target="rename-small-dialog">Open small dialog</DialogTrigger>
+        <RenameDialog id="rename-small-dialog" size="sm" />
+      </DemoFrame>
+      <DemoFrame title="Medium dialog" description="The default size for ordinary editing flows.">
+        <DialogTrigger target="rename-medium-dialog">Open medium dialog</DialogTrigger>
+        <RenameDialog id="rename-medium-dialog" size="md" />
+      </DemoFrame>
+      <DemoFrame title="Large dialog" description="More room for dense forms and review content.">
+        <DialogTrigger target="rename-large-dialog">Open large dialog</DialogTrigger>
+        <RenameDialog id="rename-large-dialog" size="lg" />
+      </DemoFrame>
+    </DemoStack>
+  )
 }
+;('use client')

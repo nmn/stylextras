@@ -7,12 +7,14 @@
 import type { ReactNode } from "react";
 import { Provider } from "@/components/provider";
 import "@/styles/globals.css";
+import "@stylextras/ui/styles.css";
 import DevStyleXHMR from "@/components/DevStyleXHMR";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import faviconUrl from "@/static/img/favicon.svg";
 
-const DEFAULT_TITLE = "StyleX — The styling system for ambitious interfaces";
-const DEFAULT_DESCRIPTION = "The styling system that powers Meta.";
+const DEFAULT_TITLE = "StyleXtras — Native-first StyleX components";
+const DEFAULT_DESCRIPTION =
+  "Tokenized React components built on modern browser APIs and styled with StyleX.";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

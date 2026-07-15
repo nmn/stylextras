@@ -1,0 +1,338 @@
+{
+  "bridges": {
+    "interestInvoker": {
+      "budgetBytes": 2048,
+      "gzipBytes": 858
+    },
+    "focusgroupFallback": {
+      "budgetBytes": 5120,
+      "gzipBytes": 3640
+    }
+  },
+  "components": {
+    "accordion": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 927,
+      "mode": "native"
+    },
+    "alert": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 636,
+      "mode": "native"
+    },
+    "alert-dialog": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1613,
+      "mode": "enhanced"
+    },
+    "aspect-ratio": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 358,
+      "mode": "native"
+    },
+    "avatar": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 613,
+      "mode": "native"
+    },
+    "badge": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 630,
+      "mode": "native"
+    },
+    "breadcrumb": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 602,
+      "mode": "native"
+    },
+    "button": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 948,
+      "mode": "native"
+    },
+    "button-group": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1210,
+      "mode": "enhanced"
+    },
+    "calendar": {
+      "behaviorBytes": null,
+      "budgetBytes": 12288,
+      "gzipBytes": 3002,
+      "mode": "client"
+    },
+    "card": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 677,
+      "mode": "native"
+    },
+    "carousel": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 820,
+      "mode": "enhanced"
+    },
+    "checkbox": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 654,
+      "mode": "native"
+    },
+    "collapsible": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 919,
+      "mode": "native"
+    },
+    "combobox": {
+      "behaviorBytes": null,
+      "budgetBytes": 12288,
+      "gzipBytes": 3133,
+      "mode": "client"
+    },
+    "command": {
+      "behaviorBytes": null,
+      "budgetBytes": 12288,
+      "gzipBytes": 2832,
+      "mode": "client"
+    },
+    "context-menu": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1967,
+      "mode": "enhanced"
+    },
+    "date-picker": {
+      "behaviorBytes": null,
+      "budgetBytes": 12288,
+      "gzipBytes": 4507,
+      "mode": "client"
+    },
+    "dialog": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1693,
+      "mode": "enhanced"
+    },
+    "direction": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 195,
+      "mode": "native"
+    },
+    "drawer": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1543,
+      "mode": "enhanced"
+    },
+    "dropdown-menu": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 2556,
+      "mode": "enhanced"
+    },
+    "empty": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 302,
+      "mode": "native"
+    },
+    "field": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 452,
+      "mode": "native"
+    },
+    "hover-card": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 2320,
+      "mode": "enhanced"
+    },
+    "input": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 655,
+      "mode": "native"
+    },
+    "input-group": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 250,
+      "mode": "native"
+    },
+    "input-otp": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 578,
+      "mode": "client"
+    },
+    "item": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 637,
+      "mode": "native"
+    },
+    "kbd": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 478,
+      "mode": "native"
+    },
+    "label": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 263,
+      "mode": "native"
+    },
+    "menubar": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1177,
+      "mode": "enhanced"
+    },
+    "navigation-menu": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 965,
+      "mode": "enhanced"
+    },
+    "popover": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1440,
+      "mode": "enhanced"
+    },
+    "progress": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 477,
+      "mode": "native"
+    },
+    "radio-group": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 500,
+      "mode": "native"
+    },
+    "resizable": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1398,
+      "mode": "client"
+    },
+    "scroll-area": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 364,
+      "mode": "native"
+    },
+    "select": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 976,
+      "mode": "enhanced"
+    },
+    "separator": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 473,
+      "mode": "native"
+    },
+    "sheet": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1520,
+      "mode": "enhanced"
+    },
+    "sidebar": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 1761,
+      "mode": "enhanced"
+    },
+    "skeleton": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 326,
+      "mode": "native"
+    },
+    "slider": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 648,
+      "mode": "client"
+    },
+    "spinner": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 405,
+      "mode": "native"
+    },
+    "switch": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 551,
+      "mode": "native"
+    },
+    "table": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 589,
+      "mode": "native"
+    },
+    "tabs": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 2207,
+      "mode": "client"
+    },
+    "textarea": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 503,
+      "mode": "native"
+    },
+    "toast": {
+      "behaviorBytes": null,
+      "budgetBytes": 12288,
+      "gzipBytes": 2180,
+      "mode": "client"
+    },
+    "toggle": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 591,
+      "mode": "native"
+    },
+    "toggle-group": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 915,
+      "mode": "enhanced"
+    },
+    "tooltip": {
+      "behaviorBytes": null,
+      "budgetBytes": 8192,
+      "gzipBytes": 2149,
+      "mode": "enhanced"
+    },
+    "typography": {
+      "behaviorBytes": 0,
+      "budgetBytes": 8192,
+      "gzipBytes": 552,
+      "mode": "native"
+    }
+  }
+}

@@ -1,11 +1,11 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type EmptyProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
@@ -20,8 +20,8 @@ export type EmptyProps = Omit<BaseProps, "className" | "style"> & {
  * - Provides presentation only.
  * - The caller should ensure the empty state message is meaningful in context.
  */
-export function Empty({ sx, ...props }: EmptyProps) {
-  return <div {...props} {...stylex.props(styles.base, sx)} />;
+export function Empty({ ref, sx, ...props }: EmptyProps) {
+  return <div ref={ref} {...props} {...stylex.props(styles.base, sx)} />;
 }
 
 const styles = stylex.create({

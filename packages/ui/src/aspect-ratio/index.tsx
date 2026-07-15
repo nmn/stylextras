@@ -1,10 +1,10 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type AspectRatioValue = "square" | "video" | "portrait" | "landscape";
 
@@ -23,12 +23,14 @@ export type AspectRatioProps = Omit<BaseProps, "className" | "style"> & {
  * - Accessible naming must come from the content rendered inside it.
  */
 export function AspectRatio({
+  ref,
   ratio = "video",
   sx,
   ...props
 }: AspectRatioProps) {
   return (
     <div
+      ref={ref}
       {...props}
       {...stylex.props(baseStyles.base, ratioStyles[ratio], sx)}
     />
