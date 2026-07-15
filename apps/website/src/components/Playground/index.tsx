@@ -4,6 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
@@ -22,7 +24,7 @@ import {
   // @ts-ignore
 } from "use-query-params";
 import { Tabs } from "./Tabs";
-import prettier from "prettier";
+import prettier from "prettier/standalone";
 import * as babelPlugin from "prettier/plugins/babel.js";
 import * as estreePlugin from "prettier/plugins/estree.js";
 import {

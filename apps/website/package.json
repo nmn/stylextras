@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "waku dev --host 0.0.0.0",
     "build": "waku build && bun scripts/fix-rsc-stylesheet-preloads.mjs",
+    "deploy:cloudflare": "bun run build && wrangler deploy",
     "docs:generate": "bun scripts/generate-catalog-docs.mjs",
+    "preview:cloudflare": "bun run build && wrangler dev",
     "start": "waku start",
     "postinstall": "bun run docs:generate && fumadocs-mdx",
     "test": "bun run typecheck",
@@ -59,6 +61,7 @@
     "typescript": "^5.9.3",
     "unplugin": "^2.3.10",
     "vite": "7.3.1",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "wrangler": "^4.111.0"
   }
 }

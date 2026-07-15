@@ -40,6 +40,26 @@ const reactCompilerPlugin: Plugin = {
   },
 };
 
+const playgroundSsrStubId = "\0stylextras:playground-ssr";
+const playgroundSsrPlugin: Plugin = {
+  name: "stylextras:playground-ssr",
+  enforce: "pre",
+  resolveId(id, importer, options) {
+    if (
+      options.ssr &&
+      id === "./index" &&
+      importer?.endsWith("/components/Playground/DynamicPlayground.tsx")
+    ) {
+      return playgroundSsrStubId;
+    }
+  },
+  load(id) {
+    if (id === playgroundSsrStubId) {
+      return "export default function Playground() { return null; }";
+    }
+  },
+};
+
 // Inline playground sources/types so Monaco and Sandpack can resolve them.
 const playgroundDefines = (() => {
   const stylexFilename = require.resolve("@stylexjs/stylex");
@@ -78,6 +98,7 @@ const playgroundDefines = (() => {
 })();
 
 export default defineConfig({
+  unstable_adapter: "waku/adapters/cloudflare",
   vite: {
     environments: {
       ssr: {
@@ -122,6 +143,7 @@ export default defineConfig({
     },
     plugins: [
       reactCompilerPlugin,
+      playgroundSsrPlugin,
       // @ts-ignore
       stylex.vite({
         debug: process.env.NODE_ENV === "development",
