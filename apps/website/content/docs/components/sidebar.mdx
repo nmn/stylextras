@@ -3,10 +3,195 @@ title: "Sidebar"
 description: "Responsive application sidebar."
 ---
 
+import Example from "@stylextras/ui/sidebar/example";
+
 ## Examples
 
 <ComponentPreview name="Sidebar">
-  <CatalogExample exportPath="sidebar" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="sidebar" />
+### Example code
+
+```tsx
+'use client';
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarTrigger,
+} from './index';
+
+function WorkspaceNavigation({
+  id,
+  mode = 'inline',
+}: {
+  id?: string;
+  mode?: 'inline' | 'popover';
+}) {
+  return (
+    <Sidebar id={id} mode={mode} aria-label="Workspace navigation">
+      <SidebarHeader>Acme workspace</SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton aria-current="page">
+                Overview
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton>Projects</SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton>Team</SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Manage</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton>Settings</SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>Signed in as Ada</SidebarFooter>
+    </Sidebar>
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <WorkspaceNavigation />
+
+      <SidebarTrigger target="workspace-popover-sidebar">☰</SidebarTrigger>
+      <WorkspaceNavigation id="workspace-popover-sidebar" mode="popover" />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@stylextras/ui/sidebar";
+```
+
+## Anatomy
+
+- `Sidebar` — Styled `<aside>`.
+- `SidebarContent` — Styled `<div>`.
+- `SidebarFooter` — Styled `<div>`.
+- `SidebarGroup` — Styled `<div>`.
+- `SidebarGroupLabel` — Styled `<h3>`.
+- `SidebarHeader` — Styled `<div>`.
+- `SidebarMenu` — Styled `<ul>`.
+- `SidebarMenuButton` — Styled `<button>`.
+- `SidebarMenuItem` — Styled `<li>`.
+- `SidebarTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Sidebar
+
+`SidebarProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"aside">, "className" | "popover" | "style">`. The props below complete `SidebarProps`.
+
+- `mode` — `"popover" | "inline"`. Default: `'inline'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarContent
+
+`SidebarContentProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarContentProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarFooter
+
+`SidebarFooterProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarFooterProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarGroup
+
+`SidebarGroupProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarGroupProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarGroupLabel
+
+`SidebarGroupLabelProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "className" | "style">`. The props below complete `SidebarGroupLabelProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarHeader
+
+`SidebarHeaderProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarHeaderProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarMenu
+
+`SidebarMenuProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `SidebarMenuProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarMenuButton
+
+`SidebarMenuButtonProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "style">`. The props below complete `SidebarMenuButtonProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `SidebarMenuButtonProps["type"]`. Default: `'button'`.
+
+### SidebarMenuItem
+
+`SidebarMenuItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "style">`. The props below complete `SidebarMenuItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SidebarTrigger
+
+`SidebarTriggerProps`
+
+Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popoverTargetAction">`. The props below complete `SidebarTriggerProps`.
+
+- `aria-label` — `SidebarTriggerProps["aria-label"]`. Default: `'Toggle sidebar'`.
+- `size` — `ButtonSize`. Default: `'icon'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `SidebarTriggerProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'outline'`.

@@ -3,10 +3,45 @@ title: "DateRangePicker"
 description: "Date-range input and calendar."
 ---
 
+import Example from "@stylextras/ui/experimental/date-range-picker/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="DateRangePicker">
-  <CatalogExample exportPath="experimental/date-range-picker" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/date-range-picker" />
+### Example code
+
+```tsx
+export { default } from "../range-date-picker/example";
+'use client'
+```
+
+## Import
+
+```tsx
+import { DateRangePicker } from "@stylextras/ui/experimental/date-range-picker";
+```
+
+## Anatomy
+
+- `DateRangePicker` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### DateRangePicker
+
+`DateRangePickerProps`
+
+Complete native/inherited prop base: `RangeDatePickerProps`. The props below complete `DateRangePickerProps`.
+
+- `sx` — `stylex.StyleXStyles`.

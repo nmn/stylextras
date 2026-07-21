@@ -3,10 +3,55 @@ title: "ColorArea"
 description: "Two-dimensional color input."
 ---
 
+import Example from "@stylextras/ui/experimental/color-area/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="ColorArea">
-  <CatalogExample exportPath="experimental/color-area" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/color-area" />
+### Example code
+
+```tsx
+'use client';
+
+import { ColorArea } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <ColorArea aria-label="Accent" defaultValue="#4f46e5" />
+      <ColorArea aria-label="Secondary accent" defaultValue="#0f766e" />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { ColorArea } from "@stylextras/ui/experimental/color-area";
+```
+
+## Anatomy
+
+- `ColorArea` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### ColorArea
+
+`ColorAreaProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"div">, "className" | "style">`. The props below complete `ColorAreaProps`.
+
+- `sx` — `stylex.StyleXStyles`.

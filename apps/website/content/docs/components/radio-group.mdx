@@ -3,10 +3,86 @@ title: "RadioGroup"
 description: "Native radio fieldset."
 ---
 
+import Example from "@stylextras/ui/radio-group/example";
+
 ## Examples
 
 <ComponentPreview name="RadioGroup">
-  <CatalogExample exportPath="radio-group" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="radio-group" />
+### Example code
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { Label } from '../label';
+import { spacing } from '../tokens/spacing.stylex';
+import { RadioGroup, RadioGroupItem, RadioGroupLegend } from './index';
+
+export default function Example() {
+  return (
+    <RadioGroup>
+      <RadioGroupLegend>Density</RadioGroupLegend>
+      {['Compact', 'Default', 'Comfortable'].map((label) => (
+        <Label key={label} sx={styles.option}>
+          <RadioGroupItem
+            name="density"
+            value={label.toLowerCase()}
+            defaultChecked={label === 'Default'}
+          />
+          {label}
+        </Label>
+      ))}
+    </RadioGroup>
+  );
+}
+
+const styles = stylex.create({
+  option: { alignItems: 'center', display: 'flex', gap: spacing.sm },
+});
+('use client');
+```
+
+## Import
+
+```tsx
+import { RadioGroup, RadioGroupItem, RadioGroupLegend } from "@stylextras/ui/radio-group";
+```
+
+## Anatomy
+
+- `RadioGroup` — Styled `<fieldset>`.
+- `RadioGroupItem` — Styled `<input>`.
+- `RadioGroupLegend` — Styled `<legend>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### RadioGroup
+
+`RadioGroupProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset">, "className" | "style">`. The props below complete `RadioGroupProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### RadioGroupItem
+
+`RadioGroupItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `RadioGroupItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### RadioGroupLegend
+
+`RadioGroupLegendProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"legend">, "className" | "style">`. The props below complete `RadioGroupLegendProps`.
+
+- `sx` — `stylex.StyleXStyles`.

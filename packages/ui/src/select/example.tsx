@@ -2,7 +2,7 @@
 
 import { DemoFrame, DemoStack } from '../example-theme/demo'
 import { Field, FieldDescription, FieldLabel } from '../field'
-import { Select } from './index'
+import { Option, Select } from './index'
 
 export default function Example() {
   return (
@@ -14,25 +14,25 @@ export default function Example() {
         <Field>
           <FieldLabel htmlFor="environment">Environment</FieldLabel>
           <Select id="environment" name="environment" defaultValue="preview">
-            <option value="development">Development</option>
-            <option value="preview">Preview</option>
-            <option value="production">Production</option>
+            <Option value="development">Development</Option>
+            <Option value="preview">Preview</Option>
+            <Option value="production">Production</Option>
           </Select>
           <FieldDescription>Uses native validation, reset, and submission.</FieldDescription>
         </Field>
         <Field>
           <FieldLabel htmlFor="component">Component</FieldLabel>
           <Select id="component" name="component" defaultValue="">
-            <option value="" disabled>
+            <Option value="" disabled>
               Select a component
-            </option>
+            </Option>
             <optgroup label="Forms">
-              <option value="input">Input</option>
-              <option value="select">Select</option>
+              <Option value="input">Input</Option>
+              <Option value="select">Select</Option>
             </optgroup>
             <optgroup label="Overlays">
-              <option value="dialog">Dialog</option>
-              <option value="popover">Popover</option>
+              <Option value="dialog">Dialog</Option>
+              <Option value="popover">Popover</Option>
             </optgroup>
           </Select>
         </Field>

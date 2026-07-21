@@ -3,10 +3,135 @@ title: "Command"
 description: "Filterable command collection."
 ---
 
+import Example from "@stylextras/ui/command/example";
+
 ## Examples
 
 <ComponentPreview name="Command">
-  <CatalogExample exportPath="command" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="command" />
+### Example code
+
+```tsx
+'use client';
+
+import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandTrigger,
+} from './index';
+
+const commandId = 'quick-jump-command';
+
+export default function Example() {
+  return (
+    <>
+      <CommandTrigger target={commandId}>Open command menu</CommandTrigger>
+      <Command id={commandId} aria-label="Quick jump">
+        <CommandInput autoFocus placeholder="Search commands…" />
+        <CommandList>
+          <CommandItem value="button-docs" keywords="components actions">
+            Open button docs
+          </CommandItem>
+          <CommandItem value="tokens" keywords="theme variables">
+            Jump to tokens
+          </CommandItem>
+          <CommandItem value="examples" keywords="gallery demos">
+            Browse examples
+          </CommandItem>
+          <CommandEmpty />
+        </CommandList>
+      </Command>
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList, CommandTrigger } from "@stylextras/ui/command";
+```
+
+## Anatomy
+
+- `Command` — Styled `<dialog>`.
+- `CommandEmpty` — Styled `<div>`.
+- `CommandInput` — Styled `<input>`.
+- `CommandItem` — Styled `<button>`.
+- `CommandList` — Styled `<div>`.
+- `CommandTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### Command
+
+`CommandProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "style">`. The props below complete `CommandProps`.
+
+- `onValueChange` — `(value: string) => void`.
+- `sx` — `stylex.StyleXStyles`.
+
+### CommandEmpty
+
+`CommandEmptyProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CommandEmptyProps`.
+
+- `children` — `CommandEmptyProps["children"]`. Default: `'No results.'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### CommandInput
+
+`CommandInputProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "aria-activedescendant" | "aria-controls" | "className" | "role" | "style" | "value">`. The props below complete `CommandInputProps`.
+
+- `aria-expanded` — `CommandInputProps["aria-expanded"]`. Default: `'true'`.
+- `autoComplete` — `CommandInputProps["autoComplete"]`. Default: `'off'`.
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `CommandInputProps["type"]`. Default: `'search'`.
+
+### CommandItem
+
+`CommandItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "onSelect" | "role" | "style" | "value">`. The props below complete `CommandItemProps`.
+
+- `disabled` — `CommandItemProps["disabled"]`. Default: `false`.
+- `keywords` — `string`. Default: `''`.
+- `onSelect` — `(value: string) => void`.
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `CommandItemProps["type"]`. Default: `'button'`.
+- `value` — `string`. Required.
+
+### CommandList
+
+`CommandListProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `CommandListProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### CommandTrigger
+
+`CommandTriggerProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `CommandTriggerProps`.
+
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `CommandTriggerProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'primary'`.

@@ -3,10 +3,79 @@ title: "ButtonGroup"
 description: "Grouped toolbar and equal-width action layouts."
 ---
 
+import Example from "@stylextras/ui/button-group/example";
+
 ## Examples
 
 <ComponentPreview name="ButtonGroup">
-  <CatalogExample exportPath="button-group" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="button-group" />
+### Example code
+
+```tsx
+import { Button } from '../button';
+import { ButtonGroup } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <ButtonGroup aria-label="Text alignment">
+        <Button size="icon-sm" variant="ghost" aria-label="Align start">
+          ≡
+        </Button>
+        <Button size="icon-sm" variant="ghost" aria-label="Align center">
+          ≣
+        </Button>
+        <Button size="icon-sm" variant="ghost" aria-label="Align end">
+          ≡
+        </Button>
+      </ButtonGroup>
+
+      <span>Dialog footer</span>
+      <ButtonGroup variant="actions" aria-label="Confirm changes">
+        <Button variant="outline">Cancel</Button>
+        <Button>Done</Button>
+      </ButtonGroup>
+
+      <ButtonGroup
+        variant="actions"
+        orientation="vertical"
+        aria-label="Document actions"
+      >
+        <Button variant="outline">Save draft</Button>
+        <Button>Publish</Button>
+      </ButtonGroup>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { ButtonGroup } from "@stylextras/ui/button-group";
+```
+
+## Anatomy
+
+- `ButtonGroup` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### ButtonGroup
+
+`ButtonGroupProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `ButtonGroupProps`.
+
+- `orientation` — `"vertical" | "horizontal"`. Default: `'horizontal'`.
+- `sx` — `stylex.StyleXStyles`.
+- `variant` — `"toolbar" | "actions"`. Default: `'toolbar'`.

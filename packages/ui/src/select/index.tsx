@@ -10,8 +10,12 @@ import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
 type NativeSelectProps = ComponentPropsWithRef<'select'>
+type NativeOptionProps = ComponentPropsWithRef<'option'>
 
 export type SelectProps = Omit<NativeSelectProps, 'className' | 'style'> & {
+  sx?: StyleXStyles
+}
+export type OptionProps = Omit<NativeOptionProps, 'className' | 'style'> & {
   sx?: StyleXStyles
 }
 
@@ -21,6 +25,11 @@ export type SelectProps = Omit<NativeSelectProps, 'className' | 'style'> & {
  */
 export function Select({ ref, sx, ...props }: SelectProps) {
   return <select ref={ref} {...props} {...stylex.props(styles.base, styles.customizable, sx)} />
+}
+
+/** A styled native option for use inside Select. */
+export function Option({ ref, sx, ...props }: OptionProps) {
+  return <option ref={ref} {...props} {...stylex.props(styles.option, sx)} />
 }
 
 /* eslint-disable @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles */
@@ -108,7 +117,7 @@ const styles = stylex.create({
         default: motion.durationFast,
         '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
       },
-      transitionProperty: 'display, opacity, transform',
+      transitionProperty: 'opacity, transform',
       transitionTimingFunction: motion.easeEmphasized,
       transform: {
         default: 'translateY(-4px) scale(0.98)',
@@ -139,6 +148,28 @@ const styles = stylex.create({
         '@media (prefers-reduced-motion: reduce)': 'none',
       },
     },
+  },
+  option: {
+    backgroundColor: {
+      default: 'transparent',
+      ':checked': colors.selection,
+      ':focus': colors.accent,
+      ':hover': colors.accent,
+    },
+    borderRadius: radius.xs,
+    color: {
+      default: colors.popoverForeground,
+      ':checked': colors.primary,
+      ':focus': colors.accentForeground,
+      ':hover': colors.accentForeground,
+      ':disabled': colors.fgDisabled,
+    },
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    minHeight: spacing.controlSm,
+    outline: 'none',
+    paddingBlock: spacing.xxs,
+    paddingInline: spacing.sm,
   },
 })
 /* eslint-enable @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles */

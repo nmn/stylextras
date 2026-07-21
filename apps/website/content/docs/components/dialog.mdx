@@ -3,10 +3,180 @@ title: "Dialog"
 description: "Native dialog with invoker commands."
 ---
 
+import Example from "@stylextras/ui/dialog/example";
+
 ## Examples
 
 <ComponentPreview name="Dialog">
-  <CatalogExample exportPath="dialog" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="dialog" />
+### Example code
+
+```tsx
+import { ButtonGroup } from '../button-group';
+import { Field, FieldLabel } from '../field';
+import { Input } from '../input';
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  type DialogSize,
+} from './index';
+
+function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
+  return (
+    <Dialog id={id} size={size} aria-labelledby={`${id}-title`}>
+      <DialogHeader>
+        <DialogTitle id={`${id}-title`}>Rename component</DialogTitle>
+        <DialogDescription>Choose a concise display name.</DialogDescription>
+      </DialogHeader>
+      <DialogBody>
+        <Field>
+          <FieldLabel htmlFor={`${id}-display-name`}>Display name</FieldLabel>
+          <Input
+            id={`${id}-display-name`}
+            name="displayName"
+            defaultValue="Segmented Control"
+          />
+        </Field>
+      </DialogBody>
+      <DialogFooter>
+        <ButtonGroup variant="actions" aria-label="Rename component actions">
+          <DialogClose target={id}>Cancel</DialogClose>
+          <DialogClose target={id} variant="primary">
+            Done
+          </DialogClose>
+        </ButtonGroup>
+      </DialogFooter>
+    </Dialog>
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <DialogTrigger target="rename-small-dialog">
+        Open small dialog
+      </DialogTrigger>
+      <RenameDialog id="rename-small-dialog" size="sm" />
+
+      <DialogTrigger target="rename-medium-dialog">
+        Open medium dialog
+      </DialogTrigger>
+      <RenameDialog id="rename-medium-dialog" size="md" />
+
+      <DialogTrigger target="rename-large-dialog">
+        Open large dialog
+      </DialogTrigger>
+      <RenameDialog id="rename-large-dialog" size="lg" />
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Dialog, DialogBody, DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@stylextras/ui/dialog";
+```
+
+## Anatomy
+
+- `Dialog` — Styled `<dialog>`.
+- `DialogBody` — Styled `<div>`.
+- `DialogClose` — Styled `<button>`.
+- `DialogDescription` — Styled `<p>`.
+- `DialogFooter` — Styled `<footer>`.
+- `DialogHeader` — Styled `<header>`.
+- `DialogTitle` — Styled `<h2>`.
+- `DialogTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### Dialog
+
+`DialogProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "style">`. The props below complete `DialogProps`.
+
+- `closedBy` — `"none" | "any" | "closerequest"`. Default: `'any'`.
+- `size` — `DialogSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### DialogBody
+
+`DialogBodyProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DialogBodyProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### DialogClose
+
+`DialogCloseProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `DialogCloseProps`.
+
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `DialogCloseProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'outline'`.
+
+### DialogDescription
+
+`DialogDescriptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `DialogDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### DialogFooter
+
+`DialogFooterProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"footer">, "className" | "style">`. The props below complete `DialogFooterProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### DialogHeader
+
+`DialogHeaderProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"header">, "className" | "style">`. The props below complete `DialogHeaderProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### DialogTitle
+
+`DialogTitleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h2">, "className" | "style">`. The props below complete `DialogTitleProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### DialogTrigger
+
+`DialogTriggerProps`
+
+Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popoverTargetAction">`. The props below complete `DialogTriggerProps`.
+
+- `aria-haspopup` — `DialogTriggerProps["aria-haspopup"]`. Default: `'dialog'`.
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `DialogTriggerProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'outline'`.

@@ -124,7 +124,14 @@ const entrypoints = Object.values(publicEntries).map((source) =>
 )
 const build = await Bun.build({
   entrypoints,
-  external: ['react', 'react/*', '@stylexjs/stylex', '@microsoft/focusgroup-polyfill/*'],
+  external: [
+    'react',
+    'react/*',
+    'react-dom',
+    'react-dom/*',
+    '@stylexjs/stylex',
+    '@microsoft/focusgroup-polyfill/*',
+  ],
   format: 'esm',
   minify: false,
   naming: {

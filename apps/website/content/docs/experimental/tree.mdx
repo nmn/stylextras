@@ -3,10 +3,137 @@ title: "Tree"
 description: "Hierarchical interactive collection."
 ---
 
+import Example from "@stylextras/ui/experimental/tree/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="Tree">
-  <CatalogExample exportPath="experimental/tree" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/tree" />
+### Example code
+
+```tsx
+'use client';
+
+import {
+  Tree,
+  TreeBranch,
+  TreeBranchContent,
+  TreeBranchTrigger,
+  TreeGroup,
+  TreeItem,
+} from './index';
+
+export default function Example() {
+  return (
+    <Tree aria-label="Package explorer">
+      <TreeGroup>
+        <TreeBranch open>
+          <TreeBranchTrigger>tokens</TreeBranchTrigger>
+          <TreeBranchContent>
+            <TreeBranch open>
+              <TreeBranchTrigger>color</TreeBranchTrigger>
+              <TreeBranchContent>
+                <TreeItem>brand</TreeItem>
+                <TreeItem>background</TreeItem>
+                <TreeItem>foreground</TreeItem>
+              </TreeBranchContent>
+            </TreeBranch>
+            <TreeBranch>
+              <TreeBranchTrigger>spacing</TreeBranchTrigger>
+              <TreeBranchContent>
+                <TreeItem>base</TreeItem>
+                <TreeItem>small</TreeItem>
+                <TreeItem>large</TreeItem>
+              </TreeBranchContent>
+            </TreeBranch>
+          </TreeBranchContent>
+        </TreeBranch>
+        <TreeBranch>
+          <TreeBranchTrigger>components</TreeBranchTrigger>
+          <TreeBranchContent>
+            <TreeItem>button</TreeItem>
+            <TreeItem>card</TreeItem>
+            <TreeItem>dialog</TreeItem>
+          </TreeBranchContent>
+        </TreeBranch>
+      </TreeGroup>
+    </Tree>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Tree, TreeBranch, TreeBranchContent, TreeBranchTrigger, TreeGroup, TreeItem } from "@stylextras/ui/experimental/tree";
+```
+
+## Anatomy
+
+- `Tree` — Styled `<div>`.
+- `TreeBranch` — Styled `<details>`.
+- `TreeBranchContent` — Styled `<div>`.
+- `TreeBranchTrigger` — Styled `<summary>`.
+- `TreeGroup` — Styled `<div>`.
+- `TreeItem` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### Tree
+
+`TreeProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `TreeProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TreeBranch
+
+`TreeBranchProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details">, "className" | "style">`. The props below complete `TreeBranchProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TreeBranchContent
+
+`TreeBranchContentProps`
+
+Complete native/inherited prop base: `TreeGroupProps`. The props below complete `TreeBranchContentProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TreeBranchTrigger
+
+`TreeBranchTriggerProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary">, "className" | "role" | "style">`. The props below complete `TreeBranchTriggerProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TreeGroup
+
+`TreeGroupProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `TreeGroupProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TreeItem
+
+`TreeItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `TreeItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+- `tabIndex` — `TreeItemProps["tabIndex"]`. Default: `0`.

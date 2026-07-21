@@ -664,7 +664,10 @@ const styles = stylex.create({
       ':hover': colors.accent,
     },
     borderRadius: radius.xs,
-    color: colors.accentForeground,
+    color: {
+      default: colors.popoverForeground,
+      ':hover': colors.accentForeground,
+    },
     cursor: 'default',
     display: 'flex',
     fontFamily: typography.fontSans,
@@ -680,6 +683,7 @@ const styles = stylex.create({
   },
   itemActive: {
     backgroundColor: colors.accent,
+    color: colors.accentForeground,
   },
   hidden: {
     display: 'none',

@@ -3,10 +3,55 @@ title: "DateField"
 description: "Segmented date input."
 ---
 
+import Example from "@stylextras/ui/experimental/date-field/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="DateField">
-  <CatalogExample exportPath="experimental/date-field" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/date-field" />
+### Example code
+
+```tsx
+'use client';
+
+import { DateField } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <DateField aria-label="Start date" defaultValue="2026-04-10" />
+      <DateField aria-label="End date" defaultValue="2026-04-18" />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { DateField } from "@stylextras/ui/experimental/date-field";
+```
+
+## Anatomy
+
+- `DateField` — Styled `<input>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### DateField
+
+`DateFieldProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"input">, "className" | "style" | "type">`. The props below complete `DateFieldProps`.
+
+- `sx` — `stylex.StyleXStyles`.

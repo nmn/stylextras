@@ -3,10 +3,72 @@ title: "ToggleGroup"
 description: "Grouped pressed buttons."
 ---
 
+import Example from "@stylextras/ui/toggle-group/example";
+
 ## Examples
 
 <ComponentPreview name="ToggleGroup">
-  <CatalogExample exportPath="toggle-group" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="toggle-group" />
+### Example code
+
+```tsx
+'use client';
+
+import { Toggle } from '../toggle';
+import type { ToggleProps } from '../toggle';
+import { ToggleGroup } from './index';
+import { useState } from 'react';
+
+type DemoToggleProps = Omit<ToggleProps, 'aria-pressed' | 'onClick'> & {
+  defaultPressed?: boolean;
+};
+
+function DemoToggle({ defaultPressed = false, ...props }: DemoToggleProps) {
+  const [pressed, setPressed] = useState(defaultPressed);
+  return (
+    <Toggle
+      aria-pressed={pressed}
+      onClick={() => setPressed((value) => !value)}
+      {...props}
+    />
+  );
+}
+
+export default function Example() {
+  return (
+    <ToggleGroup>
+      <DemoToggle defaultPressed>Color</DemoToggle>
+      <DemoToggle defaultPressed>Spacing</DemoToggle>
+      <DemoToggle>Motion</DemoToggle>
+    </ToggleGroup>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { ToggleGroup } from "@stylextras/ui/toggle-group";
+```
+
+## Anatomy
+
+- `ToggleGroup` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### ToggleGroup
+
+`ToggleGroupProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `ToggleGroupProps`.
+
+- `sx` — `stylex.StyleXStyles`.

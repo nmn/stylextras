@@ -3,10 +3,127 @@ title: "Item"
 description: "Reusable content row composition."
 ---
 
+import Example from "@stylextras/ui/item/example";
+
 ## Examples
 
 <ComponentPreview name="Item">
-  <CatalogExample exportPath="item" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="item" />
+### Example code
+
+```tsx
+import { Button } from '../button';
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Item>
+        <ItemMedia aria-hidden="true">◫</ItemMedia>
+        <ItemContent>
+          <ItemTitle>Documentation</ItemTitle>
+          <ItemDescription>Updated two minutes ago</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <Button size="sm" variant="outline">
+            Open
+          </Button>
+        </ItemActions>
+      </Item>
+      <Item>
+        <ItemMedia aria-hidden="true">◇</ItemMedia>
+        <ItemContent>
+          <ItemTitle>Component gallery</ItemTitle>
+          <ItemDescription>Seven themes · light and dark</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <Button size="sm" variant="outline">
+            Open
+          </Button>
+        </ItemActions>
+      </Item>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@stylextras/ui/item";
+```
+
+## Anatomy
+
+- `Item` — Styled `<div>`.
+- `ItemActions` — Styled `<div>`.
+- `ItemContent` — Styled `<div>`.
+- `ItemDescription` — Styled `<p>`.
+- `ItemMedia` — Styled `<div>`.
+- `ItemTitle` — Styled `<h3>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Item
+
+`ItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ItemActions
+
+`ItemActionsProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemActionsProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ItemContent
+
+`ItemContentProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemContentProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ItemDescription
+
+`ItemDescriptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `ItemDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ItemMedia
+
+`ItemMediaProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemMediaProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ItemTitle
+
+`ItemTitleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "className" | "style">`. The props below complete `ItemTitleProps`.
+
+- `sx` — `stylex.StyleXStyles`.

@@ -3,10 +3,68 @@ title: "ColorSwatchPicker"
 description: "Color sample collection."
 ---
 
+import Example from "@stylextras/ui/experimental/color-swatch-picker/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="ColorSwatchPicker">
-  <CatalogExample exportPath="experimental/color-swatch-picker" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/color-swatch-picker" />
+### Example code
+
+```tsx
+'use client';
+
+import { useState } from 'react';
+import { ColorSwatchPicker } from './index';
+
+function SwatchPickerDemo() {
+  const [value, setValue] = useState('#2563eb');
+  return (
+    <>
+      <ColorSwatchPicker
+        colors={['#2563eb', '#0f766e', '#9333ea', '#ea580c', '#dc2626']}
+        value={value}
+        onValueChange={setValue}
+      />
+      <span>Selected: {value}</span>
+    </>
+  );
+}
+
+export default function Example() {
+  return <SwatchPickerDemo />;
+}
+```
+
+## Import
+
+```tsx
+import { ColorSwatchPicker } from "@stylextras/ui/experimental/color-swatch-picker";
+```
+
+## Anatomy
+
+- `ColorSwatchPicker` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### ColorSwatchPicker
+
+`ColorSwatchPickerProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"div">, "className" | "style">`. The props below complete `ColorSwatchPickerProps`.
+
+- `colors` — `string[]`. Default: `defaultColors`.
+- `onValueChange` — `(value: string) => void`.
+- `sx` — `stylex.StyleXStyles`.
+- `value` — `string`.

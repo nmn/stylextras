@@ -12,9 +12,24 @@ const compositeBudget = new Set(['calendar', 'combobox', 'command', 'date-picker
 const external = [
   'react',
   'react/*',
+  'react-dom',
+  'react-dom/*',
   '@stylexjs/stylex',
   '@microsoft/focusgroup-polyfill/*',
 ]
+
+const uncompiledStylexDefinition =
+  /\bstylex\d*\.(?:create|createTheme|defineVars|keyframes)\s*\(/
+
+async function assertStylexDefinitionsAreCompiled(entrypoint) {
+  const compiledSource = await readFile(entrypoint, 'utf8')
+  if (uncompiledStylexDefinition.test(compiledSource)) {
+    throw new Error(
+      `${entrypoint} still contains an uncompiled StyleX definition. ` +
+        'Run the package build before measuring bundle size.',
+    )
+  }
+}
 
 async function minifiedGzip(entrypoint, extraExternal = external) {
   const result = await Bun.build({
@@ -38,6 +53,10 @@ const failures = []
 for (const entry of componentCatalog) {
   if (entry.status !== 'stable') continue
   const entrypoint = path.join(outputRoot, entry.export, 'index.js')
+  // Measure the published output after StyleX has replaced style definitions
+  // with compiled class maps. Dynamic stylex.props calls remain by design so
+  // components can merge sx; the StyleX runtime itself is external shared infra.
+  await assertStylexDefinitionsAreCompiled(entrypoint)
   const gzipBytes = await minifiedGzip(entrypoint)
   const budgetBytes = (compositeBudget.has(entry.export) ? 12 : 8) * 1024
   const source = await readFile(path.join(packageRoot, 'src', entry.export, 'index.tsx'), 'utf8')

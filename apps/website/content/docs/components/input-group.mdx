@@ -3,10 +3,68 @@ title: "InputGroup"
 description: "Input adornment composition."
 ---
 
+import Example from "@stylextras/ui/input-group/example";
+
 ## Examples
 
 <ComponentPreview name="InputGroup">
-  <CatalogExample exportPath="input-group" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="input-group" />
+### Example code
+
+```tsx
+'use client';
+
+import { InputGroup } from './index';
+import { Button } from '../button';
+import { Field, FieldDescription, FieldLabel } from '../field';
+import { Input } from '../input';
+
+export default function Example() {
+  return (
+    <Field>
+      <FieldLabel htmlFor="invite-email">Invite email</FieldLabel>
+      <InputGroup>
+        <Input
+          id="invite-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="teammate@example.com"
+        />
+        <Button>Invite</Button>
+      </InputGroup>
+      <FieldDescription>
+        The label and validation remain attached to the native input.
+      </FieldDescription>
+    </Field>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { InputGroup } from "@stylextras/ui/input-group";
+```
+
+## Anatomy
+
+- `InputGroup` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### InputGroup
+
+`InputGroupProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `InputGroupProps`.
+
+- `sx` — `stylex.StyleXStyles`.

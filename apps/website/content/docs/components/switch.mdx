@@ -3,10 +3,67 @@ title: "Switch"
 description: "Styled native checkbox switch."
 ---
 
+import Example from "@stylextras/ui/switch/example";
+
 ## Examples
 
 <ComponentPreview name="Switch">
-  <CatalogExample exportPath="switch" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="switch" />
+### Example code
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { Label } from '../label';
+import { spacing } from '../tokens/spacing.stylex';
+import { Switch } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Label sx={styles.option}>
+        <Switch defaultChecked /> Notifications
+      </Label>
+      <Label sx={styles.option}>
+        <Switch /> Public profile
+      </Label>
+      <Label sx={styles.option}>
+        <Switch controlSize="sm" /> Compact mode
+      </Label>
+    </>
+  );
+}
+
+const styles = stylex.create({
+  option: { alignItems: 'center', display: 'flex', gap: spacing.sm },
+});
+('use client');
+```
+
+## Import
+
+```tsx
+import { Switch } from "@stylextras/ui/switch";
+```
+
+## Anatomy
+
+- `Switch` — Styled `<input>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Switch
+
+`SwitchProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "role" | "style" | "type">`. The props below complete `SwitchProps`.
+
+- `controlSize` — `"sm" | "md"`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.

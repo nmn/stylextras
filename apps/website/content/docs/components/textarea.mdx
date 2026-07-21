@@ -3,10 +3,60 @@ title: "Textarea"
 description: "Styled native textarea."
 ---
 
+import Example from "@stylextras/ui/textarea/example";
+
 ## Examples
 
 <ComponentPreview name="Textarea">
-  <CatalogExample exportPath="textarea" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="textarea" />
+### Example code
+
+```tsx
+'use client';
+
+import { Field, FieldDescription, FieldLabel } from '../field';
+import { Textarea } from './index';
+
+export default function Example() {
+  return (
+    <Field>
+      <FieldLabel htmlFor="summary">Summary</FieldLabel>
+      <Textarea
+        id="summary"
+        name="summary"
+        rows={4}
+        placeholder="Add a summary…"
+      />
+      <FieldDescription>Plain native props remain available.</FieldDescription>
+    </Field>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Textarea } from "@stylextras/ui/textarea";
+```
+
+## Anatomy
+
+- `Textarea` — Styled `<textarea>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Textarea
+
+`TextareaProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"textarea">, "className" | "style">`. The props below complete `TextareaProps`.
+
+- `sx` — `stylex.StyleXStyles`.

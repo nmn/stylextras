@@ -3,10 +3,77 @@ title: "Badge"
 description: "Compact status label."
 ---
 
+import Example from "@stylextras/ui/badge/example";
+
 ## Examples
 
 <ComponentPreview name="Badge">
-  <CatalogExample exportPath="badge" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="badge" />
+### Example code
+
+```tsx
+'use client';
+
+import { Badge } from './index';
+
+export function BadgeVariantsDemo() {
+  return (
+    <>
+      <Badge variant="neutral">Neutral</Badge>
+      <Badge variant="brand">Brand</Badge>
+      <Badge variant="info">Info</Badge>
+      <Badge variant="success">Success</Badge>
+      <Badge variant="warning">Warning</Badge>
+      <Badge variant="danger">Danger</Badge>
+    </>
+  );
+}
+
+export function BadgeSizesDemo() {
+  return (
+    <>
+      <Badge size="sm">Small</Badge>
+      <Badge size="md">Medium</Badge>
+    </>
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <BadgeVariantsDemo />
+      <BadgeSizesDemo />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Badge } from "@stylextras/ui/badge";
+```
+
+## Anatomy
+
+- `Badge` — Styled `<span>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Badge
+
+`BadgeProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `BadgeProps`.
+
+- `size` — `BadgeSize`. Default: `"md"`.
+- `sx` — `stylex.StyleXStyles`.
+- `variant` — `BadgeVariant`. Default: `"neutral"`.

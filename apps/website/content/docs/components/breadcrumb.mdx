@@ -3,10 +3,118 @@ title: "Breadcrumb"
 description: "Semantic breadcrumb navigation."
 ---
 
+import Example from "@stylextras/ui/breadcrumb/example";
+
 ## Examples
 
 <ComponentPreview name="Breadcrumb">
-  <CatalogExample exportPath="breadcrumb" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="breadcrumb" />
+### Example code
+
+```tsx
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from './index';
+
+export default function Example() {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="#">Docs</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink href="#">Components</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Button</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@stylextras/ui/breadcrumb";
+```
+
+## Anatomy
+
+- `Breadcrumb` — Styled `<nav>`.
+- `BreadcrumbItem` — Styled `<li>`.
+- `BreadcrumbLink` — Styled `<a>`.
+- `BreadcrumbList` — Styled `<ol>`.
+- `BreadcrumbPage` — Styled `<span>`.
+- `BreadcrumbSeparator` — Styled `<li>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Breadcrumb
+
+`BreadcrumbProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "className" | "style">`. The props below complete `BreadcrumbProps`.
+
+- `aria-label` — `BreadcrumbProps["aria-label"]`. Default: `'Breadcrumb'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### BreadcrumbItem
+
+`BreadcrumbItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "style">`. The props below complete `BreadcrumbItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### BreadcrumbLink
+
+`BreadcrumbLinkProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "className" | "style">`. The props below complete `BreadcrumbLinkProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### BreadcrumbList
+
+`BreadcrumbListProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ol">, "className" | "style">`. The props below complete `BreadcrumbListProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### BreadcrumbPage
+
+`BreadcrumbPageProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `BreadcrumbPageProps`.
+
+- `aria-current` — `BreadcrumbPageProps["aria-current"]`. Default: `'page'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### BreadcrumbSeparator
+
+`BreadcrumbSeparatorProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "aria-hidden" | "className" | "style">`. The props below complete `BreadcrumbSeparatorProps`.
+
+- `children` — `BreadcrumbSeparatorProps["children"]`. Default: `'/'`.
+- `sx` — `stylex.StyleXStyles`.

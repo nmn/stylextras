@@ -3,10 +3,55 @@ title: "Skeleton"
 description: "Reduced-motion-aware loading placeholder."
 ---
 
+import Example from "@stylextras/ui/skeleton/example";
+
 ## Examples
 
 <ComponentPreview name="Skeleton">
-  <CatalogExample exportPath="skeleton" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="skeleton" />
+### Example code
+
+```tsx
+'use client';
+
+import { Skeleton } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Skeleton aria-label="Loading title" />
+      <Skeleton aria-label="Loading paragraph one" />
+      <Skeleton aria-label="Loading paragraph two" />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Skeleton } from "@stylextras/ui/skeleton";
+```
+
+## Anatomy
+
+- `Skeleton` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Skeleton
+
+`SkeletonProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SkeletonProps`.
+
+- `aria-hidden` — `SkeletonProps["aria-hidden"]`. Default: `'true'`.
+- `sx` — `stylex.StyleXStyles`.

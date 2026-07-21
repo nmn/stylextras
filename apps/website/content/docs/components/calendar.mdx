@@ -3,10 +3,62 @@ title: "Calendar"
 description: "Intl-backed calendar grid."
 ---
 
+import Example from "@stylextras/ui/calendar/example";
+
 ## Examples
 
 <ComponentPreview name="Calendar">
-  <CatalogExample exportPath="calendar" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="calendar" />
+### Example code
+
+```tsx
+'use client';
+
+import { Calendar } from './index';
+
+export default function Example() {
+  return (
+    <Calendar
+      aria-label="Choose a release date"
+      defaultValue="2026-07-11"
+      min="2026-07-01"
+      max="2026-08-31"
+    />
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Calendar } from "@stylextras/ui/calendar";
+```
+
+## Anatomy
+
+- `Calendar` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### Calendar
+
+`CalendarProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CalendarProps`.
+
+- `defaultValue` — `string | (readonly string[] & string)`. Default: `''`.
+- `locale` — `string`. Default: `'en-US'`.
+- `max` — `string`.
+- `min` — `string`.
+- `onValueChange` — `(value: string) => void`.
+- `sx` — `stylex.StyleXStyles`.
+- `value` — `string`.
+- `weekStartsOn` — `number`. Default: `getWeekStartsOn(locale)`.

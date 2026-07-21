@@ -3,10 +3,54 @@ title: "TimeField"
 description: "Segmented time input."
 ---
 
+import Example from "@stylextras/ui/experimental/time-field/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="TimeField">
-  <CatalogExample exportPath="experimental/time-field" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/time-field" />
+### Example code
+
+```tsx
+export { default } from "../timefield/example";
+'use client'
+```
+
+## Import
+
+```tsx
+import { TimeField, TimeFieldField } from "@stylextras/ui/experimental/time-field";
+```
+
+## Anatomy
+
+- `TimeField` — Styled `<input>`.
+- `TimeFieldField` — Styled `<input>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### TimeField
+
+`TimeFieldProps`
+
+Complete native/inherited prop base: `TimefieldProps`. The props below complete `TimeFieldProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TimeFieldField
+
+`TimeFieldFieldProps`
+
+Complete native/inherited prop base: `TimeFieldProps`. The props below complete `TimeFieldFieldProps`.
+
+- `sx` — `stylex.StyleXStyles`.

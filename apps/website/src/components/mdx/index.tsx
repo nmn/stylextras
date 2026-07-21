@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { CatalogEntry } from '@/components/catalog/CatalogEntry'
-import { CatalogExample } from '@/components/catalog/CatalogExample'
 import { ComponentPreview } from '@/components/catalog/ComponentPreview'
 import { ThemeGallery } from '@/components/catalog/ThemeGallery'
 import { vars } from '@/theming/vars.stylex'
@@ -82,8 +80,6 @@ export const mdxComponents = {
   LLMInstallationFile,
   LLMStylingFile,
   AriaButton,
-  CatalogEntry,
-  CatalogExample,
   ComponentPreview,
   ThemeGallery,
 }

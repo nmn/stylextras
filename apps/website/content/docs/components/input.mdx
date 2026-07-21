@@ -3,10 +3,77 @@ title: "Input"
 description: "Styled native input."
 ---
 
+import Example from "@stylextras/ui/input/example";
+
 ## Examples
 
 <ComponentPreview name="Input">
-  <CatalogExample exportPath="input" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="input" />
+### Example code
+
+```tsx
+import { Field, FieldDescription, FieldLabel } from '../field';
+import { Input } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Field>
+        <FieldLabel htmlFor="input-email">Work email</FieldLabel>
+        <Input
+          id="input-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@company.com"
+        />
+        <FieldDescription>
+          Try the native email validation state.
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="input-search">Search</FieldLabel>
+        <Input
+          id="input-search"
+          name="query"
+          type="search"
+          placeholder="Search components…"
+        />
+        <FieldDescription>
+          The browser owns search-input behavior.
+        </FieldDescription>
+      </Field>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Input } from "@stylextras/ui/input";
+```
+
+## Anatomy
+
+- `Input` — Styled `<input>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Input
+
+`InputProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style">`. The props below complete `InputProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `InputProps["type"]`. Default: `'text'`.

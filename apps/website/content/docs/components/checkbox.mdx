@@ -3,10 +3,70 @@ title: "Checkbox"
 description: "Styled native checkbox."
 ---
 
+import Example from "@stylextras/ui/checkbox/example";
+
 ## Examples
 
 <ComponentPreview name="Checkbox">
-  <CatalogExample exportPath="checkbox" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="checkbox" />
+### Example code
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { Label } from '../label';
+import { spacing } from '../tokens/spacing.stylex';
+import { Checkbox } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Label sx={styles.option}>
+        <Checkbox defaultChecked name="updates" /> Product updates
+      </Label>
+      <Label sx={styles.option}>
+        <Checkbox name="analytics" /> Usage analytics
+      </Label>
+      <Label sx={styles.option}>
+        <Checkbox disabled /> Unavailable option
+      </Label>
+      <Label sx={styles.option}>
+        <Checkbox controlSize="sm" /> Compact option
+      </Label>
+    </>
+  );
+}
+
+const styles = stylex.create({
+  option: { alignItems: 'center', display: 'flex', gap: spacing.sm },
+});
+('use client');
+```
+
+## Import
+
+```tsx
+import { Checkbox } from "@stylextras/ui/checkbox";
+```
+
+## Anatomy
+
+- `Checkbox` — Styled `<input>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Checkbox
+
+`CheckboxProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `CheckboxProps`.
+
+- `controlSize` — `"sm" | "md"`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.

@@ -3,10 +3,129 @@ title: "Combobox"
 description: "Filterable input with a popover listbox."
 ---
 
+import Example from "@stylextras/ui/combobox/example";
+
 ## Examples
 
 <ComponentPreview name="Combobox">
-  <CatalogExample exportPath="combobox" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="combobox" />
+### Example code
+
+```tsx
+'use client';
+
+import { Field, FieldDescription, FieldLabel } from '../field';
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+} from './index';
+
+const reviewers = [
+  { label: 'Alex Kim', value: 'alex' },
+  { label: 'Taylor Rivera', value: 'taylor' },
+  { label: 'Jordan Patel', value: 'jordan' },
+  { label: 'Sam Lee', value: 'sam' },
+];
+
+export default function Example() {
+  return (
+    <Field>
+      <FieldLabel htmlFor="reviewer">Reviewer</FieldLabel>
+      <Combobox name="reviewer" required>
+        <ComboboxInput id="reviewer" placeholder="Search reviewers…" />
+        <ComboboxContent>
+          {reviewers.map((reviewer) => (
+            <ComboboxItem key={reviewer.value} value={reviewer.value}>
+              {reviewer.label}
+            </ComboboxItem>
+          ))}
+          <ComboboxEmpty />
+        </ComboboxContent>
+      </Combobox>
+      <FieldDescription>
+        Use Arrow keys, Home, End, Enter, and Escape.
+      </FieldDescription>
+    </Field>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem } from "@stylextras/ui/combobox";
+```
+
+## Anatomy
+
+- `Combobox` — Styled `<div>`.
+- `ComboboxContent` — Styled `<div>`.
+- `ComboboxEmpty` — Styled `<div>`.
+- `ComboboxInput` — Styled `<input>`.
+- `ComboboxItem` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### Combobox
+
+`ComboboxProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "defaultValue" | "style">`. The props below complete `ComboboxProps`.
+
+- `defaultValue` — `string`. Default: `''`.
+- `disabled` — `boolean`. Default: `false`.
+- `name` — `string`.
+- `onValueChange` — `(value: string) => void`.
+- `required` — `boolean`. Default: `false`.
+- `sx` — `stylex.StyleXStyles`.
+- `value` — `string`.
+
+### ComboboxContent
+
+`ComboboxContentProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "id" | "popover" | "role" | "style">`. The props below complete `ComboboxContentProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ComboboxEmpty
+
+`ComboboxEmptyProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ComboboxEmptyProps`.
+
+- `children` — `ReactNode`. Default: `'No results.'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### ComboboxInput
+
+`ComboboxInputProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "aria-activedescendant" | "aria-autocomplete" | "aria-controls" | "aria-expanded" | "className" | "name" | "role" | "style" | "value">`. The props below complete `ComboboxInputProps`.
+
+- `autoComplete` — `ComboboxInputProps["autoComplete"]`. Default: `'off'`.
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `ComboboxInputProps["type"]`. Default: `'search'`.
+
+### ComboboxItem
+
+`ComboboxItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-disabled" | "aria-selected" | "className" | "id" | "onClick" | "role" | "style">`. The props below complete `ComboboxItemProps`.
+
+- `disabled` — `boolean`. Default: `false`.
+- `onClick` — `(event: MouseEvent<HTMLDivElement>) => void`.
+- `sx` — `stylex.StyleXStyles`.
+- `textValue` — `string`.
+- `value` — `string`. Required.

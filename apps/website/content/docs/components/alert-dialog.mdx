@@ -3,10 +3,155 @@ title: "AlertDialog"
 description: "Modal confirmation dialog."
 ---
 
+import Example from "@stylextras/ui/alert-dialog/example";
+
 ## Examples
 
 <ComponentPreview name="AlertDialog">
-  <CatalogExample exportPath="alert-dialog" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="alert-dialog" />
+### Example code
+
+```tsx
+import { ButtonGroup } from '../button-group';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './index';
+
+const dialogId = 'delete-draft-dialog';
+
+export default function Example() {
+  return (
+    <>
+      <AlertDialogTrigger target={dialogId}>Delete draft</AlertDialogTrigger>
+      <AlertDialog id={dialogId} aria-labelledby={`${dialogId}-title`}>
+        <AlertDialogHeader>
+          <AlertDialogTitle id={`${dialogId}-title`}>
+            Delete draft?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <ButtonGroup variant="actions" aria-label="Delete draft actions">
+            <AlertDialogCancel target={dialogId}>Cancel</AlertDialogCancel>
+            <AlertDialogAction target={dialogId}>Delete</AlertDialogAction>
+          </ButtonGroup>
+        </AlertDialogFooter>
+      </AlertDialog>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@stylextras/ui/alert-dialog";
+```
+
+## Anatomy
+
+- `AlertDialog` — Styled `<dialog>`.
+- `AlertDialogAction` — Styled `<button>`.
+- `AlertDialogCancel` — Styled `<button>`.
+- `AlertDialogDescription` — Styled `<p>`.
+- `AlertDialogFooter` — Styled `<footer>`.
+- `AlertDialogHeader` — Styled `<header>`.
+- `AlertDialogTitle` — Styled `<h2>`.
+- `AlertDialogTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### AlertDialog
+
+`AlertDialogProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "role" | "style">`. The props below complete `AlertDialogProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AlertDialogAction
+
+`AlertDialogActionProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `AlertDialogActionProps`.
+
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `AlertDialogActionProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'danger'`.
+
+### AlertDialogCancel
+
+`AlertDialogCancelProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `AlertDialogCancelProps`.
+
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `AlertDialogCancelProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'outline'`.
+
+### AlertDialogDescription
+
+`AlertDialogDescriptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `AlertDialogDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AlertDialogFooter
+
+`AlertDialogFooterProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"footer">, "className" | "style">`. The props below complete `AlertDialogFooterProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AlertDialogHeader
+
+`AlertDialogHeaderProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"header">, "className" | "style">`. The props below complete `AlertDialogHeaderProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AlertDialogTitle
+
+`AlertDialogTitleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h2">, "className" | "style">`. The props below complete `AlertDialogTitleProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AlertDialogTrigger
+
+`AlertDialogTriggerProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `AlertDialogTriggerProps`.
+
+- `aria-haspopup` — `AlertDialogTriggerProps["aria-haspopup"]`. Default: `'dialog'`.
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `AlertDialogTriggerProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'primary'`.

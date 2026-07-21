@@ -3,10 +3,111 @@ title: "Button"
 description: "Styled native button including icon sizes."
 ---
 
+import Example from "@stylextras/ui/button/example";
+
 ## Examples
 
 <ComponentPreview name="Button">
-  <CatalogExample exportPath="button" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="button" />
+### Example code
+
+```tsx
+'use client';
+
+import { Button } from './index';
+
+export function ButtonVariantsDemo() {
+  return (
+    <>
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+      <Button variant="danger">Danger</Button>
+    </>
+  );
+}
+
+export function ButtonSizesDemo() {
+  return (
+    <>
+      <Button size="sm">Small</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+      <Button size="icon" aria-label="Add item">
+        +
+      </Button>
+      <Button disabled>Disabled</Button>
+    </>
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <ButtonVariantsDemo />
+      <ButtonSizesDemo />
+    </>
+  );
+}
+```
+
+## Usage
+
+### Basic
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+
+export function SaveButton() {
+  return <Button>Save changes</Button>;
+}
+```
+
+### Icon button
+
+Icon-only buttons need an accessible name.
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+
+export function AddButton() {
+  return (
+    <Button size="icon" aria-label="Add item">
+      +
+    </Button>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Button } from "@stylextras/ui/button";
+```
+
+## Anatomy
+
+- `Button` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Button
+
+`ButtonProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "style">`. The props below complete `ButtonProps`.
+
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `ButtonProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'primary'`.

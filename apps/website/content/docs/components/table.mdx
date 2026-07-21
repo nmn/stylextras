@@ -3,10 +3,139 @@ title: "Table"
 description: "Styled semantic table parts."
 ---
 
+import Example from "@stylextras/ui/table/example";
+
 ## Examples
 
 <ComponentPreview name="Table">
-  <CatalogExample exportPath="table" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="table" />
+### Example code
+
+```tsx
+'use client';
+
+import { Table } from './index';
+
+export default function Example() {
+  return (
+    <Table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Usage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>color.brand</td>
+          <td>color</td>
+          <td>Buttons, accents</td>
+        </tr>
+        <tr>
+          <td>spacing.base</td>
+          <td>length</td>
+          <td>Layout scale</td>
+        </tr>
+        <tr>
+          <td>radius.base</td>
+          <td>length</td>
+          <td>Surface shape</td>
+        </tr>
+      </tbody>
+    </Table>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@stylextras/ui/table";
+```
+
+## Anatomy
+
+- `Table` — Styled `<table>`.
+- `TableBody` — Styled `<tbody>`.
+- `TableCaption` — Styled `<caption>`.
+- `TableCell` — Styled `<td>`.
+- `TableFooter` — Styled `<tfoot>`.
+- `TableHead` — Styled `<th>`.
+- `TableHeader` — Styled `<thead>`.
+- `TableRow` — Styled `<tr>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Table
+
+`TableProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"table">, "className" | "style">`. The props below complete `TableProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TableBody
+
+`TableBodyProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tbody">, "className" | "style">`. The props below complete `TableBodyProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TableCaption
+
+`TableCaptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"caption">, "className" | "style">`. The props below complete `TableCaptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TableCell
+
+`TableCellProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"td">, "className" | "style">`. The props below complete `TableCellProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TableFooter
+
+`TableFooterProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tfoot">, "className" | "style">`. The props below complete `TableFooterProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TableHead
+
+`TableHeadProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"th">, "className" | "style">`. The props below complete `TableHeadProps`.
+
+- `scope` — `TableHeadProps["scope"]`. Default: `'col'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### TableHeader
+
+`TableHeaderProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"thead">, "className" | "style">`. The props below complete `TableHeaderProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TableRow
+
+`TableRowProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tr">, "className" | "style">`. The props below complete `TableRowProps`.
+
+- `sx` — `stylex.StyleXStyles`.

@@ -3,10 +3,73 @@ title: "Tooltip"
 description: "Non-interactive hint popover."
 ---
 
+import Example from "@stylextras/ui/tooltip/example";
+
 ## Examples
 
 <ComponentPreview name="Tooltip">
-  <CatalogExample exportPath="tooltip" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="tooltip" />
+### Example code
+
+```tsx
+import { Tooltip, TooltipTrigger } from './index';
+
+const tooltipId = 'archive-tooltip';
+
+export default function Example() {
+  return (
+    <>
+      <TooltipTrigger target={tooltipId} size="icon" aria-label="Archive">
+        ↧
+      </TooltipTrigger>
+      <Tooltip id={tooltipId}>Archive item</Tooltip>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Tooltip, TooltipTrigger } from "@stylextras/ui/tooltip";
+```
+
+## Anatomy
+
+- `Tooltip` — Styled `<div>`.
+- `TooltipTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### Tooltip
+
+`TooltipProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "style">`. The props below complete `TooltipProps`.
+
+- `placement` — `TooltipPlacement`. Default: `'top'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### TooltipTrigger
+
+`TooltipTriggerProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `TooltipTriggerProps`.
+
+- `hideDelay` — `number`.
+- `popoverTargetAction` — `TooltipTriggerProps["popoverTargetAction"]`. Default: `'toggle'`.
+- `showDelay` — `number`.
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `TooltipTriggerProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'ghost'`.

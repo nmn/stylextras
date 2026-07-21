@@ -3,10 +3,82 @@ title: "Alert"
 description: "Semantic status message."
 ---
 
+import Example from "@stylextras/ui/alert/example";
+
 ## Examples
 
 <ComponentPreview name="Alert">
-  <CatalogExample exportPath="alert" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="alert" />
+### Example code
+
+```tsx
+import { Alert, AlertDescription, AlertTitle } from './index';
+
+export default function Example() {
+  return (
+    <>
+      {(['default', 'info', 'success', 'warning', 'danger'] as const).map(
+        (variant) => (
+          <Alert key={variant} variant={variant}>
+            <AlertTitle>
+              {variant === 'default' ? 'Update available' : variant}
+            </AlertTitle>
+            <AlertDescription>
+              A concise message with semantic status treatment.
+            </AlertDescription>
+          </Alert>
+        ),
+      )}
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Alert, AlertDescription, AlertTitle } from "@stylextras/ui/alert";
+```
+
+## Anatomy
+
+- `Alert` — Styled `<div>`.
+- `AlertDescription` — Styled `<div>`.
+- `AlertTitle` — Styled `<h5>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Alert
+
+`AlertProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AlertProps`.
+
+- `role` — `AlertProps["role"]`. Default: `'status'`.
+- `sx` — `stylex.StyleXStyles`.
+- `variant` — `AlertVariant`. Default: `'default'`.
+
+### AlertDescription
+
+`AlertDescriptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AlertDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AlertTitle
+
+`AlertTitleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h5">, "className" | "style">`. The props below complete `AlertTitleProps`.
+
+- `sx` — `stylex.StyleXStyles`.

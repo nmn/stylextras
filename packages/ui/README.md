@@ -61,7 +61,7 @@ export function ThemeBoundary({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The color catalog includes neutral bases plus amber, blue, cyan, emerald, fuchsia, green, indigo, lime, orange, pink, purple, red, rose, sky, teal, violet, and yellow accents. Independent theme maps are exported for color, spacing, radius, stroke, typography, elevation, blur, and motion. Each set keeps a small themeable core and same-set derived values; there is no foundation/semantic/component-token layering.
+The color catalog includes neutral bases, the coordinated `docs` palette used by the Stylextras documentation website, plus amber, blue, cyan, emerald, fuchsia, green, indigo, lime, orange, pink, purple, red, rose, sky, teal, violet, and yellow accents. Independent theme maps are exported for color, spacing, radius, stroke, typography, elevation, blur, and motion, and every map exposes a matching `docs` key. Each set keeps a small themeable core and same-set derived values; there is no foundation/semantic/component-token layering.
 
 ```tsx
 import { colors } from "@stylextras/ui/tokens/color";

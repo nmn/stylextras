@@ -3,10 +3,129 @@ title: "Toast"
 description: "Announced transient notification queue."
 ---
 
+import Example from "@stylextras/ui/toast/example";
+
 ## Examples
 
 <ComponentPreview name="Toast">
-  <CatalogExample exportPath="toast" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="toast" />
+### Example code
+
+```tsx
+'use client';
+
+import * as stylex from '@stylexjs/stylex';
+import { Button } from '../button';
+import { Toast, Toaster, ToastDescription, ToastTitle, toast } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <ol aria-label="Toast variants" {...stylex.props(styles.list)}>
+        <Toast>
+          <div>
+            <ToastTitle>Draft restored</ToastTitle>
+            <ToastDescription>
+              Your local changes are available again.
+            </ToastDescription>
+          </div>
+        </Toast>
+        <Toast variant="success">
+          <div>
+            <ToastTitle>Theme saved</ToastTitle>
+            <ToastDescription>The Zinc preset is now active.</ToastDescription>
+          </div>
+        </Toast>
+        <Toast variant="danger">
+          <div>
+            <ToastTitle>Publish failed</ToastTitle>
+            <ToastDescription>
+              Check the connection and try again.
+            </ToastDescription>
+          </div>
+        </Toast>
+      </ol>
+      <Button
+        onClick={() =>
+          toast({
+            title: 'Export complete',
+            description: 'stylextras-ui-0.2.0-beta.tgz is ready.',
+            duration: 8_000,
+            variant: 'success',
+          })
+        }
+      >
+        Queue a toast
+      </Button>
+
+      <Toaster />
+    </>
+  );
+}
+
+const styles = stylex.create({
+  list: {
+    listStyle: 'none',
+    margin: 0,
+    padding: 0,
+  },
+});
+```
+
+## Import
+
+```tsx
+import { Toast, ToastDescription, Toaster, ToastTitle } from "@stylextras/ui/toast";
+```
+
+## Anatomy
+
+- `Toast` — Styled `<li>`.
+- `ToastDescription` — Styled `<p>`.
+- `Toaster` — Styled `<ol>`.
+- `ToastTitle` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### Toast
+
+`ToastProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "role" | "style">`. The props below complete `ToastProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+- `variant` — `"default" | "success" | "danger"`. Default: `'default'`.
+
+### ToastDescription
+
+`ToastDescriptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `ToastDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### Toaster
+
+`ToasterProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ol">, "children" | "className" | "style">`. The props below complete `ToasterProps`.
+
+- `aria-label` — `ToasterProps["aria-label"]`. Default: `'Notifications'`.
+- `limit` — `number`. Default: `3`.
+- `sx` — `stylex.StyleXStyles`.
+
+### ToastTitle
+
+`ToastTitleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ToastTitleProps`.
+
+- `sx` — `stylex.StyleXStyles`.

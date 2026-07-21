@@ -3,10 +3,145 @@ title: "Carousel"
 description: "Scroll-snap carousel with progressive controls."
 ---
 
+import Example from "@stylextras/ui/carousel/example";
+
 ## Examples
 
 <ComponentPreview name="Carousel">
-  <CatalogExample exportPath="carousel" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="carousel" />
+### Example code
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../card';
+import { colors } from '../tokens/color.stylex';
+import { typography } from '../tokens/typography.stylex';
+import { Carousel, CarouselItem } from './index';
+
+const slides = [
+  ['Native controls', 'Scroll snapping supplies the core interaction.'],
+  [
+    'Progressive markers',
+    'Supporting browsers add scroll markers and buttons.',
+  ],
+  ['Reduced motion', 'Smooth scrolling yields to the user motion preference.'],
+  [
+    'Anchor positioning',
+    'Layered controls stay attached without measurement code.',
+  ],
+  [
+    'Popover API',
+    'Light dismiss and top-layer rendering come from the platform.',
+  ],
+  [
+    'Dialog commands',
+    'Explicit invoker targets keep modal triggers declarative.',
+  ],
+  [
+    'Focus groups',
+    'Arrow-key navigation progressively enhances grouped controls.',
+  ],
+  [
+    'View transitions',
+    'Optional transitions add continuity without owning navigation.',
+  ],
+  [
+    'Container queries',
+    'Components respond to available space instead of the viewport.',
+  ],
+  [
+    'StyleX themes',
+    'Independent variable sets compose directly on any ancestor.',
+  ],
+];
+
+export default function Example() {
+  return (
+    <Carousel aria-label="Browser API highlights">
+      {slides.map(([title, description], index) => (
+        <CarouselItem key={title} sx={styles.slide}>
+          <Card sx={styles.card}>
+            <CardHeader>
+              <span {...stylex.props(styles.number)}>
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <CardTitle>{title}</CardTitle>
+              <CardDescription>{description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <span {...stylex.props(styles.meta)}>Scroll snap card</span>
+            </CardContent>
+          </Card>
+        </CarouselItem>
+      ))}
+    </Carousel>
+  );
+}
+
+const styles = stylex.create({
+  slide: {
+    borderWidth: 0,
+  },
+  card: {
+    height: '100%',
+    minHeight: '12rem',
+  },
+  number: {
+    color: colors.fgMuted,
+    fontFamily: typography.fontMono,
+    fontSize: typography.stepMinus1,
+  },
+  meta: {
+    color: colors.fgMuted,
+    fontFamily: typography.fontMono,
+    fontSize: typography.stepMinus2,
+    textTransform: 'uppercase',
+  },
+});
+('use client');
+```
+
+## Import
+
+```tsx
+import { Carousel, CarouselItem } from "@stylextras/ui/carousel";
+```
+
+## Anatomy
+
+- `Carousel` — Styled `<div>`.
+- `CarouselItem` — Styled `<article>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Carousel
+
+`CarouselProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CarouselProps`.
+
+- `role` — `CarouselProps["role"]`. Default: `'region'`.
+- `sx` — `stylex.StyleXStyles`.
+- `tabIndex` — `CarouselProps["tabIndex"]`. Default: `0`.
+
+### CarouselItem
+
+`CarouselItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"article">, "className" | "style">`. The props below complete `CarouselItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.

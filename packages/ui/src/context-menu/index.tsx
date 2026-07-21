@@ -192,15 +192,17 @@ const styles = stylex.create({
   item: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': colors.accent,
-      ':focus-visible': colors.accent,
+      ':is(:hover, :focus-visible)': colors.accent,
       ':disabled': 'transparent',
     },
     borderColor: 'transparent',
     borderRadius: radius.xs,
     borderStyle: 'solid',
     borderWidth: 0,
-    color: colors.accentForeground,
+    color: {
+      default: colors.popoverForeground,
+      ':is(:hover, :focus-visible)': colors.accentForeground,
+    },
     cursor: { default: 'default', ':disabled': 'not-allowed' },
     fontFamily: typography.fontSans,
     fontSize: typography.step0,

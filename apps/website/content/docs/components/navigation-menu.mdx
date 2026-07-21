@@ -3,10 +3,125 @@ title: "NavigationMenu"
 description: "Navigation with optional popover panels."
 ---
 
+import Example from "@stylextras/ui/navigation-menu/example";
+
 ## Examples
 
 <ComponentPreview name="NavigationMenu">
-  <CatalogExample exportPath="navigation-menu" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="navigation-menu" />
+### Example code
+
+```tsx
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from './index';
+
+const contentId = 'documentation-navigation-menu';
+
+export default function Example() {
+  return (
+    <NavigationMenu aria-label="Component documentation">
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="#overview">Overview</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger target={contentId}>
+            Components
+          </NavigationMenuTrigger>
+          <NavigationMenuContent id={contentId}>
+            <NavigationMenuLink href="#forms">Form controls</NavigationMenuLink>
+            <NavigationMenuLink href="#overlays">Overlays</NavigationMenuLink>
+            <NavigationMenuLink href="#layout">Layout</NavigationMenuLink>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="#themes">Themes</NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@stylextras/ui/navigation-menu";
+```
+
+## Anatomy
+
+- `NavigationMenu` — Styled `<nav>`.
+- `NavigationMenuContent` — Styled `<div>`.
+- `NavigationMenuItem` — Styled `<li>`.
+- `NavigationMenuLink` — Styled `<a>`.
+- `NavigationMenuList` — Styled `<ul>`.
+- `NavigationMenuTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. Without anchor positioning support, the component remains usable with a simpler non-anchored layout.
+
+## API reference
+
+### NavigationMenu
+
+`NavigationMenuProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "className" | "style">`. The props below complete `NavigationMenuProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### NavigationMenuContent
+
+`NavigationMenuContentProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "style">`. The props below complete `NavigationMenuContentProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### NavigationMenuItem
+
+`NavigationMenuItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "style">`. The props below complete `NavigationMenuItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### NavigationMenuLink
+
+`NavigationMenuLinkProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "className" | "style">`. The props below complete `NavigationMenuLinkProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### NavigationMenuList
+
+`NavigationMenuListProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `NavigationMenuListProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### NavigationMenuTrigger
+
+`NavigationMenuTriggerProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "style">`. The props below complete `NavigationMenuTriggerProps`.
+
+- `aria-haspopup` — `NavigationMenuTriggerProps["aria-haspopup"]`. Default: `'true'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `NavigationMenuTriggerProps["type"]`. Default: `'button'`.

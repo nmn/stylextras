@@ -215,9 +215,7 @@ export function CommandInput({ onChange, onKeyDown, ref, sx, type = 'search', ..
 
 export function CommandList({ ref, sx, ...props }: CommandListProps) {
   const context = useCommand('CommandList')
-  return (
-    <div ref={ref} id={context.listId} role="listbox" {...props} {...stylex.props(styles.list, sx)} />
-  )
+  return <div ref={ref} id={context.listId} role="listbox" {...props} {...stylex.props(styles.list, sx)} />
 }
 
 export function CommandItem({
@@ -334,15 +332,17 @@ const styles = stylex.create({
   item: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': colors.accent,
-      '[aria-selected="true"]': colors.accent,
+      ':is(:hover, [aria-selected="true"])': colors.accent,
       ':disabled': 'transparent',
     },
     borderColor: 'transparent',
     borderRadius: radius.xs,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    color: colors.accentForeground,
+    color: {
+      default: colors.popoverForeground,
+      ':is(:hover, [aria-selected="true"])': colors.accentForeground,
+    },
     cursor: { default: 'default', ':disabled': 'not-allowed' },
     fontFamily: typography.fontSans,
     fontSize: typography.step0,

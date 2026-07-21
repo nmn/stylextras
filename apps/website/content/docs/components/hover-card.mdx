@@ -3,10 +3,116 @@ title: "HoverCard"
 description: "Interest-triggered interactive hint popover."
 ---
 
+import Example from "@stylextras/ui/hover-card/example";
+
 ## Examples
 
 <ComponentPreview name="HoverCard">
-  <CatalogExample exportPath="hover-card" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="hover-card" />
+### Example code
+
+```tsx
+import { Button } from '../button';
+import {
+  HoverCard,
+  HoverCardDescription,
+  HoverCardHeader,
+  HoverCardTitle,
+  HoverCardTrigger,
+} from './index';
+
+const cardId = 'browser-apis-hover-card';
+
+export default function Example() {
+  return (
+    <>
+      <HoverCardTrigger target={cardId}>New browser APIs</HoverCardTrigger>
+      <HoverCard id={cardId}>
+        <HoverCardHeader>
+          <HoverCardTitle>Native-first overlays</HoverCardTitle>
+          <HoverCardDescription>
+            Invoker relationships and anchor positioning replace most overlay
+            JavaScript.
+          </HoverCardDescription>
+        </HoverCardHeader>
+        <Button size="sm" variant="outline">
+          Learn more
+        </Button>
+      </HoverCard>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { HoverCard, HoverCardDescription, HoverCardHeader, HoverCardTitle, HoverCardTrigger } from "@stylextras/ui/hover-card";
+```
+
+## Anatomy
+
+- `HoverCard` — Styled `<div>`.
+- `HoverCardDescription` — Styled `<p>`.
+- `HoverCardHeader` — Styled `<header>`.
+- `HoverCardTitle` — Styled `<h3>`.
+- `HoverCardTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### HoverCard
+
+`HoverCardProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "style">`. The props below complete `HoverCardProps`.
+
+- `placement` — `HoverCardPlacement`. Default: `'bottom'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### HoverCardDescription
+
+`HoverCardDescriptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `HoverCardDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### HoverCardHeader
+
+`HoverCardHeaderProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"header">, "className" | "style">`. The props below complete `HoverCardHeaderProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### HoverCardTitle
+
+`HoverCardTitleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "className" | "style">`. The props below complete `HoverCardTitleProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### HoverCardTrigger
+
+`HoverCardTriggerProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `HoverCardTriggerProps`.
+
+- `hideDelay` — `number`.
+- `popoverTargetAction` — `HoverCardTriggerProps["popoverTargetAction"]`. Default: `'toggle'`.
+- `showDelay` — `number`.
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `HoverCardTriggerProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'link'`.

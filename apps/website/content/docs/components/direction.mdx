@@ -3,10 +3,69 @@ title: "Direction"
 description: "Direction boundary using the dir attribute."
 ---
 
+import Example from "@stylextras/ui/direction/example";
+
 ## Examples
 
 <ComponentPreview name="Direction">
-  <CatalogExample exportPath="direction" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="direction" />
+### Example code
+
+```tsx
+import { Button } from '../button';
+import { Field, FieldLabel } from '../field';
+import { Input } from '../input';
+import { Direction } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Direction dir="ltr" lang="en">
+        <Field>
+          <FieldLabel htmlFor="direction-project">Project name</FieldLabel>
+          <Input id="direction-project" defaultValue="Native interface" />
+        </Field>
+        <Button>Save changes</Button>
+      </Direction>
+
+      <Direction dir="rtl" lang="ar">
+        <Field>
+          <FieldLabel htmlFor="direction-project-ar">اسم المشروع</FieldLabel>
+          <Input id="direction-project-ar" defaultValue="واجهة أصلية" />
+        </Field>
+        <Button>حفظ التغييرات</Button>
+      </Direction>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Direction } from "@stylextras/ui/direction";
+```
+
+## Anatomy
+
+- `Direction` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Direction
+
+`DirectionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DirectionProps`.
+
+- `dir` — `"ltr" | "rtl"`. Required.
+- `sx` — `stylex.StyleXStyles`.

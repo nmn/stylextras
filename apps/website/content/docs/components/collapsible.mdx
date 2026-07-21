@@ -3,10 +3,73 @@ title: "Collapsible"
 description: "Disclosure built on details and summary."
 ---
 
+import Example from "@stylextras/ui/collapsible/example";
+
 ## Examples
 
 <ComponentPreview name="Collapsible">
-  <CatalogExample exportPath="collapsible" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="collapsible" />
+### Example code
+
+```tsx
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './index';
+
+export default function Example() {
+  return (
+    <Collapsible>
+      <CollapsibleTrigger>What changed in 0.2?</CollapsibleTrigger>
+      <CollapsibleContent>
+        Components now own their implementation and styling, while browser
+        primitives own more of the interaction behavior.
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@stylextras/ui/collapsible";
+```
+
+## Anatomy
+
+- `Collapsible` — Styled `<details>`.
+- `CollapsibleContent` — Styled `<div>`.
+- `CollapsibleTrigger` — Styled `<summary>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Collapsible
+
+`CollapsibleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details">, "className" | "style">`. The props below complete `CollapsibleProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### CollapsibleContent
+
+`CollapsibleContentProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CollapsibleContentProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### CollapsibleTrigger
+
+`CollapsibleTriggerProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary">, "className" | "style">`. The props below complete `CollapsibleTriggerProps`.
+
+- `sx` — `stylex.StyleXStyles`.

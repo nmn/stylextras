@@ -3,10 +3,103 @@ title: "Accordion"
 description: "Exclusive disclosure built on details[name]."
 ---
 
+import Example from "@stylextras/ui/accordion/example";
+
 ## Examples
 
 <ComponentPreview name="Accordion">
-  <CatalogExample exportPath="accordion" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="accordion" />
+### Example code
+
+```tsx
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from './index';
+
+export default function Example() {
+  return (
+    <Accordion>
+      <AccordionItem name="component-docs-accordion" open>
+        <AccordionTrigger>Is JavaScript required?</AccordionTrigger>
+        <AccordionContent>
+          No. Opening, closing, keyboard activation, and exclusivity come from
+          native details.
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem name="component-docs-accordion">
+        <AccordionTrigger>Can I render rich content?</AccordionTrigger>
+        <AccordionContent>
+          Yes. The content part is an ordinary styled div inside the disclosure.
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem name="component-docs-accordion">
+        <AccordionTrigger>Does it work without enhancement?</AccordionTrigger>
+        <AccordionContent>
+          It falls back to the browser&apos;s complete details and summary
+          behavior.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@stylextras/ui/accordion";
+```
+
+## Anatomy
+
+- `Accordion` — Styled `<div>`.
+- `AccordionContent` — Styled `<div>`.
+- `AccordionItem` — Styled `<details>`.
+- `AccordionTrigger` — Styled `<summary>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Accordion
+
+`AccordionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AccordionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AccordionContent
+
+`AccordionContentProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AccordionContentProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AccordionItem
+
+`AccordionItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details">, "className" | "style">`. The props below complete `AccordionItemProps`.
+
+- `name` — `string`. Required. Items sharing a name are mutually exclusive through native details behavior.
+- `sx` — `stylex.StyleXStyles`.
+
+### AccordionTrigger
+
+`AccordionTriggerProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary">, "className" | "style">`. The props below complete `AccordionTriggerProps`.
+
+- `sx` — `stylex.StyleXStyles`.

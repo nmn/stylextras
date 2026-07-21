@@ -139,7 +139,7 @@
     "dropdown-menu": {
       "behaviorBytes": null,
       "budgetBytes": 8192,
-      "gzipBytes": 2556,
+      "gzipBytes": 3698,
       "mode": "enhanced"
     },
     "empty": {
@@ -241,7 +241,7 @@
     "select": {
       "behaviorBytes": null,
       "budgetBytes": 8192,
-      "gzipBytes": 976,
+      "gzipBytes": 1102,
       "mode": "enhanced"
     },
     "separator": {

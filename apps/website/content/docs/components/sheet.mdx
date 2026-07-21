@@ -3,10 +3,149 @@ title: "Sheet"
 description: "Side-aligned native dialog."
 ---
 
+import Example from "@stylextras/ui/sheet/example";
+
 ## Examples
 
 <ComponentPreview name="Sheet">
-  <CatalogExample exportPath="sheet" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="sheet" />
+### Example code
+
+```tsx
+import { ButtonGroup } from '../button-group';
+import { Field, FieldLabel } from '../field';
+import { Input } from '../input';
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetFooter,
+  SheetHeader,
+  type SheetSide,
+  SheetTrigger,
+} from './index';
+
+function ProjectSettingsSheet({ id, side }: { id: string; side: SheetSide }) {
+  return (
+    <Sheet id={id} side={side} aria-labelledby={`${id}-title`}>
+      <SheetHeader>
+        <strong id={`${id}-title`}>Project settings</strong>
+      </SheetHeader>
+      <SheetBody>
+        <Field>
+          <FieldLabel htmlFor={`${id}-project-name`}>Project name</FieldLabel>
+          <Input id={`${id}-project-name`} defaultValue="StyleXtras" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor={`${id}-team-name`}>Team</FieldLabel>
+          <Input id={`${id}-team-name`} defaultValue="Interface systems" />
+        </Field>
+      </SheetBody>
+      <SheetFooter>
+        <ButtonGroup variant="actions" aria-label="Project settings actions">
+          <SheetClose target={id}>Cancel</SheetClose>
+          <SheetClose target={id} variant="primary">
+            Save
+          </SheetClose>
+        </ButtonGroup>
+      </SheetFooter>
+    </Sheet>
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <SheetTrigger target="end-settings-sheet">Open end sheet</SheetTrigger>
+      <ProjectSettingsSheet id="end-settings-sheet" side="end" />
+
+      <SheetTrigger target="start-settings-sheet">
+        Open start sheet
+      </SheetTrigger>
+      <ProjectSettingsSheet id="start-settings-sheet" side="start" />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Sheet, SheetBody, SheetClose, SheetFooter, SheetHeader, SheetTrigger } from "@stylextras/ui/sheet";
+```
+
+## Anatomy
+
+- `Sheet` — Styled `<dialog>`.
+- `SheetBody` — Styled `<div>`.
+- `SheetClose` — Styled `<button>`.
+- `SheetFooter` — Styled `<div>`.
+- `SheetHeader` — Styled `<div>`.
+- `SheetTrigger` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### Sheet
+
+`SheetProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "style">`. The props below complete `SheetProps`.
+
+- `side` — `SheetSide`. Default: `'end'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### SheetBody
+
+`SheetBodyProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SheetBodyProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SheetClose
+
+`SheetCloseProps`
+
+Complete native/inherited prop base: `SheetTriggerProps`. The props below complete `SheetCloseProps`.
+
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `SheetCloseProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'outline'`.
+
+### SheetFooter
+
+`SheetFooterProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SheetFooterProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SheetHeader
+
+`SheetHeaderProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SheetHeaderProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### SheetTrigger
+
+`SheetTriggerProps`
+
+Complete native/inherited prop base: `ButtonProps`. The props below complete `SheetTriggerProps`.
+
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.
+- `type` — `SheetTriggerProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'primary'`.

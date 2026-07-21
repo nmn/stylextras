@@ -1,10 +1,48 @@
 ---
 title: "Themes"
-description: "Seven color themes and compact companion theme families, all applied as plain StyleX styles."
+description: "Independent color and structural theme families, including a coordinated preset matching this documentation website."
 ---
 
 
 <ThemeGallery />
+
+## Documentation website theme
+
+Every variable group exports a `docs` theme that mirrors this site’s purple
+primary and selection colors, neutral surfaces, and periwinkle-blue highlights
+for hovered or keyboard-focused options and menu items, plus its system
+typography, spacing, radii, borders, shadows, blur, and motion.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { blurThemes } from "@stylextras/ui/blur-themes";
+import { colorThemes } from "@stylextras/ui/color-themes";
+import { elevationThemes } from "@stylextras/ui/elevation-themes";
+import { motionThemes } from "@stylextras/ui/motion-themes";
+import { radiusThemes } from "@stylextras/ui/radius-themes";
+import { spacingThemes } from "@stylextras/ui/spacing-themes";
+import { strokeThemes } from "@stylextras/ui/stroke-themes";
+import { typographyThemes } from "@stylextras/ui/typography-themes";
+
+export function DocumentationTheme({ children }) {
+  return (
+    <section
+      {...stylex.props(
+        colorThemes.docs,
+        spacingThemes.docs,
+        radiusThemes.docs,
+        strokeThemes.docs,
+        typographyThemes.docs,
+        elevationThemes.docs,
+        blurThemes.docs,
+        motionThemes.docs,
+      )}
+    >
+      {children}
+    </section>
+  );
+}
+```
 
 ## Composition
 

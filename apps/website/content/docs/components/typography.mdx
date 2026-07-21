@@ -3,10 +3,101 @@ title: "Typography"
 description: "Tokenized text elements."
 ---
 
+import Example from "@stylextras/ui/typography/example";
+
 ## Examples
 
 <ComponentPreview name="Typography">
-  <CatalogExample exportPath="typography" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="typography" />
+### Example code
+
+```tsx
+'use client';
+
+import { Typography } from './index';
+
+export function TypographyScalesDemo() {
+  return (
+    <>
+      <Typography scale="display" as="h1">
+        Display
+      </Typography>
+      <Typography scale="title" as="h2">
+        Title
+      </Typography>
+      <Typography scale="body" as="p">
+        Body copy
+      </Typography>
+      <Typography scale="label" as="span">
+        Label
+      </Typography>
+    </>
+  );
+}
+
+export function TypographySemanticsDemo() {
+  return (
+    <>
+      <Typography as="h1" scale="display">
+        Heading 1
+      </Typography>
+      <Typography as="h2" scale="title">
+        Heading 2
+      </Typography>
+      <Typography as="h3" scale="title">
+        Heading 3
+      </Typography>
+      <Typography as="p" tone="default">
+        Default paragraph
+      </Typography>
+      <Typography as="p" tone="muted">
+        Muted paragraph
+      </Typography>
+      <Typography as="p" tone="brand">
+        Brand paragraph
+      </Typography>
+    </>
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <TypographyScalesDemo />
+      <TypographySemanticsDemo />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Typography } from "@stylextras/ui/typography";
+```
+
+## Anatomy
+
+- `Typography` — Styled compound component part.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Typography
+
+`TypographyProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<T>, "className" | "style">`. The props below complete `TypographyProps`.
+
+- `as` — `T`.
+- `mono` — `boolean`. Default: `false`.
+- `scale` — `TypographyScale`. Default: `'body'`.
+- `sx` — `stylex.StyleXStyles`.
+- `tone` — `TypographyTone`. Default: `'default'`.

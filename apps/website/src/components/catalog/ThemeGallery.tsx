@@ -28,9 +28,9 @@ export function ThemeGallery() {
         <div {...stylex.props(styles.sectionHeading)}>
           <h2 {...stylex.props(styles.sectionTitle)}>Style presets</h2>
           <p {...stylex.props(styles.intro)}>
-            Eight distinctly composed starting points apply spacing, radius, stroke, typography,
-            elevation, blur, and motion themes together. Every selector below can still be changed
-            independently.
+            {styleNames.length} distinctly composed starting points apply the structural theme
+            groups together; Docs also starts with the site’s color palette. Every selector below
+            can still be changed independently.
           </p>
         </div>
         <div data-testid="style-gallery" {...stylex.props(styles.styleGrid)}>
@@ -69,7 +69,7 @@ function StyleTile({ name }: { name: PreviewStyleName }) {
     <section
       aria-label={`${displayName} style preset`}
       {...stylex.props(
-        colorThemes.neutral,
+        colorThemes[preset.color ?? 'neutral'],
         spacingThemes[preset.spacing],
         radiusThemes[preset.radius],
         strokeThemes[preset.stroke],

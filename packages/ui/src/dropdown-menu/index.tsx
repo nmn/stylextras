@@ -2,7 +2,8 @@
 
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithRef } from 'react'
+import type { ComponentPropsWithRef, KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import { Button, type ButtonProps } from '../button'
 import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
 import { colors } from '../tokens/color.stylex'
@@ -14,6 +15,15 @@ import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
 type SxProp = { sx?: StyleXStyles }
+type InitialMenuFocus = 'first' | 'last'
+type DropdownMenuContextValue = {
+  expanded: boolean
+  setExpanded: (expanded: boolean) => void
+}
+
+const MENU_ITEM_SELECTOR = '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]'
+const typeaheadState = new WeakMap<HTMLElement, { query: string; updatedAt: number }>()
+const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(null)
 
 export type DropdownMenuProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
 export type DropdownMenuTriggerProps = Omit<
@@ -40,35 +50,169 @@ export type DropdownMenuSeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'clas
 export type DropdownMenuShortcutProps = Omit<ComponentPropsWithRef<'kbd'>, 'className' | 'style'> &
   SxProp
 
-export function DropdownMenu({ ref, sx, ...props }: DropdownMenuProps) {
-  return <div ref={ref} {...props} {...stylex.props(styles.root, sx)} />
+function isMenuOpen(menu: HTMLElement) {
+  return menu.matches(':popover-open')
+}
+
+function getMenuItems(menu: HTMLElement) {
+  return Array.from(menu.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR)).filter(
+    (item) =>
+      !item.hidden && item.getAttribute('aria-hidden') !== 'true' && !item.matches(':disabled'),
+  )
+}
+
+function getMenuTriggers(menu: HTMLElement) {
+  if (!menu.id) return []
+  return Array.from(document.querySelectorAll<HTMLElement>('[popovertarget]')).filter(
+    (trigger) => trigger.getAttribute('popovertarget') === menu.id,
+  )
+}
+
+function syncMenuTriggers(menu: HTMLElement, expanded: boolean) {
+  const triggers = getMenuTriggers(menu)
+  for (const trigger of triggers) trigger.setAttribute('aria-expanded', String(expanded))
+
+  if (
+    expanded &&
+    !menu.hasAttribute('aria-label') &&
+    !menu.hasAttribute('aria-labelledby') &&
+    triggers[0]
+  ) {
+    triggers[0].id ||= `${menu.id}-trigger`
+    menu.setAttribute('aria-labelledby', triggers[0].id)
+  }
+}
+
+function focusMenuTrigger(menu: HTMLElement) {
+  getMenuTriggers(menu)[0]?.focus()
+}
+
+function focusMenuItem(menu: HTMLElement, target: InitialMenuFocus) {
+  if (!isMenuOpen(menu)) return
+  const items = getMenuItems(menu)
+  const item = target === 'last' ? items.at(-1) : items[0]
+  item?.focus()
+}
+
+function focusMenuWhenReady(menu: HTMLElement, target: InitialMenuFocus) {
+  const focusItem = () => focusMenuItem(menu, target)
+  const ready = ensureFocusgroupPolyfill(menu)
+  if (ready) void ready.then(focusItem, focusItem)
+  else focusItem()
+}
+
+function openMenu(menu: HTMLElement, target: InitialMenuFocus, source?: HTMLElement) {
+  if (isMenuOpen(menu)) {
+    focusMenuWhenReady(menu, target)
+    return
+  }
+
+  menu.dataset.initialFocus = target
+  const popoverSource = source ?? getMenuTriggers(menu)[0]
+  if (popoverSource) {
+    const showPopover = menu.showPopover as (options: { source: HTMLElement }) => void
+    showPopover.call(menu, { source: popoverSource })
+  } else {
+    menu.showPopover()
+  }
+}
+
+function closeMenu(menu: HTMLElement, restoreFocus: boolean) {
+  if (isMenuOpen(menu)) menu.hidePopover()
+  if (restoreFocus) focusMenuTrigger(menu)
+}
+
+function handleMenuTypeahead(event: ReactKeyboardEvent<HTMLDivElement>) {
+  if (
+    event.key.length !== 1 ||
+    event.key === ' ' ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey
+  ) {
+    return false
+  }
+
+  const menu = event.currentTarget
+  const key = event.key.toLocaleLowerCase()
+  const now = Date.now()
+  const previous = typeaheadState.get(menu)
+  const combined = previous && now - previous.updatedAt < 500 ? previous.query + key : key
+  const query = Array.from(combined).every((character) => character === key) ? key : combined
+  typeaheadState.set(menu, { query, updatedAt: now })
+
+  const items = getMenuItems(menu)
+  if (items.length === 0) return false
+  const activeIndex = items.indexOf(document.activeElement as HTMLElement)
+  const orderedItems = [...items.slice(activeIndex + 1), ...items.slice(0, activeIndex + 1)]
+  const match = orderedItems.find((item) =>
+    item.textContent?.trim().toLocaleLowerCase().startsWith(query),
+  )
+  if (!match) return false
+
+  event.preventDefault()
+  match.focus()
+  return true
+}
+
+export function DropdownMenu({ children, ref, sx, ...props }: DropdownMenuProps) {
+  const [expanded, setExpanded] = useState(false)
+  const context = useMemo(() => ({ expanded, setExpanded }), [expanded])
+
+  return (
+    <DropdownMenuContext.Provider value={context}>
+      <div ref={ref} {...props} {...stylex.props(styles.root, sx)}>
+        {children}
+      </div>
+    </DropdownMenuContext.Provider>
+  )
 }
 
 export function DropdownMenuTrigger({
+  id,
+  onKeyDown,
   target,
   type = 'button',
   variant = 'outline',
   ...props
 }: DropdownMenuTriggerProps) {
+  const menuContext = useContext(DropdownMenuContext)
   return (
     <Button
+      {...props}
+      id={id ?? `${target}-trigger`}
       type={type}
       variant={variant}
+      aria-controls={target}
+      aria-expanded={menuContext?.expanded ?? false}
       aria-haspopup="menu"
       popoverTarget={target}
       popoverTargetAction="toggle"
-      {...props}
+      onKeyDown={(event) => {
+        onKeyDown?.(event)
+        if (event.defaultPrevented || (event.key !== 'ArrowDown' && event.key !== 'ArrowUp')) {
+          return
+        }
+
+        const menu = document.getElementById(target)
+        if (!(menu instanceof HTMLElement) || !menu.hasAttribute('popover')) return
+        event.preventDefault()
+        openMenu(menu, event.key === 'ArrowUp' ? 'last' : 'first', event.currentTarget)
+      }}
     />
   )
 }
 
 export function DropdownMenuContent({
+  onBlur,
+  onKeyDown,
   onToggle,
   placement = 'bottom',
   ref,
   sx,
   ...props
 }: DropdownMenuContentProps) {
+  const menuContext = useContext(DropdownMenuContext)
   const setRef = focusgroupRef(ref)
   return (
     <div
@@ -76,21 +220,36 @@ export function DropdownMenuContent({
       popover="auto"
       role="menu"
       {...focusgroupAttributes('menu')}
+      onBlur={(event) => {
+        onBlur?.(event)
+        const nextTarget = event.relatedTarget
+        if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) return
+        closeMenu(event.currentTarget, false)
+      }}
+      onKeyDown={(event) => {
+        onKeyDown?.(event)
+        if (event.defaultPrevented) return
+
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          event.stopPropagation()
+          closeMenu(event.currentTarget, true)
+          return
+        }
+
+        handleMenuTypeahead(event)
+      }}
       onToggle={(event) => {
         onToggle?.(event)
         const menu = event.currentTarget
-        if (menu.matches(':popover-open')) {
-          const focusFirstItem = () => {
-            if (!menu.matches(':popover-open')) return
-            const firstItem = menu.querySelector<HTMLElement>(
-              '[role^="menuitem"]:not([aria-disabled="true"]):not(:disabled)',
-            )
-            firstItem?.focus()
-          }
-          const ready = ensureFocusgroupPolyfill(menu)
-          if (ready) void ready.then(focusFirstItem)
-          else focusFirstItem()
-        }
+        const expanded = isMenuOpen(menu)
+        syncMenuTriggers(menu, expanded)
+        menuContext?.setExpanded(expanded)
+        if (!expanded) return
+
+        const target = menu.dataset.initialFocus === 'last' ? 'last' : 'first'
+        delete menu.dataset.initialFocus
+        focusMenuWhenReady(menu, target)
       }}
       {...props}
       {...stylex.props(styles.content, placementStyles[placement], sx)}
@@ -99,22 +258,33 @@ export function DropdownMenuContent({
 }
 
 export function DropdownMenuItem({
+  'aria-disabled': ariaDisabled,
   closeOnSelect = true,
+  disabled = false,
   onClick,
   ref,
   sx,
   type = 'button',
   ...props
 }: DropdownMenuItemProps) {
+  const isDisabled = disabled || ariaDisabled === true || ariaDisabled === 'true'
   return (
     <button
       ref={ref}
       type={type}
       role="menuitem"
+      aria-disabled={isDisabled || undefined}
       onClick={(event) => {
+        if (isDisabled) {
+          event.preventDefault()
+          event.stopPropagation()
+          return
+        }
+
         onClick?.(event)
         if (!event.defaultPrevented && closeOnSelect) {
-          event.currentTarget.closest<HTMLElement>('[popover]')?.hidePopover()
+          const menu = event.currentTarget.closest<HTMLElement>('[popover]')
+          if (menu) closeMenu(menu, true)
         }
       }}
       {...props}
@@ -178,21 +348,25 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':hover': colors.accent,
-      ':focus-visible': colors.accent,
-      ':disabled': 'transparent',
+      ':focus': colors.accent,
     },
     borderColor: 'transparent',
     borderRadius: radius.xs,
     borderStyle: 'solid',
     borderWidth: 0,
-    color: colors.accentForeground,
-    cursor: { default: 'default', ':disabled': 'not-allowed' },
+    color: {
+      default: colors.popoverForeground,
+      ':focus': colors.accentForeground,
+      ':hover': colors.accentForeground,
+      '[aria-disabled="true"]': colors.fgDisabled,
+    },
+    cursor: { default: 'default', '[aria-disabled="true"]': 'not-allowed' },
     display: 'flex',
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     gap: spacing.sm,
     minHeight: spacing.controlSm,
-    opacity: { default: 1, ':disabled': 0.5 },
+    opacity: { default: 1, '[aria-disabled="true"]': 0.5 },
     outline: 'none',
     paddingInline: spacing.sm,
     textAlign: 'start',
@@ -214,7 +388,7 @@ const styles = stylex.create({
     width: '100%',
   },
   shortcut: {
-    color: colors.fgMuted,
+    color: 'currentColor',
     fontFamily: typography.fontMono,
     fontSize: typography.stepMinus2,
     marginInlineStart: 'auto',

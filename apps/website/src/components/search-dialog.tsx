@@ -17,8 +17,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as stylex from "@stylexjs/stylex";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { ChevronRight, Hash, Search } from "lucide-react";
-import { useRouter } from "waku";
 import { liteClient, type SearchForHitsOptions } from "algoliasearch/lite";
+import { useRouter } from "fumadocs-core/framework";
 import type {
   HighlightedText,
   ReactSortedResult,

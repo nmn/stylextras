@@ -41,4 +41,5 @@ export const publicEntries = {
   './spacing-themes': 'spacing-themes/index',
   './stroke-themes': 'stroke-themes/index',
   './typography-themes': 'typography-themes/index',
+  './style-presets': 'style-presets/index',
 }

@@ -3,10 +3,122 @@ title: "ContextMenu"
 description: "Popover menu opened from a context gesture."
 ---
 
+import Example from "@stylextras/ui/context-menu/example";
+
 ## Examples
 
 <ComponentPreview name="ContextMenu">
-  <CatalogExample exportPath="context-menu" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="context-menu" />
+### Example code
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { colors } from '../tokens/color.stylex';
+import { radius } from '../tokens/radius.stylex';
+import { spacing } from '../tokens/spacing.stylex';
+import { stroke } from '../tokens/stroke.stylex';
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from './index';
+
+const menuId = 'canvas-context-menu';
+
+export default function Example() {
+  return (
+    <>
+      <ContextMenuTrigger target={menuId} sx={styles.target}>
+        Open the context menu anywhere in this area
+      </ContextMenuTrigger>
+      <ContextMenu id={menuId}>
+        <ContextMenuLabel>Canvas</ContextMenuLabel>
+        <ContextMenuItem>Paste</ContextMenuItem>
+        <ContextMenuItem>Duplicate</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem>Delete</ContextMenuItem>
+      </ContextMenu>
+    </>
+  );
+}
+
+const styles = stylex.create({
+  target: {
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    borderStyle: 'dashed',
+    borderWidth: stroke.thin,
+    padding: spacing.xxl,
+  },
+});
+('use client');
+```
+
+## Import
+
+```tsx
+import { ContextMenu, ContextMenuItem, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger } from "@stylextras/ui/context-menu";
+```
+
+## Anatomy
+
+- `ContextMenu` — Styled `<div>`.
+- `ContextMenuItem` — Styled `<button>`.
+- `ContextMenuLabel` — Styled `<div>`.
+- `ContextMenuSeparator` — Styled `<hr>`.
+- `ContextMenuTrigger` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### ContextMenu
+
+`ContextMenuProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "role" | "style">`. The props below complete `ContextMenuProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ContextMenuItem
+
+`ContextMenuItemProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "role" | "style">`. The props below complete `ContextMenuItemProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `ContextMenuItemProps["type"]`. Default: `'button'`.
+
+### ContextMenuLabel
+
+`ContextMenuLabelProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ContextMenuLabelProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ContextMenuSeparator
+
+`ContextMenuSeparatorProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "className" | "style">`. The props below complete `ContextMenuSeparatorProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### ContextMenuTrigger
+
+`ContextMenuTriggerProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ContextMenuTriggerProps`.
+
+- `aria-haspopup` — `ContextMenuTriggerProps["aria-haspopup"]`. Default: `'menu'`.
+- `sx` — `stylex.StyleXStyles`.
+- `target` — `string`. Required.

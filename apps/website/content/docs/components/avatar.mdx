@@ -3,10 +3,79 @@ title: "Avatar"
 description: "Image and text fallback avatar."
 ---
 
+import Example from "@stylextras/ui/avatar/example";
+
 ## Examples
 
 <ComponentPreview name="Avatar">
-  <CatalogExample exportPath="avatar" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="avatar" />
+### Example code
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Avatar size="sm">
+        <AvatarFallback>AK</AvatarFallback>
+      </Avatar>
+      <Avatar>
+        <AvatarFallback>TR</AvatarFallback>
+      </Avatar>
+      <Avatar size="lg">
+        <AvatarImage src="https://github.com/shadcn.png" alt="Profile" />
+        <AvatarFallback>SC</AvatarFallback>
+      </Avatar>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from "@stylextras/ui/avatar";
+```
+
+## Anatomy
+
+- `Avatar` — Styled `<span>`.
+- `AvatarFallback` — Styled `<span>`.
+- `AvatarImage` — Styled `<img>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Avatar
+
+`AvatarProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `AvatarProps`.
+
+- `size` — `AvatarSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### AvatarFallback
+
+`AvatarFallbackProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `AvatarFallbackProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### AvatarImage
+
+`AvatarImageProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"img">, "className" | "style">`. The props below complete `AvatarImageProps`.
+
+- `sx` — `stylex.StyleXStyles`.

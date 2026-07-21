@@ -3,10 +3,77 @@ title: "ImageCropper"
 description: "Interactive image crop tool."
 ---
 
+import Example from "@stylextras/ui/experimental/image-cropper/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="ImageCropper">
-  <CatalogExample exportPath="experimental/image-cropper" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/image-cropper" />
+### Example code
+
+```tsx
+'use client';
+
+import { ImageCropper } from './index';
+
+const image =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ccircle cx='250' cy='240' r='120' fill='rgba(255,255,255,0.28)'/%3E%3Ccircle cx='520' cy='320' r='160' fill='rgba(255,255,255,0.2)'/%3E%3C/svg%3E";
+
+export default function Example() {
+  return (
+    <>
+      <ImageCropper
+        src={image}
+        alt="Gradient"
+        ratio="square"
+        position="center"
+      />
+      <ImageCropper
+        src={image}
+        alt="Gradient"
+        ratio="landscape"
+        position="top"
+      />
+      <ImageCropper
+        src={image}
+        alt="Gradient"
+        ratio="portrait"
+        position="end"
+      />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { ImageCropper } from "@stylextras/ui/experimental/image-cropper";
+```
+
+## Anatomy
+
+- `ImageCropper` — Styled `<img>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### ImageCropper
+
+`ImageCropperProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"img">, "className" | "style">`. The props below complete `ImageCropperProps`.
+
+- `frameSx` — `stylex.StyleXStyles`.
+- `position` — `ImageCropperPosition`. Default: `'center'`.
+- `ratio` — `ImageCropperRatio`. Default: `'square'`.
+- `sx` — `stylex.StyleXStyles`.

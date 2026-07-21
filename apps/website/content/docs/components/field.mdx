@@ -3,10 +3,91 @@ title: "Field"
 description: "Label, description, and validation composition."
 ---
 
+import Example from "@stylextras/ui/field/example";
+
 ## Examples
 
 <ComponentPreview name="Field">
-  <CatalogExample exportPath="field" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="field" />
+### Example code
+
+```tsx
+import { Input } from '../input';
+import { Field, FieldDescription, FieldError, FieldLabel } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Field>
+        <FieldLabel htmlFor="field-email">Email</FieldLabel>
+        <Input id="field-email" type="email" placeholder="you@example.com" />
+        <FieldDescription>
+          Used only for account notifications.
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="field-handle">Handle</FieldLabel>
+        <Input id="field-handle" aria-invalid defaultValue="two words" />
+        <FieldError>Use letters, numbers, and hyphens only.</FieldError>
+      </Field>
+    </>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Field, FieldDescription, FieldError, FieldLabel } from "@stylextras/ui/field";
+```
+
+## Anatomy
+
+- `Field` — Styled `<div>`.
+- `FieldDescription` — Styled `<p>`.
+- `FieldError` — Styled `<p>`.
+- `FieldLabel` — Styled `<label>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Field
+
+`FieldProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `FieldProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### FieldDescription
+
+`FieldDescriptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `FieldDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### FieldError
+
+`FieldErrorProps`
+
+Complete native/inherited prop base: `FieldDescriptionProps`. The props below complete `FieldErrorProps`.
+
+- `role` — `FieldErrorProps["role"]`. Default: `'alert'`.
+- `sx` — `stylex.StyleXStyles`.
+
+### FieldLabel
+
+`FieldLabelProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"label">, "className" | "style">`. The props below complete `FieldLabelProps`.
+
+- `sx` — `stylex.StyleXStyles`.

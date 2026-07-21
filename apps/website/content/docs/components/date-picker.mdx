@@ -3,10 +3,86 @@ title: "DatePicker"
 description: "Calendar, input, and popover composition."
 ---
 
+import Example from "@stylextras/ui/date-picker/example";
+
 ## Examples
 
 <ComponentPreview name="DatePicker">
-  <CatalogExample exportPath="date-picker" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="date-picker" />
+### Example code
+
+```tsx
+'use client';
+
+import { DatePicker } from './index';
+import { Field, FieldDescription, FieldLabel } from '../field';
+
+export default function Example() {
+  return (
+    <>
+      <Field>
+        <FieldLabel htmlFor="publish-date">Publish date</FieldLabel>
+        <DatePicker
+          inputId="publish-date"
+          name="publishDate"
+          defaultValue="2026-07-12"
+        />
+        <FieldDescription>
+          Select a day with the calendar or keyboard.
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="archive-date">Archive date</FieldLabel>
+        <DatePicker
+          inputId="archive-date"
+          name="archiveDate"
+          defaultValue="2026-07-20"
+          min="2026-07-12"
+        />
+        <FieldDescription>
+          Dates before publishing are unavailable.
+        </FieldDescription>
+      </Field>
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { DatePicker } from "@stylextras/ui/date-picker";
+```
+
+## Anatomy
+
+- `DatePicker` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### DatePicker
+
+`DatePickerProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "defaultValue" | "style">`. The props below complete `DatePickerProps`.
+
+- `defaultValue` — `string`. Default: `''`.
+- `disabled` — `boolean`. Default: `false`.
+- `inputId` — `string`.
+- `locale` — `string`. Default: `'en-US'`.
+- `max` — `string`.
+- `min` — `string`.
+- `name` — `string`.
+- `onValueChange` — `(value: string) => void`.
+- `placeholder` — `string`. Default: `'Pick a date'`.
+- `required` — `boolean`. Default: `false`.
+- `sx` — `stylex.StyleXStyles`.
+- `value` — `string`.

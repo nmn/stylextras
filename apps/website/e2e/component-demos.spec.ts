@@ -1,12 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { componentCatalog } from '@stylextras/ui/catalog'
-import componentPropsJson from '../src/generated/component-props.json' with { type: 'json' }
-
-const componentProps = componentPropsJson as Record<
-  string,
-  { parts: Array<{ props: Array<{ name: string }>; typeName: string }> }
->
 
 test.describe.configure({ mode: 'serial' })
 
@@ -55,18 +49,17 @@ test('every component page renders its live demo', async ({ browserName, page })
       `${entry.export} demo content`,
     ).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Examples', exact: true })).toBeVisible()
+    const exampleCodeHeading = page.getByRole('heading', {
+      name: 'Example code',
+      exact: true,
+    })
+    await expect(exampleCodeHeading).toBeVisible()
+    const exampleCode = exampleCodeHeading.locator('xpath=following-sibling::figure[1]')
+    await expect(exampleCode.locator('pre')).toBeVisible()
+    await expect(exampleCode).toContainText('export default function Example')
     await expect(page.getByRole('heading', { name: 'Anatomy', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'API reference', exact: true })).toBeVisible()
-    const reference = componentProps[entry.export]
-    if (!reference) throw new Error(`Missing generated prop reference for ${entry.export}`)
-    expect(reference.parts.length, `${entry.export} documented parts`).toBeGreaterThan(0)
-    await expect(page.locator('[data-docs-anatomy-part]')).toHaveCount(reference.parts.length)
-    await expect(page.locator('[data-docs-api-part]')).toHaveCount(reference.parts.length)
-    for (const part of reference.parts) {
-      const apiPart = page.locator(`[data-docs-api-part="${part.typeName}"]`)
-      await expect(apiPart).toBeVisible()
-      await expect(apiPart.locator('[data-docs-prop]')).toHaveCount(part.props.length)
-    }
+    await expect(page.getByText(`${entry.name}Props`, { exact: true })).toBeVisible()
     await expect(page.locator('vite-error-overlay')).toHaveCount(0)
 
     if (entry.status === 'stable') {
@@ -455,6 +448,30 @@ test('NavigationMenu anchors its native popover to the trigger', async ({ page }
   expect(Math.abs(contentBox!.x - triggerBox!.x)).toBeLessThan(24)
 })
 
+test('Menubar keeps a keyboard-opened menu anchored to its trigger', async ({ browserName, page }) => {
+  test.skip(browserName !== 'chromium', 'Programmatic popover source positioning is checked once.')
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/docs/components/menubar')
+  const preview = page.locator('[data-component-demo="Menubar"]')
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const trigger = preview.getByRole('menuitem', { name: 'File', exact: true })
+  const menu = preview.locator('#file-menu')
+
+  await trigger.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(menu).toBeVisible()
+  await expect(menu.getByRole('menuitem').first()).toBeFocused()
+
+  const [triggerBox, menuBox] = await Promise.all([trigger.boundingBox(), menu.boundingBox()])
+  expect(triggerBox).not.toBeNull()
+  expect(menuBox).not.toBeNull()
+  const opensAbove = menuBox!.y + menuBox!.height <= triggerBox!.y + 1
+  const opensBelow = menuBox!.y >= triggerBox!.y + triggerBox!.height - 1
+  expect(opensAbove || opensBelow).toBe(true)
+  expect(menuBox!.x).toBeLessThan(triggerBox!.x + triggerBox!.width)
+  expect(menuBox!.x + menuBox!.width).toBeGreaterThan(triggerBox!.x)
+})
+
 test('preview controls theme each variable group independently', async ({ browserName, page }) => {
   test.skip(browserName !== 'chromium', 'Computed-style regression runs once.')
   await page.goto('/docs/components/button')
@@ -540,4 +557,201 @@ test('selected tabs use the active elevation theme', async ({ browserName, page 
   const posterShadow = await selectedTab.evaluate((element) => getComputedStyle(element).boxShadow)
 
   expect(posterShadow).not.toBe(flatShadow)
+})
+
+test('docs Option states use blue highlights without tinting the picker surface', async ({
+  browserName,
+  page,
+}) => {
+  test.skip(browserName !== 'chromium', 'Customizable-select styling is checked once in Chromium.')
+  await page.goto('/docs/components/select')
+  const preview = page.locator('[data-component-demo="Select"]')
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  await preview.getByLabel('Style preset').selectOption('docs')
+
+  const readOptionTheme = () =>
+    preview
+      .locator('[data-component-demo-canvas] option')
+      .first()
+      .evaluate((option) => {
+        const classNames = Array.from(option.classList)
+        const cssText: string[] = []
+        const visit = (rules: CSSRuleList) => {
+          for (const rule of rules) {
+            cssText.push(rule.cssText)
+            if ('cssRules' in rule) visit((rule as CSSGroupingRule).cssRules)
+          }
+        }
+        for (const sheet of document.styleSheets) visit(sheet.cssRules)
+
+        const previewRoot = option.closest<HTMLElement>('[data-component-demo="Select"]')!
+        const probe = document.createElement('div')
+        previewRoot.append(probe)
+        const canvas = document.createElement('canvas')
+        canvas.width = 1
+        canvas.height = 1
+        const context = canvas.getContext('2d')!
+        const serializeColor = (variable: string) => {
+          probe.style.backgroundColor = `var(${variable})`
+          return getComputedStyle(probe).backgroundColor
+        }
+        const resolveColor = (variable: string) => {
+          context.clearRect(0, 0, 1, 1)
+          context.fillStyle = serializeColor(variable)
+          context.fillRect(0, 0, 1, 1)
+          return Array.from(context.getImageData(0, 0, 1, 1).data)
+        }
+        const palette = {
+          accent: resolveColor('--x4dxi9b'),
+          brand: resolveColor('--x1kcb9w4'),
+          controlHover: resolveColor('--x1cugl89'),
+          secondary: resolveColor('--xeg5xua'),
+          selection: resolveColor('--x1k61mgv'),
+        }
+        const pickerBackground = getComputedStyle(
+          option.closest('select')!,
+          '::picker(select)',
+        ).backgroundColor
+        const controlHover = serializeColor('--x1cugl89')
+        probe.remove()
+
+        return {
+          controlHover,
+          palette,
+          pickerBackground,
+          hasChecked: cssText.some((rule) =>
+            classNames.some((name) => rule.includes(`.${name}:checked`)),
+          ),
+          hasFocus: cssText.some((rule) =>
+            classNames.some((name) => rule.includes(`.${name}:focus`)),
+          ),
+          hasHover: cssText.some((rule) =>
+            classNames.some((name) => rule.includes(`.${name}:hover`)),
+          ),
+        }
+      })
+
+  const light = await readOptionTheme()
+  await preview.getByLabel('Appearance').selectOption('dark')
+  const dark = await readOptionTheme()
+
+  expect(light.palette.accent).toEqual([76, 119, 220, 255])
+  expect(dark.palette.accent).toEqual([150, 179, 248, 255])
+
+  const chroma = ([red, green, blue]: number[]) =>
+    Math.max(red!, green!, blue!) - Math.min(red!, green!, blue!)
+  const distance = (left: number[], right: number[]) =>
+    Math.hypot(left[0]! - right[0]!, left[1]! - right[1]!, left[2]! - right[2]!)
+
+  for (const result of [light, dark]) {
+    expect(result).toMatchObject({ hasChecked: true, hasFocus: true, hasHover: true })
+    expect(chroma(result.palette.brand)).toBeGreaterThan(40)
+    expect(chroma(result.palette.controlHover)).toBeLessThanOrEqual(2)
+    expect(chroma(result.palette.secondary)).toBeLessThanOrEqual(2)
+    expect(chroma(result.palette.accent)).toBeGreaterThan(60)
+    expect(result.palette.accent[1]).toBeGreaterThan(result.palette.accent[0]! + 20)
+    expect(result.palette.accent[2]).toBeGreaterThan(result.palette.accent[0]! + 20)
+    expect(result.palette.brand[0]).toBeGreaterThan(result.palette.brand[1]! + 20)
+    expect(result.palette.brand[2]).toBeGreaterThan(result.palette.brand[1]! + 20)
+    expect(distance(result.palette.brand, result.palette.accent)).toBeGreaterThan(45)
+    expect(result.palette.selection[0]).toBeGreaterThan(result.palette.selection[1]! + 35)
+    expect(result.palette.selection[2]).toBeGreaterThan(result.palette.selection[1]! + 35)
+    expect(result.pickerBackground).toBe(result.controlHover)
+  }
+})
+
+test('DropdownMenu follows the menu button keyboard contract', async ({ browserName, page }) => {
+  test.skip(
+    browserName !== 'chromium',
+    'Keyboard behavior is checked once with the focusgroup polyfill.',
+  )
+  await page.goto('/docs/components/dropdown-menu')
+  const preview = page.locator('[data-component-demo="DropdownMenu"]')
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  await preview.getByLabel('Style preset').selectOption('docs')
+
+  const trigger = preview.getByRole('button', { name: 'Actions' })
+  const menu = preview.locator('[role="menu"]')
+  const items = menu.locator('[role="menuitem"]')
+  await expect(items).toHaveCount(4)
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+  await trigger.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(menu).toBeVisible()
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+  const triggerId = await trigger.getAttribute('id')
+  expect(triggerId).toBeTruthy()
+  await expect(menu).toHaveAttribute('aria-labelledby', triggerId!)
+  await expect(items.nth(0)).toBeFocused()
+  const focusedColors = await items.nth(0).evaluate((item) => {
+    const previewRoot = item.closest<HTMLElement>('[data-component-demo="DropdownMenu"]')!
+    const probe = document.createElement('div')
+    previewRoot.append(probe)
+    probe.style.backgroundColor = 'var(--x4dxi9b)'
+    probe.style.color = 'var(--x5dx901)'
+    const result = {
+      accent: getComputedStyle(probe).backgroundColor,
+      accentForeground: getComputedStyle(probe).color,
+      background: getComputedStyle(item).backgroundColor,
+      foreground: getComputedStyle(item).color,
+    }
+    probe.remove()
+    return result
+  })
+  expect(focusedColors.background).toBe(focusedColors.accent)
+  expect(focusedColors.foreground).toBe(focusedColors.accentForeground)
+  const seriousAccessibilityViolations = async () => {
+    const accessibility = await new AxeBuilder({ page })
+      .include('[data-component-demo="DropdownMenu"] [role="menu"]')
+      .analyze()
+    return accessibility.violations.filter(
+      (violation) => violation.impact === 'serious' || violation.impact === 'critical',
+    )
+  }
+  expect(await seriousAccessibilityViolations()).toEqual([])
+
+  await page.keyboard.press('ArrowDown')
+  await expect(items.nth(1)).toBeFocused()
+  await page.keyboard.press('ArrowDown')
+  await expect(items.nth(2)).toBeFocused()
+  await expect(items.nth(2)).toHaveAttribute('aria-disabled', 'true')
+  await page.keyboard.press('Enter')
+  await expect(menu).toBeVisible()
+
+  await page.keyboard.press('a')
+  await expect(items.nth(3)).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(menu).toBeHidden()
+  await expect(trigger).toBeFocused()
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+  await page.keyboard.press('ArrowUp')
+  await expect(items.nth(3)).toBeFocused()
+  await page.keyboard.press('Home')
+  await expect(items.nth(0)).toBeFocused()
+  await page.keyboard.press('End')
+  await expect(items.nth(3)).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(menu).toBeHidden()
+  await expect(trigger).toBeFocused()
+
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+  await expect(items.nth(0)).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(trigger).toBeFocused()
+
+  await page.keyboard.press('Space')
+  await expect(items.nth(0)).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(menu).toBeHidden()
+  await expect(menu.locator(':focus')).toHaveCount(0)
+
+  await preview.getByLabel('Appearance').selectOption('dark')
+  await trigger.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(items.nth(0)).toBeFocused()
+  expect(await seriousAccessibilityViolations()).toEqual([])
+  await page.keyboard.press('Escape')
 })

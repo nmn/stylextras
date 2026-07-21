@@ -3,10 +3,58 @@ title: "ColorSlider"
 description: "Color-channel slider."
 ---
 
+import Example from "@stylextras/ui/experimental/color-slider/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="ColorSlider">
-  <CatalogExample exportPath="experimental/color-slider" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/color-slider" />
+### Example code
+
+```tsx
+'use client';
+
+import { ColorSlider } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <ColorSlider aria-label="Tint" min={0} max={100} defaultValue={24} />
+      <ColorSlider aria-label="Glow" min={0} max={100} defaultValue={68} />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { ColorSlider } from "@stylextras/ui/experimental/color-slider";
+```
+
+## Anatomy
+
+- `ColorSlider` — Styled `<input>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### ColorSlider
+
+`ColorSliderProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"input">, "className" | "style" | "type">`. The props below complete `ColorSliderProps`.
+
+- `max` — `ColorSliderProps["max"]`. Default: `360`.
+- `min` — `ColorSliderProps["min"]`. Default: `0`.
+- `step` — `ColorSliderProps["step"]`. Default: `1`.
+- `sx` — `stylex.StyleXStyles`.

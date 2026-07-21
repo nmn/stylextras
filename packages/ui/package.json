@@ -711,6 +711,10 @@
       "types": "./dist/typography-themes/index.d.ts",
       "import": "./dist/typography-themes/index.js"
     },
+    "./style-presets": {
+      "types": "./dist/style-presets/index.d.ts",
+      "import": "./dist/style-presets/index.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   }

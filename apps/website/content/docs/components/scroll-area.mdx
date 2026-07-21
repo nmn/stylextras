@@ -3,10 +3,82 @@ title: "ScrollArea"
 description: "Overflow region with tokenized scrollbars."
 ---
 
+import Example from "@stylextras/ui/scroll-area/example";
+
 ## Examples
 
 <ComponentPreview name="ScrollArea">
-  <CatalogExample exportPath="scroll-area" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="scroll-area" />
+### Example code
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { colors } from '../tokens/color.stylex';
+import { spacing } from '../tokens/spacing.stylex';
+import { ScrollArea } from './index';
+
+const releases = Array.from(
+  { length: 12 },
+  (_, index) => `0.2.0-beta.${12 - index}`,
+);
+
+export default function Example() {
+  return (
+    <ScrollArea aria-label="Release history" sx={styles.area}>
+      {releases.map((release) => (
+        <div key={release} {...stylex.props(styles.row)}>
+          <strong>{release}</strong>
+          <span>Native-first component updates</span>
+        </div>
+      ))}
+    </ScrollArea>
+  );
+}
+
+const styles = stylex.create({
+  area: {
+    borderColor: colors.border,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    height: '12rem',
+  },
+  row: {
+    borderBlockEndColor: colors.border,
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: 1,
+    display: 'grid',
+    gap: spacing.xxxs,
+    padding: spacing.md,
+  },
+});
+('use client');
+```
+
+## Import
+
+```tsx
+import { ScrollArea } from "@stylextras/ui/scroll-area";
+```
+
+## Anatomy
+
+- `ScrollArea` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### ScrollArea
+
+`ScrollAreaProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ScrollAreaProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+- `tabIndex` — `ScrollAreaProps["tabIndex"]`. Default: `0`.

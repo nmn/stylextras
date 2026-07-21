@@ -3,10 +3,78 @@ title: "Menubar"
 description: "Horizontal native-first menu group."
 ---
 
+import Example from "@stylextras/ui/menubar/example";
+
 ## Examples
 
 <ComponentPreview name="Menubar">
-  <CatalogExample exportPath="menubar" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="menubar" />
+### Example code
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../dropdown-menu';
+import { Menubar } from './index';
+
+const menus = [
+  { id: 'file-menu', label: 'File', items: ['New file', 'Open', 'Save'] },
+  { id: 'edit-menu', label: 'Edit', items: ['Undo', 'Redo', 'Find action'] },
+  {
+    id: 'view-menu',
+    label: 'View',
+    items: ['Toggle sidebar', 'Zoom in', 'Zoom out'],
+  },
+];
+
+export default function Example() {
+  return (
+    <Menubar>
+      {menus.map((menu) => (
+        <DropdownMenu key={menu.id}>
+          <DropdownMenuTrigger role="menuitem" variant="ghost" target={menu.id}>
+            {menu.label}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent id={menu.id}>
+            {menu.items.map((item) => (
+              <DropdownMenuItem key={item}>{item}</DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ))}
+    </Menubar>
+  );
+}
+('use client');
+```
+
+## Import
+
+```tsx
+import { Menubar } from "@stylextras/ui/menubar";
+```
+
+## Anatomy
+
+- `Menubar` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+
+## API reference
+
+### Menubar
+
+`MenubarProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `MenubarProps`.
+
+- `sx` — `stylex.StyleXStyles`.

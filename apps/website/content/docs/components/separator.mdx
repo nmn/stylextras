@@ -3,10 +3,76 @@ title: "Separator"
 description: "Semantic content separator."
 ---
 
+import Example from "@stylextras/ui/separator/example";
+
 ## Examples
 
 <ComponentPreview name="Separator">
-  <CatalogExample exportPath="separator" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="separator" />
+### Example code
+
+```tsx
+'use client';
+
+import { Separator } from './index';
+
+export function HorizontalSeparatorDemo() {
+  return (
+    <>
+      <span>Above</span>
+      <Separator />
+      <span>Below</span>
+    </>
+  );
+}
+
+export function VerticalSeparatorDemo() {
+  return (
+    <>
+      <span>Left</span>
+      <Separator orientation="vertical" />
+      <span>Right</span>
+    </>
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <HorizontalSeparatorDemo />
+      <VerticalSeparatorDemo />
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Separator } from "@stylextras/ui/separator";
+```
+
+## Anatomy
+
+- `Separator` — Styled `<hr>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Separator
+
+`SeparatorProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "className" | "style">`. The props below complete `SeparatorProps`.
+
+- `decorative` — `boolean`. Default: `true`.
+- `emphasis` — `"strong" | "subtle"`. Default: `'subtle'`.
+- `orientation` — `"vertical" | "horizontal"`. Default: `'horizontal'`.
+- `sx` — `stylex.StyleXStyles`.

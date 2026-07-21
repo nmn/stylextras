@@ -3,10 +3,82 @@ title: "Toggle"
 description: "Native pressed button."
 ---
 
+import Example from "@stylextras/ui/toggle/example";
+
 ## Examples
 
 <ComponentPreview name="Toggle">
-  <CatalogExample exportPath="toggle" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="toggle" />
+### Example code
+
+```tsx
+'use client';
+
+import { Toggle } from './index';
+import type { ToggleProps } from './index';
+import { useState } from 'react';
+
+type DemoToggleProps = Omit<ToggleProps, 'aria-pressed' | 'onClick'> & {
+  defaultPressed?: boolean;
+};
+
+function DemoToggle({ defaultPressed = false, ...props }: DemoToggleProps) {
+  const [pressed, setPressed] = useState(defaultPressed);
+  return (
+    <Toggle
+      aria-pressed={pressed}
+      onClick={() => setPressed((value) => !value)}
+      {...props}
+    />
+  );
+}
+
+export default function Example() {
+  return (
+    <>
+      <DemoToggle defaultPressed>Bold</DemoToggle>
+      <DemoToggle>Italic</DemoToggle>
+      <DemoToggle>Code</DemoToggle>
+      <DemoToggle disabled defaultPressed>
+        Locked
+      </DemoToggle>
+
+      <DemoToggle size="sm">Small</DemoToggle>
+      <DemoToggle size="md" defaultPressed>
+        Medium
+      </DemoToggle>
+      <DemoToggle size="lg">Large</DemoToggle>
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Toggle } from "@stylextras/ui/toggle";
+```
+
+## Anatomy
+
+- `Toggle` — Styled `<button>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Toggle
+
+`ToggleProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "style">`. The props below complete `ToggleProps`.
+
+- `size` — `ToggleSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
+- `type` — `ToggleProps["type"]`. Default: `'button'`.

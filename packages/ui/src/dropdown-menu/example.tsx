@@ -22,6 +22,7 @@ export default function Example() {
             Rename <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem>Duplicate</DropdownMenuItem>
+          <DropdownMenuItem disabled>Deploy (unavailable)</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Archive</DropdownMenuItem>
         </DropdownMenuContent>

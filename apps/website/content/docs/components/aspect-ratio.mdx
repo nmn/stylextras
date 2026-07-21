@@ -3,10 +3,59 @@ title: "AspectRatio"
 description: "Ratio-preserving content frame."
 ---
 
+import Example from "@stylextras/ui/aspect-ratio/example";
+
 ## Examples
 
 <ComponentPreview name="AspectRatio">
-  <CatalogExample exportPath="aspect-ratio" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="aspect-ratio" />
+### Example code
+
+```tsx
+'use client';
+
+import { AspectRatio } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <AspectRatio ratio="square">Square</AspectRatio>
+
+      <AspectRatio ratio="video">Video</AspectRatio>
+
+      <AspectRatio ratio="portrait">Portrait</AspectRatio>
+
+      <AspectRatio ratio="landscape">Landscape</AspectRatio>
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { AspectRatio } from "@stylextras/ui/aspect-ratio";
+```
+
+## Anatomy
+
+- `AspectRatio` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### AspectRatio
+
+`AspectRatioProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AspectRatioProps`.
+
+- `ratio` — `AspectRatioValue`. Default: `"video"`.
+- `sx` — `stylex.StyleXStyles`.

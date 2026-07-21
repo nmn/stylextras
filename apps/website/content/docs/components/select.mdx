@@ -3,10 +3,88 @@ title: "Select"
 description: "Native select with customizable-select CSS."
 ---
 
+import Example from "@stylextras/ui/select/example";
+
 ## Examples
 
 <ComponentPreview name="Select">
-  <CatalogExample exportPath="select" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="select" />
+### Example code
+
+```tsx
+'use client';
+
+import { Field, FieldDescription, FieldLabel } from '../field';
+import { Option, Select } from './index';
+
+export default function Example() {
+  return (
+    <>
+      <Field>
+        <FieldLabel htmlFor="environment">Environment</FieldLabel>
+        <Select id="environment" name="environment" defaultValue="preview">
+          <Option value="development">Development</Option>
+          <Option value="preview">Preview</Option>
+          <Option value="production">Production</Option>
+        </Select>
+        <FieldDescription>
+          Uses native validation, reset, and submission.
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="component">Component</FieldLabel>
+        <Select id="component" name="component" defaultValue="">
+          <Option value="" disabled>
+            Select a component
+          </Option>
+          <optgroup label="Forms">
+            <Option value="input">Input</Option>
+            <Option value="select">Select</Option>
+          </optgroup>
+          <optgroup label="Overlays">
+            <Option value="dialog">Dialog</Option>
+            <Option value="popover">Popover</Option>
+          </optgroup>
+        </Select>
+      </Field>
+    </>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { Option, Select } from "@stylextras/ui/select";
+```
+
+## Anatomy
+
+- `Select` — Styled `<select>`.
+- `Option` — Styled `<option>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component starts with semantic HTML and enhances it with newer browser APIs when they are available. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+
+## API reference
+
+### Select
+
+`SelectProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"select">, "className" | "style">`. The props below complete `SelectProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### Option
+
+`OptionProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"option">, "className" | "style">`. The props below complete `OptionProps`.
+
+- `sx` — `stylex.StyleXStyles`.

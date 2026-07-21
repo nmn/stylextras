@@ -3,10 +3,57 @@ title: "TagGroup"
 description: "Interactive tag collection."
 ---
 
+import Example from "@stylextras/ui/experimental/tag-group/example";
+
+This component is experimental. Its API and behavior may change before it moves into the stable catalog.
+
 ## Examples
 
 <ComponentPreview name="TagGroup">
-  <CatalogExample exportPath="experimental/tag-group" />
+  <Example />
 </ComponentPreview>
 
-<CatalogEntry exportPath="experimental/tag-group" />
+### Example code
+
+```tsx
+'use client';
+
+import { Badge } from '../badge';
+import { TagGroup } from './index';
+
+export default function Example() {
+  return (
+    <TagGroup>
+      <Badge>Design system</Badge>
+      <Badge>Experimental</Badge>
+      <Badge>Native popup</Badge>
+    </TagGroup>
+  );
+}
+```
+
+## Import
+
+```tsx
+import { TagGroup } from "@stylextras/ui/experimental/tag-group";
+```
+
+## Anatomy
+
+- `TagGroup` — Styled `<div>`.
+
+## Accessibility and browser behavior
+
+Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+## API reference
+
+### TagGroup
+
+`TagGroupProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"div">, "className" | "style">`. The props below complete `TagGroupProps`.
+
+- `sx` — `stylex.StyleXStyles`.
