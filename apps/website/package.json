@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "waku dev --host 0.0.0.0",
-    "build": "waku build && bun scripts/fix-rsc-stylesheet-preloads.mjs",
+    "build": "waku build && bun scripts/prune-waku-build-metadata.mjs && bun scripts/fix-rsc-stylesheet-preloads.mjs",
     "deploy:cloudflare": "bun run build && wrangler deploy",
     "preview:cloudflare": "bun run build && wrangler dev",
     "start": "waku start",

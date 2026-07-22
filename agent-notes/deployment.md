@@ -31,3 +31,4 @@
 - The current Cloudflare account rejects Workers larger than 3 MiB compressed.
 - Keep the server bundle comfortably below that limit. The initial browser-heavy SSR graph exceeded it; the targeted playground SSR exclusion reduced the deployed Worker to about 641 KiB compressed.
 - Treat a sudden server-bundle increase as a graph-boundary bug before removing user-facing functionality.
+- Waku 1.0 alpha duplicates every pre-rendered page's RSC subtree in `dist/server/__waku_build_metadata.js`. The website build runs `scripts/prune-waku-build-metadata.mjs` to remove only `page:` cache entries that have a matching static RSC asset; it preserves root/layout caches and routing metadata. Re-evaluate this workaround when upgrading Waku.
