@@ -14,11 +14,11 @@ yarn dev
 
 ## Cloudflare Workers
 
-The production build uses Waku's Cloudflare adapter. Pre-rendered routes and hashed assets are served directly by Workers Static Assets, while requests without a matching asset are handled by the Waku Worker entrypoint.
+The production build uses Waku's pure SSG mode. All routes are pre-rendered into `dist/public`, and Wrangler deploys that directory through Workers Static Assets without a Worker script.
 
 ```bash
 bun run preview:cloudflare
 bun run deploy:cloudflare
 ```
 
-Wrangler uploads `dist/public` and the Cloudflare-compatible server bundle generated at `dist/server/serve-cloudflare.js`.
+Pure SSG does not support dynamic rendering, server actions, or API routes. Add a Worker entrypoint back to `wrangler.jsonc` before introducing any of those features.
