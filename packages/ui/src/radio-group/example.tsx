@@ -10,8 +10,8 @@ export default function Example() {
       <RadioGroup>
         <RadioGroupLegend>Density</RadioGroupLegend>
         {['Compact', 'Default', 'Comfortable'].map((label) => (
-          <Label key={label} sx={styles.option}>
-            <RadioGroupItem name="density" value={label.toLowerCase()} defaultChecked={label === 'Default'} />
+          <Label htmlFor={`density-${label.toLowerCase()}`} key={label} sx={styles.option}>
+            <RadioGroupItem id={`density-${label.toLowerCase()}`} name="density" value={label.toLowerCase()} defaultChecked={label === 'Default'} />
             {label}
           </Label>
         ))}
@@ -20,5 +20,11 @@ export default function Example() {
   )
 }
 
-const styles = stylex.create({ option: { alignItems: 'center', display: 'flex', gap: spacing.sm } })
-'use client'
+const styles = stylex.create({
+  option: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: spacing.sm,
+    minHeight: { default: spacing.targetMin, '@media (pointer: coarse)': spacing.targetCoarse },
+  },
+})

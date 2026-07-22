@@ -7,7 +7,6 @@
 import type { ReactNode } from "react";
 import { Provider } from "@/components/provider";
 import "@/styles/globals.css";
-import "@stylextras/ui/styles.css";
 import DevStyleXHMR from "@/components/DevStyleXHMR";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import faviconUrl from "@/static/img/favicon.svg";

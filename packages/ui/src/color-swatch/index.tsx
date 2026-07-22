@@ -1,44 +1,61 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, CSSProperties } from "react";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"span">;
+type ColorSwatchAccessibilityProps =
+  | (AccessibleAriaNameProps & { 'aria-hidden'?: false })
+  | {
+      'aria-hidden'?: true
+      'aria-label'?: never
+      'aria-labelledby'?: never
+    }
+export type ColorSwatchProps = Omit<
+  ComponentPropsWithRef<'span'>,
+  'aria-hidden' | 'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
+> &
+  ColorSwatchAccessibilityProps & {
+    color?: string
+    sx?: StyleXStyles
+  }
 
-export type ColorSwatchProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  color?: string;
-};
-
-/**
- * Renders a visual color swatch.
- *
- * Search aliases: color swatch, swatch, color chip, color sample.
- *
- * A11y notes:
- * - Visual only unless labelled by the caller.
- * - Color meaning should not be conveyed by color alone.
- */
+/** A decorative swatch by default; give it a name to expose it as an image. */
 export function ColorSwatch({
-  color = "#7c3aed",
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
+  'aria-hidden': ariaHidden,
+  color = '#7c3aed',
+  ref,
   sx,
   ...props
 }: ColorSwatchProps) {
+  const meaningful = ariaLabel !== undefined || ariaLabelledby !== undefined
   return (
     <span
+      ref={ref}
+      aria-hidden={meaningful ? ariaHidden : true}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      role={meaningful ? 'img' : undefined}
       {...props}
-      style={{ backgroundColor: color } as CSSProperties}
-      {...stylex.props(styles.base, sx)}
+      {...stylex.props(styles.swatch, dynamicStyles.color(color), sx)}
     />
-  );
+  )
 }
 
 const styles = stylex.create({
-  base: {
+  swatch: {
     borderRadius: radius.md,
-    display: "inline-flex",
+    boxSizing: 'border-box',
+    display: 'inline-flex',
+    flexShrink: 0,
     height: spacing.xxl,
     width: spacing.xxl,
   },
-});
+})
+
+const dynamicStyles = stylex.create({
+  color: (value: string) => ({ backgroundColor: value }),
+})

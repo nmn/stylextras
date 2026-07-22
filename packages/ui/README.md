@@ -1,6 +1,6 @@
 # @stylextras/ui
 
-Native-first React components with their StyleX styling built in. The package uses native controls, `<dialog>`, the Popover API, invoker commands, anchor positioning, and focusgroup before adding JavaScript.
+Native-first React components written in TypeScript and StyleX. The package uses native controls, `<dialog>`, the Popover API, invoker commands, anchor positioning, and focusgroup before adding JavaScript.
 
 This is the breaking `0.2.0-beta.0` redesign. React and StyleX are peer dependencies; Radix UI, Base UI, and React Aria are not runtime dependencies.
 
@@ -10,11 +10,10 @@ This is the breaking `0.2.0-beta.0` redesign. React and StyleX are peer dependen
 bun add @stylextras/ui@0.2.0-beta.0 @stylexjs/stylex react
 ```
 
-Import the compiled package CSS once:
-
-```tsx
-import "@stylextras/ui/styles.css";
-```
+The package exports its original `src` files. It does not ship precompiled
+JavaScript or CSS and has no build lifecycle of its own. The consuming
+application must compile TypeScript, JSX, and StyleX for `@stylextras/ui` along
+with its local source files.
 
 Components use canonical subpath imports. There is intentionally no package barrel:
 
@@ -127,7 +126,50 @@ import { Dialog, DialogClose, DialogTrigger } from "@stylextras/ui/dialog";
 
 The default dialog and popover entries do not own React state. Applications needing controlled state or the focused cross-engine nested-layer bridge can opt into `@stylextras/ui/dialog/client` or `@stylextras/ui/popover/client`.
 
+Interaction-only content can use the trigger-first lazy entry. The trigger is
+the only initial DOM and component payload; focus, pointer hover, or touch
+intent preloads the application module, and activation mounts then opens it:
+
+```tsx
+"use client";
+
+import {
+  LazyDialog,
+  LazyDialogTrigger,
+} from "@stylextras/ui/dialog/lazy";
+
+export function RenameAction() {
+  return (
+    <LazyDialog
+      id="rename"
+      aria-label="Rename project"
+      contentProps={{}}
+      load={() => import("./rename-dialog-content")}
+      loadErrorLabel="Could not open rename dialog"
+    >
+      <LazyDialogTrigger>Rename</LazyDialogTrigger>
+    </LazyDialog>
+  );
+}
+```
+
+The imported module default-exports a component accepting `id` and the
+accessible-name props and must render the matching native `Dialog`. Failed
+loads remain retryable and are announced without moving focus. Equivalent lazy
+entries exist for alert dialogs, drawers, sheets, commands, popovers, dropdown
+menus, context menus, navigation menus, and sidebars. Tooltip text is kept in
+the initial DOM because it is the trigger's accessible description. Deferred
+menu boundaries require `aria-label` or `aria-labelledby`; that name is passed
+to the loaded menu content automatically.
+
 Focusgroup and interest-invoker behavior is feature detected. Unsupported engines lazy-load only focused bridges; anchor-positioning fallback is usable fixed placement rather than a large layout polyfill.
+
+## DatePicker is native by default
+
+`DatePicker` renders a styled `<input type="date">`, preserving external form
+association, constraints, validation, reset, localization, mobile keyboards,
+and the platform date picker without a client controller. A custom calendar is
+an explicit enhanced/lazy choice rather than part of the initial field bundle.
 
 ## Catalog
 
@@ -160,13 +202,16 @@ There are no compatibility aliases in 0.2.
 | `icon-button` | `Button` with an icon size |
 | `menu` | `dropdown-menu` |
 
-The old component-token export and source/example production exports are removed. Import `@stylextras/ui/styles.css`, switch to canonical subpaths, and apply theme objects directly with `stylex.props()`.
+The old component-token export is removed. Compile the package source in the
+consumer application, switch to canonical subpaths, and apply theme objects
+directly with `stylex.props()`.
 
 ## Verification
 
 ```sh
-bun run test
-bun run test:package
+bun run test:ui
 ```
 
-The package build emits tree-shakable ESM, declarations, compiled CSS, and a size report. The packed-artifact test installs the tarball into a clean consumer, checks public imports and types, and rejects leaked TSX/example source.
+Verification is owned by the repository and its consumer application. Shared
+implementation modules remain separate, so the consumer can keep lazy content
+and optional browser bridges in async chunks.

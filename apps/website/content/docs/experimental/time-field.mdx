@@ -1,6 +1,6 @@
 ---
 title: "TimeField"
-description: "Segmented time input."
+description: "Native time input."
 ---
 
 import Example from "@stylextras/ui/experimental/time-field/example";
@@ -16,26 +16,34 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-export { default } from "../timefield/example";
-'use client'
+import { Field, FieldLabel } from '../field';
+import { TimeField } from './index';
+
+export default function Example() {
+  return (
+    <Field>
+      <FieldLabel htmlFor="meeting-start">Start time</FieldLabel>
+      <TimeField id="meeting-start" name="meetingStart" defaultValue="09:00" />
+    </Field>
+  );
+}
 ```
 
 ## Import
 
 ```tsx
-import { TimeField, TimeFieldField } from "@stylextras/ui/experimental/time-field";
+import { TimeField } from "@stylextras/ui/experimental/time-field";
 ```
 
 ## Anatomy
 
-- `TimeField` — Styled `<input>`.
-- `TimeFieldField` — Styled `<input>`.
+- `TimeField` — Native `<input type="time">`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`TimeField` is a zero-JavaScript native time input. The browser supplies localized editing, keyboard behavior, validation, and form participation. Values for `defaultValue`, `value`, `min`, and `max` use the 24-hour `HH:mm` format even when the browser presents a localized 12-hour interface.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+Give the input a visible label. The component adds a visible focus outline, invalid-state border, forced-colors fallback, minimum target, and reduced-motion transition behavior. Any native input prop not named in `Omit` remains accepted, including standard ARIA/data attributes, event handlers, and `ref`. `TimeFieldField` remains as a deprecated compatibility alias. `sx` is composed last.
 
 ## API reference
 
@@ -43,14 +51,6 @@ This component uses a focused client controller for composite state and keyboard
 
 `TimeFieldProps`
 
-Complete native/inherited prop base: `TimefieldProps`. The props below complete `TimeFieldProps`.
-
-- `sx` — `stylex.StyleXStyles`.
-
-### TimeFieldField
-
-`TimeFieldFieldProps`
-
-Complete native/inherited prop base: `TimeFieldProps`. The props below complete `TimeFieldFieldProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `TimeFieldProps`.
 
 - `sx` — `stylex.StyleXStyles`.

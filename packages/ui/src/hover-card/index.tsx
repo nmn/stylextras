@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
-import { Button, type ButtonProps } from '../button'
+import { Button, type AccessibleButtonPropsWithout } from '../button'
 import { useInterestInvoker } from '../platform-polyfills/interest-invoker'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
@@ -18,7 +18,9 @@ type SxProp = { sx?: StyleXStyles }
 export type HoverCardPlacement = 'bottom' | 'top' | 'end' | 'start'
 export type HoverCardProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'popover' | 'style'> &
   SxProp & { placement?: HoverCardPlacement }
-export type HoverCardTriggerProps = ButtonProps & {
+export type HoverCardTriggerProps = AccessibleButtonPropsWithout<
+  'aria-controls' | 'popoverTarget' | 'popoverTargetAction'
+> & {
   hideDelay?: number
   showDelay?: number
   target: string
@@ -42,6 +44,7 @@ export function HoverCard({ placement = 'bottom', ref, sx, ...props }: HoverCard
 }
 
 export function HoverCardTrigger({
+  'aria-details': ariaDetails,
   hideDelay,
   ref,
   showDelay,
@@ -55,11 +58,13 @@ export function HoverCardTrigger({
   return (
     <Button
       ref={setRef}
+      {...props}
       type={type}
       variant={variant}
+      aria-controls={target}
+      aria-details={[ariaDetails, target].filter(Boolean).join(' ')}
       popoverTarget={target}
       popoverTargetAction="toggle"
-      {...props}
       {...interestProps}
     />
   )
@@ -92,8 +97,11 @@ const styles = stylex.create({
     color: colors.popoverForeground,
     inset: 'auto',
     margin: spacing.xs,
+    maxHeight: 'min(80dvh, 36rem)',
     maxWidth: 'calc(100vw - 2rem)',
     opacity: { default: 0, ':popover-open': 1 },
+    overflow: 'auto',
+    overflowWrap: 'anywhere',
     padding: spacing.md,
     position: 'fixed',
     positionAnchor: 'auto',
@@ -129,6 +137,7 @@ const styles = stylex.create({
     fontSize: typography.stepMinus1,
     lineHeight: typography.lineHeightBody,
     margin: 0,
+    textWrap: 'pretty',
   },
 })
 

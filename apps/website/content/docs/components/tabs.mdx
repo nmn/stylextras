@@ -1,6 +1,6 @@
 ---
 title: "Tabs"
-description: "Keyboard tab controller with focusgroup enhancement."
+description: "Keyboard-complete tab controller."
 ---
 
 import Example from "@stylextras/ui/tabs/example";
@@ -80,7 +80,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@stylextras/ui/tabs";
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+This component implements the tab keyboard pattern directly, including RTL horizontal arrows, without loading the focusgroup bridge. Every tablist requires an accessible name. Generated IDs, relationships, roles, orientation, selection, visibility, and tab stops are component-owned and cannot be overridden by consumer props. If the selected value points to a disabled tab, the first enabled tab becomes the roving tab stop. Use manual activation when panel content is deferred or otherwise not instantly available.
 
 ## API reference
 
@@ -101,17 +101,16 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `TabsContentProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-labelledby" | "className" | "role" | "style">`. The props below complete `TabsContentProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-labelledby" | "className" | "hidden" | "id" | "role" | "style" | "tabIndex">`. The props below complete `TabsContentProps`.
 
 - `sx` — `stylex.StyleXStyles`.
-- `tabIndex` — `TabsContentProps["tabIndex"]`. Default: `0`.
 - `value` — `string`. Required.
 
 ### TabsList
 
 `TabsListProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `TabsListProps`.
+Complete native/inherited prop base: native div props with component-owned `role`, `aria-orientation`, and styles. `aria-label` or `aria-labelledby` is required.
 
 - `sx` — `stylex.StyleXStyles`.
 
@@ -119,8 +118,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `TabsTriggerProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "aria-controls" | "aria-selected" | "className" | "role" | "style" | "value">`. The props below complete `TabsTriggerProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "aria-controls" | "aria-selected" | "className" | "id" | "role" | "style" | "tabIndex" | "type" | "value">`. The props below complete `TabsTriggerProps`.
 
 - `sx` — `stylex.StyleXStyles`.
-- `type` — `TabsTriggerProps["type"]`. Default: `'button'`.
 - `value` — `string`. Required.

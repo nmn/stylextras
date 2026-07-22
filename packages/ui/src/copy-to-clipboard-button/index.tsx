@@ -3,13 +3,15 @@
 import * as stylex from "@stylexjs/stylex";
 import { useId, useRef } from "react";
 import type { MouseEvent, ReactNode } from "react";
-import { Button, type ButtonProps } from "../button/index";
+import { Button, type AccessibleButtonPropsWithout } from "../button/index";
 import { showPopoverWithSource } from "../platform-polyfills/popover-source";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
-export type CopyToClipboardButtonProps = Omit<ButtonProps, "children"> & {
+export type CopyToClipboardButtonProps = AccessibleButtonPropsWithout<
+  "aria-label" | "aria-labelledby" | "children"
+> & {
   copiedText?: ReactNode;
   icon?: ReactNode;
   label?: string;
@@ -116,6 +118,8 @@ export function CopyToClipboardButton({
 }
 const rootStyles = stylex.create({
   base: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    anchorScope: "--copy-button-trigger",
     display: "inline-grid",
   },
 });

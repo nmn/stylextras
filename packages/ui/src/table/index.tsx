@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
 import { colors } from '../tokens/color.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
@@ -15,6 +16,18 @@ export type TableRowProps = Omit<ComponentPropsWithRef<'tr'>, 'className' | 'sty
 export type TableHeadProps = Omit<ComponentPropsWithRef<'th'>, 'className' | 'style'> & SxProp
 export type TableCellProps = Omit<ComponentPropsWithRef<'td'>, 'className' | 'style'> & SxProp
 export type TableCaptionProps = Omit<ComponentPropsWithRef<'caption'>, 'className' | 'style'> & SxProp
+export type TableScrollAreaProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'style' | 'tabIndex'
+> &
+  SxProp &
+  AccessibleAriaNameProps
+
+export function TableScrollArea({ ref, sx, ...props }: TableScrollAreaProps) {
+  return (
+    <div ref={ref} tabIndex={0} {...props} {...stylex.props(styles.scrollArea, sx)} />
+  )
+}
 
 export function Table({ ref, sx, ...props }: TableProps) {
   return <table ref={ref} {...props} {...stylex.props(styles.table, sx)} />
@@ -42,6 +55,19 @@ export function TableCaption({ ref, sx, ...props }: TableCaptionProps) {
 }
 
 const styles = stylex.create({
+  scrollArea: {
+    maxWidth: '100%',
+    overflow: 'auto',
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
+    overscrollBehavior: 'contain',
+    scrollbarGutter: 'stable',
+  },
   table: {
     borderCollapse: 'collapse',
     color: colors.fg,
@@ -49,11 +75,25 @@ const styles = stylex.create({
     fontSize: typography.step0,
     width: '100%',
   },
-  header: { borderBlockEndColor: colors.border, borderBlockEndStyle: 'solid', borderBlockEndWidth: stroke.thin },
+  header: {
+    borderBlockEndColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: stroke.thin,
+  },
   body: {},
   footer: { backgroundColor: colors.bgSubtle, fontWeight: typography.weightMedium },
-  row: { borderBlockEndColor: colors.border, borderBlockEndStyle: 'solid', borderBlockEndWidth: stroke.thin },
-  head: { color: colors.fgMuted, fontWeight: typography.weightMedium, padding: spacing.md, textAlign: 'start' },
-  cell: { padding: spacing.md, verticalAlign: 'middle' },
+  row: {
+    borderBlockEndColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: stroke.thin,
+  },
+  head: { color: colors.fgMuted, fontWeight: typography.weightMedium, overflowWrap: 'anywhere', padding: spacing.md, textAlign: 'start' },
+  cell: { overflowWrap: 'anywhere', padding: spacing.md, verticalAlign: 'middle' },
   caption: { captionSide: 'bottom', color: colors.fgMuted, paddingBlock: spacing.md, textAlign: 'start' },
 })

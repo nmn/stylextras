@@ -63,7 +63,9 @@ export default function Example() {
         title="Popover sidebar"
         description="The same parts can become a dismissible narrow-screen layer."
       >
-        <SidebarTrigger target="workspace-popover-sidebar">☰</SidebarTrigger>
+        <SidebarTrigger target="workspace-popover-sidebar" aria-label="Toggle workspace sidebar">
+          ☰
+        </SidebarTrigger>
         <WorkspaceNavigation id="workspace-popover-sidebar" mode="popover" />
       </DemoFrame>
     </DemoStack>

@@ -1,32 +1,16 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { spacing } from "../tokens/spacing.stylex";
-import { ColorField } from "../color-field";
+import * as stylex from '@stylexjs/stylex'
+import type { ColorFieldProps } from '../color-field'
+import { ColorField } from '../color-field'
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+export type ColorPickerProps = ColorFieldProps
 
-export type ColorPickerProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
-
-/**
- * Renders a token-styled native color picker input.
- *
- * Search aliases: color picker, color input, swatch input, color chooser.
- *
- * A11y notes:
- * - Uses browser-native color input behavior.
- * - The exact accessibility experience varies by browser and platform.
- */
+/** A native, zero-JavaScript color picker. */
 export function ColorPicker({ sx, ...props }: ColorPickerProps) {
-  return (
-    <div {...props} {...stylex.props(styles.base, sx)}>
-      <ColorField />
-    </div>
-  );
+  return <ColorField {...props} sx={[styles.input, sx]} />
 }
 
 const styles = stylex.create({
-  base: { gap: spacing.xs, alignItems: "center", display: "inline-flex" },
-});
+  input: {
+    width: '4rem',
+  },
+})

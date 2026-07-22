@@ -16,7 +16,7 @@ const menus = [
 export default function Example() {
   return (
     <DemoFrame title="Application menubar" description="Explicit popover menus share focusgroup behavior.">
-      <Menubar>
+      <Menubar aria-label="Application menu">
         {menus.map((menu) => (
           <DropdownMenu key={menu.id}>
             <DropdownMenuTrigger role="menuitem" variant="ghost" target={menu.id}>

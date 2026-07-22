@@ -1,4 +1,5 @@
 import { ButtonGroup } from '../button-group'
+import { DialogCommandBridge } from '../dialog/client'
 import { DemoFrame, DemoStack } from '../example-theme/demo'
 import { Field, FieldLabel } from '../field'
 import { Input } from '../input'
@@ -47,6 +48,7 @@ export default function Example() {
     <DemoStack>
       <DemoFrame title="End sheet" description="A side-aligned native dialog for editing tasks.">
         <SheetTrigger target="end-settings-sheet">Open end sheet</SheetTrigger>
+        <DialogCommandBridge target="end-settings-sheet" />
         <ProjectSettingsSheet id="end-settings-sheet" side="end" />
       </DemoFrame>
       <DemoFrame
@@ -54,6 +56,7 @@ export default function Example() {
         description="The same composition follows the document's inline start edge."
       >
         <SheetTrigger target="start-settings-sheet">Open start sheet</SheetTrigger>
+        <DialogCommandBridge target="start-settings-sheet" />
         <ProjectSettingsSheet id="start-settings-sheet" side="start" />
       </DemoFrame>
     </DemoStack>

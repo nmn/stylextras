@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
 for (const route of ['/test/ui', '/docs', '/docs/themes']) {
-  test(`has no serious accessibility violations on ${route}`, async ({ page }) => {
+  test(`has no accessibility violations on ${route}`, async ({ page }) => {
     const errors: string[] = []
     page.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text())
@@ -35,15 +35,12 @@ for (const route of ['/test/ui', '/docs', '/docs/themes']) {
         .toBeGreaterThan(600)
     }
     const results = await new AxeBuilder({ page }).analyze()
-    const serious = results.violations.filter(
-      (violation) => violation.impact === 'serious' || violation.impact === 'critical',
-    )
     // Waku's development RSC renderer emits `as="stylesheet"` preloads.
     // Production HTML is corrected by fix-rsc-stylesheet-preloads.mjs.
     const actionableErrors = errors.filter(
       (error) => error !== '<link rel=preload> must have a valid `as` value',
     )
-    expect(serious).toEqual([])
+    expect(results.violations).toEqual([])
     expect(actionableErrors).toEqual([])
   })
 }

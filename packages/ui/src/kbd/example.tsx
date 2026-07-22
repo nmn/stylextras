@@ -1,5 +1,3 @@
-'use client'
-
 import { Kbd } from './index'
 import { DemoFrame, DemoRow, DemoStack } from '../example-theme/demo'
 
@@ -11,12 +9,9 @@ export default function Example() {
         description="Kbd should show common shortcut combinations directly."
       >
         <DemoRow>
-          <Kbd>cmd</Kbd>
-          <Kbd>k</Kbd>
-          <Kbd>cmd</Kbd>
-          <Kbd>s</Kbd>
-          <Kbd>shift</Kbd>
-          <Kbd>enter</Kbd>
+          <span><Kbd>Command</Kbd> + <Kbd>K</Kbd></span>
+          <span><Kbd>Command</Kbd> + <Kbd>S</Kbd></span>
+          <span><Kbd>Shift</Kbd> + <Kbd>Enter</Kbd></span>
         </DemoRow>
       </DemoFrame>
       <DemoFrame

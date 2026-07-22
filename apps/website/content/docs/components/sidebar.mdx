@@ -189,7 +189,8 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "c
 
 Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popoverTargetAction">`. The props below complete `SidebarTriggerProps`.
 
-- `aria-label` — `SidebarTriggerProps["aria-label"]`. Default: `'Toggle sidebar'`.
+- `aria-label` — `string`. Required unless `aria-labelledby` is provided.
+- `aria-labelledby` — `string`. Required unless `aria-label` is provided.
 - `size` — `ButtonSize`. Default: `'icon'`.
 - `sx` — `stylex.StyleXStyles`.
 - `target` — `string`. Required.

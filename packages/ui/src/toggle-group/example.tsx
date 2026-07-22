@@ -28,7 +28,7 @@ export default function Example() {
         title="Grouped toggles"
         description="Toggle Group is best shown as a short cluster of pressed states."
       >
-        <ToggleGroup>
+        <ToggleGroup aria-label="Text formatting">
           <DemoToggle defaultPressed>Color</DemoToggle>
           <DemoToggle defaultPressed>Spacing</DemoToggle>
           <DemoToggle>Motion</DemoToggle>

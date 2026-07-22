@@ -1,4 +1,5 @@
 import { ButtonGroup } from '../button-group'
+import { DialogCommandBridge } from '../dialog/client'
 import { DemoFrame, DemoStack } from '../example-theme/demo'
 import {
   Drawer,
@@ -34,6 +35,7 @@ export default function Example() {
     <DemoStack>
       <DemoFrame title="Bottom drawer" description="A compact task surface near the trigger edge.">
         <DrawerTrigger target="bottom-page-drawer">Open bottom drawer</DrawerTrigger>
+        <DialogCommandBridge target="bottom-page-drawer" />
         <PageSettingsDrawer id="bottom-page-drawer" side="bottom" />
       </DemoFrame>
       <DemoFrame
@@ -41,6 +43,7 @@ export default function Example() {
         description="Top placement works for global controls and filters."
       >
         <DrawerTrigger target="top-page-drawer">Open top drawer</DrawerTrigger>
+        <DialogCommandBridge target="top-page-drawer" />
         <PageSettingsDrawer id="top-page-drawer" side="top" />
       </DemoFrame>
     </DemoStack>

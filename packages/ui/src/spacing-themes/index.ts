@@ -9,6 +9,8 @@ export const docsTheme = stylex.createTheme(spacing, {
   controlSm: '32px',
   controlMd: '36px',
   controlLg: '40px',
+  targetMin: '24px',
+  targetCoarse: '44px',
   xxxs: '2px',
   xxs: '4px',
   xs: '6px',

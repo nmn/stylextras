@@ -9,13 +9,15 @@ const accentBackground = (accent: string) =>
     `color-mix(in oklab, oklch(100% 0 0) 97%, ${accent})`,
     'oklch(14.5% 0 0)',
   );
+const mix = (base: string, blend: string, weight?: number) =>
+  `color-mix(in oklab, ${base} ${Math.floor((weight ?? 50) * 100) / 100}%, ${blend})`;
 
 /** The default achromatic palette. */
 export const neutralTheme = stylex.createTheme(colors, {});
 
 /** The documentation website's purple system with periwinkle-blue interaction highlights. */
 export const docsTheme = stylex.createTheme(colors, {
-  bg: lightDark('hsl(0, 0%, 100%)', 'hsl(0, 0%, 7%)'),
+  bg: lightDark('hsl(0, 0%, 96%)', 'hsl(0, 0%, 7%)'),
   fg: lightDark('hsl(0, 0%, 3.9%)', 'hsl(0, 0%, 92%)'),
   tone: lightDark('hsl(0, 0%, 42%)', 'hsla(0, 0%, 70%, 0.8)'),
   fgOnBrand: lightDark('hsl(0, 0%, 100%)', 'hsl(240, 23%, 9%)'),
@@ -25,9 +27,9 @@ export const docsTheme = stylex.createTheme(colors, {
   warning: 'oklch(76.9% 0.188 70.08)',
   danger: 'oklch(63.7% 0.237 25.331)',
 
-  bgSubtle: lightDark('hsl(0, 0%, 96.1%)', 'hsl(0, 0%, 12.9%)'),
-  bgRaised: lightDark('hsl(0, 0%, 97%)', 'hsl(0, 0%, 8.5%)'),
-  bgInset: lightDark('hsl(0, 0%, 93.1%)', 'hsl(0, 0%, 12.9%)'),
+  bgSubtle: lightDark('hsl(0, 0%, 98%)', 'hsl(0, 0%, 9%)'),
+  bgRaised: lightDark('hsl(0, 0%, 100%)', 'hsl(0, 0%, 8.5%)'),
+  bgInset: lightDark('hsl(0, 0%, 93.1%)', 'hsl(0, 0%, 7%)'),
   bgOverlay: lightDark('hsl(0, 0%, 98%)', 'hsl(0, 0%, 11.6%)'),
 
   surface: lightDark('hsl(0, 0%, 96.1%)', 'hsl(0, 0%, 12.9%)'),
@@ -36,7 +38,7 @@ export const docsTheme = stylex.createTheme(colors, {
   cardForeground: lightDark('hsl(0, 0%, 3.9%)', 'hsl(0, 0%, 98%)'),
   popover: lightDark('hsl(0, 0%, 98%)', 'hsl(0, 0%, 11.6%)'),
   popoverForeground: lightDark('hsl(0, 0%, 15.1%)', 'hsl(0, 0%, 86.9%)'),
-  control: lightDark('hsl(0, 0%, 100%)', 'hsl(0, 0%, 11.6%)'),
+  control: lightDark('hsl(0, 0%, 97%)', 'hsl(0, 0%, 18%)'),
   controlHover: lightDark('hsl(0, 0%, 96.1%)', 'hsl(0, 0%, 12.9%)'),
   sidebar: lightDark('hsl(0, 0%, 97%)', 'hsl(0, 0%, 8.5%)'),
   sidebarForeground: lightDark('hsl(0, 0%, 3.9%)', 'hsl(0, 0%, 92%)'),

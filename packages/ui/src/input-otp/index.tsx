@@ -22,7 +22,8 @@ export function InputOTP({
   autoComplete = 'one-time-code',
   length = 6,
   maxLength = length,
-  pattern = '[0-9]*',
+  minLength = length,
+  pattern = `[0-9]{${length}}`,
   ref,
   sx,
   ...props
@@ -33,6 +34,7 @@ export function InputOTP({
       autoComplete={autoComplete}
       inputMode="numeric"
       maxLength={maxLength}
+      minLength={minLength}
       pattern={pattern}
       type="text"
       {...props}
@@ -47,28 +49,43 @@ const styles = stylex.create({
     borderColor: {
       default: colors.border,
       ':focus-visible': colors.focusRing,
+      ':user-invalid': colors.danger,
+      '[aria-invalid="true"]': colors.danger,
+      '@media (forced-colors: active)': 'CanvasText',
     },
     borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    boxShadow: {
-      default: 'none',
-      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
-    },
     boxSizing: 'border-box',
     color: colors.fg,
     fontFamily: typography.fontMono,
-    fontSize: typography.step1,
+    forcedColorAdjust: 'auto',
+    fontSize: {
+      default: typography.step1,
+      '@media (pointer: coarse)': `max(1rem, ${typography.step1})`,
+    },
     fontVariantNumeric: 'tabular-nums',
     fontWeight: typography.weightSemibold,
-    height: spacing.controlLg,
+    minHeight: {
+      default: `max(${spacing.controlLg}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     letterSpacing: '0.65em',
     maxWidth: '100%',
-    outline: 'none',
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
     paddingInline: spacing.md,
     textAlign: 'center',
-    transitionDuration: motion.durationFast,
-    transitionProperty: 'border-color, box-shadow',
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'border-color, outline-color',
     transitionTimingFunction: motion.easeStandard,
     width: '14rem',
   },

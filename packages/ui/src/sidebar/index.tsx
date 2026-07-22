@@ -1,7 +1,8 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithRef } from 'react'
-import { Button, type ButtonProps } from '../button'
+import type { ComponentPropsWithRef, ElementType } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
+import { Button, type AccessibleIconButtonPropsWithout } from '../button'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -13,21 +14,29 @@ import { typography } from '../tokens/typography.stylex'
 type SxProp = { sx?: StyleXStyles }
 type DivProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
 
-export type SidebarProps = Omit<ComponentPropsWithRef<'aside'>, 'className' | 'popover' | 'style'> &
+export type SidebarProps = Omit<
+  ComponentPropsWithRef<'aside'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'popover' | 'style'
+> &
+  AccessibleAriaNameProps &
   SxProp & { mode?: 'inline' | 'popover' }
-export type SidebarTriggerProps = Omit<ButtonProps, 'popoverTarget' | 'popoverTargetAction'> & {
-  target: string
-}
+export type SidebarTriggerProps = AccessibleIconButtonPropsWithout<
+  'aria-controls' | 'popoverTarget' | 'popoverTargetAction' | 'size'
+> & { target: string }
 export type SidebarHeaderProps = DivProps
 export type SidebarContentProps = DivProps
 export type SidebarFooterProps = DivProps
 export type SidebarGroupProps = DivProps
-export type SidebarGroupLabelProps = Omit<ComponentPropsWithRef<'h3'>, 'className' | 'style'> &
-  SxProp
+export type SidebarGroupLabelProps<T extends ElementType = 'h3'> = Omit<
+  ComponentPropsWithRef<T>,
+  'className' | 'style'
+> &
+  SxProp & { as?: T }
 export type SidebarMenuProps = Omit<ComponentPropsWithRef<'ul'>, 'className' | 'style'> & SxProp
 export type SidebarMenuItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> & SxProp
 export type SidebarMenuButtonProps = Omit<ComponentPropsWithRef<'button'>, 'className' | 'style'> &
   SxProp
+export type SidebarMenuLinkProps = Omit<ComponentPropsWithRef<'a'>, 'className' | 'style'> & SxProp
 
 export function Sidebar({ mode = 'inline', ref, sx, ...props }: SidebarProps) {
   return (
@@ -43,13 +52,13 @@ export function Sidebar({ mode = 'inline', ref, sx, ...props }: SidebarProps) {
 export function SidebarTrigger({ target, type = 'button', ...props }: SidebarTriggerProps) {
   return (
     <Button
+      {...props}
       type={type}
       size="icon"
       variant="outline"
-      aria-label="Toggle sidebar"
+      aria-controls={target}
       popoverTarget={target}
       popoverTargetAction="toggle"
-      {...props}
     />
   )
 }
@@ -70,8 +79,13 @@ export function SidebarGroup({ ref, sx, ...props }: SidebarGroupProps) {
   return <div ref={ref} {...props} {...stylex.props(styles.group, sx)} />
 }
 
-export function SidebarGroupLabel({ ref, sx, ...props }: SidebarGroupLabelProps) {
-  return <h3 ref={ref} {...props} {...stylex.props(styles.groupLabel, sx)} />
+export function SidebarGroupLabel<T extends ElementType = 'h3'>({
+  as,
+  sx,
+  ...props
+}: SidebarGroupLabelProps<T>) {
+  const Component = as ?? 'h3'
+  return <Component {...props} {...stylex.props(styles.groupLabel, sx)} />
 }
 
 export function SidebarMenu({ ref, sx, ...props }: SidebarMenuProps) {
@@ -86,16 +100,22 @@ export function SidebarMenuButton({ ref, sx, type = 'button', ...props }: Sideba
   return <button ref={ref} type={type} {...props} {...stylex.props(styles.menuButton, sx)} />
 }
 
+export function SidebarMenuLink({ ref, sx, ...props }: SidebarMenuLinkProps) {
+  return <a ref={ref} {...props} {...stylex.props(styles.menuButton, sx)} />
+}
+
 const styles = stylex.create({
   sidebar: {
     backgroundColor: colors.sidebar,
     borderColor: colors.sidebarBorder,
     borderStyle: 'solid',
-    borderWidth: `0 ${stroke.thin} 0 0`,
+    borderWidth: 0,
+    borderInlineEndWidth: stroke.thin,
     color: colors.sidebarForeground,
     display: 'flex',
     flexDirection: 'column',
     minHeight: 0,
+    maxWidth: '100%',
     width: '16rem',
   },
   popover: {
@@ -108,11 +128,13 @@ const styles = stylex.create({
     boxShadow: elevation.lg,
     display: { default: 'none', ':popover-open': 'flex' },
     height: '100dvh',
-    inset: '0 auto 0 0',
+    insetBlock: 0,
+    insetInline: '0 auto',
     margin: 0,
     maxHeight: '100dvh',
     padding: 0,
     position: 'fixed',
+    overflow: 'hidden',
   },
   header: {
     borderColor: colors.sidebarBorder,
@@ -124,6 +146,7 @@ const styles = stylex.create({
     flexBasis: 0,
     flexGrow: 1,
     overflowY: 'auto',
+    overscrollBehaviorY: 'contain',
     padding: spacing.sm,
   },
   footer: {
@@ -181,12 +204,30 @@ const styles = stylex.create({
       '[aria-current="page"]': typography.weightSemibold,
     },
     gap: spacing.sm,
-    minHeight: spacing.controlSm,
+    minHeight: {
+      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     opacity: { default: 1, ':disabled': 0.5 },
     outline: 'none',
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: `-${stroke.focusRingOffset}`,
+    outlineStyle: 'solid',
+    outlineWidth: { default: 0, ':focus-visible': stroke.focusRing },
     paddingInline: spacing.sm,
     textAlign: 'start',
-    transitionDuration: motion.durationFast,
+    textDecoration: 'none',
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'background-color, box-shadow, color, outline-color',
+    transitionTimingFunction: motion.easeStandard,
     width: '100%',
+    overflowWrap: 'anywhere',
   },
 })

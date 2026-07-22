@@ -25,24 +25,43 @@ export function Slider({ max = 100, min = 0, ref, step = 1, sx, ...props }: Slid
   )
 }
 
-/* eslint-disable @stylexjs/valid-styles */
 const styles = stylex.create({
   slider: {
-    accentColor: colors.primary,
+    accentColor: {
+      default: colors.primary,
+      ':user-invalid': colors.danger,
+      '[aria-invalid="true"]': colors.danger,
+      '@media (forced-colors: active)': 'Highlight',
+    },
     appearance: 'none',
+    backgroundClip: 'content-box',
     backgroundColor: colors.secondary,
     borderRadius: radius.round,
-    boxShadow: {
-      default: 'none',
-      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
-    },
+    boxSizing: 'border-box',
     cursor: { default: 'pointer', ':disabled': 'not-allowed' },
-    height: spacing.xs,
-    margin: `${spacing.sm} 0`,
+    minHeight: {
+      default: spacing.targetMin,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
+    marginBlock: spacing.xxs,
+    marginInline: 0,
     opacity: { default: 1, ':disabled': 0.5 },
-    outline: 'none',
-    transitionDuration: motion.durationFast,
-    transitionProperty: 'box-shadow, opacity',
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
+    paddingBlock: {
+      default: `calc((${spacing.targetMin} - ${spacing.xs}) / 2)`,
+      '@media (pointer: coarse)': `calc((${spacing.targetCoarse} - ${spacing.xs}) / 2)`,
+    },
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'background-color, opacity, outline-color',
     transitionTimingFunction: motion.easeStandard,
     width: '100%',
     '::-webkit-slider-thumb': {
@@ -69,4 +88,3 @@ const styles = stylex.create({
     },
   },
 })
-/* eslint-enable @stylexjs/valid-styles */

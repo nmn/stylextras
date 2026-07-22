@@ -37,4 +37,3 @@ export default function Example() {
     </DemoFrame>
   )
 }
-'use client'

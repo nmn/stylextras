@@ -53,7 +53,10 @@ function AccordionIcon() {
 const styles = stylex.create({
   root: {
     boxSizing: 'border-box',
-    borderColor: colors.border,
+    borderColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     borderStyle: 'solid',
     borderWidth: `${stroke.thin} 0 0`,
     minWidth: 0,
@@ -61,11 +64,14 @@ const styles = stylex.create({
   },
   item: {
     boxSizing: 'border-box',
-    borderColor: colors.border,
+    borderColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     borderStyle: 'solid',
     borderWidth: `0 0 ${stroke.thin}`,
     minWidth: 0,
-    overflow: 'clip',
+    overflow: 'visible',
     width: '100%',
   },
   trigger: {
@@ -74,10 +80,13 @@ const styles = stylex.create({
       default: 'transparent',
       ':hover': colors.accent,
     },
-    outline: {
-      default: 'none',
-      ':focus-visible': `${stroke.focusRing} solid ${colors.focusRing}`,
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
     },
+    outlineOffset: `calc(0px - ${stroke.focusRing})`,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
     boxSizing: 'border-box',
     color: colors.fg,
     cursor: 'pointer',
@@ -88,11 +97,17 @@ const styles = stylex.create({
     gap: spacing.sm,
     gridTemplateColumns: 'minmax(0, 1fr) auto',
     listStyle: 'none',
-    minHeight: spacing.controlLg,
+    minHeight: {
+      default: `max(${spacing.controlLg}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     overflowWrap: 'anywhere',
     paddingBlock: spacing.sm,
     paddingInline: spacing.md,
-    transitionDuration: motion.durationFast,
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
     transitionProperty: 'background-color, outline-color',
     transitionTimingFunction: motion.easeStandard,
     width: '100%',
@@ -141,6 +156,7 @@ const styles = stylex.create({
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
     overflowWrap: 'anywhere',
+    minWidth: 0,
     padding: `0 ${spacing.md} ${spacing.md}`,
   },
 })

@@ -24,9 +24,12 @@ import { Resizable, ResizableHandle, ResizablePanel } from './index';
 export default function Example() {
   return (
     <Resizable defaultValue={38} sx={styles.root}>
-      <ResizablePanel sx={styles.panel}>Navigation and files</ResizablePanel>
-      <ResizableHandle label="Resize editor panels" />
-      <ResizablePanel sx={styles.panel}>Editor preview</ResizablePanel>
+      <ResizablePanel id="editor-navigation" sx={styles.panel}>Navigation and files</ResizablePanel>
+      <ResizableHandle
+        label="Resize editor panels"
+        aria-controls="editor-navigation editor-preview"
+      />
+      <ResizablePanel id="editor-preview" sx={styles.panel}>Editor preview</ResizablePanel>
     </Resizable>
   );
 }
@@ -64,6 +67,8 @@ import { Resizable, ResizableHandle, ResizablePanel } from "@stylextras/ui/resiz
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
 This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+
+The separator has a density-independent pointer target around its thin visual rule, exposes its bounds and current value, and reverses horizontal Arrow behavior in RTL. Use `aria-controls` to reference the affected panel IDs.
 
 ## API reference
 

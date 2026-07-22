@@ -1,68 +1,129 @@
-"use client";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
+import { ColorSwatch } from '../color-swatch'
+import { colors as colorTokens } from '../tokens/color.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import { useState } from "react";
-import type { ComponentPropsWithoutRef } from "react";
-import { spacing } from "../tokens/spacing.stylex";
-import { ColorSwatch } from "../color-swatch";
+export type ColorSwatchPickerProps = Omit<
+  ComponentPropsWithRef<'fieldset'>,
+  'className' | 'defaultValue' | 'style'
+> & {
+  colors?: string[]
+  defaultValue?: string
+  getColorLabel?: (color: string) => string
+  legend: ReactNode
+  name: string
+  required?: boolean
+  sx?: StyleXStyles
+}
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+const defaultColors = ['#7c3aed', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444']
 
-export type ColorSwatchPickerProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-  colors?: string[];
-  value?: string;
-  onValueChange?: (value: string) => void;
-};
-
-const defaultColors = ["#7c3aed", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444"];
-
-/**
- * Renders a group of selectable color swatches.
- *
- * Search aliases: color swatch picker, swatch picker, palette picker, color palette.
- *
- * A11y notes:
- * - Selection behavior is simplified.
- * - Does not yet provide a robust radio-group style keyboard model.
- */
+/** A native radio group whose swatches retain labels and standard form behavior. */
 export function ColorSwatchPicker({
   colors = defaultColors,
-  onValueChange,
+  defaultValue,
+  disabled = false,
+  form,
+  getColorLabel = (color) => color,
+  legend,
+  name,
+  ref,
+  required = false,
   sx,
-  value,
   ...props
 }: ColorSwatchPickerProps) {
-  const [internalValue, setInternalValue] = useState(colors[0] ?? "#7c3aed");
-  const currentValue = value ?? internalValue;
-
-  function handleSelect(nextValue: string) {
-    if (value === undefined) setInternalValue(nextValue);
-    onValueChange?.(nextValue);
-  }
+  const initialValue = defaultValue ?? colors[0] ?? ''
 
   return (
-    <div {...props} {...stylex.props(styles.base, sx)}>
-      {colors.map((item) => (
-        <button
-          key={item}
-          type="button"
-          onClick={() => handleSelect(item)}
-          aria-pressed={currentValue === item}
-        >
-          <ColorSwatch color={item} />
-        </button>
-      ))}
-    </div>
-  );
+    <fieldset
+      ref={ref}
+      disabled={disabled}
+      form={form}
+      {...props}
+      {...stylex.props(styles.group, sx)}
+    >
+      <legend {...stylex.props(styles.legend)}>{legend}</legend>
+      <div {...stylex.props(styles.options)}>
+        {colors.map((color, index) => {
+          const label = getColorLabel(color)
+          return (
+            <label key={`${color}-${index}`} {...stylex.props(styles.option)}>
+              <input
+                type="radio"
+                form={form}
+                name={name}
+                required={required}
+                value={color}
+                defaultChecked={initialValue === color}
+                {...stylex.props(styles.input)}
+              />
+              <ColorSwatch color={color} />
+              <span {...stylex.props(styles.optionLabel)}>{label}</span>
+            </label>
+          )
+        })}
+      </div>
+    </fieldset>
+  )
 }
 
 const styles = stylex.create({
-  base: {
-    gap: spacing.xs,
-    alignItems: "center",
-    display: "flex",
-    flexWrap: "wrap",
+  group: {
+    margin: 0,
+    padding: 0,
+    borderStyle: 'none',
+    borderWidth: 0,
+    minWidth: 0,
   },
-});
+  legend: {
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    fontWeight: typography.weightMedium,
+    marginBlockEnd: spacing.xs,
+  },
+  options: {
+    gap: spacing.xs,
+    alignItems: 'stretch',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  option: {
+    padding: spacing.xs,
+    gap: spacing.xs,
+    alignItems: 'center',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    outlineColor: {
+      default: 'transparent',
+      ':has(input:focus-visible)': colorTokens.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':has(input:focus-visible)': stroke.focusRing,
+    },
+    minHeight: {
+      default: spacing.targetMin,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
+  },
+  input: {
+    margin: -1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    position: 'absolute',
+    height: 1,
+    width: 1,
+  },
+  optionLabel: {
+    fontFamily: typography.fontMono,
+    fontSize: typography.stepMinus1,
+    overflowWrap: 'anywhere',
+  },
+})

@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
@@ -8,17 +9,36 @@ import { typography } from '../tokens/typography.stylex'
 
 type SxProp = { sx?: StyleXStyles }
 export type AvatarSize = 'sm' | 'md' | 'lg'
-export type AvatarProps = Omit<ComponentPropsWithRef<'span'>, 'className' | 'style'> &
+type AvatarAccessibilityProps =
+  | (AccessibleAriaNameProps & { 'aria-hidden'?: false })
+  | { 'aria-hidden': true; 'aria-label'?: never; 'aria-labelledby'?: never }
+export type AvatarProps = Omit<
+  ComponentPropsWithRef<'span'>,
+  'aria-hidden' | 'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
+> &
+  AvatarAccessibilityProps &
   SxProp & { size?: AvatarSize }
-export type AvatarImageProps = Omit<ComponentPropsWithRef<'img'>, 'className' | 'style'> & SxProp
+export type AvatarImageProps = Omit<
+  ComponentPropsWithRef<'img'>,
+  'alt' | 'className' | 'style'
+> &
+  SxProp & { alt: string }
 export type AvatarFallbackProps = Omit<
   ComponentPropsWithRef<'span'>,
-  'className' | 'style'
+  'aria-hidden' | 'className' | 'style'
 > &
   SxProp
 
-export function Avatar({ ref, size = 'md', sx, ...props }: AvatarProps) {
-  return <span ref={ref} {...props} {...stylex.props(styles.avatar, sizeStyles[size], sx)} />
+export function Avatar({ 'aria-hidden': ariaHidden, ref, size = 'md', sx, ...props }: AvatarProps) {
+  return (
+    <span
+      ref={ref}
+      role={ariaHidden ? undefined : 'img'}
+      aria-hidden={ariaHidden}
+      {...props}
+      {...stylex.props(styles.avatar, sizeStyles[size], sx)}
+    />
+  )
 }
 
 export function AvatarImage({ alt, ref, sx, ...props }: AvatarImageProps) {
@@ -26,7 +46,7 @@ export function AvatarImage({ alt, ref, sx, ...props }: AvatarImageProps) {
 }
 
 export function AvatarFallback({ ref, sx, ...props }: AvatarFallbackProps) {
-  return <span ref={ref} {...props} {...stylex.props(styles.fallback, sx)} />
+  return <span ref={ref} {...props} aria-hidden="true" {...stylex.props(styles.fallback, sx)} />
 }
 
 const styles = stylex.create({
@@ -42,6 +62,7 @@ const styles = stylex.create({
     justifyContent: 'center',
     overflow: 'hidden',
     position: 'relative',
+    userSelect: 'none',
   },
   image: {
     height: '100%',

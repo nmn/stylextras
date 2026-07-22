@@ -8,14 +8,20 @@ export default function Example() {
   return (
     <DemoFrame title="Checkbox" description="Native checked, disabled, validation, and form behavior.">
       <DemoStack>
-        <Label sx={styles.option}><Checkbox defaultChecked name="updates" /> Product updates</Label>
-        <Label sx={styles.option}><Checkbox name="analytics" /> Usage analytics</Label>
-        <Label sx={styles.option}><Checkbox disabled /> Unavailable option</Label>
-        <Label sx={styles.option}><Checkbox controlSize="sm" /> Compact option</Label>
+        <Label htmlFor="checkbox-updates" sx={styles.option}><Checkbox id="checkbox-updates" defaultChecked name="updates" /> Product updates</Label>
+        <Label htmlFor="checkbox-analytics" sx={styles.option}><Checkbox id="checkbox-analytics" name="analytics" /> Usage analytics</Label>
+        <Label htmlFor="checkbox-unavailable" sx={styles.option}><Checkbox id="checkbox-unavailable" disabled /> Unavailable option</Label>
+        <Label htmlFor="checkbox-compact" sx={styles.option}><Checkbox id="checkbox-compact" controlSize="sm" /> Compact option</Label>
       </DemoStack>
     </DemoFrame>
   )
 }
 
-const styles = stylex.create({ option: { alignItems: 'center', display: 'flex', gap: spacing.sm } })
-'use client'
+const styles = stylex.create({
+  option: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: spacing.sm,
+    minHeight: { default: spacing.targetMin, '@media (pointer: coarse)': spacing.targetCoarse },
+  },
+})

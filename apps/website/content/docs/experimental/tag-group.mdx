@@ -1,6 +1,6 @@
 ---
-title: "TagGroup"
-description: "Interactive tag collection."
+title: "TagList"
+description: "Semantic list for static tags."
 ---
 
 import Example from "@stylextras/ui/experimental/tag-group/example";
@@ -16,18 +16,16 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
 import { Badge } from '../badge';
-import { TagGroup } from './index';
+import { TagList } from './index';
 
 export default function Example() {
   return (
-    <TagGroup>
+    <TagList aria-label="Component metadata">
       <Badge>Design system</Badge>
       <Badge>Experimental</Badge>
       <Badge>Native popup</Badge>
-    </TagGroup>
+    </TagList>
   );
 }
 ```
@@ -35,25 +33,31 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { TagGroup } from "@stylextras/ui/experimental/tag-group";
+import { TagList } from "@stylextras/ui/experimental/tag-group";
 ```
 
 ## Anatomy
 
-- `TagGroup` — Styled `<div>`.
+- `TagList` — `<ul role="list">` that wraps each child in an `<li>`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`TagList` preserves native list semantics without JavaScript. It is intended for static metadata tags. Use native checkbox or radio controls when tags are selectable, and buttons when each tag performs an action.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+Native `ul` props, including accessible naming, standard ARIA/data attributes, event handlers, and `ref`, remain accepted. `TagGroup` remains as a deprecated compatibility alias. `sx` is composed last.
 
 ## API reference
 
-### TagGroup
+### TagList
+
+`TagListProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `TagListProps`.
+
+- `sx` — `stylex.StyleXStyles`.
+
+### TagGroup (deprecated alias)
 
 `TagGroupProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"div">, "className" | "style">`. The props below complete `TagGroupProps`.
-
-- `sx` — `stylex.StyleXStyles`.
+`TagGroup` aliases `TagList`, and `TagGroupProps` is the same type as `TagListProps`. Prefer the list name because these tags are static metadata, not interactive group controls.

@@ -1,8 +1,9 @@
 "use client";
 
 import * as stylex from "@stylexjs/stylex";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@stylextras/ui/button";
+import { ButtonGroup } from "@stylextras/ui/button-group";
 import { Calendar } from "@stylextras/ui/calendar";
 import { Checkbox } from "@stylextras/ui/checkbox";
 import {
@@ -13,11 +14,25 @@ import {
   ComboboxItem,
 } from "@stylextras/ui/combobox";
 import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandTrigger,
+} from "@stylextras/ui/command";
+import {
   ContextMenu,
+  ContextMenuButton,
   ContextMenuItem,
   ContextMenuLabel,
   ContextMenuTrigger,
 } from "@stylextras/ui/context-menu";
+import {
+  LazyContextMenu,
+  LazyContextMenuButton,
+  LazyContextMenuTrigger,
+} from "@stylextras/ui/context-menu/lazy";
 import { DatePicker } from "@stylextras/ui/date-picker";
 import {
   DialogBody,
@@ -29,6 +44,11 @@ import {
   DialogTrigger,
 } from "@stylextras/ui/dialog";
 import { DialogClient } from "@stylextras/ui/dialog/client";
+import {
+  LazyDialog,
+  LazyDialogTrigger,
+  type LazyDialogContentProps,
+} from "@stylextras/ui/dialog/lazy";
 import { Direction } from "@stylextras/ui/direction";
 import {
   DropdownMenu,
@@ -36,6 +56,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@stylextras/ui/dropdown-menu";
+import {
+  LazyDropdownMenu,
+  LazyDropdownMenuTrigger,
+} from "@stylextras/ui/dropdown-menu/lazy";
 import { Field, FieldDescription, FieldLabel } from "@stylextras/ui/field";
 import {
   HoverCard,
@@ -65,19 +89,72 @@ import {
 } from "@stylextras/ui/tabs";
 import { Toaster, toast } from "@stylextras/ui/toast";
 import { Toggle } from "@stylextras/ui/toggle";
+import { ToggleGroup } from "@stylextras/ui/toggle-group";
 import { Tooltip, TooltipTrigger } from "@stylextras/ui/tooltip";
+import { installInterestInvokerFallback } from "@stylextras/ui/platform-polyfills/interest-invoker-fallback";
 import { colorThemes } from "@stylextras/ui/color-themes";
 import { radiusThemes } from "@stylextras/ui/radius-themes";
 import { spacingThemes } from "@stylextras/ui/spacing-themes";
+
+const managedTabsListOverrides = {
+  "aria-orientation": "vertical",
+  role: "list",
+} as const;
+const managedTabsTriggerOverrides = {
+  "aria-controls": "consumer-panel",
+  "aria-selected": false,
+  id: "consumer-tab",
+  role: "button",
+  tabIndex: 12,
+  type: "submit",
+} as const;
+const managedTabsContentOverrides = {
+  "aria-labelledby": "consumer-tab",
+  hidden: true,
+  id: "consumer-panel",
+  role: "region",
+  tabIndex: -1,
+} as const;
+const managedComboboxItemOverrides = {
+  hidden: true,
+  onMouseDown: () => {},
+} as const;
+
+type MissingLazyDialogProps = LazyDialogContentProps & { titleId: string };
+
+function MissingLazyDialogContent({ id }: MissingLazyDialogProps) {
+  return <div id={id}>This module omitted its required dialog.</div>;
+}
 
 export function UiTestHarness() {
   const [hydrated, setHydrated] = useState(false);
   const [selectResult, setSelectResult] = useState("");
   const [comboboxResult, setComboboxResult] = useState("");
+  const [controlledComboboxValue, setControlledComboboxValue] =
+    useState("react");
+  const [showControlledVue, setShowControlledVue] = useState(false);
   const [dateResult, setDateResult] = useState("");
   const [calendarValue, setCalendarValue] = useState("2026-07-11");
+  const [tabChangeCount, setTabChangeCount] = useState(0);
+  const [fallbackSubmitCount, setFallbackSubmitCount] = useState(0);
+  const [canceledLazyErrorCount, setCanceledLazyErrorCount] = useState(0);
+  const [showDefaultOpenDialog, setShowDefaultOpenDialog] = useState(false);
+  const fallbackTriggerRef = useRef<HTMLButtonElement>(null);
+  const fallbackPopoverRef = useRef<HTMLDivElement>(null);
+  const lazyDialogRetryAttempts = useRef(0);
+  const lazyMenuRetryAttempts = useRef(0);
 
   useEffect(() => setHydrated(true), []);
+  useEffect(() => {
+    const trigger = fallbackTriggerRef.current;
+    const popover = fallbackPopoverRef.current;
+    if (!trigger || !popover) return;
+    return installInterestInvokerFallback(trigger, popover, {
+      hideDelay: 0,
+      interactive: false,
+      showDelay: 0,
+    });
+  }, []);
 
   return (
     <main
@@ -176,7 +253,13 @@ export function UiTestHarness() {
                   <ComboboxContent data-testid="combobox-content">
                     <ComboboxItem value="react">React</ComboboxItem>
                     <ComboboxItem value="preact">Preact</ComboboxItem>
-                    <ComboboxItem value="svelte">Svelte</ComboboxItem>
+                    <ComboboxItem
+                      value="svelte"
+                      data-testid="managed-combobox-item"
+                      {...managedComboboxItemOverrides}
+                    >
+                      Svelte
+                    </ComboboxItem>
                     <ComboboxItem value="vue">Vue</ComboboxItem>
                     <ComboboxItem value="angular" disabled>
                       Angular
@@ -202,6 +285,55 @@ export function UiTestHarness() {
             </form>
           </TestCard>
 
+          <TestCard title="Controlled combobox synchronization">
+            <Field>
+              <FieldLabel htmlFor="test-controlled-framework">
+                Controlled framework
+              </FieldLabel>
+              <Combobox
+                value={controlledComboboxValue}
+                onValueChange={setControlledComboboxValue}
+              >
+                <ComboboxInput
+                  id="test-controlled-framework"
+                  data-testid="controlled-combobox-input"
+                />
+                <ComboboxContent>
+                  <ComboboxItem value="react">React</ComboboxItem>
+                  {showControlledVue ? (
+                    <ComboboxItem value="vue">Vue</ComboboxItem>
+                  ) : null}
+                  <ComboboxEmpty>No controlled results.</ComboboxEmpty>
+                </ComboboxContent>
+              </Combobox>
+            </Field>
+            <div {...stylex.props(styles.actions)}>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setShowControlledVue(false);
+                  setControlledComboboxValue("vue");
+                }}
+              >
+                Select deferred Vue
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowControlledVue(true)}
+              >
+                Mount deferred Vue
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setControlledComboboxValue("react")}
+              >
+                Select controlled React
+              </Button>
+            </div>
+          </TestCard>
+
           <TestCard title="Date picker">
             <form
               data-testid="date-form"
@@ -216,7 +348,7 @@ export function UiTestHarness() {
                 <FieldLabel htmlFor="test-due-date">Due date</FieldLabel>
                 <DatePicker
                   name="due"
-                  inputId="test-due-date"
+                  id="test-due-date"
                   defaultValue="2026-07-11"
                   min="2026-07-01"
                   max="2026-08-31"
@@ -256,6 +388,15 @@ export function UiTestHarness() {
                 </label>
               </RadioGroup>
               <Toggle aria-pressed="false">Pin panel</Toggle>
+              <ButtonGroup aria-label="Harness toolbar">
+                <Button variant="ghost">Align start</Button>
+                <Button variant="ghost">Align center</Button>
+                <Button variant="ghost">Align end</Button>
+              </ButtonGroup>
+              <ToggleGroup aria-label="Harness formatting">
+                <Toggle aria-pressed="true">Bold</Toggle>
+                <Toggle aria-pressed="false">Italic</Toggle>
+              </ToggleGroup>
             </div>
           </TestCard>
         </div>
@@ -303,6 +444,71 @@ export function UiTestHarness() {
                 </DialogClose>
               </DialogFooter>
             </DialogClient>
+            <Button
+              variant="outline"
+              onClick={() => setShowDefaultOpenDialog(true)}
+            >
+              Mount default-open dialog
+            </Button>
+            {showDefaultOpenDialog ? (
+              <DialogClient
+                id="test-default-open-dialog"
+                aria-label="Default-open dialog"
+                defaultOpen
+              >
+                <DialogBody>Opened during the initial client effect.</DialogBody>
+                <DialogFooter>
+                  <DialogClose target="test-default-open-dialog" autoFocus>
+                    Close default-open dialog
+                  </DialogClose>
+                </DialogFooter>
+              </DialogClient>
+            ) : null}
+          </TestCard>
+
+          <TestCard title="Deferred dialog">
+            <LazyDialog
+              id="test-lazy-dialog"
+              aria-labelledby="test-lazy-dialog-title"
+              contentProps={{ titleId: "test-lazy-dialog-title" }}
+              load={() => import("./LazyDialogFixture")}
+              loadingLabel="Loading deferred settings"
+              loadErrorLabel="Could not open deferred settings"
+            >
+              <LazyDialogTrigger>Open lazy dialog</LazyDialogTrigger>
+            </LazyDialog>
+            <LazyDialog
+              id="test-retry-lazy-dialog"
+              aria-label="Recovered deferred dialog"
+              contentProps={{ titleId: "test-retry-lazy-dialog-title" }}
+              load={async () => {
+                lazyDialogRetryAttempts.current += 1;
+                if (lazyDialogRetryAttempts.current === 1) {
+                  return { default: MissingLazyDialogContent };
+                }
+                return import("./LazyDialogFixture");
+              }}
+              loadErrorLabel="Retry deferred dialog failed"
+              preload="none"
+            >
+              <LazyDialogTrigger>Open retry lazy dialog</LazyDialogTrigger>
+            </LazyDialog>
+            <LazyDialog
+              id="test-cancel-lazy-dialog"
+              aria-label="Canceled deferred dialog"
+              contentProps={{ titleId: "test-cancel-lazy-dialog-title" }}
+              load={() =>
+                new Promise<never>((_resolve, reject) => {
+                  setTimeout(() => reject(new Error("Canceled dialog load")), 250);
+                })
+              }
+              loadingLabel="Loading cancelable dialog"
+              loadErrorLabel="Canceled dialog load failed"
+              onLoadError={() => setCanceledLazyErrorCount((count) => count + 1)}
+              preload="none"
+            >
+              <LazyDialogTrigger>Open cancelable lazy dialog</LazyDialogTrigger>
+            </LazyDialog>
           </TestCard>
 
           <TestCard title="Popover and menu">
@@ -327,6 +533,69 @@ export function UiTestHarness() {
             </div>
           </TestCard>
 
+          <TestCard title="Deferred menus">
+            <div {...stylex.props(styles.actions)}>
+              <LazyDropdownMenu
+                id="test-lazy-menu"
+                aria-label="Deferred project actions"
+                contentProps={{}}
+                load={() => import("./LazyMenuFixture")}
+                loadingLabel="Loading deferred menu"
+                loadErrorLabel="Could not open deferred menu"
+              >
+                <LazyDropdownMenuTrigger>Open lazy menu</LazyDropdownMenuTrigger>
+              </LazyDropdownMenu>
+              <LazyDropdownMenu
+                id="test-retry-lazy-menu"
+                aria-label="Recovered deferred menu"
+                contentProps={{}}
+                load={async () => {
+                  lazyMenuRetryAttempts.current += 1;
+                  if (lazyMenuRetryAttempts.current === 1) {
+                    return { default: undefined as never };
+                  }
+                  return import("./LazyMenuFixture");
+                }}
+                loadErrorLabel="Retry deferred menu failed"
+                preload="none"
+              >
+                <LazyDropdownMenuTrigger>Open retry lazy menu</LazyDropdownMenuTrigger>
+              </LazyDropdownMenu>
+              <LazyDropdownMenu
+                id="test-cancel-lazy-menu"
+                aria-label="Canceled deferred menu"
+                contentProps={{}}
+                load={() =>
+                  new Promise<never>((_resolve, reject) => {
+                    setTimeout(() => reject(new Error("Canceled menu load")), 250);
+                  })
+                }
+                loadingLabel="Loading cancelable menu"
+                loadErrorLabel="Canceled menu load failed"
+                onLoadError={() => setCanceledLazyErrorCount((count) => count + 1)}
+                preload="none"
+              >
+                <LazyDropdownMenuTrigger>Open cancelable lazy menu</LazyDropdownMenuTrigger>
+              </LazyDropdownMenu>
+              <LazyContextMenu
+                id="test-lazy-context-menu"
+                aria-label="Deferred canvas actions"
+                contentProps={{}}
+                load={() => import("./LazyContextMenuFixture")}
+                loadingLabel="Loading deferred context menu"
+                loadErrorLabel="Could not open deferred context menu"
+              >
+                <LazyContextMenuButton>Open lazy canvas actions</LazyContextMenuButton>
+                <LazyContextMenuTrigger aria-label="Deferred canvas context region">
+                  <span data-testid="lazy-context-target">Right-click deferred region</span>
+                </LazyContextMenuTrigger>
+              </LazyContextMenu>
+            </div>
+            <output data-testid="canceled-lazy-error-count">
+              {canceledLazyErrorCount}
+            </output>
+          </TestCard>
+
           <TestCard title="Tooltip and hover card">
             <div {...stylex.props(styles.actions)}>
               <TooltipTrigger
@@ -337,6 +606,25 @@ export function UiTestHarness() {
                 Hover for tip
               </TooltipTrigger>
               <Tooltip id="test-tooltip">Keyboard shortcut: ⌘K</Tooltip>
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setFallbackSubmitCount((count) => count + 1);
+                }}
+              >
+                <Button
+                  ref={fallbackTriggerRef}
+                  type="submit"
+                  popoverTarget="test-fallback-submit-tooltip"
+                  popoverTargetAction="toggle"
+                >
+                  Submit with fallback hint
+                </Button>
+                <Tooltip ref={fallbackPopoverRef} id="test-fallback-submit-tooltip">
+                  Submitting keeps its native default action
+                </Tooltip>
+                <output data-testid="fallback-submit-result">{fallbackSubmitCount}</output>
+              </form>
               <HoverCardTrigger
                 target="test-hover-card"
                 showDelay={20}
@@ -359,6 +647,9 @@ export function UiTestHarness() {
           </TestCard>
 
           <TestCard title="Context menu">
+            <ContextMenuButton target="test-context-menu">
+              Open canvas actions
+            </ContextMenuButton>
             <ContextMenuTrigger
               target="test-context-menu"
               tabIndex={0}
@@ -368,7 +659,7 @@ export function UiTestHarness() {
                 Right-click this region
               </div>
             </ContextMenuTrigger>
-            <ContextMenu id="test-context-menu">
+            <ContextMenu id="test-context-menu" aria-label="Canvas actions">
               <ContextMenuLabel>Canvas</ContextMenuLabel>
               <ContextMenuItem>Copy</ContextMenuItem>
               <ContextMenuItem>Paste</ContextMenuItem>
@@ -383,30 +674,82 @@ export function UiTestHarness() {
         </h2>
         <div {...stylex.props(styles.grid)}>
           <TestCard title="Tabs">
-            <Tabs defaultValue="account">
-              <TabsList aria-label="Settings sections">
-                <TabsTrigger value="account">Account</TabsTrigger>
+            <Tabs
+              defaultValue="account"
+              onValueChange={() => setTabChangeCount((count) => count + 1)}
+            >
+              <TabsList
+                aria-label="Settings sections"
+                data-testid="managed-tabs-list"
+                {...managedTabsListOverrides}
+              >
+                <TabsTrigger
+                  value="account"
+                  data-testid="managed-tabs-trigger"
+                  {...managedTabsTriggerOverrides}
+                >
+                  Account
+                </TabsTrigger>
                 <TabsTrigger value="security">Security</TabsTrigger>
                 <TabsTrigger value="billing" disabled>
                   Billing
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="account">Account settings</TabsContent>
+              <TabsContent
+                value="account"
+                data-testid="managed-tabs-content"
+                {...managedTabsContentOverrides}
+              >
+                Account settings
+              </TabsContent>
               <TabsContent value="security">Security settings</TabsContent>
               <TabsContent value="billing">Billing settings</TabsContent>
+            </Tabs>
+            <output data-testid="tab-change-count">{tabChangeCount}</output>
+            <Tabs defaultValue="unavailable">
+              <TabsList aria-label="Disabled selection fallback">
+                <TabsTrigger value="unavailable" disabled>
+                  Unavailable
+                </TabsTrigger>
+                <TabsTrigger value="fallback" data-testid="disabled-selected-fallback">
+                  Fallback
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="unavailable">Unavailable content</TabsContent>
+              <TabsContent value="fallback">Fallback content</TabsContent>
             </Tabs>
           </TestCard>
 
           <TestCard title="Calendar">
             <Calendar
+              data-testid="bounded-calendar"
               value={calendarValue}
               min="2026-07-01"
-              max="2026-08-31"
+              max="2026-08-20"
               onValueChange={setCalendarValue}
             />
             <output data-testid="calendar-result" {...stylex.props(styles.output)}>
               {calendarValue}
             </output>
+          </TestCard>
+
+          <TestCard title="Command visibility model">
+            <CommandTrigger target="test-command">Open command palette</CommandTrigger>
+            <Command id="test-command" aria-label="Harness commands">
+              <CommandInput
+                aria-label="Filter harness commands"
+                data-testid="command-input"
+              />
+              <CommandList>
+                <CommandItem value="visible">Visible command</CommandItem>
+                <CommandItem value="hidden" hidden>
+                  Hidden command
+                </CommandItem>
+                <CommandEmpty data-testid="command-empty">
+                  No available commands.
+                </CommandEmpty>
+              </CommandList>
+            </Command>
           </TestCard>
 
           <TestCard title="RTL">
@@ -423,17 +766,43 @@ export function UiTestHarness() {
           </TestCard>
 
           <TestCard title="Toast">
-            <Button
-              onClick={() =>
-                toast({
-                  description: "The project settings were updated.",
-                  duration: 10_000,
-                  title: "Changes saved",
-                })
-              }
-            >
-              Show toast
-            </Button>
+            <div {...stylex.props(styles.actions)}>
+              <Button
+                onClick={() =>
+                  toast({
+                    description: "The project settings were updated.",
+                    duration: 10_000,
+                    title: "Changes saved",
+                  })
+                }
+              >
+                Show toast
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  toast({
+                    announcement: "First batched notification. Review details.",
+                    description: (
+                      <a id="batch-toast-details" href="#forms-heading">
+                        Review details
+                      </a>
+                    ),
+                    duration: 10_000,
+                    id: "batch-toast-first",
+                    title: <span id="batch-toast-title">First batched notification</span>,
+                  });
+                  toast({
+                    description: "Queued in the same update.",
+                    duration: 10_000,
+                    id: "batch-toast-second",
+                    title: "Second batched notification",
+                  });
+                }}
+              >
+                Show toast batch
+              </Button>
+            </div>
           </TestCard>
         </div>
       </section>

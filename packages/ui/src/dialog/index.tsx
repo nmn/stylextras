@@ -1,7 +1,11 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
-import { Button, type ButtonProps } from '../button'
+import type { AccessibleAriaNameProps } from '../accessibility'
+import {
+  Button,
+  type AccessibleButtonPropsWithout,
+} from '../button'
 import { blur } from '../tokens/blur.stylex'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
@@ -14,17 +18,19 @@ import { typography } from '../tokens/typography.stylex'
 type SxProp = { sx?: StyleXStyles }
 
 export type DialogSize = 'sm' | 'md' | 'lg'
-export type DialogProps = Omit<ComponentPropsWithRef<'dialog'>, 'className' | 'style'> &
+export type DialogProps = Omit<
+  ComponentPropsWithRef<'dialog'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'style'
+> &
+  AccessibleAriaNameProps &
   SxProp & {
     closedBy?: 'any' | 'closerequest' | 'none'
     size?: DialogSize
   }
-export type DialogTriggerProps = Omit<ButtonProps, 'popoverTarget' | 'popoverTargetAction'> & {
-  target: string
-}
-export type DialogCloseProps = ButtonProps & {
-  target: string
-}
+export type DialogTriggerProps = AccessibleButtonPropsWithout<
+  'aria-controls' | 'aria-haspopup' | 'popoverTarget' | 'popoverTargetAction'
+> & { target: string }
+export type DialogCloseProps = AccessibleButtonPropsWithout<'aria-controls'> & { target: string }
 export type DialogHeaderProps = Omit<ComponentPropsWithRef<'header'>, 'className' | 'style'> &
   SxProp
 export type DialogTitleProps = Omit<ComponentPropsWithRef<'h2'>, 'className' | 'style'> & SxProp
@@ -58,10 +64,11 @@ export function DialogTrigger({
 }: DialogTriggerProps) {
   return (
     <Button
+      {...props}
       type={type}
       variant={variant}
+      aria-controls={target}
       aria-haspopup="dialog"
-      {...props}
       {...commandProps(target, 'show-modal')}
     />
   )
@@ -74,7 +81,13 @@ export function DialogClose({
   ...props
 }: DialogCloseProps) {
   return (
-    <Button type={type} variant={variant} {...props} {...commandProps(target, 'request-close')} />
+    <Button
+      {...props}
+      type={type}
+      variant={variant}
+      aria-controls={target}
+      {...commandProps(target, 'request-close')}
+    />
   )
 }
 
@@ -119,6 +132,7 @@ const styles = stylex.create({
       ':open': 1,
     },
     overflow: 'auto',
+    overflowWrap: 'anywhere',
     padding: 0,
     transform: {
       default: 'translateY(8px) scale(0.98)',
@@ -132,6 +146,7 @@ const styles = stylex.create({
     },
     transitionProperty: 'display, opacity, overlay, transform',
     transitionTimingFunction: motion.easeEmphasized,
+    scrollbarGutter: 'stable',
     '::backdrop': {
       backdropFilter: `blur(${blur.sm})`,
       backgroundColor: colors.overlay,
@@ -161,6 +176,7 @@ const styles = stylex.create({
     fontWeight: typography.weightSemibold,
     lineHeight: typography.lineHeightTight,
     margin: 0,
+    textWrap: 'balance',
   },
   description: {
     color: colors.fgMuted,
@@ -168,6 +184,7 @@ const styles = stylex.create({
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
     margin: 0,
+    textWrap: 'pretty',
   },
   body: {
     padding: spacing.lg,
@@ -175,6 +192,7 @@ const styles = stylex.create({
   footer: {
     alignItems: 'center',
     display: 'flex',
+    flexWrap: 'wrap',
     gap: spacing.sm,
     justifyContent: 'flex-end',
     paddingBlock: `0 ${spacing.lg}`,

@@ -3,20 +3,26 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
-import { Button, type ButtonProps } from '../button'
+import { Button, type AccessibleButtonPropsWithout } from '../button'
 import { useInterestInvoker } from '../platform-polyfills/interest-invoker'
 import { colors } from '../tokens/color.stylex'
 import { motion } from '../tokens/motion.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
 export type TooltipPlacement = 'bottom' | 'top' | 'end' | 'start'
-export type TooltipProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'popover' | 'style'> & {
+export type TooltipProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'popover' | 'role' | 'style'
+> & {
   placement?: TooltipPlacement
   sx?: StyleXStyles
 }
-export type TooltipTriggerProps = ButtonProps & {
+export type TooltipTriggerProps = AccessibleButtonPropsWithout<
+  'aria-controls' | 'popoverTarget' | 'popoverTargetAction'
+> & {
   hideDelay?: number
   showDelay?: number
   target: string
@@ -27,6 +33,7 @@ export function Tooltip({ placement = 'top', ref, sx, ...props }: TooltipProps) 
     <div
       ref={ref}
       popover="hint"
+      role="tooltip"
       {...props}
       {...stylex.props(styles.tooltip, placementStyles[placement], sx)}
     />
@@ -34,6 +41,7 @@ export function Tooltip({ placement = 'top', ref, sx, ...props }: TooltipProps) 
 }
 
 export function TooltipTrigger({
+  'aria-describedby': ariaDescribedBy,
   hideDelay,
   ref,
   showDelay,
@@ -47,11 +55,13 @@ export function TooltipTrigger({
   return (
     <Button
       ref={setRef}
+      {...props}
       type={type}
       variant={variant}
+      aria-controls={target}
+      aria-describedby={[ariaDescribedBy, target].filter(Boolean).join(' ')}
       popoverTarget={target}
       popoverTargetAction="toggle"
-      {...props}
       {...interestProps}
     />
   )
@@ -60,15 +70,24 @@ export function TooltipTrigger({
 /* eslint-disable @stylexjs/valid-styles */
 const styles = stylex.create({
   tooltip: {
-    backgroundColor: colors.fg,
+    backgroundColor: {
+      default: colors.fg,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     borderColor: {
       default: 'transparent',
       '@media (forced-colors: active)': 'CanvasText',
     },
     borderRadius: radius.xs,
     borderStyle: 'solid',
-    borderWidth: 0,
-    color: colors.bg,
+    borderWidth: {
+      default: 0,
+      '@media (forced-colors: active)': stroke.thin,
+    },
+    color: {
+      default: colors.bg,
+      '@media (forced-colors: active)': 'Canvas',
+    },
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     inset: 'auto',
@@ -87,6 +106,8 @@ const styles = stylex.create({
     },
     transitionProperty: 'display, opacity, overlay',
     transitionTimingFunction: motion.easeStandard,
+    overflowWrap: 'anywhere',
+    textWrap: 'pretty',
   },
 })
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { ColorField } from "./index";
 import { DemoFrame, DemoRow } from "../example-theme/demo";
 

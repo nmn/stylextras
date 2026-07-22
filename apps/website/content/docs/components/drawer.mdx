@@ -78,7 +78,7 @@ import { Drawer, DrawerBody, DrawerClose, DrawerFooter, DrawerHeader, DrawerTrig
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+This component starts with semantic HTML and native invoker commands. The example opts into `DialogCommandBridge` from `@stylextras/ui/dialog/client`; it feature-detects older engines and only then lazy-loads the narrowly scoped command fallback. Omit that bridge when native-only browser support is sufficient.
 
 ## API reference
 

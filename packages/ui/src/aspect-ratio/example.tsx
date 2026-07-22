@@ -1,5 +1,3 @@
-"use client";
-
 import { AspectRatio } from "./index";
 import { DemoFrame, DemoGrid, DemoPanel } from "../example-theme/demo";
 

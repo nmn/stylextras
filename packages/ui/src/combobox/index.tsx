@@ -41,6 +41,7 @@ type ComboboxContextValue = {
   contentRef: React.RefObject<HTMLDivElement | null>
   disabled: boolean
   filterTerm: string
+  form: string | undefined
   getNavigableItems: () => ItemRecord[]
   inputId: string
   inputRef: React.RefObject<HTMLInputElement | null>
@@ -71,9 +72,11 @@ type NativeRootProps = ComponentPropsWithRef<'div'>
 export type ComboboxProps = Omit<NativeRootProps, 'className' | 'defaultValue' | 'style'> & {
   defaultValue?: string
   disabled?: boolean
+  form?: string
   name?: string
   onValueChange?: (value: string) => void
   required?: boolean
+  requiredMessage?: string
   sx?: StyleXStyles
   value?: string
 }
@@ -83,10 +86,12 @@ export function Combobox({
   children,
   defaultValue = '',
   disabled = false,
+  form,
   name,
   onValueChange,
   ref,
   required = false,
+  requiredMessage = 'Please select an option.',
   sx,
   value,
   ...props
@@ -103,15 +108,14 @@ export function Combobox({
   const selectedValue = controlled ? value : uncontrolledValue
   const selectedValueRef = useRef(selectedValue)
   const [query, setQuery] = useState('')
-  const queryRef = useRef(query)
+  const preserveTypedQueryRef = useRef(false)
   const [filterTerm, setFilterTerm] = useState('')
   const filterTermRef = useRef(filterTerm)
   const [activeValue, setActiveValue] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
-  const [, setItemsVersion] = useState(0)
+  const [itemsVersion, setItemsVersion] = useState(0)
 
   selectedValueRef.current = selectedValue
-  queryRef.current = query
   filterTermRef.current = filterTerm
 
   const close = useCallback(() => {
@@ -154,8 +158,9 @@ export function Combobox({
 
   const registerItem = useCallback((item: ItemRecord) => {
     itemsRef.current.set(item.value, item)
-    if (item.value === selectedValueRef.current && queryRef.current === '') {
+    if (item.value === selectedValueRef.current && !preserveTypedQueryRef.current) {
       setQuery(item.label)
+      setFilterTerm('')
     }
     setItemsVersion((version) => version + 1)
     return () => {
@@ -175,6 +180,7 @@ export function Combobox({
   const select = useCallback(
     (item: ItemRecord) => {
       if (item.disabled) return
+      preserveTypedQueryRef.current = false
       commitValue(item.value)
       setQuery(item.label)
       setFilterTerm('')
@@ -190,7 +196,10 @@ export function Combobox({
       setQuery(nextQuery)
       setFilterTerm(nextQuery)
       setActiveValue(null)
-      if (selectedValueRef.current) commitValue('')
+      if (selectedValueRef.current) {
+        preserveTypedQueryRef.current = true
+        commitValue('')
+      }
       open()
     },
     [commitValue, open],
@@ -201,6 +210,7 @@ export function Combobox({
     const form = input?.form
     if (!form || controlled) return
     const reset = () => {
+      preserveTypedQueryRef.current = false
       const nextValue = defaultValueRef.current
       setUncontrolledValue(nextValue)
       setFilterTerm('')
@@ -213,20 +223,24 @@ export function Combobox({
   }, [close, controlled])
 
   useEffect(() => {
+    if (preserveTypedQueryRef.current && selectedValue === '') {
+      preserveTypedQueryRef.current = false
+      return
+    }
+    preserveTypedQueryRef.current = false
     const selectedItem = itemsRef.current.get(selectedValue)
     if (selectedItem) {
       setQuery(selectedItem.label)
       setFilterTerm('')
-    } else if (!selectedValue) {
+    } else {
       setQuery('')
+      setFilterTerm('')
     }
   }, [selectedValue])
 
   useEffect(() => {
-    inputRef.current?.setCustomValidity(
-      required && !selectedValue ? 'Please select an option.' : '',
-    )
-  }, [required, selectedValue])
+    inputRef.current?.setCustomValidity(required && !selectedValue ? requiredMessage : '')
+  }, [required, requiredMessage, selectedValue])
 
   const context = useMemo<ComboboxContextValue>(
     () => ({
@@ -237,6 +251,7 @@ export function Combobox({
       contentRef,
       disabled,
       filterTerm,
+      form,
       getNavigableItems,
       inputId,
       inputRef,
@@ -257,9 +272,11 @@ export function Combobox({
       contentId,
       disabled,
       filterTerm,
+      form,
       getNavigableItems,
       inputId,
       isOpen,
+      itemsVersion,
       open,
       query,
       registerItem,
@@ -275,7 +292,9 @@ export function Combobox({
     <ComboboxContext value={context}>
       <div ref={ref} {...props} {...stylex.props(styles.root, sx)}>
         {children}
-        {name ? <input type="hidden" name={name} value={selectedValue} /> : null}
+        {name ? (
+          <input type="hidden" disabled={disabled} form={form} name={name} value={selectedValue} />
+        ) : null}
       </div>
     </ComboboxContext>
   )
@@ -300,6 +319,7 @@ export type ComboboxInputProps = Omit<
 
 export function ComboboxInput({
   disabled,
+  form,
   id,
   onChange,
   onClick,
@@ -328,6 +348,7 @@ export function ComboboxInput({
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     onKeyDown?.(event)
     if (event.defaultPrevented) return
+    if (event.nativeEvent.isComposing) return
 
     const items = context.getNavigableItems()
     const currentIndex = items.findIndex((item) => item.value === context.activeValue)
@@ -376,7 +397,10 @@ export function ComboboxInput({
         return
     }
 
-    if (nextItem) context.setActiveValue(nextItem.value)
+    if (nextItem) {
+      context.setActiveValue(nextItem.value)
+      document.getElementById(nextItem.id)?.scrollIntoView({ block: 'nearest' })
+    }
   }
 
   return (
@@ -391,6 +415,7 @@ export function ComboboxInput({
       aria-expanded={context.isOpen}
       autoComplete="off"
       disabled={context.disabled || disabled}
+      form={form ?? context.form}
       required={context.required}
       value={context.query}
       onChange={(event) => {
@@ -469,7 +494,7 @@ type NativeItemProps = ComponentPropsWithRef<'div'>
 
 export type ComboboxItemProps = Omit<
   NativeItemProps,
-  'aria-disabled' | 'aria-selected' | 'className' | 'id' | 'onClick' | 'role' | 'style'
+  'aria-disabled' | 'aria-selected' | 'className' | 'hidden' | 'id' | 'onClick' | 'role' | 'style'
 > & {
   disabled?: boolean
   onClick?: (event: MouseEvent<HTMLDivElement>) => void
@@ -482,6 +507,7 @@ export function ComboboxItem({
   children,
   disabled = false,
   onClick,
+  onMouseDown,
   onPointerMove,
   ref,
   sx,
@@ -514,6 +540,7 @@ export function ComboboxItem({
   return (
     <div
       ref={ref}
+      {...props}
       id={id}
       role="option"
       aria-disabled={disabled || undefined}
@@ -523,9 +550,11 @@ export function ComboboxItem({
         onClick?.(event)
         if (!event.defaultPrevented) context.select(item)
       }}
-      onMouseDown={(event) => event.preventDefault()}
+      onMouseDown={(event) => {
+        onMouseDown?.(event)
+        event.preventDefault()
+      }}
       onPointerMove={handlePointerMove}
-      {...props}
       {...stylex.props(
         styles.item,
         context.activeValue === value && styles.itemActive,
@@ -542,6 +571,32 @@ export function ComboboxItem({
 export type ComboboxEmptyProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & {
   children?: ReactNode
   sx?: StyleXStyles
+}
+
+export type ComboboxStatusProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'aria-atomic' | 'aria-live' | 'children' | 'className' | 'role' | 'style'
+> & {
+  children: ReactNode | ((count: number) => ReactNode)
+  sx?: StyleXStyles
+}
+
+/** A polite, visually hidden result-count announcement controlled by the caller's language. */
+export function ComboboxStatus({ children, ref, sx, ...props }: ComboboxStatusProps) {
+  const context = useComboboxContext('ComboboxStatus')
+  const count = context.getNavigableItems().length
+  return (
+    <div
+      ref={ref}
+      role="status"
+      aria-atomic="true"
+      aria-live="polite"
+      {...props}
+      {...stylex.props(styles.status, sx)}
+    >
+      {typeof children === 'function' ? children(count) : children}
+    </div>
+  )
 }
 
 export function ComboboxEmpty({ children = 'No results.', ref, sx, ...props }: ComboboxEmptyProps) {
@@ -568,16 +623,19 @@ const styles = stylex.create({
   },
   input: {
     anchorName: '--stylextras-combobox',
-    appearance: 'none',
-    backgroundColor: colors.control,
     borderColor: {
+      '[aria-invalid="true"]': colors.danger,
       default: colors.border,
-      ':hover': colors.borderStrong,
       ':focus-visible': colors.focusRing,
+      ':user-invalid': colors.danger,
+      ':hover': colors.borderStrong,
     },
     borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
+    paddingInline: spacing.md,
+    appearance: 'none',
+    backgroundColor: colors.control,
     boxShadow: {
       default: 'none',
       ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
@@ -587,23 +645,44 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
-    minHeight: spacing.controlMd,
-    minWidth: 0,
-    outline: 'none',
-    paddingInline: spacing.md,
-    transitionDuration: motion.durationFast,
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':focus-visible': stroke.focusRing,
+    },
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
     transitionProperty: 'background-color, border-color, box-shadow',
     transitionTimingFunction: motion.easeStandard,
-    width: '100%',
-    '::placeholder': {
-      color: colors.fgMuted,
+    minHeight: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
     },
+    minWidth: 0,
+    width: '100%',
     '::-webkit-search-cancel-button': {
       display: 'none',
     },
+    '::placeholder': {
+      color: colors.fgMuted,
+    },
   },
   content: {
-    backgroundColor: colors.popover,
+    positionAnchor: '--stylextras-combobox',
+    positionArea: 'bottom span-self-x-end',
+    positionTryFallbacks: 'flip-block',
+    transitionBehavior: 'allow-discrete',
+    inset: 'auto',
+    margin: 0,
+    padding: spacing.xxs,
     borderColor: {
       default: colors.border,
       '@media (forced-colors: active)': 'CanvasText',
@@ -611,59 +690,56 @@ const styles = stylex.create({
     borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
+    overscrollBehavior: 'contain',
+    backgroundColor: colors.popover,
     boxShadow: elevation.md,
     color: colors.popoverForeground,
-    inset: 'auto',
     insetInlineStart: {
       default: '50%',
       '@supports (position-anchor: --stylextras-combobox)': 'auto',
-    },
-    margin: 0,
-    maxHeight: 'min(20rem, 50vh)',
-    minWidth: {
-      default: 'min(22rem, calc(100vw - 2rem))',
-      '@supports (position-anchor: --stylextras-combobox)': 'anchor-size(width)',
     },
     opacity: {
       default: 0,
       ':popover-open': 1,
     },
-    overflowY: 'auto',
-    padding: spacing.xxs,
     position: 'fixed',
-    positionAnchor: '--stylextras-combobox',
-    positionArea: 'bottom span-self-x-end',
-    positionTryFallbacks: 'flip-block',
     scrollbarWidth: 'thin',
-    top: {
-      default: '50%',
-      '@supports (position-anchor: --stylextras-combobox)': 'auto',
-    },
     transform: {
       default: 'translateY(-4px) scale(0.98)',
       ':popover-open': 'translateY(0) scale(1)',
       '@media (prefers-reduced-motion: reduce)': 'none',
     },
-    translate: {
-      default: '-50% -50%',
-      '@supports (position-anchor: --stylextras-combobox)': '0',
-    },
-    transitionBehavior: 'allow-discrete',
     transitionDuration: {
       default: motion.durationFast,
       '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
     },
     transitionProperty: 'display, opacity, transform, overlay',
     transitionTimingFunction: motion.easeEmphasized,
+    translate: {
+      default: '-50% -50%',
+      '@supports (position-anchor: --stylextras-combobox)': '0',
+    },
+    maxHeight: 'min(20rem, 50vh)',
+    minWidth: {
+      default: 'min(22rem, calc(100vw - 2rem))',
+      '@supports (position-anchor: --stylextras-combobox)': 'anchor-size(width)',
+    },
+    overflowY: 'auto',
+    top: {
+      default: '50%',
+      '@supports (position-anchor: --stylextras-combobox)': 'auto',
+    },
     width: 'max-content',
   },
   item: {
+    borderRadius: radius.xs,
+    outline: 'none',
+    paddingInline: spacing.sm,
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
       ':hover': colors.accent,
     },
-    borderRadius: radius.xs,
     color: {
       default: colors.popoverForeground,
       ':hover': colors.accentForeground,
@@ -672,10 +748,11 @@ const styles = stylex.create({
     display: 'flex',
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    minHeight: spacing.controlSm,
-    outline: 'none',
-    paddingInline: spacing.sm,
     userSelect: 'none',
+    minHeight: {
+      default: spacing.controlSm,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
   },
   itemDisabled: {
     opacity: 0.5,
@@ -689,11 +766,23 @@ const styles = stylex.create({
     display: 'none',
   },
   empty: {
+    padding: spacing.md,
     color: colors.fgMuted,
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    padding: spacing.md,
     textAlign: 'center',
+  },
+  status: {
+    margin: -1,
+    padding: 0,
+    borderStyle: 'none',
+    borderWidth: 0,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    height: 1,
+    width: 1,
   },
 })
 /* eslint-enable @stylexjs/valid-styles */

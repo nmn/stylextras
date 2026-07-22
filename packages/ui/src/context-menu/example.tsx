@@ -6,6 +6,7 @@ import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 import {
   ContextMenu,
+  ContextMenuButton,
   ContextMenuItem,
   ContextMenuLabel,
   ContextMenuSeparator,
@@ -16,11 +17,15 @@ const menuId = 'canvas-context-menu'
 
 export default function Example() {
   return (
-    <DemoFrame title="Context menu" description="Right-click or long-press the target region.">
-      <ContextMenuTrigger target={menuId} sx={styles.target}>
+    <DemoFrame
+      title="Context menu"
+      description="Right-click or long-press the target region, or use the visible menu button."
+    >
+      <ContextMenuButton target={menuId}>Canvas actions</ContextMenuButton>
+      <ContextMenuTrigger aria-label="Canvas actions" target={menuId} sx={styles.target}>
         Open the context menu anywhere in this area
       </ContextMenuTrigger>
-      <ContextMenu id={menuId}>
+      <ContextMenu id={menuId} aria-label="Canvas actions">
         <ContextMenuLabel>Canvas</ContextMenuLabel>
         <ContextMenuItem>Paste</ContextMenuItem>
         <ContextMenuItem>Duplicate</ContextMenuItem>

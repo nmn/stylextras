@@ -1,5 +1,3 @@
-"use client";
-
 import { DateField } from "./index";
 import { DemoFrame, DemoRow } from "../example-theme/demo";
 

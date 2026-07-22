@@ -47,6 +47,21 @@ export function addMonths(month: CalendarDate, amount: number): CalendarDate {
   return fromUTCDate(date)
 }
 
+export function addMonthsToValue(value: string, amount: number) {
+  const parsed = parseDateValue(value)
+  if (!parsed) return value
+  const month = addMonths(parsed, amount)
+  const lastDay = new Date(Date.UTC(month.year, month.month, 0)).getUTCDate()
+  return formatDateValue({ ...month, day: Math.min(parsed.day, lastDay) })
+}
+
+export function clampDateValue(value: string, min?: string, max?: string) {
+  let nextValue = value
+  if (min && parseDateValue(min) && nextValue < min) nextValue = min
+  if (max && parseDateValue(max) && nextValue > max) nextValue = max
+  return nextValue
+}
+
 export function monthForValue(value: string): CalendarDate | null {
   const parsed = parseDateValue(value)
   return parsed ? { ...parsed, day: 1 } : null
@@ -72,9 +87,11 @@ export function createMonthGrid(month: CalendarDate, weekStartsOn: number): Cale
 
 export function getWeekStartsOn(locale: string) {
   const localeWithWeekInfo = new Intl.Locale(locale) as Intl.Locale & {
+    getWeekInfo?: () => { firstDay: number }
     weekInfo?: { firstDay: number }
   }
-  return localeWithWeekInfo.weekInfo ? localeWithWeekInfo.weekInfo.firstDay % 7 : 0
+  const weekInfo = localeWithWeekInfo.getWeekInfo?.() ?? localeWithWeekInfo.weekInfo
+  return weekInfo ? weekInfo.firstDay % 7 : 0
 }
 
 export function getWeekdayLabels(locale: string, weekStartsOn: number) {
@@ -102,6 +119,18 @@ export function formatDisplayDate(value: string, locale: string) {
     day: 'numeric',
     month: 'short',
     timeZone: 'UTC',
+    year: 'numeric',
+  }).format(toUTCDate(parsed))
+}
+
+export function formatDayLabel(value: string, locale: string) {
+  const parsed = parseDateValue(value)
+  if (!parsed) return value
+  return new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+    weekday: 'long',
     year: 'numeric',
   }).format(toUTCDate(parsed))
 }

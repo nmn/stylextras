@@ -1,7 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithRef } from 'react';
-import { Button, type ButtonProps } from '../button';
+import type { AccessibleAriaNameProps } from '../accessibility';
+import { Button, type AccessibleButtonPropsWithout } from '../button';
 import { colors } from '../tokens/color.stylex';
 import { elevation } from '../tokens/elevation.stylex';
 import { motion } from '../tokens/motion.stylex';
@@ -18,11 +19,16 @@ type SheetSectionProps = Omit<
 export type SheetSide = 'start' | 'end';
 export type SheetProps = Omit<
   ComponentPropsWithRef<'dialog'>,
-  'className' | 'style'
+  'aria-label' | 'aria-labelledby' | 'className' | 'style'
 > &
+  AccessibleAriaNameProps &
   SxProp & { side?: SheetSide };
-export type SheetTriggerProps = ButtonProps & { target: string };
-export type SheetCloseProps = SheetTriggerProps;
+export type SheetTriggerProps = AccessibleButtonPropsWithout<
+  'aria-controls' | 'aria-haspopup'
+> & { target: string };
+export type SheetCloseProps = AccessibleButtonPropsWithout<'aria-controls'> & {
+  target: string;
+};
 export type SheetHeaderProps = SheetSectionProps;
 export type SheetBodyProps = SheetSectionProps;
 export type SheetFooterProps = SheetSectionProps;
@@ -50,7 +56,13 @@ export function SheetTrigger({
   ...props
 }: SheetTriggerProps) {
   return (
-    <Button type={type} {...props} {...commandProps(target, 'show-modal')} />
+    <Button
+      {...props}
+      type={type}
+      aria-controls={target}
+      aria-haspopup="dialog"
+      {...commandProps(target, 'show-modal')}
+    />
   );
 }
 
@@ -62,9 +74,10 @@ export function SheetClose({
 }: SheetCloseProps) {
   return (
     <Button
-      type={type}
-      variant={variant}
       {...props}
+      type={type}
+      aria-controls={target}
+      variant={variant}
       {...commandProps(target, 'request-close')}
     />
   );
@@ -82,6 +95,7 @@ export function SheetFooter({ ref, sx, ...props }: SheetFooterProps) {
   return <div ref={ref} {...props} {...stylex.props(styles.footer, sx)} />;
 }
 
+/* eslint-disable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */
 const styles = stylex.create({
   sheet: {
     backgroundColor: colors.popover,
@@ -93,12 +107,15 @@ const styles = stylex.create({
     borderWidth: stroke.thin,
     boxShadow: elevation.lg,
     color: colors.popoverForeground,
+    display: { default: 'none', ':open': 'grid' },
+    gridTemplateRows: 'auto minmax(0, 1fr) auto',
     height: '100dvh',
     margin: 0,
     maxHeight: '100dvh',
     maxWidth: 'min(28rem, 100vw)',
     opacity: { default: 0, ':open': 1 },
-    overflow: 'auto',
+    overflow: 'hidden',
+    overflowWrap: 'anywhere',
     padding: 0,
     position: 'fixed',
     top: 0,
@@ -112,14 +129,16 @@ const styles = stylex.create({
     width: 'min(28rem, 100vw)',
     '::backdrop': {
       backgroundColor: colors.overlay,
-      opacity: {
-        default: 0,
-        ':open': 1,
-      },
+      opacity: 0,
+      transitionBehavior: 'allow-discrete',
       transitionDuration: {
         default: motion.durationModerate,
         '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
       },
+      transitionProperty: 'display, opacity, overlay',
+    },
+    ':open::backdrop': {
+      opacity: 1,
     },
   },
   header: {
@@ -128,9 +147,15 @@ const styles = stylex.create({
     borderWidth: `0 0 ${stroke.thin}`,
     padding: spacing.lg,
   },
-  body: { padding: spacing.lg },
+  body: {
+    minHeight: 0,
+    overflow: 'auto',
+    overscrollBehaviorY: 'contain',
+    padding: spacing.lg,
+  },
   footer: {
     display: 'flex',
+    flexWrap: 'wrap',
     gap: spacing.sm,
     justifyContent: 'flex-end',
     padding: spacing.lg,
@@ -159,3 +184,4 @@ const sideStyles = stylex.create({
     },
   },
 });
+/* eslint-enable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */

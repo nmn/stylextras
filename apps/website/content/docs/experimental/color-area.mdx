@@ -1,6 +1,6 @@
 ---
 title: "ColorArea"
-description: "Two-dimensional color input."
+description: "Native color input with an area-sized presentation."
 ---
 
 import Example from "@stylextras/ui/experimental/color-area/example";
@@ -16,8 +16,6 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
 import { ColorArea } from './index';
 
 export default function Example() {
@@ -38,13 +36,13 @@ import { ColorArea } from "@stylextras/ui/experimental/color-area";
 
 ## Anatomy
 
-- `ColorArea` — Styled `<div>`.
+- `ColorArea` — Native `<input type="color">`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`ColorArea` is a zero-JavaScript native color input. The browser supplies its picker, keyboard behavior, validation, and form participation. The area proportions are presentation only; use `ColorField` when those proportions would imply unsupported two-dimensional interaction.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+Give the input a visible label or an accessible name. Any native input prop not named in `Omit` remains accepted, including `name`, `form`, `disabled`, standard ARIA/data attributes, event handlers, and `ref`. `sx` is composed last.
 
 ## API reference
 
@@ -52,6 +50,6 @@ This component uses a focused client controller for composite state and keyboard
 
 `ColorAreaProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"div">, "className" | "style">`. The props below complete `ColorAreaProps`.
+Complete native/inherited prop base: `ColorFieldProps`, which is `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `ColorAreaProps`.
 
 - `sx` — `stylex.StyleXStyles`.

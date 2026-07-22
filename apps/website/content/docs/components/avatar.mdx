@@ -19,20 +19,19 @@ import { Avatar, AvatarFallback, AvatarImage } from './index';
 export default function Example() {
   return (
     <>
-      <Avatar size="sm">
+      <Avatar size="sm" aria-label="Avery Kim">
         <AvatarFallback>AK</AvatarFallback>
       </Avatar>
-      <Avatar>
+      <Avatar aria-label="Taylor Reed">
         <AvatarFallback>TR</AvatarFallback>
       </Avatar>
-      <Avatar size="lg">
+      <Avatar size="lg" aria-label="Profile">
         <AvatarImage src="https://github.com/shadcn.png" alt="Profile" />
         <AvatarFallback>SC</AvatarFallback>
       </Avatar>
     </>
   );
 }
-('use client');
 ```
 
 ## Import
@@ -49,7 +48,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@stylextras/ui/avatar";
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`Avatar` exposes a single image semantic and requires an accessible name. Its visual image and initials are descendants of that named image, preventing duplicate announcements. Use `aria-hidden={true}` on the root for a purely decorative avatar. `sx` is composed last.
 
 This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
 
@@ -59,7 +58,7 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 `AvatarProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `AvatarProps`.
+Complete native/inherited prop base omits `aria-hidden`, `aria-label`, `aria-labelledby`, `className`, `role`, and `style`. Supply `aria-label`, `aria-labelledby`, or `aria-hidden={true}`.
 
 - `size` — `AvatarSize`. Default: `'md'`.
 - `sx` — `stylex.StyleXStyles`.
@@ -76,6 +75,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, 
 
 `AvatarImageProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"img">, "className" | "style">`. The props below complete `AvatarImageProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"img">, "alt" | "className" | "style">`. The props below complete `AvatarImageProps`.
 
+- `alt` — Native image alternative text; the named Avatar root remains the single exposed image semantic.
 - `sx` — `stylex.StyleXStyles`.

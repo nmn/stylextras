@@ -11,7 +11,7 @@ import {
 export default function Example() {
   return (
     <DemoFrame title="Breadcrumb" description="Semantic navigation with individually styled parts.">
-      <Breadcrumb>
+      <Breadcrumb aria-label="Breadcrumb">
         <BreadcrumbList>
           <BreadcrumbItem><BreadcrumbLink href="#">Docs</BreadcrumbLink></BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -23,4 +23,3 @@ export default function Example() {
     </DemoFrame>
   )
 }
-'use client'

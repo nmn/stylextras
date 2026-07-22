@@ -16,27 +16,17 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
-import { useState } from 'react';
 import { ColorSwatchPicker } from './index';
 
-function SwatchPickerDemo() {
-  const [value, setValue] = useState('#2563eb');
-  return (
-    <>
-      <ColorSwatchPicker
-        colors={['#2563eb', '#0f766e', '#9333ea', '#ea580c', '#dc2626']}
-        value={value}
-        onValueChange={setValue}
-      />
-      <span>Selected: {value}</span>
-    </>
-  );
-}
-
 export default function Example() {
-  return <SwatchPickerDemo />;
+  return (
+    <ColorSwatchPicker
+      colors={['#2563eb', '#0f766e', '#9333ea', '#ea580c', '#dc2626']}
+      defaultValue="#2563eb"
+      legend="Accent color"
+      name="accentColor"
+    />
+  );
 }
 ```
 
@@ -48,13 +38,13 @@ import { ColorSwatchPicker } from "@stylextras/ui/experimental/color-swatch-pick
 
 ## Anatomy
 
-- `ColorSwatchPicker` — Styled `<div>`.
+- `ColorSwatchPicker` — Native `<fieldset>` containing one radio input per color.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+Native radio inputs provide arrow-key selection, focus, validation, and form submission. The visible legend names the group, and each swatch has a text label in addition to its color.
 
 ## API reference
 
@@ -62,9 +52,12 @@ This component uses a focused client controller for composite state and keyboard
 
 `ColorSwatchPickerProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"div">, "className" | "style">`. The props below complete `ColorSwatchPickerProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset">, "className" | "defaultValue" | "style">`. The props below complete `ColorSwatchPickerProps`.
 
 - `colors` — `string[]`. Default: `defaultColors`.
-- `onValueChange` — `(value: string) => void`.
+- `defaultValue` — `string`.
+- `getColorLabel` — `(color: string) => string`.
+- `legend` — `ReactNode`. Required.
+- `name` — `string`. Required.
+- `required` — `boolean`. Default: `false`.
 - `sx` — `stylex.StyleXStyles`.
-- `value` — `string`.

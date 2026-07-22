@@ -1,5 +1,3 @@
-"use client";
-
 import { Empty } from "./index";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
 

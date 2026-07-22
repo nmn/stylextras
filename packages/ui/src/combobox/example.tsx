@@ -8,6 +8,7 @@ import {
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
+  ComboboxStatus,
 } from './index'
 
 const reviewers = [
@@ -34,6 +35,9 @@ export default function Example() {
               </ComboboxItem>
             ))}
             <ComboboxEmpty />
+            <ComboboxStatus>
+              {(count) => `${count} reviewer${count === 1 ? '' : 's'} available.`}
+            </ComboboxStatus>
           </ComboboxContent>
         </Combobox>
         <FieldDescription>Use Arrow keys, Home, End, Enter, and Escape.</FieldDescription>

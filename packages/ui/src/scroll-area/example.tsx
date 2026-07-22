@@ -9,7 +9,7 @@ const releases = Array.from({ length: 12 }, (_, index) => `0.2.0-beta.${12 - ind
 export default function Example() {
   return (
     <DemoFrame title="Release history" description="The focused region uses native overflow with tokenized scrollbars.">
-      <ScrollArea aria-label="Release history" sx={styles.area}>
+      <ScrollArea aria-label="Release history" tabIndex={0} sx={styles.area}>
         {releases.map((release) => (
           <div key={release} {...stylex.props(styles.row)}>
             <strong>{release}</strong>
@@ -37,4 +37,3 @@ const styles = stylex.create({
     padding: spacing.md,
   },
 })
-'use client'

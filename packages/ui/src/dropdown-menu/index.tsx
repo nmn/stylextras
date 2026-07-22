@@ -2,10 +2,15 @@
 
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithRef, KeyboardEvent as ReactKeyboardEvent } from 'react'
+import type {
+  ComponentPropsWithRef,
+  KeyboardEvent as ReactKeyboardEvent,
+} from 'react'
 import { createContext, useContext, useMemo, useState } from 'react'
-import { Button, type ButtonProps } from '../button'
+import { Button, type AccessibleButtonPropsWithout } from '../button'
 import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
+import { getPopoverSource, showPopoverWithSource } from '../platform-polyfills/popover-source'
+import { usePopoverPointerToggleGuard } from '../popover/pointer-toggle'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -26,9 +31,12 @@ const typeaheadState = new WeakMap<HTMLElement, { query: string; updatedAt: numb
 const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(null)
 
 export type DropdownMenuProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
-export type DropdownMenuTriggerProps = Omit<
-  ButtonProps,
-  'popoverTarget' | 'popoverTargetAction'
+export type DropdownMenuTriggerProps = AccessibleButtonPropsWithout<
+  | 'aria-controls'
+  | 'aria-expanded'
+  | 'aria-haspopup'
+  | 'popoverTarget'
+  | 'popoverTargetAction'
 > & {
   target: string
 }
@@ -54,11 +62,31 @@ function isMenuOpen(menu: HTMLElement) {
   return menu.matches(':popover-open')
 }
 
+function isMenuItemDiscoverable(item: HTMLElement) {
+  if (
+    item.matches(':disabled') ||
+    item.closest('[hidden], [aria-hidden="true"], [inert]') ||
+    item.getClientRects().length === 0
+  ) {
+    return false
+  }
+
+  const computed = getComputedStyle(item)
+  return (
+    computed.display !== 'none' &&
+    computed.visibility !== 'hidden' &&
+    computed.visibility !== 'collapse'
+  )
+}
+
 function getMenuItems(menu: HTMLElement) {
   return Array.from(menu.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR)).filter(
-    (item) =>
-      !item.hidden && item.getAttribute('aria-hidden') !== 'true' && !item.matches(':disabled'),
+    isMenuItemDiscoverable,
   )
+}
+
+function isInitialMenuFocusCandidate(item: HTMLElement) {
+  return item.getAttribute('aria-disabled') !== 'true'
 }
 
 function getMenuTriggers(menu: HTMLElement) {
@@ -84,12 +112,13 @@ function syncMenuTriggers(menu: HTMLElement, expanded: boolean) {
 }
 
 function focusMenuTrigger(menu: HTMLElement) {
-  getMenuTriggers(menu)[0]?.focus()
+  const trigger = getMenuTriggers(menu)[0] ?? getPopoverSource(menu)
+  trigger?.focus()
 }
 
 function focusMenuItem(menu: HTMLElement, target: InitialMenuFocus) {
   if (!isMenuOpen(menu)) return
-  const items = getMenuItems(menu)
+  const items = getMenuItems(menu).filter(isInitialMenuFocusCandidate)
   const item = target === 'last' ? items.at(-1) : items[0]
   item?.focus()
 }
@@ -110,8 +139,7 @@ function openMenu(menu: HTMLElement, target: InitialMenuFocus, source?: HTMLElem
   menu.dataset.initialFocus = target
   const popoverSource = source ?? getMenuTriggers(menu)[0]
   if (popoverSource) {
-    const showPopover = menu.showPopover as (options: { source: HTMLElement }) => void
-    showPopover.call(menu, { source: popoverSource })
+    showPopoverWithSource(menu, popoverSource)
   } else {
     menu.showPopover()
   }
@@ -161,7 +189,7 @@ export function DropdownMenu({ children, ref, sx, ...props }: DropdownMenuProps)
 
   return (
     <DropdownMenuContext.Provider value={context}>
-      <div ref={ref} {...props} {...stylex.props(styles.root, sx)}>
+      <div ref={ref} role="none" {...props} {...stylex.props(styles.root, sx)}>
         {children}
       </div>
     </DropdownMenuContext.Provider>
@@ -170,13 +198,20 @@ export function DropdownMenu({ children, ref, sx, ...props }: DropdownMenuProps)
 
 export function DropdownMenuTrigger({
   id,
+  onClick,
   onKeyDown,
+  onPointerCancel,
+  onPointerDown,
   target,
   type = 'button',
   variant = 'outline',
   ...props
 }: DropdownMenuTriggerProps) {
   const menuContext = useContext(DropdownMenuContext)
+  const pointerToggle = usePopoverPointerToggleGuard(() => {
+    const menu = document.getElementById(target)
+    return menu instanceof HTMLElement ? menu : null
+  })
   return (
     <Button
       {...props}
@@ -188,6 +223,19 @@ export function DropdownMenuTrigger({
       aria-haspopup="menu"
       popoverTarget={target}
       popoverTargetAction="toggle"
+      onClick={(event) => {
+        onClick?.(event)
+        const wasOpen = pointerToggle.consume()
+        if (event.defaultPrevented || !wasOpen) return
+
+        // Some engines light-dismiss an auto popover before dispatching the
+        // invoker's click. Cancel that stale native toggle so it cannot reopen
+        // a menu that was open when the pointer gesture began.
+        event.preventDefault()
+        const menu = document.getElementById(target)
+        if (menu instanceof HTMLElement && isMenuOpen(menu)) menu.hidePopover()
+        event.currentTarget.focus({ preventScroll: true })
+      }}
       onKeyDown={(event) => {
         onKeyDown?.(event)
         if (event.defaultPrevented || (event.key !== 'ArrowDown' && event.key !== 'ArrowUp')) {
@@ -198,6 +246,16 @@ export function DropdownMenuTrigger({
         if (!(menu instanceof HTMLElement) || !menu.hasAttribute('popover')) return
         event.preventDefault()
         openMenu(menu, event.key === 'ArrowUp' ? 'last' : 'first', event.currentTarget)
+      }}
+      onPointerCancel={(event) => {
+        pointerToggle.clear()
+        onPointerCancel?.(event)
+      }}
+      onPointerDown={(event) => {
+        pointerToggle.clear()
+        onPointerDown?.(event)
+        if (event.defaultPrevented) return
+        pointerToggle.capture()
       }}
     />
   )
@@ -224,6 +282,13 @@ export function DropdownMenuContent({
         onBlur?.(event)
         const nextTarget = event.relatedTarget
         if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) return
+        if (
+          nextTarget instanceof HTMLElement &&
+          (getMenuTriggers(event.currentTarget).includes(nextTarget) ||
+            getPopoverSource(event.currentTarget) === nextTarget)
+        ) {
+          return
+        }
         closeMenu(event.currentTarget, false)
       }}
       onKeyDown={(event) => {
@@ -325,9 +390,12 @@ const styles = stylex.create({
     gap: spacing.xxxs,
     inset: 'auto',
     margin: spacing.xs,
+    maxHeight: 'min(80dvh, 32rem)',
+    maxWidth: 'calc(100vw - 1rem)',
     minWidth: '12rem',
     opacity: { default: 0, ':popover-open': 1 },
     padding: spacing.xxs,
+    overflow: 'auto',
     position: 'fixed',
     positionAnchor: 'auto',
     transform: {
@@ -365,12 +433,24 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     gap: spacing.sm,
-    minHeight: spacing.controlSm,
+    minHeight: {
+      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     opacity: { default: 1, '[aria-disabled="true"]': 0.5 },
     outline: 'none',
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: `-${stroke.focusRingOffset}`,
+    outlineStyle: 'solid',
+    outlineWidth: { default: 0, ':focus-visible': stroke.focusRing },
     paddingInline: spacing.sm,
     textAlign: 'start',
     width: '100%',
+    overflowWrap: 'anywhere',
   },
   label: {
     color: colors.fg,

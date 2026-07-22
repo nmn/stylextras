@@ -52,8 +52,8 @@ type Ttypography = VarGroup<
 >;
 
 export const typography: Ttypography = stylex.defineVars({
-  fontSizeMin: "14px",
-  fontSizeMax: "14px",
+  fontSizeMin: "0.875rem",
+  fontSizeMax: "0.875rem",
   scaleMin: "1.125",
   scaleMax: "1.2",
   fontSans: [

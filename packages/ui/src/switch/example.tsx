@@ -8,13 +8,19 @@ export default function Example() {
   return (
     <DemoFrame title="Switch" description="A styled native checkbox with switch semantics.">
       <DemoStack>
-        <Label sx={styles.option}><Switch defaultChecked /> Notifications</Label>
-        <Label sx={styles.option}><Switch /> Public profile</Label>
-        <Label sx={styles.option}><Switch controlSize="sm" /> Compact mode</Label>
+        <Label htmlFor="switch-notifications" sx={styles.option}><Switch id="switch-notifications" defaultChecked /> Notifications</Label>
+        <Label htmlFor="switch-profile" sx={styles.option}><Switch id="switch-profile" /> Public profile</Label>
+        <Label htmlFor="switch-compact" sx={styles.option}><Switch id="switch-compact" controlSize="sm" /> Compact mode</Label>
       </DemoStack>
     </DemoFrame>
   )
 }
 
-const styles = stylex.create({ option: { alignItems: 'center', display: 'flex', gap: spacing.sm } })
-'use client'
+const styles = stylex.create({
+  option: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: spacing.sm,
+    minHeight: { default: spacing.targetMin, '@media (pointer: coarse)': spacing.targetCoarse },
+  },
+})

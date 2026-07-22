@@ -8,16 +8,15 @@ export default function Example() {
       <DemoGrid>
         <Field>
           <FieldLabel htmlFor="input-email">Work email</FieldLabel>
-          <Input id="input-email" name="email" type="email" autoComplete="email" placeholder="you@company.com" />
-          <FieldDescription>Try the native email validation state.</FieldDescription>
+          <Input id="input-email" aria-describedby="input-email-description" name="email" type="email" autoComplete="email" placeholder="you@company.com" required />
+          <FieldDescription id="input-email-description">Try the native email validation state.</FieldDescription>
         </Field>
         <Field>
           <FieldLabel htmlFor="input-search">Search</FieldLabel>
-          <Input id="input-search" name="query" type="search" placeholder="Search components…" />
-          <FieldDescription>The browser owns search-input behavior.</FieldDescription>
+          <Input id="input-search" aria-describedby="input-search-description" name="query" type="search" placeholder="Search components…" />
+          <FieldDescription id="input-search-description">The browser owns search-input behavior.</FieldDescription>
         </Field>
       </DemoGrid>
     </DemoFrame>
   )
 }
-'use client'

@@ -10,10 +10,9 @@ export default function Example() {
     >
       <Field>
         <FieldLabel htmlFor="verification-code">Six-digit code</FieldLabel>
-        <InputOTP id="verification-code" name="code" defaultValue="204816" />
-        <FieldDescription>Paste or type the code from your authenticator.</FieldDescription>
+        <InputOTP id="verification-code" aria-describedby="verification-code-description" name="code" defaultValue="204816" required />
+        <FieldDescription id="verification-code-description">Paste or type the code from your authenticator.</FieldDescription>
       </Field>
     </DemoFrame>
   )
 }
-'use client'

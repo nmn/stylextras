@@ -78,7 +78,9 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 `ScrollAreaProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ScrollAreaProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "style" | "tabIndex">`. The props below complete `ScrollAreaProps`.
 
+- `aria-label` — `string`. Required when `tabIndex={0}` unless `aria-labelledby` is provided.
+- `aria-labelledby` — `string`. Required when `tabIndex={0}` unless `aria-label` is provided.
 - `sx` — `stylex.StyleXStyles`.
-- `tabIndex` — `ScrollAreaProps["tabIndex"]`. Default: `0`.
+- `tabIndex` — `-1 | 0`. No default; `0` makes the overflow region keyboard-focusable and requires an accessible name.

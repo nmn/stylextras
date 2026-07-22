@@ -54,8 +54,8 @@ export default function Example() {
 
 const styles = stylex.create({
   list: {
-    listStyle: 'none',
     margin: 0,
     padding: 0,
+    listStyle: 'none',
   },
 })

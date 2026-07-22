@@ -1,57 +1,56 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { colors } from "../tokens/color.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-
-type BaseProps = ComponentPropsWithoutRef<"input">;
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 
 export type ColorSliderProps = Omit<
-  BaseProps,
-  "className" | "style" | "type"
-> & {
-  sx?: StyleXStyles;
-};
+  ComponentPropsWithRef<'input'>,
+  'className' | 'style' | 'type'
+> & { sx?: StyleXStyles }
 
-/**
- * Renders a simplified slider for color channel adjustment.
- *
- * Search aliases: color slider, hue slider, channel slider, color range.
- *
- * A11y notes:
- * - Relies on native range input semantics when applicable.
- * - Channel naming and spoken value details may need additional labeling from the caller.
- */
-export function ColorSlider({
-  max = 360,
-  min = 0,
-  step = 1,
-  sx,
-  ...props
-}: ColorSliderProps) {
+/** A native range input for a named color channel. */
+export function ColorSlider({ max = 360, min = 0, ref, step = 1, sx, ...props }: ColorSliderProps) {
   return (
     <input
-      {...props}
+      ref={ref}
       max={max}
       min={min}
       step={step}
       type="range"
-      {...stylex.props(styles.base, sx)}
+      {...props}
+      {...stylex.props(styles.input, sx)}
     />
-  );
+  )
 }
 
 const styles = stylex.create({
-  base: {
+  input: {
     margin: 0,
-    outline: "none",
-    accentColor: colors.primary,
-    boxShadow: {
-      default: null,
-      ":focus-visible": `0 0 0 3px ${colors.focusRing}`,
+    accentColor: {
+      default: colors.primary,
+      ':user-invalid': colors.danger,
+      '[aria-invalid="true"]': colors.danger,
+      '@media (forced-colors: active)': 'Highlight',
     },
-    cursor: "pointer",
-    minHeight: spacing.lg,
-    width: "100%",
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    opacity: { default: 1, ':disabled': 0.5 },
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':focus-visible': stroke.focusRing,
+    },
+    minHeight: {
+      default: spacing.targetMin,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
+    width: '100%',
   },
-});
+})

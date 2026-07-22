@@ -16,8 +16,6 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
 import { ColorSlider } from './index';
 
 export default function Example() {
@@ -38,13 +36,13 @@ import { ColorSlider } from "@stylextras/ui/experimental/color-slider";
 
 ## Anatomy
 
-- `ColorSlider` — Styled `<input>`.
+- `ColorSlider` — Native `<input type="range">`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`ColorSlider` is a zero-JavaScript native range input. The browser supplies keyboard, pointer, validation, and form behavior. Give each slider a visible label or accessible name that identifies its channel, and provide `aria-valuetext` when the number alone does not describe the color value.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+The component adds a visible focus outline and minimum pointer target. Any native input prop not named in `Omit` remains accepted, including standard ARIA/data attributes, event handlers, and `ref`. `sx` is composed last.
 
 ## API reference
 
@@ -52,7 +50,7 @@ This component uses a focused client controller for composite state and keyboard
 
 `ColorSliderProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"input">, "className" | "style" | "type">`. The props below complete `ColorSliderProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `ColorSliderProps`.
 
 - `max` — `ColorSliderProps["max"]`. Default: `360`.
 - `min` — `ColorSliderProps["min"]`. Default: `0`.

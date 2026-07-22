@@ -64,7 +64,13 @@ test('Combobox filters, exposes active descendant, selects, submits, escapes, an
   await expect(content).toBeVisible()
 
   await input.fill('sv')
-  await expect(content.getByRole('option', { name: 'Svelte' })).toBeVisible()
+  const svelte = content.getByRole('option', { name: 'Svelte' })
+  await expect(svelte).toBeVisible()
+  expect(
+    await svelte.evaluate((node) =>
+      node.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true })),
+    ),
+  ).toBe(false)
   await expect(content.getByRole('option', { name: 'React', exact: true })).toBeHidden()
   await page.keyboard.press('ArrowDown')
   const activeId = await input.getAttribute('aria-activedescendant')
@@ -86,20 +92,44 @@ test('Combobox filters, exposes active descendant, selects, submits, escapes, an
   await expect(input).toHaveValue('React')
 })
 
+test('controlled Combobox preserves typing and resolves a value registered later', async ({ page }) => {
+  const input = page.getByTestId('controlled-combobox-input')
+  await expect(input).toHaveValue('React')
+
+  await input.fill('custom query')
+  await expect(input).toHaveValue('custom query')
+  // WebKit centers the popover when CSS anchor positioning is unavailable,
+  // so the open empty state can legitimately cover these external fixture
+  // controls. Dismiss the listbox before testing programmatic value changes.
+  await input.press('Escape')
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
+  await page.getByRole('button', { name: 'Select controlled React' }).click()
+  await expect(input).toHaveValue('React')
+
+  await page.getByRole('button', { name: 'Select deferred Vue' }).click()
+  await expect(input).toHaveValue('')
+  await page.getByRole('button', { name: 'Mount deferred Vue' }).click()
+  await expect(input).toHaveValue('Vue')
+})
+
 test('DatePicker submits and resets its canonical form value', async ({ page }) => {
   const form = page.getByTestId('date-form')
   const input = page.locator('#test-due-date')
-  await expect(input).toHaveValue(/Jul 11, 2026/)
+  await expect(input).toHaveAttribute('type', 'date')
+  await expect(input).toHaveAttribute('min', '2026-07-01')
+  await expect(input).toHaveAttribute('max', '2026-08-31')
+  await expect(input).toHaveValue('2026-07-11')
   await form.getByRole('button', { name: 'Submit date' }).click()
   await expect(page.getByTestId('date-result')).toHaveText('2026-07-11')
 
-  await input.click()
-  const calendar = form.getByRole('grid', { name: /July 2026/ })
-  await expect(calendar).toBeVisible()
-  await calendar.getByRole('gridcell', { name: '12', exact: true }).click()
+  await input.fill('2026-08-12')
   await form.getByRole('button', { name: 'Submit date' }).click()
-  await expect(page.getByTestId('date-result')).toHaveText('2026-07-12')
+  await expect(page.getByTestId('date-result')).toHaveText('2026-08-12')
+
+  await input.fill('2026-06-30')
+  expect(await input.evaluate((node: HTMLInputElement) => node.checkValidity())).toBe(false)
 
   await form.getByRole('button', { name: 'Reset' }).click()
-  await expect(input).toHaveValue(/Jul 11, 2026/)
+  await expect(input).toHaveValue('2026-07-11')
+  expect(await input.evaluate((node: HTMLInputElement) => node.checkValidity())).toBe(true)
 })

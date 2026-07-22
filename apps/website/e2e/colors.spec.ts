@@ -213,7 +213,9 @@ test('alert status text keeps a subtle semantic tint', async ({ page }) => {
   for (const appearance of ['light', 'dark'] as const) {
     await preview.getByLabel('Appearance').selectOption(appearance)
     await expect(preview).toHaveCSS('color-scheme', appearance)
-    const chromas = await textChromas(preview.locator('[role="status"] h5'), 1)
+    const chromas = await textChromas(
+      preview.getByRole('heading', { name: /^(info|success|warning|danger)$/ }),
+    )
 
     expect(chromas, `Alert ${appearance} status count`).toHaveLength(4)
     for (const chroma of chromas) {
@@ -265,7 +267,6 @@ test('top-layer component surfaces stay opaque in dark accent themes', async ({ 
     ['hover-card', '[popover]'],
     ['drawer', 'dialog'],
     ['dialog', 'dialog'],
-    ['date-picker', '[popover]'],
     ['context-menu', '[popover]'],
     ['command', 'dialog'],
     ['combobox', '[role="listbox"]'],
@@ -294,8 +295,8 @@ test('dark checkbox indicator follows its foreground token', async ({ page }) =>
   await expect(checkbox).toBeVisible()
   const indicator = await checkbox.evaluate((element) => ({
     color: getComputedStyle(element).color,
-    indicator: getComputedStyle(element, '::before').backgroundColor,
-    opacity: getComputedStyle(element, '::before').opacity,
+    indicator: getComputedStyle(element, '::after').backgroundColor,
+    opacity: getComputedStyle(element, '::after').opacity,
   }))
   expect(indicator.indicator).toBe(indicator.color)
   expect(indicator.opacity).toBe('1')
@@ -328,8 +329,12 @@ test('dark surface, card, and selected-tab depth is monotonically lighter', asyn
   await cardPreview.getByLabel('Appearance').selectOption('dark')
   await expect(cardPreview).toHaveAttribute('data-preview-appearance', 'dark')
   await expect(cardPreview).toHaveCSS('color-scheme', 'dark')
-  const outerCard = cardPreview.getByLabel('Token-driven surface card')
-  const nestedCard = cardPreview.getByLabel('Nested layer card')
+  const outerCard = cardPreview
+    .getByRole('heading', { exact: true, name: 'Token-driven surface' })
+    .locator('xpath=ancestor::article[1]')
+  const nestedCard = cardPreview
+    .getByRole('heading', { exact: true, name: 'Nested layer' })
+    .locator('xpath=ancestor::article[1]')
   const [outerCardLuminance, nestedCardLuminance] = await Promise.all([
     effectiveBackgroundLuminance(outerCard, '[data-component-demo="Card"]'),
     effectiveBackgroundLuminance(nestedCard, '[data-component-demo="Card"]'),

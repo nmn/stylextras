@@ -1,6 +1,6 @@
 ---
 title: "DatePicker"
-description: "Calendar, input, and popover composition."
+description: "Native date input with platform form behavior."
 ---
 
 import Example from "@stylextras/ui/date-picker/example";
@@ -14,8 +14,6 @@ import Example from "@stylextras/ui/date-picker/example";
 ### Example code
 
 ```tsx
-'use client';
-
 import { DatePicker } from './index';
 import { Field, FieldDescription, FieldLabel } from '../field';
 
@@ -25,18 +23,18 @@ export default function Example() {
       <Field>
         <FieldLabel htmlFor="publish-date">Publish date</FieldLabel>
         <DatePicker
-          inputId="publish-date"
+          id="publish-date"
           name="publishDate"
           defaultValue="2026-07-12"
         />
         <FieldDescription>
-          Select a day with the calendar or keyboard.
+          Enter a date or use the platform date chooser.
         </FieldDescription>
       </Field>
       <Field>
         <FieldLabel htmlFor="archive-date">Archive date</FieldLabel>
         <DatePicker
-          inputId="archive-date"
+          id="archive-date"
           name="archiveDate"
           defaultValue="2026-07-20"
           min="2026-07-12"
@@ -58,13 +56,13 @@ import { DatePicker } from "@stylextras/ui/date-picker";
 
 ## Anatomy
 
-- `DatePicker` — Styled `<div>`.
+- `DatePicker` — Styled `<input type="date">`.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+DatePicker has no client boundary or component JavaScript. The browser owns entry, validation, keyboard behavior, reset, and form submission. Compose `Calendar` separately when an enhanced calendar view is useful.
 
 ## API reference
 
@@ -72,17 +70,7 @@ This component uses a focused client controller for composite state and keyboard
 
 `DatePickerProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "defaultValue" | "style">`. The props below complete `DatePickerProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. All native date-input props remain accepted.
 
-- `defaultValue` — `string`. Default: `''`.
-- `disabled` — `boolean`. Default: `false`.
-- `inputId` — `string`.
-- `locale` — `string`. Default: `'en-US'`.
-- `max` — `string`.
-- `min` — `string`.
-- `name` — `string`.
-- `onValueChange` — `(value: string) => void`.
-- `placeholder` — `string`. Default: `'Pick a date'`.
-- `required` — `boolean`. Default: `false`.
+- `inputId` — Deprecated alias for the native `id` prop.
 - `sx` — `stylex.StyleXStyles`.
-- `value` — `string`.

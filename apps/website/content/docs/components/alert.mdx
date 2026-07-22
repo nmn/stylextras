@@ -47,7 +47,7 @@ import { Alert, AlertDescription, AlertTitle } from "@stylextras/ui/alert";
 
 - `Alert` — Styled `<div>`.
 - `AlertDescription` — Styled `<div>`.
-- `AlertTitle` — Styled `<h5>`.
+- `AlertTitle` — Polymorphic heading; defaults to `<h3>`.
 
 ## Accessibility and browser behavior
 
@@ -79,6 +79,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `AlertTitleProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h5">, "className" | "style">`. The props below complete `AlertTitleProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<T>, "className" | "style">`. The props below complete `AlertTitleProps`.
 
+- `as` — Heading element type. Default: `'h3'`.
 - `sx` — `stylex.StyleXStyles`.

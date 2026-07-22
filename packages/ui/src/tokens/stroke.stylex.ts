@@ -21,6 +21,7 @@ export const stroke: Tstroke = stylex.defineVars({
   },
   thick: () => `calc(${stroke.thin} * 2)`,
   heavy: () => `calc(${stroke.thin} * 3)`,
-  focusRing: () => `calc(${stroke.thin} * 2)`,
+  /** Focus indication remains at least 2px across every decorative stroke theme. */
+  focusRing: "2px",
   focusRingOffset: () => stroke.thin,
 });

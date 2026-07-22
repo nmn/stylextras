@@ -4,8 +4,8 @@ import { typography } from '../tokens/typography.stylex'
 export const uiTheme = stylex.createTheme(typography, {})
 
 export const docsTheme = stylex.createTheme(typography, {
-  fontSizeMin: '14px',
-  fontSizeMax: '15px',
+  fontSizeMin: '0.875rem',
+  fontSizeMax: '0.9375rem',
   scaleMin: '1.125',
   scaleMax: '1.2',
   fontSans: `ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
@@ -24,8 +24,8 @@ export const docsTheme = stylex.createTheme(typography, {
 })
 
 export const editorialTheme = stylex.createTheme(typography, {
-  fontSizeMin: '15px',
-  fontSizeMax: '16px',
+  fontSizeMin: '0.9375rem',
+  fontSizeMax: '1rem',
   scaleMin: '1.15',
   scaleMax: '1.2',
   fontSans: `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif`,
@@ -39,8 +39,8 @@ export const editorialTheme = stylex.createTheme(typography, {
 })
 
 export const monoTheme = stylex.createTheme(typography, {
-  fontSizeMin: '13px',
-  fontSizeMax: '14px',
+  fontSizeMin: '0.8125rem',
+  fontSizeMax: '0.875rem',
   scaleMin: '1.12',
   scaleMax: '1.16',
   fontSans: `"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace`,
@@ -55,8 +55,8 @@ export const monoTheme = stylex.createTheme(typography, {
 })
 
 export const industrialTheme = stylex.createTheme(typography, {
-  fontSizeMin: '14px',
-  fontSizeMax: '15px',
+  fontSizeMin: '0.875rem',
+  fontSizeMax: '0.9375rem',
   scaleMin: '1.14',
   scaleMax: '1.2',
   fontSans: `"DIN Alternate", "Avenir Next Condensed", "Helvetica Neue", sans-serif`,
@@ -74,8 +74,8 @@ export const industrialTheme = stylex.createTheme(typography, {
 
 /** Rounded, friendly type for consumer and wellness products. */
 export const humanistTheme = stylex.createTheme(typography, {
-  fontSizeMin: '14px',
-  fontSizeMax: '15px',
+  fontSizeMin: '0.875rem',
+  fontSizeMax: '0.9375rem',
   scaleMin: '1.15',
   scaleMax: '1.22',
   fontSans: `"Quicksand", "Comfortaa", "Nunito", ui-sans-serif, system-ui, sans-serif`,
@@ -90,8 +90,8 @@ export const humanistTheme = stylex.createTheme(typography, {
 
 /** Small, tight type scale for data-dense dashboards and utility UI. */
 export const compactTheme = stylex.createTheme(typography, {
-  fontSizeMin: '12px',
-  fontSizeMax: '13px',
+  fontSizeMin: '0.75rem',
+  fontSizeMax: '0.8125rem',
   scaleMin: '1.1',
   scaleMax: '1.14',
   lineHeightTight: '1.1',

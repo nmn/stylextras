@@ -3,25 +3,29 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
-import { focusgroupRef } from '../focusgroup'
+import type { AccessibleAriaNameProps } from '../accessibility'
+import { focusgroupAttributes, focusgroupRef } from '../focusgroup'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 
-export type MenubarProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'role' | 'style'> & {
-  sx?: StyleXStyles
-}
+export type MenubarProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
+> &
+  AccessibleAriaNameProps & { sx?: StyleXStyles }
 
 /** A focusgroup-enhanced menubar. Menus remain explicit DropdownMenu siblings. */
 export function Menubar({ onPointerMove, ref, sx, ...props }: MenubarProps) {
   const setRef = focusgroupRef(ref)
-  const focusgroup = { focusgroup: 'menubar' } as Record<string, string>
   return (
     <div
       ref={setRef}
+      {...props}
       role="menubar"
-      {...focusgroup}
+      aria-orientation="horizontal"
+      {...focusgroupAttributes('menubar inline wrap')}
       onPointerMove={(event) => {
         onPointerMove?.(event)
         if (event.defaultPrevented || event.pointerType === 'touch') return
@@ -33,7 +37,6 @@ export function Menubar({ onPointerMove, ref, sx, ...props }: MenubarProps) {
         if (!openMenu || trigger.popoverTargetElement === openMenu) return
         trigger.click()
       }}
-      {...props}
       {...stylex.props(styles.base, sx)}
     />
   )
@@ -51,6 +54,8 @@ const styles = stylex.create({
     flexWrap: 'wrap',
     gap: spacing.xxs,
     maxWidth: '100%',
+    overflowX: 'auto',
+    overscrollBehaviorX: 'contain',
     padding: spacing.xxs,
     width: 'fit-content',
   },

@@ -1,130 +1,95 @@
-"use client";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type {
-  ClipboardEvent,
-  ComponentPropsWithoutRef,
-  FormEvent,
-  ReactNode,
-} from "react";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-import { typography } from "../tokens/typography.stylex";
+type SharedProps = { sx?: StyleXStyles }
 
-export type EditableTextElement = "div" | "span";
+export type EditableTextProps =
+  | (Omit<ComponentPropsWithRef<'input'>, 'className' | 'style' | 'type'> &
+      SharedProps & { multiline?: false })
+  | (Omit<ComponentPropsWithRef<'textarea'>, 'className' | 'style'> &
+      SharedProps & { multiline: true })
 
-export type EditableTextProps = Omit<
-  ComponentPropsWithoutRef<"div">,
-  "className" | "style" | "children"
-> & {
-  as?: EditableTextElement;
-  children?: ReactNode;
-  defaultValue?: string;
-  multiline?: boolean;
-  onValueChange?: (value: string) => void;
-  sx?: StyleXStyles;
-};
-
-/**
- * Renders a content-editable text primitive.
- *
- * Search aliases: editable text, inline edit, content editable, editable label.
- *
- * A11y notes:
- * - Contenteditable support is inconsistent across assistive technologies.
- * - It does not add a managed editing mode, validation, or announcement layer.
- */
-export function EditableText({
-  as = "span",
-  children,
-  defaultValue,
-  multiline = false,
-  onPaste,
-  onValueChange,
-  sx,
-  ...props
-}: EditableTextProps) {
-  function handleInput(event: FormEvent<HTMLElement>) {
-    onValueChange?.(event.currentTarget.textContent ?? "");
-  }
-
-  function handlePaste(event: ClipboardEvent<HTMLElement>) {
-    onPaste?.(event as unknown as ClipboardEvent<HTMLDivElement>);
-    if (!multiline) {
-      event.preventDefault();
-      const text = event.clipboardData
-        .getData("text/plain")
-        .replace(/s+/g, " ");
-      document.execCommand("insertText", false, text);
-    }
-  }
-
-  const content = children ?? defaultValue ?? "Editable text";
-  const role = multiline ? undefined : "textbox";
-
-  if (as === "div" || multiline) {
+/** A native text input or textarea styled for inline editing. */
+export function EditableText(props: EditableTextProps) {
+  if (props.multiline) {
+    const { multiline: _multiline, ref, sx, ...textareaProps } = props
     return (
-      <div
-        {...props}
-        contentEditable
-        role={role}
-        suppressContentEditableWarning
-        onInput={handleInput}
-        onPaste={handlePaste}
-        {...stylex.props(
-          baseStyles.base,
-          multiline && modeStyles.multiline,
-          sx,
-        )}
-      >
-        {content}
-      </div>
-    );
+      <textarea
+        ref={ref}
+        {...textareaProps}
+        {...stylex.props(styles.control, styles.multiline, sx)}
+      />
+    )
   }
 
+  const { multiline: _multiline, ref, sx, ...inputProps } = props
   return (
-    <span
-      {...props}
-      contentEditable
-      role={role}
-      suppressContentEditableWarning
-      onInput={handleInput}
-      onPaste={handlePaste}
-      {...stylex.props(baseStyles.base, modeStyles.inline, sx)}
-    >
-      {content}
-    </span>
-  );
+    <input
+      ref={ref}
+      type="text"
+      {...inputProps}
+      {...stylex.props(styles.control, styles.inline, sx)}
+    />
+  )
 }
 
-const baseStyles = stylex.create({
-  base: {
-    borderColor: colors.border,
+const styles = stylex.create({
+  control: {
+    borderColor: {
+      '[aria-invalid="true"]': colors.danger,
+      default: colors.border,
+      ':focus-visible': colors.focusRing,
+      ':user-invalid': colors.danger,
+      ':hover': colors.borderStrong,
+    },
     borderRadius: radius.sm,
-    borderStyle: "dashed",
+    borderStyle: 'dashed',
     borderWidth: stroke.thin,
-    outline: "none",
     paddingBlock: spacing.xxs,
     paddingInline: spacing.xs,
+    boxSizing: 'border-box',
     color: colors.fg,
-    display: "inline-block",
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
-    minWidth: spacing.xxxxl,
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':focus-visible': stroke.focusRing,
+    },
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'background-color, border-color, color',
+    transitionTimingFunction: motion.easeStandard,
+    minHeight: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
+    minWidth: 0,
   },
-});
-
-const modeStyles = stylex.create({
   inline: {
-    whiteSpace: "pre-wrap",
+    display: 'inline-block',
+    width: 'auto',
   },
   multiline: {
-    display: "block",
-    whiteSpace: "pre-wrap",
-    minHeight: spacing.xxxxl,
+    display: 'block',
+    resize: 'vertical',
+    minHeight: '6rem',
+    width: '100%',
   },
-});
+})

@@ -67,7 +67,11 @@ const baseStyles = stylex.create({
     fontWeight: typography.weightMedium,
     justifyContent: "center",
     lineHeight: typography.lineHeightSnug,
-    whiteSpace: "nowrap",
+    maxWidth: "100%",
+    minWidth: 0,
+    overflowWrap: "anywhere",
+    textAlign: "center",
+    whiteSpace: "normal",
     width: "fit-content",
   },
 });

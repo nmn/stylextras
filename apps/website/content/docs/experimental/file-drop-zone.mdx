@@ -1,6 +1,6 @@
 ---
 title: "FileDropZone"
-description: "Drag-and-drop file target."
+description: "Labeled native file input with a drop-zone presentation."
 ---
 
 import Example from "@stylextras/ui/experimental/file-drop-zone/example";
@@ -16,15 +16,13 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
 import { FileDropZone } from './index';
 
 export default function Example() {
   return (
     <>
-      <FileDropZone label="Drop images here or click to browse" />
-      <FileDropZone label="Drop JSON files here or click to browse" />
+      <FileDropZone accept="image/*" label="Drop images here or choose files" />
+      <FileDropZone accept="application/json" label="Drop JSON files here or choose files" />
     </>
   );
 }
@@ -38,13 +36,13 @@ import { FileDropZone } from "@stylextras/ui/experimental/file-drop-zone";
 
 ## Anatomy
 
-- `FileDropZone` — Styled `<input>`.
+- `FileDropZone` — `<label>` containing visible label text and a native `<input type="file">`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`FileDropZone` keeps the native file input visible, focusable, and labeled. The browser supplies browsing, keyboard, form, validation, and drag-to-input behavior without a custom drop controller. Use `accept` to provide a file-type hint, but validate files again when processing them.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+The containing label reflects focus, invalid, disabled, and forced-colors states through CSS `:has()`. Native input props not named in `Omit` remain accepted, including `multiple`, `required`, `form`, standard ARIA/data attributes, event handlers, and `ref`. `sx` styles the containing label and is composed last.
 
 ## API reference
 
@@ -52,7 +50,7 @@ This component uses a focused client controller for composite state and keyboard
 
 `FileDropZoneProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"input">, "className" | "style" | "type">`. The props below complete `FileDropZoneProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `FileDropZoneProps`.
 
-- `label` — `ReactNode`. Default: `"Drop files here or choose files"`.
+- `label` — `ReactNode`. Required.
 - `sx` — `stylex.StyleXStyles`.

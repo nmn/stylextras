@@ -16,6 +16,8 @@ type Tspacing = VarGroup<
     controlLg: string;
     controlMd: string;
     controlSm: string;
+    targetCoarse: string;
+    targetMin: string;
     lg: string;
     md: string;
     sm: string;
@@ -35,6 +37,10 @@ export const spacing: Tspacing = stylex.defineVars({
   controlSm: () => multiply(spacing.base, 8),
   controlMd: () => multiply(spacing.base, 9),
   controlLg: () => multiply(spacing.base, 10),
+  /** WCAG 2.2 AA minimum pointer target size. This must not scale with density. */
+  targetMin: "24px",
+  /** Preferred touch/coarse-pointer target size. This must not scale with density. */
+  targetCoarse: "44px",
   xxxs: () => divide(spacing.base, 2),
   xxs: () => spacing.base,
   xs: () => multiply(spacing.base, 1.5),

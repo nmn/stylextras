@@ -5,7 +5,10 @@ import { colors } from '../tokens/color.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 
-export type SeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'className' | 'style'> & {
+export type SeparatorProps = Omit<
+  ComponentPropsWithRef<'hr'>,
+  'aria-hidden' | 'aria-orientation' | 'className' | 'style'
+> & {
   decorative?: boolean
   emphasis?: 'subtle' | 'strong'
   orientation?: 'horizontal' | 'vertical'
@@ -23,9 +26,9 @@ export function Separator({
   return (
     <hr
       ref={ref}
+      {...props}
       aria-hidden={decorative || undefined}
       aria-orientation={decorative ? undefined : orientation}
-      {...props}
       {...stylex.props(styles.base, orientationStyles[orientation], emphasisStyles[emphasis], sx)}
     />
   )
@@ -47,6 +50,16 @@ const orientationStyles = stylex.create({
 })
 
 const emphasisStyles = stylex.create({
-  subtle: { backgroundColor: colors.border },
-  strong: { backgroundColor: colors.borderStrong },
+  subtle: {
+    backgroundColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
+  },
+  strong: {
+    backgroundColor: {
+      default: colors.borderStrong,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
+  },
 })

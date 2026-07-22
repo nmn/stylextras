@@ -1,7 +1,11 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
-import { Button, type ButtonProps } from '../button'
+import {
+  Button,
+  type AccessibleButtonPropsWithout,
+  type DistributiveOmit,
+} from '../button'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -17,11 +21,13 @@ export type PopoverProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'pop
   size?: PopoverSize
   sx?: StyleXStyles
 }
-export type PopoverTriggerProps = Omit<ButtonProps, 'popoverTarget' | 'popoverTargetAction'> & {
+export type PopoverTriggerProps = AccessibleButtonPropsWithout<
+  'aria-controls' | 'popoverTarget' | 'popoverTargetAction'
+> & {
   action?: 'toggle' | 'show' | 'hide'
   target: string
 }
-export type PopoverCloseProps = Omit<PopoverTriggerProps, 'action'>
+export type PopoverCloseProps = DistributiveOmit<PopoverTriggerProps, 'action'>
 
 /** A native Popover API surface with anchor positioning as an enhancement. */
 export function Popover({
@@ -51,11 +57,12 @@ export function PopoverTrigger({
 }: PopoverTriggerProps) {
   return (
     <Button
+      {...props}
       type={type}
       variant={variant}
+      aria-controls={target}
       popoverTarget={target}
       popoverTargetAction={action}
-      {...props}
     />
   )
 }
@@ -86,6 +93,7 @@ const styles = stylex.create({
       ':popover-open': 1,
     },
     overflow: 'auto',
+    overflowWrap: 'anywhere',
     padding: spacing.md,
     position: 'fixed',
     positionAnchor: 'auto',
@@ -101,6 +109,7 @@ const styles = stylex.create({
     },
     transitionProperty: 'display, opacity, overlay, transform',
     transitionTimingFunction: motion.easeEmphasized,
+    scrollbarGutter: 'stable',
   },
 })
 

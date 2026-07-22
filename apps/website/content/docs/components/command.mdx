@@ -22,6 +22,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandStatus,
   CommandTrigger,
 } from './index';
 
@@ -32,7 +33,7 @@ export default function Example() {
     <>
       <CommandTrigger target={commandId}>Open command menu</CommandTrigger>
       <Command id={commandId} aria-label="Quick jump">
-        <CommandInput autoFocus placeholder="Search commands…" />
+        <CommandInput aria-label="Search commands" autoFocus placeholder="Search commands…" />
         <CommandList>
           <CommandItem value="button-docs" keywords="components actions">
             Open button docs
@@ -44,6 +45,9 @@ export default function Example() {
             Browse examples
           </CommandItem>
           <CommandEmpty />
+          <CommandStatus>
+            {(count) => `${count} command${count === 1 ? '' : 's'} available.`}
+          </CommandStatus>
         </CommandList>
       </Command>
     </>
@@ -54,7 +58,7 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList, CommandTrigger } from "@stylextras/ui/command";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList, CommandStatus, CommandTrigger } from "@stylextras/ui/command";
 ```
 
 ## Anatomy
@@ -64,6 +68,7 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList, CommandT
 - `CommandInput` — Styled `<input>`.
 - `CommandItem` — Styled `<button>`.
 - `CommandList` — Styled `<div>`.
+- `CommandStatus` — Visually hidden polite result announcement.
 - `CommandTrigger` — Styled `<button>`.
 
 ## Accessibility and browser behavior
@@ -78,7 +83,7 @@ This component uses a focused client controller for composite state and keyboard
 
 `CommandProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "style">`. The props below complete `CommandProps`.
+Complete native/inherited prop base: native dialog props with component-owned styles. `aria-label` or `aria-labelledby` is required.
 
 - `onValueChange` — `(value: string) => void`.
 - `sx` — `stylex.StyleXStyles`.
@@ -96,7 +101,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `CommandInputProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "aria-activedescendant" | "aria-controls" | "className" | "role" | "style" | "value">`. The props below complete `CommandInputProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "aria-activedescendant" | "aria-autocomplete" | "aria-controls" | "aria-expanded" | "aria-label" | "aria-labelledby" | "className" | "role" | "style" | "value">`. `aria-label` or `aria-labelledby` is required so the combobox has an accessible name. The props below complete `CommandInputProps`.
 
 - `aria-expanded` — `CommandInputProps["aria-expanded"]`. Default: `'true'`.
 - `autoComplete` — `CommandInputProps["autoComplete"]`. Default: `'off'`.
@@ -135,3 +140,8 @@ Complete native/inherited prop base: `ButtonProps`. The props below complete `Co
 - `target` — `string`. Required.
 - `type` — `CommandTriggerProps["type"]`. Default: `'button'`.
 - `variant` — `ButtonVariant`. Default: `'primary'`.
+
+### CommandStatus
+
+- `children` — `ReactNode | ((count: number) => ReactNode)`. Required.
+- `sx` — `stylex.StyleXStyles`.

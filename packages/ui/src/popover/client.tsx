@@ -20,8 +20,10 @@ export function PopoverClient({
 }: PopoverClientProps) {
   const controlled = open !== undefined
   const [internalOpen, setInternalOpen] = useState(defaultOpen)
+  const [nativeOpen, setNativeOpen] = useState(false)
   const isOpen = controlled ? open : internalOpen
   const popoverRef = useRef<HTMLDivElement>(null)
+  const syncingRef = useRef(false)
 
   const setRefs = useCallback(
     (node: HTMLDivElement | null) => {
@@ -35,9 +37,15 @@ export function PopoverClient({
   useEffect(() => {
     const popover = popoverRef.current
     if (!popover) return
-    if (isOpen && !popover.matches(':popover-open')) popover.showPopover()
-    if (!isOpen && popover.matches(':popover-open')) popover.hidePopover()
-  }, [isOpen])
+    if (isOpen && !popover.matches(':popover-open')) {
+      syncingRef.current = true
+      popover.showPopover()
+    }
+    if (!isOpen && popover.matches(':popover-open')) {
+      syncingRef.current = true
+      popover.hidePopover()
+    }
+  }, [isOpen, nativeOpen])
 
   return (
     <Popover
@@ -45,6 +53,11 @@ export function PopoverClient({
       onToggle={(event) => {
         onToggle?.(event)
         const nextOpen = event.currentTarget.matches(':popover-open')
+        setNativeOpen(nextOpen)
+        if (syncingRef.current) {
+          syncingRef.current = false
+          return
+        }
         if (!controlled) setInternalOpen(nextOpen)
         onOpenChange?.(nextOpen)
       }}

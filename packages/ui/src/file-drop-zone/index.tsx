@@ -1,60 +1,82 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { colors } from "../tokens/color.stylex";
-import { radius } from "../tokens/radius.stylex";
-import { spacing } from "../tokens/spacing.stylex";
-import { stroke } from "../tokens/stroke.stylex";
-import { typography } from "../tokens/typography.stylex";
-
-type BaseProps = ComponentPropsWithoutRef<"input">;
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import { type ComponentPropsWithRef, type ReactNode, useId } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
 export type FileDropZoneProps = Omit<
-  BaseProps,
-  "className" | "style" | "type"
+  ComponentPropsWithRef<'input'>,
+  'className' | 'style' | 'type'
 > & {
-  sx?: StyleXStyles;
-  label?: ReactNode;
-};
+  label: ReactNode
+  sx?: StyleXStyles
+}
 
-/**
- * Renders a stylable drop target shell for file selection.
- *
- * Search aliases: file drop zone, dropzone, upload area, drop target.
- *
- * A11y notes:
- * - Does not fully implement drag-and-drop keyboard alternatives.
- * - Callers should pair it with a standard file input or trigger.
- */
-export function FileDropZone({
-  label = "Drop files here or choose files",
-  sx,
-  ...props
-}: FileDropZoneProps) {
+/** A labeled native file input that keeps browse, keyboard, and drag-to-input behavior. */
+export function FileDropZone({ id, label, ref, sx, ...props }: FileDropZoneProps) {
+  const generatedId = `stylextras-file-${useId().replaceAll(':', '')}`
+  const inputId = id ?? generatedId
   return (
-    <label {...stylex.props(styles.zone, sx)}>
-      <span>{label}</span>
-      <input {...props} type="file" {...stylex.props(styles.input)} />
+    <label htmlFor={inputId} {...stylex.props(styles.zone, sx)}>
+      <span {...stylex.props(styles.label)}>{label}</span>
+      <input ref={ref} id={inputId} type="file" {...props} {...stylex.props(styles.input)} />
     </label>
-  );
+  )
 }
 
 const styles = stylex.create({
   zone: {
     padding: spacing.lg,
-    borderColor: colors.borderStrong,
+    borderColor: {
+      default: colors.borderStrong,
+      ':has(input:focus-visible)': colors.focusRing,
+      ':has(input:user-invalid)': colors.danger,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     borderRadius: radius.lg,
-    borderStyle: "dashed",
+    borderStyle: 'dashed',
     borderWidth: stroke.thin,
-    gap: spacing.xs,
-    placeItems: "center",
-    backgroundColor: colors.bgSubtle,
+    gap: spacing.sm,
+    placeItems: 'center',
+    backgroundColor: {
+      default: colors.bgSubtle,
+      ':has(input:disabled)': colors.control,
+    },
     color: colors.fgSoft,
-    display: "grid",
+    cursor: { default: 'pointer', ':has(input:disabled)': 'not-allowed' },
+    display: 'grid',
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    textAlign: "center",
+    opacity: { default: 1, ':has(input:disabled)': 0.5 },
+    outlineColor: {
+      default: 'transparent',
+      ':has(input:focus-visible)': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':has(input:focus-visible)': stroke.focusRing,
+    },
+    overflowWrap: 'anywhere',
+    textAlign: 'center',
     minHeight: spacing.xxxxl,
+    minWidth: 0,
   },
-  input: { width: "100%" },
-});
+  label: {
+    fontWeight: typography.weightMedium,
+  },
+  input: {
+    outline: 'none',
+    cursor: 'inherit',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    maxWidth: '100%',
+    minHeight: spacing.targetMin,
+    width: '100%',
+  },
+})

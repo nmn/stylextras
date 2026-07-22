@@ -1,13 +1,20 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
 import { colors } from '../tokens/color.stylex'
 import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
 type SxProp = { sx?: StyleXStyles }
 
-export type BreadcrumbProps = Omit<ComponentPropsWithRef<'nav'>, 'className' | 'style'> & SxProp
+export type BreadcrumbProps = Omit<
+  ComponentPropsWithRef<'nav'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'style'
+> &
+  SxProp &
+  AccessibleAriaNameProps
 export type BreadcrumbListProps = Omit<ComponentPropsWithRef<'ol'>, 'className' | 'style'> &
   SxProp
 export type BreadcrumbItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> &
@@ -22,7 +29,7 @@ export type BreadcrumbSeparatorProps = Omit<
 > &
   SxProp
 
-export function Breadcrumb({ 'aria-label': ariaLabel = 'Breadcrumb', ref, sx, ...props }: BreadcrumbProps) {
+export function Breadcrumb({ 'aria-label': ariaLabel, ref, sx, ...props }: BreadcrumbProps) {
   return <nav ref={ref} aria-label={ariaLabel} {...props} {...stylex.props(styles.nav, sx)} />
 }
 
@@ -68,9 +75,18 @@ const styles = stylex.create({
   item: {
     alignItems: 'center',
     display: 'inline-flex',
+    minWidth: 0,
   },
   link: {
     color: colors.fgMuted,
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
+    overflowWrap: 'anywhere',
     textDecoration: { default: 'none', ':hover': 'underline' },
     textUnderlineOffset: 4,
   },

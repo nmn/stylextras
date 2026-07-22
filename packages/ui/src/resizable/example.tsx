@@ -13,9 +13,16 @@ export default function Example() {
       description="Drag the separator or use Arrow keys, Home, and End."
     >
       <Resizable defaultValue={38} sx={styles.root}>
-        <ResizablePanel sx={styles.panel}>Navigation and files</ResizablePanel>
-        <ResizableHandle label="Resize editor panels" />
-        <ResizablePanel sx={styles.panel}>Editor preview</ResizablePanel>
+        <ResizablePanel id="editor-navigation" sx={styles.panel}>
+          Navigation and files
+        </ResizablePanel>
+        <ResizableHandle
+          label="Resize editor panels"
+          aria-controls="editor-navigation editor-preview"
+        />
+        <ResizablePanel id="editor-preview" sx={styles.panel}>
+          Editor preview
+        </ResizablePanel>
       </Resizable>
     </DemoFrame>
   )
@@ -30,8 +37,8 @@ const styles = stylex.create({
     width: '100%',
   },
   panel: {
+    padding: spacing.md,
     backgroundColor: colors.surface,
     color: colors.fgMuted,
-    padding: spacing.md,
   },
 })

@@ -1,26 +1,24 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentPropsWithoutRef } from 'react';
-import { colors } from '../tokens/color.stylex';
-import { radius } from '../tokens/radius.stylex';
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithoutRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { radius } from '../tokens/radius.stylex'
 
-export type ImageCropperRatio = 'square' | 'video' | 'portrait' | 'landscape';
-export type ImageCropperPosition =
-  | 'center'
-  | 'top'
-  | 'bottom'
-  | 'start'
-  | 'end';
+export type ImageCropperRatio = 'square' | 'video' | 'portrait' | 'landscape'
+export type ImageCropperPosition = 'center' | 'top' | 'bottom' | 'start' | 'end'
 
 export type ImageCropperProps = Omit<
   ComponentPropsWithoutRef<'img'>,
-  'className' | 'style'
+  'alt' | 'className' | 'style'
 > & {
-  frameSx?: StyleXStyles;
-  position?: ImageCropperPosition;
-  ratio?: ImageCropperRatio;
-  sx?: StyleXStyles;
-};
+  alt: string
+  frameSx?: StyleXStyles
+  position?: ImageCropperPosition
+  ratio?: ImageCropperRatio
+  sx?: StyleXStyles
+}
+
+export type ImageCropPreviewProps = ImageCropperProps
 
 /**
  * Renders a fixed-ratio image crop preview using object-fit and object-position.
@@ -31,7 +29,7 @@ export type ImageCropperProps = Omit<
  * - This is a visual crop preview rather than an editing tool.
  * - Alt text and crop meaning remain the caller’s responsibility.
  */
-export function ImageCropper({
+export function ImageCropPreview({
   alt,
   frameSx,
   position = 'center',
@@ -49,8 +47,11 @@ export function ImageCropper({
         {...stylex.props(imageStyles.base, positionStyles[position], sx)}
       />
     </div>
-  );
+  )
 }
+
+/** @deprecated This component is a crop preview, not an interactive crop editor. */
+export const ImageCropper = ImageCropPreview
 
 const frameStyles = stylex.create({
   base: {
@@ -59,14 +60,14 @@ const frameStyles = stylex.create({
     backgroundColor: colors.bgSubtle,
     width: '100%',
   },
-});
+})
 
 const ratioStyles = stylex.create({
   square: { aspectRatio: '1 / 1' },
   video: { aspectRatio: '16 / 9' },
   portrait: { aspectRatio: '4 / 5' },
   landscape: { aspectRatio: '4 / 3' },
-});
+})
 
 const imageStyles = stylex.create({
   base: {
@@ -75,7 +76,7 @@ const imageStyles = stylex.create({
     height: '100%',
     width: '100%',
   },
-});
+})
 
 const positionStyles = stylex.create({
   center: { objectPosition: 'center' },
@@ -87,4 +88,4 @@ const positionStyles = stylex.create({
   end: {
     objectPosition: { default: '100% 50%', ':dir(rtl)': '0% 50%' },
   },
-});
+})

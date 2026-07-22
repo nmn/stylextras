@@ -1,5 +1,3 @@
-'use client'
-
 import { DemoFrame } from '../example-theme/demo'
 import {
   Tree,
@@ -14,7 +12,7 @@ export default function Example() {
   return (
     <DemoFrame
       title="Tree"
-      description="Explicit branch, group, trigger, and item parts preserve native disclosure behavior."
+      description="A semantic nested list uses native disclosure behavior without claiming a composite tree model."
     >
       <Tree aria-label="Package explorer">
         <TreeGroup>

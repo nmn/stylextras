@@ -72,9 +72,10 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 `BreadcrumbProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "className" | "style">`. The props below complete `BreadcrumbProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "aria-label" | "aria-labelledby" | "className" | "style">`. The props below complete `BreadcrumbProps`.
 
-- `aria-label` — `BreadcrumbProps["aria-label"]`. Default: `'Breadcrumb'`.
+- `aria-label` — `string`. Required unless `aria-labelledby` is provided.
+- `aria-labelledby` — `string`. Required unless `aria-label` is provided.
 - `sx` — `stylex.StyleXStyles`.
 
 ### BreadcrumbItem

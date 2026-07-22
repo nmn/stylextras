@@ -26,7 +26,11 @@ export default function Example() {
     >
       <Carousel aria-label="Browser API highlights">
         {slides.map(([title, description], index) => (
-          <CarouselItem key={title} sx={styles.slide}>
+          <CarouselItem
+            key={title}
+            aria-label={`${index + 1} of ${slides.length}: ${title}`}
+            sx={styles.slide}
+          >
             <Card sx={styles.card}>
               <CardHeader>
                 <span {...stylex.props(styles.number)}>{String(index + 1).padStart(2, '0')}</span>
@@ -64,4 +68,3 @@ const styles = stylex.create({
     textTransform: 'uppercase',
   },
 })
-;('use client')

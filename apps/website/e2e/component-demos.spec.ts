@@ -59,18 +59,13 @@ test('every component page renders its live demo', async ({ browserName, page })
     await expect(exampleCode).toContainText('export default function Example')
     await expect(page.getByRole('heading', { name: 'Anatomy', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'API reference', exact: true })).toBeVisible()
-    await expect(page.getByText(`${entry.name}Props`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${entry.name}Props`, { exact: true }).first()).toBeVisible()
     await expect(page.locator('vite-error-overlay')).toHaveCount(0)
 
-    if (entry.status === 'stable') {
-      const results = await new AxeBuilder({ page })
-        .include(`[data-component-demo="${entry.name}"]`)
-        .analyze()
-      const serious = results.violations.filter(
-        (violation) => violation.impact === 'serious' || violation.impact === 'critical',
-      )
-      expect(serious, `${entry.export} axe results`).toEqual([])
-    }
+    const results = await new AxeBuilder({ page })
+      .include(`[data-component-demo="${entry.name}"]`)
+      .analyze()
+    expect(results.violations, `${entry.export} axe results`).toEqual([])
   }
 
   expect(errors).toEqual([])
@@ -82,7 +77,7 @@ test('every component page fits a narrow viewport', async ({ browserName, page }
     'The catalog layout crawl runs once; cross-engine narrow-layout behavior is covered on the verification route.',
   )
   test.setTimeout(180_000)
-  await page.setViewportSize({ height: 844, width: 390 })
+  await page.setViewportSize({ height: 844, width: 320 })
 
   for (const entry of componentCatalog) {
     const slug = entry.export.replace('experimental/', '')
@@ -96,10 +91,54 @@ test('every component page fits a narrow viewport', async ({ browserName, page }
     )
     await expect(preview, `${entry.export} styled preview`).toHaveCSS('display', 'grid')
 
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - window.innerWidth,
-    )
-    expect(overflow, `${entry.export} horizontal overflow`).toBeLessThanOrEqual(1)
+    const layout = await page.evaluate(() => {
+      const viewportWidth = window.innerWidth
+      const isClippedByAncestor = (element: HTMLElement) => {
+        let ancestor = element.parentElement
+        while (ancestor && ancestor !== document.body) {
+          if (getComputedStyle(ancestor).overflowX !== 'visible') return true
+          ancestor = ancestor.parentElement
+        }
+        return false
+      }
+      const offenders = Array.from(document.querySelectorAll<HTMLElement>('body *'))
+        .map((element) => {
+          const rect = element.getBoundingClientRect()
+          const overflowX = getComputedStyle(element).overflowX
+          return {
+            clientWidth: element.clientWidth,
+            clippedByAncestor: isClippedByAncestor(element),
+            dataStyleSrc: element.dataset.styleSrc,
+            left: Math.round(rect.left),
+            overflowX,
+            right: Math.round(rect.right),
+            scrollWidth: element.scrollWidth,
+            tagName: element.tagName,
+            text: element.textContent?.trim().slice(0, 60),
+          }
+        })
+        .filter(
+          ({ clientWidth, clippedByAncestor, left, overflowX, right, scrollWidth }) =>
+            !clippedByAncestor &&
+            left >= -1 &&
+            (right > viewportWidth + 1 ||
+              (overflowX === 'visible' && scrollWidth > clientWidth + 1)),
+        )
+        .sort(
+          (left, right) =>
+            Math.max(right.right - viewportWidth, right.scrollWidth - right.clientWidth) -
+            Math.max(left.right - viewportWidth, left.scrollWidth - left.clientWidth),
+        )
+        .slice(0, 8)
+      return {
+        offenders,
+        overflow: document.documentElement.scrollWidth - viewportWidth,
+      }
+    })
+    expect(
+      layout.overflow,
+      `${entry.export} horizontal overflow: ${JSON.stringify(layout)}`,
+    ).toBeLessThanOrEqual(1)
   }
 })
 
@@ -142,7 +181,7 @@ test('Carousel uses native scroll snap across an extended example', async ({ pag
   const preview = page.locator('[data-component-demo="Carousel"]')
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   const carousel = preview.getByRole('region', { name: 'Browser API highlights' })
-  const items = carousel.locator('article')
+  const items = carousel.locator('[role="group"][aria-roledescription="slide"]')
   await expect(items).toHaveCount(10)
   await expect(carousel).toHaveCSS('scroll-snap-type', /mandatory/)
   await expect(items.first()).toHaveCSS('scroll-snap-align', /start/)
@@ -230,18 +269,43 @@ test('Switch thumb position follows the inline axis', async ({ page }) => {
   const checked = preview.locator('input[role="switch"]:checked').first()
   const unchecked = preview.locator('input[role="switch"]:not(:checked)').first()
 
-  await expect(checked).toHaveCSS('background-position', '100% 50%')
-  await expect(unchecked).toHaveCSS('background-position', '0% 50%')
+  const thumbLeft = (input: typeof checked) =>
+    input.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element, '::after').left),
+    )
+
+  const ltrChecked = await thumbLeft(checked)
+  const ltrUnchecked = await thumbLeft(unchecked)
+  expect(ltrChecked).toBeGreaterThan(ltrUnchecked)
   await preview.evaluate((element) => element.setAttribute('dir', 'rtl'))
-  await expect(checked).toHaveCSS('background-position', '0% 50%')
-  await expect(unchecked).toHaveCSS('background-position', '100% 50%')
+  const rtlChecked = await thumbLeft(checked)
+  const rtlUnchecked = await thumbLeft(unchecked)
+  expect(rtlChecked).toBeLessThan(rtlUnchecked)
+})
+
+test('Radio indicator follows the native checked state', async ({ page }) => {
+  await page.goto('/docs/components/radio-group')
+  const preview = page.locator('[data-component-demo="RadioGroup"]')
+  const compact = preview.getByRole('radio', { name: 'Compact' })
+  const defaultDensity = preview.getByRole('radio', { name: 'Default' })
+  const indicatorOpacity = (radio: typeof compact) =>
+    radio.evaluate((element) => getComputedStyle(element, '::after').opacity)
+
+  await expect(defaultDensity).toBeChecked()
+  expect(await indicatorOpacity(defaultDensity)).toBe('1')
+  expect(await indicatorOpacity(compact)).toBe('0')
+
+  await compact.check()
+  await expect(compact).toBeChecked()
+  expect(await indicatorOpacity(compact)).toBe('1')
+  expect(await indicatorOpacity(defaultDensity)).toBe('0')
 })
 
 test('Card action stays on the inline end edge', async ({ page }) => {
   await page.goto('/docs/components/card')
   const preview = page.locator('[data-component-demo="Card"]')
-  const card = preview.getByLabel('Native popups card')
-  const action = card.getByRole('button', { name: 'Card options' })
+  const card = preview.getByRole('article', { name: 'Native popups', exact: true })
+  const action = card.getByRole('button', { name: 'Options for Native popups' })
 
   const [ltrCardBox, ltrActionBox] = await Promise.all([card.boundingBox(), action.boundingBox()])
   expect(ltrCardBox).not.toBeNull()
@@ -298,13 +362,14 @@ test('ContextMenu pointer placement follows inline start in RTL', async ({ page 
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   const trigger = preview.getByText('Open the context menu anywhere in this area', { exact: true })
   const menu = preview.locator('#canvas-context-menu')
-  const clickPosition = { x: 120, y: 40 }
   const triggerBox = await trigger.boundingBox()
   expect(triggerBox).not.toBeNull()
+  const clickPosition = {
+    x: Math.min(120, triggerBox!.width / 2),
+    y: triggerBox!.height / 2,
+  }
 
-  await page.mouse.click(triggerBox!.x + clickPosition.x, triggerBox!.y + clickPosition.y, {
-    button: 'right',
-  })
+  await trigger.click({ button: 'right', position: clickPosition })
   await expect(menu).toBeVisible()
   const ltrMenuBox = await menu.boundingBox()
   expect(ltrMenuBox).not.toBeNull()
@@ -315,9 +380,7 @@ test('ContextMenu pointer placement follows inline start in RTL', async ({ page 
   await preview.evaluate((element) => element.setAttribute('dir', 'rtl'))
   const rtlTriggerBox = await trigger.boundingBox()
   expect(rtlTriggerBox).not.toBeNull()
-  await page.mouse.click(rtlTriggerBox!.x + clickPosition.x, rtlTriggerBox!.y + clickPosition.y, {
-    button: 'right',
-  })
+  await trigger.click({ button: 'right', position: clickPosition })
   await expect(menu).toBeVisible()
   const rtlMenuBox = await menu.boundingBox()
   expect(rtlMenuBox).not.toBeNull()
@@ -550,13 +613,15 @@ test('selected tabs use the active elevation theme', async ({ browserName, page 
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   const selectedTab = preview.getByRole('tab', { name: 'Overview' })
   await expect(selectedTab).toHaveAttribute('aria-selected', 'true')
+  const readShadow = () =>
+    selectedTab.evaluate((element) => getComputedStyle(element).boxShadow)
+  const initialShadow = await readShadow()
 
   await preview.getByLabel('Elevation theme').selectOption('flat')
-  const flatShadow = await selectedTab.evaluate((element) => getComputedStyle(element).boxShadow)
+  await expect.poll(readShadow).not.toBe(initialShadow)
+  const flatShadow = await readShadow()
   await preview.getByLabel('Elevation theme').selectOption('poster')
-  const posterShadow = await selectedTab.evaluate((element) => getComputedStyle(element).boxShadow)
-
-  expect(posterShadow).not.toBe(flatShadow)
+  await expect.poll(readShadow).not.toBe(flatShadow)
 })
 
 test('docs Option states use blue highlights without tinting the picker surface', async ({

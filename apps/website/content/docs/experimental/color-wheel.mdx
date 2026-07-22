@@ -1,6 +1,6 @@
 ---
 title: "ColorWheel"
-description: "Polar color input."
+description: "Circular native color-input fallback."
 ---
 
 import Example from "@stylextras/ui/experimental/color-wheel/example";
@@ -16,8 +16,6 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
 import { ColorWheel } from './index';
 
 export default function Example() {
@@ -33,13 +31,13 @@ import { ColorWheel } from "@stylextras/ui/experimental/color-wheel";
 
 ## Anatomy
 
-- `ColorWheel` — Styled `<div>`.
+- `ColorWheel` — Native `<input type="color">`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`ColorWheel` is a circular presentation of the native color input, not a custom polar control. The browser supplies its picker, keyboard behavior, validation, and form participation without component JavaScript. Give it a visible label or an accessible name.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+Any native input prop not named in `Omit` remains accepted, including standard ARIA/data attributes, event handlers, and `ref`. `sx` is composed last.
 
 ## API reference
 
@@ -47,6 +45,6 @@ This component uses a focused client controller for composite state and keyboard
 
 `ColorWheelProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"div">, "className" | "style">`. The props below complete `ColorWheelProps`.
+Complete native/inherited prop base: `ColorFieldProps`, which is `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `ColorWheelProps`.
 
 - `sx` — `stylex.StyleXStyles`.

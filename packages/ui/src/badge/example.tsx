@@ -1,5 +1,3 @@
-"use client";
-
 import { Badge } from "./index";
 import { DemoFrame, DemoRow, DemoStack } from "../example-theme/demo";
 

@@ -58,6 +58,9 @@ const styles = stylex.create({
     letterSpacing: typography.trackingNormal,
     lineHeight: typography.lineHeightBody,
     margin: 0,
+    maxWidth: '80ch',
+    minWidth: 0,
+    overflowWrap: 'anywhere',
   },
   mono: { fontFamily: typography.fontMono },
 })

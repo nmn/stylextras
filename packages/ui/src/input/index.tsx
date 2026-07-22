@@ -18,7 +18,7 @@ export function Input({ ref, sx, type = 'text', ...props }: InputProps) {
   )
 }
 
-export const inputStyles = stylex.create({
+const inputStyles = stylex.create({
   base: {
     appearance: 'none',
     backgroundColor: colors.control,
@@ -28,29 +28,42 @@ export const inputStyles = stylex.create({
       ':focus-visible': colors.focusRing,
       ':user-invalid': colors.danger,
       '[aria-invalid="true"]': colors.danger,
+      '@media (forced-colors: active)': 'CanvasText',
     },
     borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    boxShadow: {
-      default: 'none',
-      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
-    },
     boxSizing: 'border-box',
     color: colors.fg,
     fontFamily: typography.fontSans,
-    fontSize: typography.step0,
+    forcedColorAdjust: 'auto',
+    fontSize: {
+      default: typography.step0,
+      '@media (pointer: coarse)': `max(1rem, ${typography.step0})`,
+    },
     lineHeight: typography.lineHeightBody,
-    minHeight: spacing.controlMd,
+    minHeight: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     minWidth: 0,
     opacity: {
       default: 1,
       ':disabled': 0.5,
     },
-    outline: 'none',
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
     paddingInline: spacing.md,
-    transitionDuration: motion.durationFast,
-    transitionProperty: 'background-color, border-color, box-shadow, color',
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'background-color, border-color, color, outline-color',
     transitionTimingFunction: motion.easeStandard,
     width: '100%',
     '::placeholder': {

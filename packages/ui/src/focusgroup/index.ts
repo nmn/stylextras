@@ -14,6 +14,7 @@ type FocusgroupPolyfillModule =
 
 let polyfillPromise: Promise<FocusgroupPolyfillModule> | null = null;
 const nodePolyfillPromises = new WeakMap<HTMLElement, Promise<void>>();
+const polyfilledNodes = new WeakSet<HTMLElement>();
 
 type FocusgroupAttributes = {
   focusgroup: string;
@@ -63,7 +64,9 @@ export function attachFocusgroupPolyfill(
   }
 
   const apply = () => {
-    void ensureFocusgroupPolyfill(node);
+    void ensureFocusgroupPolyfill(node)?.catch(() => {
+      // The native tab order remains usable if the optional bridge cannot load.
+    });
   };
 
   if (
@@ -89,14 +92,30 @@ export function ensureFocusgroupPolyfill(
   node: HTMLElement,
 ): Promise<void> | undefined {
   if (supportsFocusgroup()) return undefined;
+  if (polyfilledNodes.has(node)) return Promise.resolve();
 
   const existingPromise = nodePolyfillPromises.get(node);
   if (existingPromise) return existingPromise;
 
   polyfillPromise ??= import("@microsoft/focusgroup-polyfill/shadowless");
-  const nodePromise = polyfillPromise.then(({ polyfill }) => {
-    if (node.isConnected) polyfill(node);
-  });
+  const nodePromise = polyfillPromise.then(
+    async ({ polyfill }) => {
+      if (!node.isConnected) {
+        nodePolyfillPromises.delete(node);
+        return;
+      }
+      polyfill(node);
+      // The polyfill discovers and decorates a newly requested focusgroup in
+      // requestAnimationFrame. Resolve only after that callback has installed
+      // its keyboard handlers so callers can safely move focus immediately.
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      polyfilledNodes.add(node);
+    },
+    (error: unknown) => {
+      nodePolyfillPromises.delete(node);
+      throw error;
+    },
+  );
   nodePolyfillPromises.set(node, nodePromise);
   return nodePromise;
 }

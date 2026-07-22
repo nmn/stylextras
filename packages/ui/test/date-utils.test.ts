@@ -2,10 +2,14 @@ import { describe, expect, it } from 'vitest'
 import {
   addDays,
   addMonths,
+  addMonthsToValue,
+  clampDateValue,
   createMonthGrid,
   formatDateValue,
+  formatDayLabel,
   formatDisplayDate,
   formatMonthLabel,
+  getWeekStartsOn,
   getWeekdayLabels,
   isDateDisabled,
   monthForValue,
@@ -32,6 +36,12 @@ describe('calendar date utilities', () => {
       month: 1,
       year: 2027,
     })
+    expect(addMonthsToValue('2028-01-31', 1)).toBe('2028-02-29')
+    expect(addMonthsToValue('2027-03-31', -1)).toBe('2027-02-28')
+    expect(addMonthsToValue('invalid', 1)).toBe('invalid')
+    expect(clampDateValue('2026-08-31', '2026-07-01', '2026-08-20')).toBe('2026-08-20')
+    expect(clampDateValue('2026-06-30', '2026-07-01', '2026-08-20')).toBe('2026-07-01')
+    expect(clampDateValue('2026-07-11', 'invalid', 'also-invalid')).toBe('2026-07-11')
   })
 
   it('creates a stable six-week grid for either week convention', () => {
@@ -45,6 +55,11 @@ describe('calendar date utilities', () => {
     expect(sundayGrid.filter((cell) => cell.inMonth)).toHaveLength(31)
   })
 
+  it('uses the locale week convention across current and legacy Intl APIs', () => {
+    expect(getWeekStartsOn('en-US')).toBe(0)
+    expect(getWeekStartsOn('en-GB')).toBe(1)
+  })
+
   it('uses deterministic UTC-backed Intl formatting', () => {
     const weekdays = getWeekdayLabels('en-US', 1)
     expect(weekdays).toHaveLength(7)
@@ -53,6 +68,7 @@ describe('calendar date utilities', () => {
       'July 2026',
     )
     expect(formatDisplayDate('2026-07-11', 'en-US')).toContain('Jul')
+    expect(formatDayLabel('2026-07-11', 'en-US')).toBe('Saturday, July 11, 2026')
     expect(formatDisplayDate('invalid', 'en-US')).toBe('')
   })
 

@@ -28,6 +28,7 @@ import {
   DialogTrigger,
   type DialogSize,
 } from './index';
+import { DialogCommandBridge } from './client';
 
 function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
   return (
@@ -54,6 +55,7 @@ function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
           </DialogClose>
         </ButtonGroup>
       </DialogFooter>
+      <DialogCommandBridge target={id} />
     </Dialog>
   );
 }
@@ -85,6 +87,7 @@ export default function Example() {
 
 ```tsx
 import { Dialog, DialogBody, DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@stylextras/ui/dialog";
+import { DialogClient, DialogCommandBridge } from "@stylextras/ui/dialog/client";
 ```
 
 ## Anatomy
@@ -92,6 +95,7 @@ import { Dialog, DialogBody, DialogClose, DialogDescription, DialogFooter, Dialo
 - `Dialog` — Styled `<dialog>`.
 - `DialogBody` — Styled `<div>`.
 - `DialogClose` — Styled `<button>`.
+- `DialogCommandBridge` — Optional client bridge that renders no DOM.
 - `DialogDescription` — Styled `<p>`.
 - `DialogFooter` — Styled `<footer>`.
 - `DialogHeader` — Styled `<header>`.
@@ -102,7 +106,9 @@ import { Dialog, DialogBody, DialogClose, DialogDescription, DialogFooter, Dialo
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+The base entry is server-renderable and uses native `command`/`commandfor` invokers with no client JavaScript. Add `DialogCommandBridge` for older browsers; it feature-detects native support and loads the fallback only when needed. `DialogClient` includes that bridge automatically whenever the dialog has an `id`, in addition to its controlled/uncontrolled state adapter.
+
+`DialogCommandBridge` renders no DOM. Its `target` must match the dialog `id` and the associated `DialogTrigger`/`DialogClose` targets.
 
 ## API reference
 
@@ -123,6 +129,22 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DialogBodyProps`.
 
 - `sx` — `stylex.StyleXStyles`.
+
+### DialogClient
+
+`DialogClientProps`
+
+Optional client adapter for controlled or initially open dialogs. It accepts `DialogProps` except the native `open` prop and automatically installs `DialogCommandBridge` when `id` is provided.
+
+- `defaultOpen` — `boolean`. Default: `false`.
+- `onOpenChange` — `(open: boolean) => void`.
+- `open` — `boolean`.
+
+### DialogCommandBridge
+
+`DialogCommandBridgeProps`
+
+- `target` — `string`. Required. Must match the dialog `id`; the legacy fallback is imported only when native invoker commands are absent.
 
 ### DialogClose
 

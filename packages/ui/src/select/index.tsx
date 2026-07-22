@@ -46,8 +46,12 @@ const styles = stylex.create({
       default: `linear-gradient(45deg, transparent 50%, ${colors.fgMuted} 50%), linear-gradient(135deg, ${colors.fgMuted} 50%, transparent 50%)`,
       '@supports (appearance: base-select)': 'none',
       '@media (pointer: coarse)': 'none',
+      '@media (forced-colors: active)': 'none',
     },
-    backgroundPosition: `calc(100% - ${spacing.md}) calc(50% - 1px), calc(100% - ${spacing.sm}) calc(50% - 1px)`,
+    backgroundPosition: {
+      default: `calc(100% - ${spacing.md}) calc(50% - 1px), calc(100% - ${spacing.sm}) calc(50% - 1px)`,
+      ':dir(rtl)': `${spacing.md} calc(50% - 1px), ${spacing.sm} calc(50% - 1px)`,
+    },
     backgroundRepeat: 'no-repeat',
     backgroundSize: '5px 5px, 5px 5px',
     borderColor: {
@@ -74,13 +78,24 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
-    minHeight: spacing.controlMd,
+    minHeight: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     minWidth: 0,
     opacity: {
       default: 1,
       ':disabled': 0.5,
     },
     outline: 'none',
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: { default: 0, ':focus-visible': stroke.focusRing },
     paddingInline: {
       default: `${spacing.md} ${spacing.xxl}`,
       '@supports (appearance: base-select)': spacing.md,
@@ -109,8 +124,10 @@ const styles = stylex.create({
       boxShadow: elevation.md,
       color: colors.popoverForeground,
       marginBlock: spacing.xs,
+      maxHeight: 'min(80dvh, 24rem)',
       minWidth: 'anchor-size(width)',
       opacity: 0,
+      overflow: 'auto',
       padding: spacing.xxs,
       transitionBehavior: 'allow-discrete',
       transitionDuration: {
@@ -166,7 +183,10 @@ const styles = stylex.create({
     },
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    minHeight: spacing.controlSm,
+    minHeight: {
+      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     outline: 'none',
     paddingBlock: spacing.xxs,
     paddingInline: spacing.sm,

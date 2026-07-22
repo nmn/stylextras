@@ -13,6 +13,7 @@ import {
   DialogTrigger,
   type DialogSize,
 } from './index'
+import { DialogCommandBridge } from './client'
 
 function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
   return (
@@ -35,6 +36,7 @@ function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
           </DialogClose>
         </ButtonGroup>
       </DialogFooter>
+      <DialogCommandBridge target={id} />
     </Dialog>
   )
 }

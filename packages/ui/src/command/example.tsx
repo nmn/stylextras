@@ -7,6 +7,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandStatus,
   CommandTrigger,
 } from './index'
 
@@ -17,7 +18,7 @@ export default function Example() {
     <DemoFrame title="Quick jump" description="Filter and run commands with the keyboard.">
       <CommandTrigger target={commandId}>Open command menu</CommandTrigger>
       <Command id={commandId} aria-label="Quick jump">
-        <CommandInput autoFocus placeholder="Search commands…" />
+        <CommandInput aria-label="Search commands" autoFocus placeholder="Search commands…" />
         <CommandList>
           <CommandItem value="button-docs" keywords="components actions">
             Open button docs
@@ -29,6 +30,9 @@ export default function Example() {
             Browse examples
           </CommandItem>
           <CommandEmpty />
+          <CommandStatus>
+            {(count) => `${count} command${count === 1 ? '' : 's'} available.`}
+          </CommandStatus>
         </CommandList>
       </Command>
     </DemoFrame>

@@ -38,6 +38,7 @@ const styles = stylex.create({
     display: 'grid',
     gap: spacing.xs,
     minWidth: 0,
+    overflowWrap: 'anywhere',
   },
   label: {
     color: colors.fg,
@@ -45,6 +46,7 @@ const styles = stylex.create({
     fontSize: typography.step0,
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
+    overflowWrap: 'anywhere',
   },
   description: {
     color: colors.fgMuted,
@@ -52,6 +54,7 @@ const styles = stylex.create({
     fontSize: typography.stepMinus1,
     lineHeight: typography.lineHeightBody,
     margin: 0,
+    overflowWrap: 'anywhere',
   },
   error: {
     color: colors.danger,
@@ -60,5 +63,6 @@ const styles = stylex.create({
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightBody,
     margin: 0,
+    overflowWrap: 'anywhere',
   },
 })

@@ -31,7 +31,10 @@ export function Kbd({ ref, size = 'md', sx, ...props }: KbdProps) {
 
 const baseStyles = stylex.create({
   base: {
-    borderColor: colors.borderStrong,
+    borderColor: {
+      default: colors.borderStrong,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,

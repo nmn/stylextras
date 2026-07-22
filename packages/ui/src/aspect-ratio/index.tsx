@@ -40,7 +40,8 @@ export function AspectRatio({
 const baseStyles = stylex.create({
   base: {
     borderRadius: radius.md,
-    overflow: "hidden",
+    minWidth: 0,
+    overflow: { default: "hidden", ":focus-within": "visible" },
     placeItems: "center",
     backgroundColor: colors.bgSubtle,
     display: "grid",

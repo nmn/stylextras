@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -11,7 +12,12 @@ import { typography } from '../tokens/typography.stylex'
 
 type SxProp = { sx?: StyleXStyles }
 
-export type NavigationMenuProps = Omit<ComponentPropsWithRef<'nav'>, 'className' | 'style'> & SxProp
+export type NavigationMenuProps = Omit<
+  ComponentPropsWithRef<'nav'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'style'
+> &
+  AccessibleAriaNameProps &
+  SxProp
 export type NavigationMenuListProps = Omit<ComponentPropsWithRef<'ul'>, 'className' | 'style'> &
   SxProp
 export type NavigationMenuItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> &
@@ -20,7 +26,7 @@ export type NavigationMenuLinkProps = Omit<ComponentPropsWithRef<'a'>, 'classNam
   SxProp
 export type NavigationMenuTriggerProps = Omit<
   ComponentPropsWithRef<'button'>,
-  'className' | 'style'
+  'className' | 'popoverTarget' | 'popoverTargetAction' | 'style'
 > & {
   sx?: StyleXStyles
   target: string
@@ -57,10 +63,10 @@ export function NavigationMenuTrigger({
   return (
     <button
       ref={ref}
-      type={type}
-      aria-haspopup="true"
-      popoverTarget={target}
       {...props}
+      type={type}
+      aria-controls={target}
+      popoverTarget={target}
       {...stylex.props(styles.link, sx)}
     />
   )
@@ -78,6 +84,7 @@ const styles = stylex.create({
   list: {
     alignItems: 'center',
     display: 'flex',
+    flexWrap: 'wrap',
     gap: spacing.xxs,
     listStyle: 'none',
     margin: 0,
@@ -92,6 +99,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':hover': colors.accent,
+      '[aria-current="page"]': colors.accent,
     },
     borderColor: 'transparent',
     borderRadius: radius.sm,
@@ -107,12 +115,27 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     fontWeight: typography.weightMedium,
-    minHeight: spacing.controlMd,
+    minHeight: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     opacity: { default: 1, ':disabled': 0.5 },
     outline: 'none',
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: { default: 0, ':focus-visible': stroke.focusRing },
     paddingInline: spacing.sm,
     textDecoration: 'none',
-    transitionDuration: motion.durationFast,
+    textWrap: 'pretty',
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
     transitionProperty: 'background-color, box-shadow',
     transitionTimingFunction: motion.easeStandard,
   },
@@ -138,6 +161,7 @@ const styles = stylex.create({
       ':popover-open': 1,
     },
     overflow: 'auto',
+    overflowWrap: 'anywhere',
     padding: spacing.md,
     position: 'fixed',
     positionAnchor: 'auto',

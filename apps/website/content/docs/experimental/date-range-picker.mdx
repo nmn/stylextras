@@ -16,8 +16,19 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-export { default } from "../range-date-picker/example";
-'use client'
+import { DateRangePicker } from './index';
+
+export default function Example() {
+  return (
+    <DateRangePicker
+      legend="Travel dates"
+      startDefaultValue="2026-07-11"
+      endDefaultValue="2026-07-18"
+      startName="travelStart"
+      endName="travelEnd"
+    />
+  );
+}
 ```
 
 ## Import
@@ -28,13 +39,13 @@ import { DateRangePicker } from "@stylextras/ui/experimental/date-range-picker";
 
 ## Anatomy
 
-- `DateRangePicker` — Styled `<div>`.
+- `DateRangePicker` — Native `<fieldset>` with two labeled date inputs.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+The native controls work without JavaScript and retain platform date entry, validation, reset, and form submission.
 
 ## API reference
 
@@ -42,6 +53,11 @@ This component uses a focused client controller for composite state and keyboard
 
 `DateRangePickerProps`
 
-Complete native/inherited prop base: `RangeDatePickerProps`. The props below complete `DateRangePickerProps`.
+Complete native/inherited prop base: `RangeCalendarProps`. The props below complete `DateRangePickerProps`.
 
+- `legend` — `ReactNode`. Required.
+- `startLabel`, `endLabel` — `ReactNode`.
+- `startName`, `endName` — `string`.
+- `startDefaultValue`, `endDefaultValue` — `string`.
+- `min`, `max` — ISO date strings.
 - `sx` — `stylex.StyleXStyles`.

@@ -1,7 +1,16 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+    "baseUrl": ".",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@stylextras/ui/platform-polyfills/interest-invoker-fallback": [
+        "src/platform-polyfills/interest-invoker-fallback.ts"
+      ],
+      "@stylextras/ui/platform-polyfills/invoker-command-fallback": [
+        "src/platform-polyfills/invoker-command-fallback.ts"
+      ]
+    }
   },
   "include": ["src"]
 }

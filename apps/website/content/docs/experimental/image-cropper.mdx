@@ -1,6 +1,6 @@
 ---
-title: "ImageCropper"
-description: "Interactive image crop tool."
+title: "ImageCropPreview"
+description: "Fixed-ratio image crop preview."
 ---
 
 import Example from "@stylextras/ui/experimental/image-cropper/example";
@@ -16,9 +16,7 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
-import { ImageCropper } from './index';
+import { ImageCropPreview } from './index';
 
 const image =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ccircle cx='250' cy='240' r='120' fill='rgba(255,255,255,0.28)'/%3E%3Ccircle cx='520' cy='320' r='160' fill='rgba(255,255,255,0.2)'/%3E%3C/svg%3E";
@@ -26,21 +24,21 @@ const image =
 export default function Example() {
   return (
     <>
-      <ImageCropper
+      <ImageCropPreview
         src={image}
-        alt="Gradient"
+        alt="Blue-to-pink gradient with translucent circles"
         ratio="square"
         position="center"
       />
-      <ImageCropper
+      <ImageCropPreview
         src={image}
-        alt="Gradient"
+        alt="Blue-to-pink gradient with translucent circles"
         ratio="landscape"
         position="top"
       />
-      <ImageCropper
+      <ImageCropPreview
         src={image}
-        alt="Gradient"
+        alt="Blue-to-pink gradient with translucent circles"
         ratio="portrait"
         position="end"
       />
@@ -52,28 +50,35 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { ImageCropper } from "@stylextras/ui/experimental/image-cropper";
+import { ImageCropPreview } from "@stylextras/ui/experimental/image-cropper";
 ```
 
 ## Anatomy
 
-- `ImageCropper` — Styled `<img>`.
+- `ImageCropPreview` — Fixed-ratio `<div>` frame containing an `<img>`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`ImageCropPreview` is a visual preview, not an interactive crop editor. It uses CSS `aspect-ratio`, `object-fit`, logical RTL-aware positions, and local overflow containment without JavaScript. Supply `alt=""` for a decorative image or meaningful alternative text when the image conveys content; `alt` is required by the type.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+Native image props not named in `Omit` remain accepted. `frameSx` styles the containing frame, and `sx` styles the image. `ImageCropper` remains as a deprecated compatibility alias.
 
 ## API reference
 
-### ImageCropper
+### ImageCropPreview
 
-`ImageCropperProps`
+`ImageCropPreviewProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"img">, "className" | "style">`. The props below complete `ImageCropperProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"img">, "alt" | "className" | "style">`. The props below complete `ImageCropPreviewProps`.
 
+- `alt` — `string`. Required.
 - `frameSx` — `stylex.StyleXStyles`.
 - `position` — `ImageCropperPosition`. Default: `'center'`.
 - `ratio` — `ImageCropperRatio`. Default: `'square'`.
 - `sx` — `stylex.StyleXStyles`.
+
+### ImageCropper (deprecated alias)
+
+`ImageCropperProps`
+
+`ImageCropper` aliases `ImageCropPreview`, and `ImageCropperProps` is the same type as `ImageCropPreviewProps`. Prefer the preview name because this CSS-only component does not edit or export a crop.

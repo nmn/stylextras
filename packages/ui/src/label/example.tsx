@@ -1,7 +1,6 @@
-"use client";
-
 import { Label } from "./index";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
+import { Input } from "../input";
 
 export default function Example() {
   return (
@@ -12,7 +11,9 @@ export default function Example() {
       >
         <DemoStack>
           <Label htmlFor="name">Name</Label>
+          <Input id="name" name="name" autoComplete="name" />
           <Label htmlFor="slug">Slug</Label>
+          <Input id="slug" name="slug" />
         </DemoStack>
       </DemoFrame>
     </>

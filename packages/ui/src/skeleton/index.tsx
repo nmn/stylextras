@@ -6,12 +6,15 @@ import { motion } from '../tokens/motion.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 
-export type SkeletonProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & {
+export type SkeletonProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'aria-hidden' | 'className' | 'style'
+> & {
   sx?: StyleXStyles
 }
 
 export function Skeleton({ ref, sx, ...props }: SkeletonProps) {
-  return <div ref={ref} aria-hidden="true" {...props} {...stylex.props(styles.base, sx)} />
+  return <div ref={ref} {...props} aria-hidden="true" {...stylex.props(styles.base, sx)} />
 }
 
 const pulse = stylex.keyframes({

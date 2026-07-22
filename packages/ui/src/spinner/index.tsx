@@ -1,17 +1,20 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
 import { colors } from '../tokens/color.stylex'
 import { motion } from '../tokens/motion.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 
-export type SpinnerProps = Omit<ComponentPropsWithRef<'progress'>, 'className' | 'style' | 'value'> & {
-  sx?: StyleXStyles
-}
+export type SpinnerProps = Omit<
+  ComponentPropsWithRef<'progress'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'style' | 'value'
+> &
+  AccessibleAriaNameProps & { sx?: StyleXStyles }
 
-export function Spinner({ 'aria-label': ariaLabel = 'Loading', ref, sx, ...props }: SpinnerProps) {
+export function Spinner({ 'aria-label': ariaLabel, ref, sx, ...props }: SpinnerProps) {
   return <progress ref={ref} aria-label={ariaLabel} {...props} {...stylex.props(styles.spinner, sx)} />
 }
 
@@ -28,10 +31,16 @@ const styles = stylex.create({
     animationTimingFunction: 'linear',
     appearance: 'none',
     backgroundColor: 'transparent',
-    borderColor: colors.border,
+    borderColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     borderRadius: radius.round,
     borderStyle: 'solid',
-    borderTopColor: colors.primary,
+    borderTopColor: {
+      default: colors.primary,
+      '@media (forced-colors: active)': 'Highlight',
+    },
     borderWidth: stroke.thick,
     height: spacing.lg,
     width: spacing.lg,

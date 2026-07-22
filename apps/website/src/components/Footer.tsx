@@ -75,7 +75,7 @@ export default function Footer({
       <div {...stylex.props(styles.container)}>
         <div {...stylex.props(styles.grid)}>
           <div>
-            <h4 {...stylex.props(styles.heading)}>Develop</h4>
+            <h2 {...stylex.props(styles.heading)}>Develop</h2>
             <ul {...stylex.props(styles.list)}>
               {footerLinks.develop.map((link) => (
                 <li key={link.label}>
@@ -88,7 +88,7 @@ export default function Footer({
           </div>
 
           <div>
-            <h4 {...stylex.props(styles.heading)}>Explore</h4>
+            <h2 {...stylex.props(styles.heading)}>Explore</h2>
             <ul {...stylex.props(styles.list)}>
               {footerLinks.explore.map((link) => (
                 <li key={link.label}>
@@ -101,7 +101,7 @@ export default function Footer({
           </div>
 
           <div>
-            <h4 {...stylex.props(styles.heading)}>Participate</h4>
+            <h2 {...stylex.props(styles.heading)}>Participate</h2>
             <ul {...stylex.props(styles.list)}>
               {footerLinks.participate.map((link) => (
                 <li key={link.label}>
@@ -128,7 +128,7 @@ export default function Footer({
           </div>
 
           <div>
-            <h4 {...stylex.props(styles.heading)}>Legal</h4>
+            <h2 {...stylex.props(styles.heading)}>Legal</h2>
             <ul {...stylex.props(styles.list)}>
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>

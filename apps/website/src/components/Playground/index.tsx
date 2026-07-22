@@ -187,6 +187,9 @@ function transformSourceFiles(sourceFiles: Record<string, string>) {
           stylexPlugin,
           {
             dev: false,
+            // Keep modern media features intact; StyleX 0.18's optional
+            // ordering parser rejects some otherwise-valid queries.
+            enableMediaQueryOrder: false,
             unstable_moduleResolution: {
               type: "custom",
               filePathResolver(importPath: string, sourceFilePath: string) {

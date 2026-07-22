@@ -20,11 +20,44 @@ export type ButtonVariant =
 
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon-sm' | 'icon' | 'icon-lg'
 
-export type ButtonProps = Omit<NativeButtonProps, 'className' | 'style'> & {
-  size?: ButtonSize
+type ButtonSharedProps = Omit<NativeButtonProps, 'className' | 'size' | 'style'> & {
   sx?: StyleXStyles
   variant?: ButtonVariant
 }
+
+export type IconButtonSize = Extract<ButtonSize, `icon${string}`>
+export type TextButtonSize = Exclude<ButtonSize, IconButtonSize>
+
+export type AccessibleIconButtonName =
+  | { 'aria-label': string; 'aria-labelledby'?: string }
+  | { 'aria-label'?: string; 'aria-labelledby': string }
+
+export type TextButtonProps = ButtonSharedProps & { size?: TextButtonSize }
+export type IconButtonProps = ButtonSharedProps &
+  AccessibleIconButtonName & { size: IconButtonSize }
+export type NamedDynamicSizeButtonProps = ButtonSharedProps &
+  AccessibleIconButtonName & { size: ButtonSize }
+export type AccessibleButtonProps =
+  | TextButtonProps
+  | IconButtonProps
+  | NamedDynamicSizeButtonProps
+export type ButtonProps = AccessibleButtonProps
+
+export type DistributiveOmit<Props, Keys extends PropertyKey> = Props extends unknown
+  ? Omit<Props, Keys>
+  : never
+
+/** Preserves the size/name discriminant while a wrapper owns other button props. */
+export type AccessibleButtonPropsWithout<Keys extends PropertyKey> = DistributiveOmit<
+  AccessibleButtonProps,
+  Keys
+>
+
+/** For wrappers that always render an icon-sized Button themselves. */
+export type AccessibleIconButtonPropsWithout<Keys extends PropertyKey> = DistributiveOmit<
+  IconButtonProps,
+  Keys
+>
 
 /** A styled native button. Icon-only buttons use an icon size and an aria-label. */
 export function Button({
@@ -34,7 +67,7 @@ export function Button({
   type = 'button',
   variant = 'primary',
   ...props
-}: ButtonProps) {
+}: AccessibleButtonProps) {
   return (
     <button
       ref={ref}
@@ -59,6 +92,7 @@ const baseStyles = stylex.create({
     },
     display: 'inline-flex',
     flexShrink: 0,
+    forcedColorAdjust: 'auto',
     fontFamily: typography.fontSans,
     fontWeight: typography.weightMedium,
     gap: spacing.controlGap,
@@ -68,55 +102,84 @@ const baseStyles = stylex.create({
       default: 1,
       ':disabled': 0.5,
     },
-    outline: 'none',
-    scale: {
-      default: '1',
-      ':active': '0.98',
-      ':disabled': '1',
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
     },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
+    overflowWrap: 'anywhere',
+    textAlign: 'center',
     textDecoration: 'none',
-    transitionDuration: motion.durationFast,
-    transitionProperty: 'background-color, border-color, box-shadow, color, opacity, scale',
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'background-color, border-color, color, opacity, outline-color',
     transitionTimingFunction: motion.easeStandard,
     userSelect: 'none',
-    whiteSpace: 'nowrap',
-    boxShadow: {
-      default: 'none',
-      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
-    },
+    whiteSpace: 'normal',
   },
 })
 
 const sizeStyles = stylex.create({
   sm: {
     fontSize: typography.stepMinus1,
-    minHeight: spacing.controlSm,
+    minHeight: {
+      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     paddingInline: spacing.sm,
   },
   md: {
     fontSize: typography.step0,
-    minHeight: spacing.controlMd,
+    minHeight: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     paddingInline: spacing.md,
   },
   lg: {
     fontSize: typography.step0,
-    minHeight: spacing.controlLg,
+    minHeight: {
+      default: `max(${spacing.controlLg}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     paddingInline: spacing.lg,
   },
   'icon-sm': {
-    height: spacing.controlSm,
+    height: {
+      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     padding: 0,
-    width: spacing.controlSm,
+    width: {
+      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
   },
   icon: {
-    height: spacing.controlMd,
+    height: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     padding: 0,
-    width: spacing.controlMd,
+    width: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
   },
   'icon-lg': {
-    height: spacing.controlLg,
+    height: {
+      default: `max(${spacing.controlLg}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     padding: 0,
-    width: spacing.controlLg,
+    width: {
+      default: `max(${spacing.controlLg}, ${spacing.targetMin})`,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
   },
 })
 
@@ -127,7 +190,10 @@ const variantStyles = stylex.create({
       ':hover': colors.primaryHover,
       ':active': colors.primaryActive,
     },
-    borderColor: 'transparent',
+    borderColor: {
+      default: 'transparent',
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     color: colors.primaryForeground,
   },
   secondary: {
@@ -136,7 +202,10 @@ const variantStyles = stylex.create({
       ':hover': colors.secondaryHover,
       ':active': colors.secondaryActive,
     },
-    borderColor: 'transparent',
+    borderColor: {
+      default: 'transparent',
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     color: colors.secondaryForeground,
   },
   outline: {
@@ -145,7 +214,10 @@ const variantStyles = stylex.create({
       ':hover': colors.accent,
       ':active': colors.secondaryActive,
     },
-    borderColor: colors.border,
+    borderColor: {
+      default: colors.border,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     color: colors.fg,
   },
   ghost: {
@@ -154,12 +226,18 @@ const variantStyles = stylex.create({
       ':hover': colors.accent,
       ':active': colors.secondaryActive,
     },
-    borderColor: 'transparent',
+    borderColor: {
+      default: 'transparent',
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     color: colors.fg,
   },
   link: {
     backgroundColor: 'transparent',
-    borderColor: 'transparent',
+    borderColor: {
+      default: 'transparent',
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     color: colors.fg,
     textDecoration: {
       default: 'none',
@@ -173,7 +251,10 @@ const variantStyles = stylex.create({
       ':hover': colors.dangerHover,
       ':active': colors.dangerActive,
     },
-    borderColor: 'transparent',
+    borderColor: {
+      default: 'transparent',
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     color: colors.fgOnBrand,
   },
 })

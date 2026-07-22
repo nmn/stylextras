@@ -3,7 +3,7 @@ import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
 
 export type DirectionProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & {
-  dir: 'ltr' | 'rtl'
+  dir: 'auto' | 'ltr' | 'rtl'
   sx?: StyleXStyles
 }
 

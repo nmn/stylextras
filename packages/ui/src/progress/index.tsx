@@ -23,6 +23,7 @@ const styles = stylex.create({
     borderStyle: 'none',
     borderWidth: 0,
     borderRadius: radius.round,
+    forcedColorAdjust: 'auto',
     height: spacing.xs,
     overflow: 'hidden',
     width: '100%',
@@ -31,16 +32,28 @@ const styles = stylex.create({
       borderRadius: radius.round,
     },
     '::-webkit-progress-value': {
-      backgroundColor: colors.primary,
+      backgroundColor: {
+        default: colors.primary,
+        '@media (forced-colors: active)': 'Highlight',
+      },
       borderRadius: radius.round,
-      transitionDuration: motion.durationModerate,
+      transitionDuration: {
+        default: motion.durationModerate,
+        '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+      },
       transitionProperty: 'width',
       transitionTimingFunction: motion.easeStandard,
     },
     '::-moz-progress-bar': {
-      backgroundColor: colors.primary,
+      backgroundColor: {
+        default: colors.primary,
+        '@media (forced-colors: active)': 'Highlight',
+      },
       borderRadius: radius.round,
-      transitionDuration: motion.durationModerate,
+      transitionDuration: {
+        default: motion.durationModerate,
+        '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+      },
       transitionProperty: 'width',
       transitionTimingFunction: motion.easeStandard,
     },

@@ -1,28 +1,38 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { spacing } from "../tokens/spacing.stylex";
-
-type BaseProps = ComponentPropsWithoutRef<"input">;
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
 
 export type ColorFieldProps = Omit<
-  BaseProps,
-  "className" | "style" | "type"
-> & { sx?: StyleXStyles };
+  ComponentPropsWithRef<'input'>,
+  'className' | 'style' | 'type'
+> & { sx?: StyleXStyles }
 
-/**
- * Renders a token-styled color field wrapper.
- *
- * Search aliases: color field, hex field, color input, color text field.
- *
- * A11y notes:
- * - Relies on native input behavior where present.
- * - Does not normalize localized color formats or expose advanced parsing help.
- */
-export function ColorField({ sx, ...props }: ColorFieldProps) {
-  return <input {...props} type="color" {...stylex.props(styles.base, sx)} />;
+/** A native color input. Give it a visible label or an accessible name. */
+export function ColorField({ ref, sx, ...props }: ColorFieldProps) {
+  return <input ref={ref} type="color" {...props} {...stylex.props(styles.input, sx)} />
 }
 
 const styles = stylex.create({
-  base: { padding: 0, height: spacing.xxxl, width: spacing.xxxxl },
-});
+  input: {
+    padding: 0,
+    boxSizing: 'border-box',
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    opacity: { default: 1, ':disabled': 0.5 },
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':focus-visible': stroke.focusRing,
+    },
+    height: spacing.xxxl,
+    width: spacing.xxxxl,
+  },
+})

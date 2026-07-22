@@ -33,6 +33,7 @@ export function RadioGroupItem({ ref, sx, ...props }: RadioGroupItemProps) {
   return <input ref={ref} type="radio" {...props} {...stylex.props(styles.item, sx)} />
 }
 
+/* eslint-disable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles -- Native input state styles its own pseudo-elements without JavaScript. */
 const styles = stylex.create({
   group: {
     borderColor: 'transparent',
@@ -51,12 +52,83 @@ const styles = stylex.create({
     marginBlockEnd: spacing.xs,
   },
   item: {
-    accentColor: colors.primary,
-    height: spacing.lg,
+    appearance: 'none',
+    backgroundColor: 'transparent',
+    borderStyle: 'none',
+    borderWidth: 0,
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    display: 'grid',
+    opacity: { default: 1, ':disabled': 0.5 },
+    placeItems: 'center',
+    position: 'relative',
+    height: {
+      default: spacing.targetMin,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     margin: 0,
-    outlineColor: colors.focusRing,
-    width: spacing.lg,
     borderRadius: radius.round,
-    borderWidth: stroke.thin,
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
+    width: {
+      default: spacing.targetMin,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
+    '::before': {
+      backgroundColor: {
+        default: colors.control,
+        '@media (forced-colors: active)': 'Canvas',
+      },
+      borderColor: {
+        default: colors.borderStrong,
+        '@media (forced-colors: active)': 'CanvasText',
+      },
+      borderRadius: radius.round,
+      borderStyle: 'solid',
+      borderWidth: stroke.thin,
+      boxSizing: 'border-box',
+      content: '""',
+      gridColumnStart: '1',
+      gridRowStart: '1',
+      height: spacing.lg,
+      width: spacing.lg,
+    },
+    '::after': {
+      backgroundColor: {
+        default: colors.primary,
+        '@media (forced-colors: active)': 'Highlight',
+      },
+      borderRadius: radius.round,
+      content: '""',
+      gridColumnStart: '1',
+      gridRowStart: '1',
+      height: spacing.sm,
+      opacity: 0,
+      width: spacing.sm,
+    },
+    ':checked::before': {
+      borderColor: {
+        default: colors.primary,
+        '@media (forced-colors: active)': 'Highlight',
+      },
+    },
+    ':checked::after': { opacity: 1 },
+    ':user-invalid::before': {
+      borderColor: {
+        default: colors.danger,
+        '@media (forced-colors: active)': 'Highlight',
+      },
+    },
+    '[aria-invalid="true"]::before': {
+      borderColor: {
+        default: colors.danger,
+        '@media (forced-colors: active)': 'Highlight',
+      },
+    },
   },
 })
+/* eslint-enable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */

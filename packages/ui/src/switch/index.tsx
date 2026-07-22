@@ -27,44 +27,110 @@ export function Switch({ controlSize = 'md', ref, sx, ...props }: SwitchProps) {
   );
 }
 
+/* eslint-disable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles -- Native input state styles its own pseudo-elements without JavaScript. */
 const styles = stylex.create({
   switch: {
     appearance: 'none',
-    backgroundColor: {
-      default: colors.borderStrong,
-      ':checked': colors.primary,
-    },
-    backgroundImage: 'radial-gradient(circle, white 0 58%, transparent 62%)',
-    backgroundPosition: {
-      default: '0% 50%',
-      ':checked': '100% 50%',
-      // eslint-disable-next-line @stylexjs/valid-styles
-      ':dir(rtl)': {
-        default: '100% 50%',
-        ':checked': '0% 50%',
-      },
-    },
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '50% 100%',
-    borderColor: 'transparent',
-    borderRadius: radius.round,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
-    boxShadow: {
-      default: 'none',
-      ':focus-visible': `0 0 0 ${stroke.focusRingOffset} ${colors.bg}, 0 0 0 calc(${stroke.focusRingOffset} + ${stroke.focusRing}) ${colors.focusRing}`,
-    },
+    backgroundColor: 'transparent',
+    borderStyle: 'none',
+    borderWidth: 0,
     cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    display: 'grid',
+    height: {
+      default: spacing.targetMin,
+      '@media (pointer: coarse)': spacing.targetCoarse,
+    },
     margin: 0,
     opacity: { default: 1, ':disabled': 0.5 },
-    outline: 'none',
-    transitionDuration: motion.durationFast,
-    transitionProperty: 'background-color, background-position, box-shadow',
+    outlineColor: {
+      default: colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: 0,
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: stroke.focusRing,
+    placeItems: 'center',
+    position: 'relative',
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'opacity, outline-color',
     transitionTimingFunction: motion.easeStandard,
+    width: spacing.targetCoarse,
+    '::before': {
+      backgroundColor: {
+        default: colors.borderStrong,
+        '@media (forced-colors: active)': 'CanvasText',
+      },
+      borderRadius: radius.round,
+      content: '""',
+      gridColumnStart: '1',
+      gridRowStart: '1',
+    },
+    '::after': {
+      backgroundColor: {
+        default: colors.bgOverlay,
+        '@media (forced-colors: active)': 'Canvas',
+      },
+      borderColor: {
+        default: 'transparent',
+        '@media (forced-colors: active)': 'CanvasText',
+      },
+      borderRadius: radius.round,
+      borderStyle: 'solid',
+      borderWidth: stroke.thin,
+      boxSizing: 'border-box',
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      transitionDuration: {
+        default: motion.durationFast,
+        '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+      },
+      transitionProperty: 'inset-inline-start',
+      transitionTimingFunction: motion.easeStandard,
+    },
+    ':checked::before': {
+      backgroundColor: {
+        default: colors.primary,
+        '@media (forced-colors: active)': 'Highlight',
+      },
+    },
+    ':user-invalid::before': {
+      backgroundColor: {
+        default: colors.danger,
+        '@media (forced-colors: active)': 'CanvasText',
+      },
+    },
+    '[aria-invalid="true"]::before': {
+      backgroundColor: {
+        default: colors.danger,
+        '@media (forced-colors: active)': 'CanvasText',
+      },
+    },
   },
 });
 
 const sizeStyles = stylex.create({
-  sm: { height: spacing.md, width: spacing.xl },
-  md: { height: spacing.lg, width: spacing.xxl },
+  sm: {
+    '::after': {
+      height: spacing.md,
+      insetInlineStart: `calc(50% - ${spacing.md})`,
+      width: spacing.md,
+    },
+    '::before': { height: spacing.md, width: spacing.xl },
+    ':checked::after': { insetInlineStart: '50%' },
+  },
+  md: {
+    '::after': {
+      height: spacing.lg,
+      insetInlineStart: `calc(50% - ${spacing.lg})`,
+      width: spacing.lg,
+    },
+    '::before': { height: spacing.lg, width: spacing.xxl },
+    ':checked::after': { insetInlineStart: '50%' },
+  },
 });
+/* eslint-enable @stylexjs/no-legacy-contextual-styles, @stylexjs/valid-styles */

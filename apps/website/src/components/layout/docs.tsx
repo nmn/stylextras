@@ -37,7 +37,7 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
       />
 
       <div {...stylex.props(layoutStyles.wrapper)}>
-        <main
+        <div
           id="nd-docs-layout"
           {...stylex.props(
             layoutStyles.main,
@@ -47,7 +47,7 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
           <Sidebar />
           <div {...stylex.props(layoutStyles.content)}>{children}</div>
           <Footer />
-        </main>
+        </div>
       </div>
     </TreeContextProvider>
   );

@@ -1,7 +1,5 @@
-"use client";
-
-import { RangeCalendar } from "./index";
-import { DemoFrame } from "../example-theme/demo";
+import { RangeCalendar } from './index'
+import { DemoFrame } from '../example-theme/demo'
 
 export default function Example() {
   return (
@@ -10,8 +8,12 @@ export default function Example() {
         title="Range inputs"
         description="Range Calendar is currently a simple paired-date control."
       >
-        <RangeCalendar />
+        <RangeCalendar
+          legend="Release window"
+          startDefaultValue="2026-07-11"
+          endDefaultValue="2026-07-18"
+        />
       </DemoFrame>
     </>
-  );
+  )
 }

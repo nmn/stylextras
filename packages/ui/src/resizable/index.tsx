@@ -9,7 +9,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -75,9 +74,11 @@ export function Resizable({
   ...props
 }: ResizableProps) {
   const rootRef = useRef<HTMLDivElement>(null)
+  const normalizedMin = Math.min(min, max)
+  const normalizedMax = Math.max(min, max)
   const controlled = value !== undefined
   const [internalValue, setInternalValue] = useState(defaultValue)
-  const currentValue = value ?? internalValue
+  const currentValue = Math.min(normalizedMax, Math.max(normalizedMin, value ?? internalValue))
 
   const setRefs = useCallback(
     (node: HTMLDivElement | null) => {
@@ -90,20 +91,23 @@ export function Resizable({
 
   const setValue = useCallback(
     (nextValue: number) => {
-      const clamped = Math.min(max, Math.max(min, Math.round(nextValue)))
+      const clamped = Math.min(normalizedMax, Math.max(normalizedMin, Math.round(nextValue)))
       if (!controlled) setInternalValue(clamped)
       onValueChange?.(clamped)
     },
-    [controlled, max, min, onValueChange],
+    [controlled, normalizedMax, normalizedMin, onValueChange],
   )
 
-  useLayoutEffect(() => {
-    rootRef.current?.style.setProperty('--stylextras-resizable-size', `${currentValue}%`)
-  }, [currentValue])
-
   const context = useMemo<ResizableContextValue>(
-    () => ({ direction, max, min, rootRef, setValue, value: currentValue }),
-    [currentValue, direction, max, min, setValue],
+    () => ({
+      direction,
+      max: normalizedMax,
+      min: normalizedMin,
+      rootRef,
+      setValue,
+      value: currentValue,
+    }),
+    [currentValue, direction, normalizedMax, normalizedMin, setValue],
   )
 
   return (
@@ -111,7 +115,12 @@ export function Resizable({
       <div
         ref={setRefs}
         {...props}
-        {...stylex.props(styles.root, directionStyles[direction], sx)}
+        {...stylex.props(
+          styles.root,
+          directionStyles[direction],
+          dynamicStyles.size(`${currentValue}%`),
+          sx,
+        )}
       />
     </ResizableContext>
   )
@@ -149,8 +158,11 @@ export function ResizableHandle({
     onKeyDown?.(event)
     if (event.defaultPrevented) return
     const step = event.shiftKey ? 10 : 2
-    const previousKey = context.direction === 'horizontal' ? 'ArrowLeft' : 'ArrowUp'
-    const nextKey = context.direction === 'horizontal' ? 'ArrowRight' : 'ArrowDown'
+    const rtl = getComputedStyle(event.currentTarget).direction === 'rtl'
+    const previousKey =
+      context.direction === 'horizontal' ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp'
+    const nextKey =
+      context.direction === 'horizontal' ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown'
     if (event.key === previousKey) {
       event.preventDefault()
       context.setValue(context.value - step)
@@ -203,36 +215,76 @@ export function ResizableHandle({
 /* eslint-disable @stylexjs/valid-styles */
 const styles = stylex.create({
   root: {
+    overflow: 'hidden',
     display: 'grid',
     minHeight: '8rem',
     minWidth: 0,
-    overflow: 'hidden',
   },
   panel: {
+    overflow: 'auto',
     minHeight: 0,
     minWidth: 0,
-    overflow: 'auto',
   },
   handle: {
-    backgroundColor: {
-      default: colors.border,
-      ':hover': colors.borderStrong,
-      ':focus-visible': colors.focusRing,
-    },
     borderRadius: radius.round,
+    backgroundColor: 'transparent',
     cursor: 'col-resize',
-    minHeight: spacing.xxxl,
-    outline: 'none',
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: `calc(-1 * ${stroke.focusRing})`,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':focus-visible': stroke.focusRing,
+    },
     position: 'relative',
-    width: stroke.thick,
+    touchAction: 'none',
+    minHeight: spacing.xxxl,
+    minWidth: {
+      default: spacing.targetMin,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
+    width: spacing.targetMin,
+    '::before': {
+      borderRadius: radius.round,
+      insetBlock: 0,
+      backgroundColor: {
+        default: colors.border,
+        '@media (forced-colors: active)': 'CanvasText',
+      },
+      content: '""',
+      insetInlineStart: '50%',
+      position: 'absolute',
+      transform: 'translateX(-50%)',
+      width: stroke.thick,
+    },
   },
   handleVertical: {
     cursor: 'row-resize',
-    height: stroke.thick,
-    minHeight: 0,
+    height: spacing.targetMin,
+    minHeight: {
+      default: spacing.targetMin,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
     minWidth: spacing.xxxl,
     width: '100%',
+    '::before': {
+      insetInline: 0,
+      insetBlockStart: '50%',
+      transform: 'translateY(-50%)',
+      height: stroke.thick,
+      width: 'auto',
+    },
   },
+})
+
+const dynamicStyles = stylex.create({
+  size: (value: string) => ({
+    '--stylextras-resizable-size': value,
+  }),
 })
 
 const directionStyles = stylex.create({

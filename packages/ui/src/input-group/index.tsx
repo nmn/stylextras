@@ -27,6 +27,8 @@ const styles = stylex.create({
     gap: spacing.xs,
     alignItems: "stretch",
     display: "flex",
+    flexWrap: "wrap",
+    minWidth: 0,
     width: "100%",
   },
 });

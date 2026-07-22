@@ -16,8 +16,6 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
 import { ColorSwatch } from './index';
 
 export default function Example() {
@@ -44,9 +42,9 @@ import { ColorSwatch } from "@stylextras/ui/experimental/color-swatch";
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`ColorSwatch` is decorative and receives `aria-hidden="true"` by default. Supplying `aria-label` or `aria-labelledby` makes it a named `role="img"`. A named swatch should describe the color in words, not only repeat a hex value.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+The visible border keeps very light and very dark colors distinguishable from their surroundings. The component uses no JavaScript. Native span props, including standard ARIA/data attributes and `ref`, remain accepted. `sx` is composed last.
 
 ## API reference
 
@@ -54,7 +52,7 @@ This component uses a focused client controller for composite state and keyboard
 
 `ColorSwatchProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"span">, "className" | "style">`. The props below complete `ColorSwatchProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "aria-hidden" | "aria-label" | "aria-labelledby" | "className" | "role" | "style">`, combined with either a required accessible name or decorative `aria-hidden`. The props below complete `ColorSwatchProps`.
 
 - `color` — `string`. Default: `"#7c3aed"`.
 - `sx` — `stylex.StyleXStyles`.

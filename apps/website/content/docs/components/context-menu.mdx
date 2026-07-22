@@ -21,6 +21,7 @@ import { spacing } from '../tokens/spacing.stylex';
 import { stroke } from '../tokens/stroke.stylex';
 import {
   ContextMenu,
+  ContextMenuButton,
   ContextMenuItem,
   ContextMenuLabel,
   ContextMenuSeparator,
@@ -32,10 +33,11 @@ const menuId = 'canvas-context-menu';
 export default function Example() {
   return (
     <>
-      <ContextMenuTrigger target={menuId} sx={styles.target}>
+      <ContextMenuButton target={menuId}>Canvas actions</ContextMenuButton>
+      <ContextMenuTrigger aria-label="Canvas actions" target={menuId} sx={styles.target}>
         Open the context menu anywhere in this area
       </ContextMenuTrigger>
-      <ContextMenu id={menuId}>
+      <ContextMenu id={menuId} aria-label="Canvas actions">
         <ContextMenuLabel>Canvas</ContextMenuLabel>
         <ContextMenuItem>Paste</ContextMenuItem>
         <ContextMenuItem>Duplicate</ContextMenuItem>
@@ -55,26 +57,35 @@ const styles = stylex.create({
     padding: spacing.xxl,
   },
 });
-('use client');
 ```
 
 ## Import
 
 ```tsx
-import { ContextMenu, ContextMenuItem, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger } from "@stylextras/ui/context-menu";
+import {
+  ContextMenu,
+  ContextMenuButton,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@stylextras/ui/context-menu";
 ```
 
 ## Anatomy
 
 - `ContextMenu` — Styled `<div>`.
+- `ContextMenuButton` — Visible `<button>` alternative to the context gesture.
 - `ContextMenuItem` — Styled `<button>`.
 - `ContextMenuLabel` — Styled `<div>`.
 - `ContextMenuSeparator` — Styled `<hr>`.
-- `ContextMenuTrigger` — Styled `<div>`.
+- `ContextMenuTrigger` — Focusable, named `<div role="group">` context-gesture region.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+Give both the trigger region and menu an accessible name. Pointer users can right-click or long-press the region; keyboard users can press the Context Menu key or Shift+F10. Always render `ContextMenuButton` as the visible keyboard and touch alternative when the context action is not available elsewhere.
+
+Disabled items remain arrow-key focusable so their labels are discoverable, but cannot be activated. Escape closes the menu and restores focus to its invoker. `sx` is composed last.
 
 This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
 
@@ -84,9 +95,19 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 `ContextMenuProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "role" | "style">`. The props below complete `ContextMenuProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "popover" | "role" | "style">`. The props below complete `ContextMenuProps`.
 
 - `sx` — `stylex.StyleXStyles`.
+- One of `aria-label` or `aria-labelledby` is required.
+
+### ContextMenuButton
+
+`ContextMenuButtonProps`
+
+Complete inherited prop base: `AccessibleButtonPropsWithout<"aria-controls" | "aria-haspopup" | "popoverTarget" | "popoverTargetAction">`.
+
+- `target` — `string`. Required.
+- Icon sizes require `aria-label` or `aria-labelledby`.
 
 ### ContextMenuItem
 
@@ -117,8 +138,12 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "c
 
 `ContextMenuTriggerProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ContextMenuTriggerProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">`. The props below complete `ContextMenuTriggerProps`.
 
+- `aria-controls` — Set to `target`.
 - `aria-haspopup` — `ContextMenuTriggerProps["aria-haspopup"]`. Default: `'menu'`.
+- `role` — Fixed to `'group'`.
+- `tabIndex` — Default: `0`.
+- One of `aria-label` or `aria-labelledby` is required.
 - `sx` — `stylex.StyleXStyles`.
 - `target` — `string`. Required.

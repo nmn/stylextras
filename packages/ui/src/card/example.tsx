@@ -1,5 +1,3 @@
-'use client'
-
 import { Button } from '../button'
 import { DemoFrame, DemoGrid, DemoStack } from '../example-theme/demo'
 import {
@@ -20,12 +18,12 @@ export function CardCompositionDemo() {
       showThemes={false}
     >
       <DemoGrid>
-        <Card aria-label="Native popups card">
+        <Card as="article" aria-label="Native popups">
           <CardHeader>
             <CardTitle>Native popups</CardTitle>
             <CardDescription>Popover behavior with much less JavaScript.</CardDescription>
             <CardAction>
-              <Button size="icon-sm" variant="ghost" aria-label="Card options">
+              <Button size="icon-sm" variant="ghost" aria-label="Options for Native popups">
                 ···
               </Button>
             </CardAction>
@@ -38,7 +36,7 @@ export function CardCompositionDemo() {
             </Button>
           </CardFooter>
         </Card>
-        <Card aria-label="Token-driven surface card">
+        <Card as="article">
           <CardHeader>
             <CardTitle>Token-driven surface</CardTitle>
             <CardDescription>
@@ -46,9 +44,9 @@ export function CardCompositionDemo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Card aria-label="Nested layer card">
+            <Card as="article">
               <CardHeader>
-                <CardTitle>Nested layer</CardTitle>
+                <CardTitle as="h4">Nested layer</CardTitle>
                 <CardDescription>
                   Raised surfaces compound naturally without contextual JavaScript.
                 </CardDescription>

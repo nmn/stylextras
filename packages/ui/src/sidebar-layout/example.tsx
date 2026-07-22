@@ -14,7 +14,7 @@ export default function Example() {
       >
         <SidebarLayout
           sidebar={
-            <Sidebar>
+            <Sidebar aria-label="Documentation">
               <Link href="#intro">Introduction</Link>
               <Link href="#api">API</Link>
               <Link href="#examples">Examples</Link>

@@ -1,164 +1,83 @@
-'use client'
-
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import {
-  type ComponentPropsWithRef,
-  type KeyboardEvent,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from 'react'
-import { Button } from '../button'
-import { Calendar } from '../calendar'
-import { formatDisplayDate } from '../calendar/date-utils'
-import { Input } from '../input'
-import { Popover } from '../popover'
-import { showPopoverWithSource } from '../platform-polyfills/popover-source'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { motion } from '../tokens/motion.stylex'
 import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type NativeRootProps = ComponentPropsWithRef<'div'>
-
-export type DatePickerProps = Omit<NativeRootProps, 'className' | 'defaultValue' | 'style'> & {
-  defaultValue?: string
-  disabled?: boolean
+export type DatePickerProps = Omit<
+  ComponentPropsWithRef<'input'>,
+  'className' | 'style' | 'type'
+> & {
+  /** @deprecated Use the native `id` prop. */
   inputId?: string
-  locale?: string
-  max?: string
-  min?: string
-  name?: string
-  onValueChange?: (value: string) => void
-  placeholder?: string
-  required?: boolean
   sx?: StyleXStyles
-  value?: string
 }
 
-/** Calendar, input, and Popover API composed into a form-compatible date picker. */
-export function DatePicker({
-  defaultValue = '',
-  disabled = false,
-  inputId,
-  locale = 'en-US',
-  max,
-  min,
-  name,
-  onValueChange,
-  placeholder = 'Pick a date',
-  ref,
-  required = false,
-  sx,
-  value,
-  ...props
-}: DatePickerProps) {
-  const generatedId = useId().replaceAll(':', '')
-  const popoverId = `stylextras-date-picker-${generatedId}`
-  const inputRef = useRef<HTMLInputElement>(null)
-  const defaultValueRef = useRef(defaultValue)
-  const controlled = value !== undefined
-  const [internalValue, setInternalValue] = useState(defaultValue)
-  const selectedValue = value ?? internalValue
-
-  const setValue = (nextValue: string) => {
-    if (!controlled) setInternalValue(nextValue)
-    onValueChange?.(nextValue)
-    document.getElementById(popoverId)?.hidePopover()
-    inputRef.current?.focus()
-  }
-
-  const open = () => {
-    if (disabled) return
-    const popover = document.getElementById(popoverId)
-    if (popover && !popover.matches(':popover-open')) {
-      const source = inputRef.current
-      showPopoverWithSource(popover, source ?? undefined)
-    }
-  }
-
-  useEffect(() => {
-    const form = inputRef.current?.form
-    if (!form || controlled) return
-    const reset = () => {
-      setInternalValue(defaultValueRef.current)
-    }
-    form.addEventListener('reset', reset)
-    return () => form.removeEventListener('reset', reset)
-  }, [controlled])
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault()
-      open()
-    }
-  }
-
+/**
+ * A native date input with complete form, validation, keyboard, and no-JavaScript behavior.
+ * Compose Calendar separately when an enhanced calendar view is useful.
+ */
+export function DatePicker({ id, inputId, ref, sx, ...props }: DatePickerProps) {
   return (
-    <div ref={ref} {...props} {...stylex.props(styles.root, sx)}>
-      <Input
-        ref={inputRef}
-        id={inputId}
-        readOnly
-        aria-controls={popoverId}
-        aria-haspopup="dialog"
-        disabled={disabled}
-        placeholder={placeholder}
-        required={required}
-        value={selectedValue ? formatDisplayDate(selectedValue, locale) : ''}
-        onClick={open}
-        onKeyDown={handleKeyDown}
-        sx={styles.input}
-      />
-      <Button
-        type="button"
-        size="icon"
-        variant="ghost"
-        aria-label="Open calendar"
-        disabled={disabled}
-        popoverTarget={popoverId}
-        sx={styles.trigger}
-      >
-        ◫
-      </Button>
-      <Popover id={popoverId} size="sm" aria-label="Choose a date" sx={styles.popover}>
-        <Calendar
-          locale={locale}
-          {...(min ? { min } : {})}
-          {...(max ? { max } : {})}
-          value={selectedValue}
-          onValueChange={setValue}
-        />
-      </Popover>
-      {name ? (
-        <input
-          type="hidden"
-          name={name}
-          value={selectedValue}
-        />
-      ) : null}
-    </div>
+    <input
+      ref={ref}
+      id={id ?? inputId}
+      type="date"
+      {...props}
+      {...stylex.props(styles.input, sx)}
+    />
   )
 }
 
 const styles = stylex.create({
-  root: {
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1fr) auto',
-    position: 'relative',
-  },
   input: {
-    borderEndEndRadius: 0,
-    borderStartEndRadius: 0,
-    cursor: 'pointer',
-    paddingInlineEnd: '2.5rem',
-  },
-  trigger: {
-    borderEndStartRadius: 0,
-    borderStartStartRadius: 0,
-    marginInlineStart: -1,
-  },
-  popover: {
+    borderColor: {
+      '[aria-invalid="true"]': colors.danger,
+      default: colors.border,
+      ':focus-visible': colors.focusRing,
+      ':user-invalid': colors.danger,
+      ':hover': colors.borderStrong,
+      '@media (forced-colors: active)': 'CanvasText',
+    },
     borderRadius: radius.sm,
-    padding: 0,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    paddingInline: spacing.md,
+    accentColor: colors.primary,
+    backgroundColor: colors.control,
+    boxSizing: 'border-box',
+    color: colors.fg,
+    colorScheme: 'light dark',
+    fontFamily: typography.fontSans,
+    fontSize: typography.step0,
+    lineHeight: typography.lineHeightBody,
+    opacity: { default: 1, ':disabled': 0.5 },
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':focus-visible': stroke.focusRing,
+    },
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
+    transitionProperty: 'background-color, border-color, color',
+    transitionTimingFunction: motion.easeStandard,
+    minHeight: {
+      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
+    minWidth: 0,
+    width: '100%',
   },
 })

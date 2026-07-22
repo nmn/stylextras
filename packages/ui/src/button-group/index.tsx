@@ -1,6 +1,9 @@
+'use client';
+
 import * as stylex from '@stylexjs/stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentPropsWithRef } from 'react';
+import type { AccessibleAriaNameProps } from '../accessibility';
 import { focusgroupAttributes, focusgroupRef } from '../focusgroup';
 import { colors } from '../tokens/color.stylex';
 import { radius } from '../tokens/radius.stylex';
@@ -9,12 +12,12 @@ import { stroke } from '../tokens/stroke.stylex';
 
 export type ButtonGroupProps = Omit<
   ComponentPropsWithRef<'div'>,
-  'className' | 'role' | 'style'
+  'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
 > & {
   orientation?: 'horizontal' | 'vertical';
   sx?: StyleXStyles;
   variant?: 'toolbar' | 'actions';
-};
+} & AccessibleAriaNameProps;
 
 export function ButtonGroup({
   orientation = 'horizontal',
@@ -24,14 +27,18 @@ export function ButtonGroup({
   ...props
 }: ButtonGroupProps) {
   const isToolbar = variant === 'toolbar';
-  const setRef = focusgroupRef(ref);
+  const setRef = isToolbar ? focusgroupRef(ref) : ref;
   return (
     <div
-      ref={isToolbar ? setRef : ref}
+      ref={setRef}
+      {...props}
       role={isToolbar ? 'toolbar' : 'group'}
       aria-orientation={isToolbar ? orientation : undefined}
-      {...(isToolbar ? focusgroupAttributes('toolbar') : {})}
-      {...props}
+      {...(isToolbar
+        ? focusgroupAttributes(
+            orientation === 'vertical' ? 'toolbar block' : 'toolbar inline',
+          )
+        : {})}
       {...stylex.props(
         styles.group,
         variant === 'actions' && styles.actions,
@@ -54,12 +61,15 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: stroke.thin,
     display: 'inline-flex',
+    flexWrap: 'wrap',
     gap: spacing.xxxs,
+    maxWidth: '100%',
     padding: spacing.xxxs,
   },
   vertical: {
     alignItems: 'stretch',
     flexDirection: 'column',
+    flexWrap: 'nowrap',
   },
   actions: {
     padding: 0,

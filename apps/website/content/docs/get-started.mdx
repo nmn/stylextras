@@ -12,11 +12,9 @@ There is no unstyled primitive layer, provider, or theme root.
 bun add @stylextras/ui @stylexjs/stylex react
 ```
 
-Import the compiled component CSS once at your application root.
-
-```tsx
-import "@stylextras/ui/styles.css";
-```
+`@stylextras/ui` exports TypeScript, JSX, and StyleX source. Configure your
+application's existing compiler to transform the package together with local
+source; there is no package CSS file or separate UI build step.
 
 ## Import components
 

@@ -16,8 +16,6 @@ This component is experimental. Its API and behavior may change before it moves 
 ### Example code
 
 ```tsx
-'use client';
-
 import { ColorField } from './index';
 
 export default function Example() {
@@ -39,13 +37,13 @@ import { ColorField } from "@stylextras/ui/experimental/color-field";
 
 ## Anatomy
 
-- `ColorField` — Styled `<input>`.
+- `ColorField` — Native `<input type="color">`.
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
+`ColorField` is a zero-JavaScript native color input. The browser supplies its picker, keyboard behavior, validation, and form participation. Give the input a visible label or an accessible name.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+The component adds a visible focus outline, invalid-state border, forced-colors border, disabled treatment, and minimum pointer target. Any native input prop not named in `Omit` remains accepted, including standard ARIA/data attributes, event handlers, and `ref`. `sx` is composed last.
 
 ## API reference
 
@@ -53,6 +51,6 @@ This component uses a focused client controller for composite state and keyboard
 
 `ColorFieldProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"input">, "className" | "style" | "type">`. The props below complete `ColorFieldProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `ColorFieldProps`.
 
 - `sx` — `stylex.StyleXStyles`.

@@ -4,9 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-"use client";
-import * as stylex from "@stylexjs/stylex";
-import type { ReactNode } from "react";
+'use client';
+import * as stylex from '@stylexjs/stylex';
+import type { ReactNode } from 'react';
 import {
   Children,
   createContext,
@@ -15,10 +15,10 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-} from "react";
-import { useStateWithCallback } from "@/hooks/useStateWithCallback";
-import { vars } from "@/theming/vars.stylex";
-import { tabsMarker } from "./mdx.stylex";
+} from 'react';
+import { useStateWithCallback } from '@/hooks/useStateWithCallback';
+import { vars } from '@/theming/vars.stylex';
+import { tabsMarker } from './mdx.stylex';
 const LabelSetterContext = createContext<
   (_index: number, _label: string) => void
 >(() => {});
@@ -63,9 +63,9 @@ export function Tabs({
             onClick={() => setActiveTab(index)}
             onKeyDown={(event) => {
               let newIndex = index;
-              if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+              if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
                 newIndex = (index + 1) % items.length;
-              } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+              } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 newIndex = (items.length + index - 1) % items.length;
               }
@@ -83,7 +83,7 @@ export function Tabs({
               index === activeTab && tabsStyles.triggerActive,
             )}
           >
-            {labels[index] ?? "..."}
+            {labels[index] ?? '...'}
           </button>
         ))}
       </div>
@@ -121,51 +121,52 @@ export function TabItem({ label, children }: TabItemProps) {
 }
 const tabsStyles = stylex.create({
   root: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: 4,
+    columnGap: 4,
     marginTop: 16,
   },
   list: {
-    display: "inline-grid",
-    gridAutoColumns: "1fr",
-    gridAutoFlow: "column",
-    alignItems: "center",
-    width: "fit-content",
+    display: 'inline-grid',
+    gridAutoColumns: '1fr',
+    gridAutoFlow: 'column',
+    alignItems: 'center',
+    width: 'fit-content',
   },
   trigger: {
-    width: "100%",
+    width: '100%',
     paddingBlock: 8,
     paddingInline: 12,
     fontSize: `${14 / 16}rem`,
     fontWeight: 600,
     lineHeight: 1.4,
     color: {
-      default: vars["--color-fd-muted-foreground"],
-      ":hover": vars["--color-fd-foreground"],
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': vars['--color-fd-foreground'],
     },
-    textAlign: "center",
-    appearance: "none",
-    cursor: "pointer",
-    outline: "none",
+    textAlign: 'center',
+    appearance: 'none',
+    cursor: 'pointer',
+    outline: 'none',
     backgroundColor: {
-      default: "transparent",
-      ":hover": vars["--color-fd-muted"],
+      default: 'transparent',
+      ':hover': vars['--color-fd-muted'],
     },
-    borderColor: "transparent",
-    borderStyle: "solid",
+    borderColor: 'transparent',
+    borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 10,
-    transitionTimingFunction: "ease",
-    transitionDuration: "150ms",
-    transitionProperty: "color, background-color, border-color, box-shadow",
+    transitionTimingFunction: 'ease',
+    transitionDuration: '150ms',
+    transitionProperty: 'color, background-color, border-color, box-shadow',
   },
   triggerActive: {
-    color: vars["--color-fd-foreground"],
-    backgroundColor: vars["--color-fd-card"],
+    color: vars['--color-fd-foreground'],
+    backgroundColor: vars['--color-fd-card'],
     borderColor: {
-      default: vars["--color-fd-border"],
-      ":focus-visible": vars["--color-fd-ring"],
+      default: vars['--color-fd-border'],
+      ':focus-visible': vars['--color-fd-ring'],
     },
   },
 });

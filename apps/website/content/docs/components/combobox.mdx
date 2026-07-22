@@ -23,6 +23,7 @@ import {
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
+  ComboboxStatus,
 } from './index';
 
 const reviewers = [
@@ -45,6 +46,9 @@ export default function Example() {
             </ComboboxItem>
           ))}
           <ComboboxEmpty />
+          <ComboboxStatus>
+            {(count) => `${count} reviewer${count === 1 ? '' : 's'} available.`}
+          </ComboboxStatus>
         </ComboboxContent>
       </Combobox>
       <FieldDescription>
@@ -58,7 +62,7 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem } from "@stylextras/ui/combobox";
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxStatus } from "@stylextras/ui/combobox";
 ```
 
 ## Anatomy
@@ -68,12 +72,13 @@ import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem }
 - `ComboboxEmpty` — Styled `<div>`.
 - `ComboboxInput` — Styled `<input>`.
 - `ComboboxItem` — Styled `<div>`.
+- `ComboboxStatus` — Visually hidden polite result announcement.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Filter visibility and option relationships are component-owned. A consumer `onMouseDown` handler is called before the component prevents the default focus transfer, so custom observation cannot break input focus management.
 
 ## API reference
 
@@ -85,9 +90,11 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 - `defaultValue` — `string`. Default: `''`.
 - `disabled` — `boolean`. Default: `false`.
+- `form` — `string` for associating both form controls with an external form.
 - `name` — `string`.
 - `onValueChange` — `(value: string) => void`.
 - `required` — `boolean`. Default: `false`.
+- `requiredMessage` — Localizable native validation message.
 - `sx` — `stylex.StyleXStyles`.
 - `value` — `string`.
 
@@ -122,10 +129,15 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">,
 
 `ComboboxItemProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-disabled" | "aria-selected" | "className" | "id" | "onClick" | "role" | "style">`. The props below complete `ComboboxItemProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-disabled" | "aria-selected" | "className" | "hidden" | "id" | "onClick" | "role" | "style">`. The props below complete `ComboboxItemProps`.
 
 - `disabled` — `boolean`. Default: `false`.
 - `onClick` — `(event: MouseEvent<HTMLDivElement>) => void`.
 - `sx` — `stylex.StyleXStyles`.
 - `textValue` — `string`.
 - `value` — `string`. Required.
+
+### ComboboxStatus
+
+- `children` — `ReactNode | ((count: number) => ReactNode)`. Required.
+- `sx` — `stylex.StyleXStyles`.

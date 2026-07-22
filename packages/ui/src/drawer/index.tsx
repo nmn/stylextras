@@ -1,7 +1,8 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
-import { Button, type ButtonProps } from '../button'
+import type { AccessibleAriaNameProps } from '../accessibility'
+import { Button, type AccessibleButtonPropsWithout } from '../button'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -13,10 +14,16 @@ type SxProp = { sx?: StyleXStyles }
 type DrawerSectionProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
 
 export type DrawerSide = 'top' | 'bottom'
-export type DrawerProps = Omit<ComponentPropsWithRef<'dialog'>, 'className' | 'style'> &
+export type DrawerProps = Omit<
+  ComponentPropsWithRef<'dialog'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'style'
+> &
+  AccessibleAriaNameProps &
   SxProp & { side?: DrawerSide }
-export type DrawerTriggerProps = ButtonProps & { target: string }
-export type DrawerCloseProps = DrawerTriggerProps
+export type DrawerTriggerProps = AccessibleButtonPropsWithout<
+  'aria-controls' | 'aria-haspopup'
+> & { target: string }
+export type DrawerCloseProps = AccessibleButtonPropsWithout<'aria-controls'> & { target: string }
 export type DrawerHeaderProps = DrawerSectionProps
 export type DrawerBodyProps = DrawerSectionProps
 export type DrawerFooterProps = DrawerSectionProps
@@ -37,7 +44,15 @@ export function Drawer({ ref, side = 'bottom', sx, ...props }: DrawerProps) {
 }
 
 export function DrawerTrigger({ target, type = 'button', ...props }: DrawerTriggerProps) {
-  return <Button type={type} {...props} {...commandProps(target, 'show-modal')} />
+  return (
+    <Button
+      {...props}
+      type={type}
+      aria-controls={target}
+      aria-haspopup="dialog"
+      {...commandProps(target, 'show-modal')}
+    />
+  )
 }
 
 export function DrawerClose({
@@ -47,7 +62,13 @@ export function DrawerClose({
   ...props
 }: DrawerCloseProps) {
   return (
-    <Button type={type} variant={variant} {...props} {...commandProps(target, 'request-close')} />
+    <Button
+      {...props}
+      type={type}
+      variant={variant}
+      aria-controls={target}
+      {...commandProps(target, 'request-close')}
+    />
   )
 }
 
@@ -75,7 +96,10 @@ const styles = stylex.create({
     },
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    overflow: 'auto',
+    display: { default: 'none', ':open': 'grid' },
+    gridTemplateRows: 'auto minmax(0, 1fr) auto',
+    overflow: 'hidden',
+    overflowWrap: 'anywhere',
     backgroundColor: colors.popover,
     boxShadow: elevation.lg,
     color: colors.popoverForeground,
@@ -93,10 +117,12 @@ const styles = stylex.create({
     '::backdrop': {
       backgroundColor: colors.overlay,
       opacity: 0,
+      transitionBehavior: 'allow-discrete',
       transitionDuration: {
         default: motion.durationModerate,
         '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
       },
+      transitionProperty: 'display, opacity, overlay',
     },
     ':open::backdrop': {
       opacity: 1,
@@ -108,11 +134,17 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: `0 0 ${stroke.thin}`,
   },
-  body: { padding: spacing.lg },
+  body: {
+    minHeight: 0,
+    overflow: 'auto',
+    overscrollBehaviorY: 'contain',
+    padding: spacing.lg,
+  },
   footer: {
     padding: spacing.lg,
     gap: spacing.sm,
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'flex-end',
   },
 })

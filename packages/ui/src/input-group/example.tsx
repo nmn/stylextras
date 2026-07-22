@@ -1,5 +1,3 @@
-"use client";
-
 import { InputGroup } from "./index";
 import { DemoFrame } from "../example-theme/demo";
 import { Button } from "../button";
@@ -18,6 +16,7 @@ export default function Example() {
           <InputGroup>
             <Input
               id="invite-email"
+              aria-describedby="invite-email-description"
               name="email"
               type="email"
               autoComplete="email"
@@ -25,7 +24,7 @@ export default function Example() {
             />
             <Button>Invite</Button>
           </InputGroup>
-          <FieldDescription>The label and validation remain attached to the native input.</FieldDescription>
+          <FieldDescription id="invite-email-description">The label and validation remain attached to the native input.</FieldDescription>
         </Field>
       </DemoFrame>
     </>

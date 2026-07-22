@@ -19,5 +19,6 @@ const styles = stylex.create({
     fontSize: typography.step0,
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
+    overflowWrap: 'anywhere',
   },
 })

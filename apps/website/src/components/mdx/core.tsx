@@ -74,6 +74,7 @@ const styles = stylex.create({
     fontSize: "1rem",
     lineHeight: 1.65,
     color: vars["--color-fd-foreground"],
+    overflowWrap: "anywhere",
   },
   list: {
     paddingInlineStart: "1.25rem",
@@ -96,6 +97,8 @@ const styles = stylex.create({
     },
   },
   li: {
+    minWidth: 0,
+    overflowWrap: "anywhere",
     paddingInlineStart: {
       default: 0,
       [stylex.when.ancestor(":where(ol)")]: "0.375em",

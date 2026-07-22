@@ -20,7 +20,11 @@ import { typography } from '../tokens/typography.stylex'
 import {
   addDays,
   addMonths,
+  addMonthsToValue,
+  clampDateValue,
   createMonthGrid,
+  formatDateValue,
+  formatDayLabel,
   formatMonthLabel,
   getWeekStartsOn,
   getWeekdayLabels,
@@ -32,24 +36,34 @@ import {
 
 export type CalendarProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & {
   defaultValue?: string
+  loadingLabel?: string
   locale?: string
   max?: string
   min?: string
+  nextMonthLabel?: string
   onValueChange?: (value: string) => void
+  previousMonthLabel?: string
   sx?: StyleXStyles
+  today?: string
   value?: string
   weekStartsOn?: number
 }
 
 /** An Intl-backed, keyboard-complete single-date calendar grid. */
 export function Calendar({
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
   defaultValue = '',
+  loadingLabel = 'Loading calendar',
   locale = 'en-US',
   max,
   min,
+  nextMonthLabel = 'Next month',
   onValueChange,
+  previousMonthLabel = 'Previous month',
   ref,
   sx,
+  today: todayProp,
   value,
   weekStartsOn = getWeekStartsOn(locale),
   ...props
@@ -57,26 +71,43 @@ export function Calendar({
   const controlled = value !== undefined
   const [internalValue, setInternalValue] = useState(defaultValue)
   const selectedValue = controlled ? value : internalValue
-  const initialValue = parseDateValue(selectedValue) ? selectedValue : todayValue()
+  const validSelectedValue = parseDateValue(selectedValue) ? selectedValue : ''
+  const suppliedToday = todayProp && parseDateValue(todayProp) ? todayProp : ''
+  // Keep the server and first client render deterministic. When neither a
+  // selection nor a caller-supplied date exists, the local date is resolved
+  // after hydration before the grid is exposed.
+  const rawInitialValue = validSelectedValue || suppliedToday || '1970-01-01'
+  const initialValue = clampDateValue(rawInitialValue, min, max)
+  const normalizedWeekStartsOn = ((weekStartsOn % 7) + 7) % 7
   const [visibleMonth, setVisibleMonth] = useState(
-    () => monthForValue(initialValue) ?? monthForValue(todayValue())!,
+    () => monthForValue(initialValue)!,
   )
   const [activeValue, setActiveValue] = useState(initialValue)
+  const [currentDate, setCurrentDate] = useState(suppliedToday)
   const dayRefs = useRef(new Map<string, HTMLButtonElement>())
   const shouldFocus = useRef(false)
-  const today = todayValue()
+  const calendarReady = Boolean(validSelectedValue || currentDate)
   const days = useMemo(
-    () => createMonthGrid(visibleMonth, weekStartsOn),
-    [visibleMonth, weekStartsOn],
+    () => createMonthGrid(visibleMonth, normalizedWeekStartsOn),
+    [visibleMonth, normalizedWeekStartsOn],
   )
   const weeks = useMemo(
     () => Array.from({ length: 6 }, (_, index) => days.slice(index * 7, index * 7 + 7)),
     [days],
   )
   const weekdayLabels = useMemo(
-    () => getWeekdayLabels(locale, weekStartsOn),
-    [locale, weekStartsOn],
+    () => getWeekdayLabels(locale, normalizedWeekStartsOn),
+    [locale, normalizedWeekStartsOn],
   )
+  const previousMonth = addMonths(visibleMonth, -1)
+  const nextMonth = addMonths(visibleMonth, 1)
+  const previousMonthLastDay = new Date(
+    Date.UTC(previousMonth.year, previousMonth.month, 0),
+  ).getUTCDate()
+  const previousMonthDisabled = Boolean(
+    min && formatDateValue({ ...previousMonth, day: previousMonthLastDay }) < min,
+  )
+  const nextMonthDisabled = Boolean(max && formatDateValue(nextMonth) > max)
 
   useEffect(() => {
     if (!shouldFocus.current) return
@@ -85,10 +116,39 @@ export function Calendar({
   }, [activeValue, visibleMonth])
 
   useEffect(() => {
+    setCurrentDate(suppliedToday || todayValue())
+  }, [suppliedToday])
+
+  useEffect(() => {
     if (!selectedValue || !parseDateValue(selectedValue)) return
-    setActiveValue(selectedValue)
-    setVisibleMonth(monthForValue(selectedValue)!)
-  }, [selectedValue])
+    const nextActiveValue = clampDateValue(selectedValue, min, max)
+    setActiveValue(nextActiveValue)
+    setVisibleMonth(monthForValue(nextActiveValue)!)
+  }, [max, min, selectedValue])
+
+  useEffect(() => {
+    if (validSelectedValue || !currentDate) return
+    const nextActiveValue = clampDateValue(currentDate, min, max)
+    setActiveValue(nextActiveValue)
+    setVisibleMonth(monthForValue(nextActiveValue)!)
+  }, [currentDate, max, min, validSelectedValue])
+
+  useEffect(() => {
+    const nextActiveValue = clampDateValue(activeValue, min, max)
+    if (nextActiveValue === activeValue) return
+    setActiveValue(nextActiveValue)
+    setVisibleMonth(monthForValue(nextActiveValue)!)
+  }, [activeValue, max, min])
+
+  if (!calendarReady) {
+    return (
+      <div ref={ref} {...props} {...stylex.props(styles.calendar, sx)}>
+        <div role="status" {...stylex.props(styles.monthLabel)}>
+          {loadingLabel}
+        </div>
+      </div>
+    )
+  }
 
   const choose = (nextValue: string) => {
     if (isDateDisabled(nextValue, min, max)) return
@@ -99,21 +159,27 @@ export function Calendar({
   }
 
   const moveFocus = (nextValue: string) => {
-    if (min && nextValue < min) nextValue = min
-    if (max && nextValue > max) nextValue = max
+    nextValue = clampDateValue(nextValue, min, max)
     shouldFocus.current = true
     setActiveValue(nextValue)
     setVisibleMonth(monthForValue(nextValue)!)
   }
 
+  const moveMonth = (amount: number) => {
+    const nextActiveValue = clampDateValue(addMonthsToValue(activeValue, amount), min, max)
+    setActiveValue(nextActiveValue)
+    setVisibleMonth(monthForValue(nextActiveValue)!)
+  }
+
   const handleDayKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     let nextValue: string | undefined
+    const rtl = getComputedStyle(event.currentTarget).direction === 'rtl'
     switch (event.key) {
       case 'ArrowLeft':
-        nextValue = addDays(activeValue, -1)
+        nextValue = addDays(activeValue, rtl ? 1 : -1)
         break
       case 'ArrowRight':
-        nextValue = addDays(activeValue, 1)
+        nextValue = addDays(activeValue, rtl ? -1 : 1)
         break
       case 'ArrowUp':
         nextValue = addDays(activeValue, -7)
@@ -124,23 +190,21 @@ export function Calendar({
       case 'Home':
         nextValue = addDays(
           activeValue,
-          -((new Date(`${activeValue}T00:00:00Z`).getUTCDay() - weekStartsOn + 7) % 7),
+          -((new Date(`${activeValue}T00:00:00Z`).getUTCDay() - normalizedWeekStartsOn + 7) % 7),
         )
         break
       case 'End':
         nextValue = addDays(
           activeValue,
-          6 - ((new Date(`${activeValue}T00:00:00Z`).getUTCDay() - weekStartsOn + 7) % 7),
+          6 - ((new Date(`${activeValue}T00:00:00Z`).getUTCDay() - normalizedWeekStartsOn + 7) % 7),
         )
         break
       case 'PageUp': {
-        const month = addMonths(monthForValue(activeValue)!, event.shiftKey ? -12 : -1)
-        nextValue = `${month.year}-${String(month.month).padStart(2, '0')}-01`
+        nextValue = addMonthsToValue(activeValue, event.shiftKey ? -12 : -1)
         break
       }
       case 'PageDown': {
-        const month = addMonths(monthForValue(activeValue)!, event.shiftKey ? 12 : 1)
-        nextValue = `${month.year}-${String(month.month).padStart(2, '0')}-01`
+        nextValue = addMonthsToValue(activeValue, event.shiftKey ? 12 : 1)
         break
       }
       case 'Enter':
@@ -163,8 +227,9 @@ export function Calendar({
         <Button
           size="icon-sm"
           variant="ghost"
-          aria-label="Previous month"
-          onClick={() => setVisibleMonth((month) => addMonths(month, -1))}
+          aria-label={previousMonthLabel}
+          disabled={previousMonthDisabled}
+          onClick={() => moveMonth(-1)}
         >
           ‹
         </Button>
@@ -174,15 +239,17 @@ export function Calendar({
         <Button
           size="icon-sm"
           variant="ghost"
-          aria-label="Next month"
-          onClick={() => setVisibleMonth((month) => addMonths(month, 1))}
+          aria-label={nextMonthLabel}
+          disabled={nextMonthDisabled}
+          onClick={() => moveMonth(1)}
         >
           ›
         </Button>
       </div>
       <div
         role="grid"
-        aria-label={formatMonthLabel(visibleMonth, locale)}
+        aria-label={ariaLabelledby ? undefined : (ariaLabel ?? formatMonthLabel(visibleMonth, locale))}
+        aria-labelledby={ariaLabelledby}
         {...stylex.props(styles.grid)}
       >
         <div role="row" {...stylex.props(styles.row)}>
@@ -204,30 +271,35 @@ export function Calendar({
               const active = activeValue === day.value
               const selected = selectedValue === day.value
               return (
-                <button
+                <div
                   key={day.value}
-                  ref={(node) => {
-                    if (node) dayRefs.current.set(day.value, node)
-                    else dayRefs.current.delete(day.value)
-                  }}
-                  type="button"
                   role="gridcell"
-                  aria-current={day.value === today ? 'date' : undefined}
                   aria-selected={selected}
-                  disabled={disabled}
-                  tabIndex={active ? 0 : -1}
-                  onClick={() => choose(day.value)}
-                  onFocus={() => setActiveValue(day.value)}
-                  onKeyDown={handleDayKeyDown}
-                  {...stylex.props(
-                    styles.day,
-                    !day.inMonth && styles.outsideDay,
-                    selected && styles.selectedDay,
-                    day.value === today && styles.today,
-                  )}
+                  {...stylex.props(styles.cell)}
                 >
-                  {day.day}
-                </button>
+                  <button
+                    ref={(node) => {
+                      if (node) dayRefs.current.set(day.value, node)
+                      else dayRefs.current.delete(day.value)
+                    }}
+                    type="button"
+                    aria-label={formatDayLabel(day.value, locale)}
+                    aria-current={day.value === currentDate ? 'date' : undefined}
+                    disabled={disabled}
+                    tabIndex={active ? 0 : -1}
+                    onClick={() => choose(day.value)}
+                    onFocus={() => setActiveValue(day.value)}
+                    onKeyDown={handleDayKeyDown}
+                    {...stylex.props(
+                      styles.day,
+                      !day.inMonth && styles.outsideDay,
+                      selected && styles.selectedDay,
+                      day.value === currentDate && styles.today,
+                    )}
+                  >
+                    {day.day}
+                  </button>
+                </div>
               )
             })}
           </div>
@@ -237,21 +309,24 @@ export function Calendar({
   )
 }
 
+/* eslint-disable @stylexjs/valid-styles -- StyleX 0.18 has not catalogued overscrollBehaviorInline. */
 const styles = stylex.create({
   calendar: {
+    padding: spacing.sm,
+    gap: spacing.sm,
     backgroundColor: colors.popover,
     boxSizing: 'border-box',
     color: colors.popoverForeground,
     display: 'grid',
-    gap: spacing.sm,
+    overscrollBehaviorInline: 'contain',
     maxWidth: '100%',
-    padding: spacing.sm,
+    overflowX: 'auto',
     width: 'fit-content',
   },
   header: {
+    gap: spacing.xs,
     alignItems: 'center',
     display: 'grid',
-    gap: spacing.xs,
     gridTemplateColumns: 'auto 1fr auto',
   },
   monthLabel: {
@@ -261,13 +336,16 @@ const styles = stylex.create({
     textAlign: 'center',
   },
   grid: {
-    display: 'grid',
     gap: spacing.xxxs,
+    display: 'grid',
   },
   row: {
-    display: 'grid',
     gap: spacing.xxxs,
-    gridTemplateColumns: 'repeat(7, minmax(0, 2rem))',
+    display: 'grid',
+    gridTemplateColumns: {
+      default: `repeat(7, minmax(${spacing.targetMin}, 2rem))`,
+      '@media (any-pointer: coarse)': `repeat(7, ${spacing.targetCoarse})`,
+    },
   },
   weekday: {
     color: colors.fgMuted,
@@ -276,16 +354,20 @@ const styles = stylex.create({
     lineHeight: spacing.controlSm,
     textAlign: 'center',
   },
+  cell: {
+    minWidth: 0,
+  },
   day: {
-    backgroundColor: {
-      default: 'transparent',
-      ':hover': colors.accent,
-      ':focus-visible': colors.accent,
-    },
+    padding: 0,
     borderColor: 'transparent',
     borderRadius: radius.xs,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
+    backgroundColor: {
+      default: 'transparent',
+      ':focus-visible': colors.accent,
+      ':hover': colors.accent,
+    },
     boxShadow: {
       default: 'none',
       ':focus-visible': `0 0 0 ${stroke.focusRing} ${colors.focusRing}`,
@@ -294,13 +376,29 @@ const styles = stylex.create({
     cursor: { default: 'pointer', ':disabled': 'not-allowed' },
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    height: spacing.controlSm,
     opacity: { default: 1, ':disabled': 0.4 },
-    outline: 'none',
-    padding: 0,
-    transitionDuration: motion.durationFast,
+    outlineColor: {
+      default: 'transparent',
+      ':focus-visible': colors.focusRing,
+      '@media (forced-colors: active)': 'Highlight',
+    },
+    outlineOffset: stroke.focusRingOffset,
+    outlineStyle: 'solid',
+    outlineWidth: {
+      default: 0,
+      ':focus-visible': stroke.focusRing,
+    },
+    transitionDuration: {
+      default: motion.durationFast,
+      '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
+    },
     transitionProperty: 'background-color, box-shadow, color',
     transitionTimingFunction: motion.easeStandard,
+    height: {
+      default: spacing.controlSm,
+      '@media (any-pointer: coarse)': spacing.targetCoarse,
+    },
+    minWidth: spacing.controlSm,
     width: '100%',
   },
   outsideDay: {
@@ -314,3 +412,4 @@ const styles = stylex.create({
     borderColor: colors.borderStrong,
   },
 })
+/* eslint-enable @stylexjs/valid-styles */

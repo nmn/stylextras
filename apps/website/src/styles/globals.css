@@ -39,6 +39,13 @@
 
   pre code .line span {
     color: light-dark(var(--shiki-light), var(--shiki-dark));
+    /* Preserve the authored hue while bringing low-contrast light tokens up
+       to the surrounding code foreground's readable range. */
+    color: color-mix(
+      in oklab,
+      light-dark(var(--shiki-light), var(--shiki-dark)) 70%,
+      var(--color-fd-foreground)
+    );
   }
 
   /* =============================================================================

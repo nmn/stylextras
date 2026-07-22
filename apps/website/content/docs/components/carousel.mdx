@@ -118,7 +118,7 @@ import { Carousel, CarouselItem } from "@stylextras/ui/carousel";
 ## Anatomy
 
 - `Carousel` — Styled `<div>`.
-- `CarouselItem` — Styled `<article>`.
+- `CarouselItem` — Named `<div role="group" aria-roledescription="slide">`.
 
 ## Accessibility and browser behavior
 
@@ -142,6 +142,6 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `CarouselItemProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"article">, "className" | "style">`. The props below complete `CarouselItemProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "style">`. The props below complete `CarouselItemProps`.
 
 - `sx` — `stylex.StyleXStyles`.

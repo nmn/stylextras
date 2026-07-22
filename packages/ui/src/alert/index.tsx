@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithRef } from 'react'
+import type { ComponentPropsWithRef, ElementType } from 'react'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
@@ -11,8 +11,11 @@ type SxProp = { sx?: StyleXStyles }
 export type AlertVariant = 'default' | 'info' | 'success' | 'warning' | 'danger'
 export type AlertProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> &
   SxProp & { variant?: AlertVariant }
-export type AlertTitleProps = Omit<ComponentPropsWithRef<'h5'>, 'className' | 'style'> &
-  SxProp
+export type AlertTitleProps<T extends ElementType = 'h3'> = Omit<
+  ComponentPropsWithRef<T>,
+  'className' | 'style'
+> &
+  SxProp & { as?: T }
 export type AlertDescriptionProps = Omit<
   ComponentPropsWithRef<'div'>,
   'className' | 'style'
@@ -30,8 +33,13 @@ export function Alert({ ref, role = 'status', sx, variant = 'default', ...props 
   )
 }
 
-export function AlertTitle({ ref, sx, ...props }: AlertTitleProps) {
-  return <h5 ref={ref} {...props} {...stylex.props(styles.title, sx)} />
+export function AlertTitle<T extends ElementType = 'h3'>({
+  as,
+  sx,
+  ...props
+}: AlertTitleProps<T>) {
+  const Component = as ?? 'h3'
+  return <Component {...props} {...stylex.props(styles.title, sx)} />
 }
 
 export function AlertDescription({ ref, sx, ...props }: AlertDescriptionProps) {
@@ -46,7 +54,10 @@ const styles = stylex.create({
     borderWidth: stroke.thin,
     color: colors.fg,
     display: 'grid',
+    forcedColorAdjust: 'auto',
     gap: spacing.xxs,
+    minWidth: 0,
+    overflowWrap: 'anywhere',
     padding: spacing.md,
   },
   title: {
@@ -55,6 +66,7 @@ const styles = stylex.create({
     fontWeight: typography.weightSemibold,
     lineHeight: typography.lineHeightSnug,
     margin: 0,
+    overflowWrap: 'anywhere',
   },
   description: {
     color: 'inherit',
@@ -62,6 +74,7 @@ const styles = stylex.create({
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
     opacity: 0.76,
+    overflowWrap: 'anywhere',
   },
 })
 
