@@ -434,7 +434,7 @@ const styles = stylex.create({
     fontSize: typography.step0,
     gap: spacing.sm,
     minHeight: {
-      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      default: spacing.targetMin,
       '@media (pointer: coarse)': spacing.targetCoarse,
     },
     opacity: { default: 1, '[aria-disabled="true"]': 0.5 },

@@ -423,7 +423,7 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     minHeight: {
-      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      default: spacing.targetMin,
       '@media (pointer: coarse)': spacing.targetCoarse,
     },
     opacity: { default: 1, '[aria-disabled="true"]': 0.5 },
@@ -445,7 +445,8 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     fontWeight: typography.weightSemibold,
-    padding: spacing.sm,
+    paddingBlock: spacing.xxs,
+    paddingInline: spacing.sm,
   },
   separator: {
     borderColor: colors.border,

@@ -61,8 +61,12 @@ const styles = stylex.create({
     flexDirection: "column",
   },
   menuItem: {
-    padding: 8,
-    paddingInline: 16,
+    minHeight: {
+      default: 24,
+      '@media (pointer: coarse)': 44,
+    },
+    paddingBlock: 4,
+    paddingInline: 12,
     fontSize: 14,
     color: vars["--color-fd-foreground"],
     textAlign: "left",

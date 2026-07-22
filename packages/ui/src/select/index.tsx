@@ -184,7 +184,7 @@ const styles = stylex.create({
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     minHeight: {
-      default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
+      default: spacing.targetMin,
       '@media (pointer: coarse)': spacing.targetCoarse,
     },
     outline: 'none',

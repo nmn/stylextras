@@ -750,7 +750,7 @@ const styles = stylex.create({
     fontSize: typography.step0,
     userSelect: 'none',
     minHeight: {
-      default: spacing.controlSm,
+      default: spacing.targetMin,
       '@media (any-pointer: coarse)': spacing.targetCoarse,
     },
   },

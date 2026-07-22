@@ -8,3 +8,4 @@ src/pages.gen.ts
 !lib/
 
 .vercel
+.wrangler

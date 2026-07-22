@@ -461,7 +461,7 @@ const styles = stylex.create({
     transitionProperty: 'background-color, border-color, color',
     transitionTimingFunction: motion.easeStandard,
     minHeight: {
-      default: spacing.controlSm,
+      default: spacing.targetMin,
       '@media (any-pointer: coarse)': spacing.targetCoarse,
     },
   },
