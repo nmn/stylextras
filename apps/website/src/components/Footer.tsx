@@ -7,7 +7,7 @@
 
 import * as stylex from "@stylexjs/stylex";
 import type { SVGProps } from "react";
-import { GithubIcon, TwitterIcon } from "lucide-react";
+import { AtSignIcon, GithubIcon, TwitterIcon } from "lucide-react";
 import Bluesky from "./icons/Bluesky";
 import MetaOpenSource from "./icons/MetaOpenSource";
 import Link from "fumadocs-core/link";
@@ -35,16 +35,14 @@ function ExternalLinkIcon(props: SVGProps<SVGSVGElement>) {
 const footerLinks = {
   develop: [
     { label: "Learn", href: "/docs/learn" },
-    { label: "API", href: "/docs/api" },
   ],
   explore: [
     { label: "Playground", href: "/playground" },
-    { label: "Blog", href: "/blog" },
   ],
   participate: [
     {
       label: "GitHub",
-      href: "https://github.com/facebook/stylex",
+      href: "https://github.com/nmn/stylextras",
       external: true,
     },
     { label: "Acknowledgements", href: "/docs/acknowledgements" },
@@ -174,8 +172,8 @@ export default function Footer({
 
           <div {...stylex.props(styles.socialLinks)}>
             <a
-              aria-label="StyleX on GitHub"
-              href="https://github.com/facebook/stylex"
+              aria-label="Naman on GitHub"
+              href="https://github.com/nmn"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
@@ -183,8 +181,8 @@ export default function Footer({
               <GithubIcon {...stylex.props(styles.socialIcon)} />
             </a>
             <a
-              aria-label="StyleX on X"
-              href="https://x.com/stylexjs"
+              aria-label="Naman on Twitter"
+              href="https://twitter.com/naman34"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
@@ -192,13 +190,22 @@ export default function Footer({
               <TwitterIcon {...stylex.props(styles.socialIcon)} />
             </a>
             <a
-              aria-label="StyleX on Bluesky"
-              href="https://bsky.app/profile/stylexjs.bsky.social"
+              aria-label="Naman on Bluesky"
+              href="https://bsky.app/profile/nmn.sh"
               rel="noopener noreferrer"
               target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <Bluesky xstyle={styles.socialIcon} />
+            </a>
+            <a
+              aria-label="Naman on Mastodon"
+              href="https://indieweb.social/@nmn"
+              rel="me noopener noreferrer"
+              target="_blank"
+              {...stylex.props(styles.socialLink)}
+            >
+              <AtSignIcon {...stylex.props(styles.socialIcon)} />
             </a>
           </div>
         </div>

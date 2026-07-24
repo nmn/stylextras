@@ -1,0 +1,15 @@
+@layer resets {
+  :root {
+    color-scheme: light dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+  }
+}

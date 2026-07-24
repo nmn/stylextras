@@ -110,10 +110,6 @@ function transformDocSearchResults(hits: DocSearchHit[]): SortedResult[] {
   for (const hit of hits) {
     const fullUrl = toRelativeUrl(hit.url);
     const baseUrl = toRelativeUrl(hit.url_without_anchor || hit.url);
-    // Skip the blog index page (but not individual blog posts)
-    if (baseUrl.includes("/blog")) {
-      continue;
-    }
     // Skip if we've already seen this exact URL
     if (seenUrls.has(fullUrl)) {
       continue;

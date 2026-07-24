@@ -17,7 +17,6 @@ import { typography } from '@stylextras/ui/tokens/typography.stylex';
 import { typographyThemes } from '@stylextras/ui/typography-themes';
 import { useId, type ChangeEvent } from 'react';
 import {
-  type PreviewAppearance,
   type PreviewStyleName,
   type PreviewStyleSelection,
   type PreviewThemeSelection,
@@ -40,7 +39,7 @@ type SpacingThemeName = keyof typeof spacingThemes;
 type StrokeThemeName = keyof typeof strokeThemes;
 type TypographyThemeName = keyof typeof typographyThemes;
 
-const appearanceNames = ['light', 'dark'] as const;
+const appearanceNames = ['inherit', 'light', 'dark'] as const;
 const styleNames = Object.keys(previewStylePresets) as PreviewStyleName[];
 const colorThemeNames = Object.keys(colorThemes) as ColorThemeName[];
 const spacingThemeNames = Object.keys(spacingThemes) as SpacingThemeName[];
@@ -200,19 +199,19 @@ const styles = stylex.create({
     backgroundColor: colors.bgSubtle,
   },
   legend: {
-    color: colors.fgMuted,
+    paddingInline: 0,
+    paddingBottom: spacing.md,
     fontFamily: typography.fontMono,
     fontSize: typography.stepMinus2,
     fontWeight: typography.weightSemibold,
-    letterSpacing: typography.trackingWide,
-    paddingInline: 0,
-    paddingBottom: spacing.md,
+    color: colors.fgMuted,
     textTransform: 'uppercase',
+    letterSpacing: typography.trackingWide,
   },
   grid: {
     display: 'grid',
-    gap: spacing.sm,
     gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 8rem), 1fr))',
+    gap: spacing.sm,
     marginBlockStart: spacing.xxs,
   },
   control: {
@@ -221,15 +220,15 @@ const styles = stylex.create({
     minWidth: 0,
   },
   controlLabel: {
-    color: colors.fgMuted,
     fontSize: typography.stepMinus2,
     fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
+    color: colors.fgMuted,
   },
   select: {
-    borderRadius: radius.sm,
+    width: '100%',
     minWidth: 0,
     textTransform: 'capitalize',
-    width: '100%',
+    borderRadius: radius.sm,
   },
 });

@@ -17,6 +17,6 @@
     "generate": "node scripts/generate-from-tailwind.js"
   },
   "dependencies": {
-    "@stylexjs/stylex": "^0.18.3"
+    "@stylexjs/stylex": "^0.19.0"
   }
 }

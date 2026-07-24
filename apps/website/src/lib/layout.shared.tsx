@@ -10,24 +10,12 @@ export function baseOptions(): BaseLayoutProps {
         <LogoBold xstyle={styles.logo} />
       ),
     },
-    githubUrl: 'https://github.com/facebook/stylex',
+    githubUrl: 'https://github.com/nmn/stylextras',
     links: [
       {
         type: 'main',
         text: 'Docs',
         url: '/docs',
-        active: 'nested-url'
-      },
-      {
-        type: 'main',
-        text: 'API',
-        url: '/docs/api',
-        active: 'nested-url'
-      },
-      {
-        type: 'main',
-        text: 'Blog',
-        url: '/blog',
         active: 'nested-url'
       },
       {

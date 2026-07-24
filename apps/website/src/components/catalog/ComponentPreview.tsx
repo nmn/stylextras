@@ -33,10 +33,7 @@ export function ComponentPreview({
 }) {
   const [selection, setSelection] =
     useState<PreviewThemeSelection>(defaultPreviewTheme);
-  const [styleName, setStyleName] = useState<PreviewStyleSelection>('vega');
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => setReady(true), []);
+  const [styleName, setStyleName] = useState<PreviewStyleSelection>('docs');
 
   const changeSelection = (key: keyof PreviewThemeSelection, value: string) => {
     setSelection((current) => ({ ...current, [key]: value }));
@@ -58,7 +55,6 @@ export function ComponentPreview({
       data-component-demo={name}
       data-preview-appearance={selection.appearance}
       data-preview-color={selection.color}
-      data-preview-ready={ready ? 'true' : 'false'}
       data-preview-style={styleName}
       {...stylex.props(
         colorThemes[selection.color],
@@ -70,7 +66,8 @@ export function ComponentPreview({
         blurThemes[selection.blur],
         motionThemes[selection.motion],
         styles.root,
-        selection.appearance === 'light' ? styles.light : styles.dark,
+        selection.appearance === 'light' && styles.light,
+        selection.appearance === 'dark' && styles.dark,
       )}
     >
       <header {...stylex.props(styles.header)}>

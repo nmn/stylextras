@@ -8,6 +8,7 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": true,
+    "types": ["vite/client"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -19,5 +20,5 @@
       "@/.source": ["./.source"]
     }
   },
-  "exclude": ["node_modules", "dist", "build", "scripts"]
+  "exclude": ["node_modules", "dist", "build", "scripts", "src/components/Playground/files"]
 }

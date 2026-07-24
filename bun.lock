@@ -6,7 +6,7 @@
       "name": "stylextras",
       "devDependencies": {
         "@biomejs/biome": "^1.9.4",
-        "@stylexjs/eslint-plugin": "0.18.3",
+        "@stylexjs/eslint-plugin": "0.19.0",
         "@types/bun": "^1.2.3",
         "@typescript-eslint/parser": "7.2.0",
         "eslint": "8.57.1",
@@ -27,8 +27,9 @@
         "@radix-ui/react-popover": "^1.1.15",
         "@radix-ui/react-presence": "^1.1.5",
         "@radix-ui/react-scroll-area": "^1.2.10",
-        "@stylexjs/babel-plugin": "0.18.3",
-        "@stylexjs/stylex": "0.18.3",
+        "@stylexjs/atoms": "0.19.0",
+        "@stylexjs/babel-plugin": "0.19.0",
+        "@stylexjs/stylex": "0.19.0",
         "@stylextras/ui": "workspace:*",
         "algoliasearch": "^5.46.2",
         "feed": "^4.2.2",
@@ -51,7 +52,7 @@
       "devDependencies": {
         "@axe-core/playwright": "^4.12.1",
         "@playwright/test": "^1.61.1",
-        "@stylexjs/unplugin": "0.18.3",
+        "@stylexjs/unplugin": "0.19.0",
         "@types/mdx": "^2.0.13",
         "@types/node": "^24.10.4",
         "@types/react": "^19.2.7",
@@ -96,7 +97,7 @@
       "name": "@stylextras/open-props",
       "version": "0.11.0",
       "dependencies": {
-        "@stylexjs/stylex": "^0.18.3",
+        "@stylexjs/stylex": "^0.19.0",
       },
       "devDependencies": {
         "@babel/cli": "^7.26.4",
@@ -117,7 +118,7 @@
         "@babel/types": "^7.28.5",
       },
       "devDependencies": {
-        "@stylexjs/stylex": "^0.18.3",
+        "@stylexjs/stylex": "^0.19.0",
         "@types/babel__core": "^7.20.5",
         "@types/babel__generator": "^7.27.0",
         "@types/babel__traverse": "^7.28.0",
@@ -131,7 +132,7 @@
       "name": "@stylextras/stylex-inline-css",
       "version": "0.1.0",
       "dependencies": {
-        "@stylexjs/stylex": "^0.18.3",
+        "@stylexjs/stylex": "^0.19.0",
       },
     },
     "packages/ui": {
@@ -141,7 +142,7 @@
         "@microsoft/focusgroup-polyfill": "^1.5.0",
       },
       "peerDependencies": {
-        "@stylexjs/stylex": "^0.18.3",
+        "@stylexjs/stylex": "^0.19.0",
         "react": ">=19.0.0",
       },
     },
@@ -807,15 +808,17 @@
 
     "@stitches/core": ["@stitches/core@1.2.8", "", {}, "sha512-Gfkvwk9o9kE9r9XNBmJRfV8zONvXThnm1tcuojL04Uy5uRyqg93DC83lDebl0rocZCfKSjUv+fWYtMQmEDJldg=="],
 
-    "@stylexjs/babel-plugin": ["@stylexjs/babel-plugin@0.18.3", "", { "dependencies": { "@babel/core": "^7.26.8", "@babel/helper-module-imports": "^7.25.9", "@babel/traverse": "^7.26.8", "@babel/types": "^7.26.8", "@dual-bundle/import-meta-resolve": "^4.1.0", "@stylexjs/shared": "0.18.3", "@stylexjs/stylex": "0.18.3", "postcss-value-parser": "^4.1.0" } }, "sha512-5VeMIChNaXWlizLUL6c7WrMfuhydHXl3ASTlbj3O0qlEkNOlcgZMH3zzZ0iUrOSFTSgbHAOWUsVJKX5bFeZk4A=="],
+    "@stylexjs/atoms": ["@stylexjs/atoms@0.19.0", "", { "peerDependencies": { "@stylexjs/stylex": "0.19.0" } }, "sha512-zVwn00h2cnNvNPCfP8idE8Ey3xzIWxuj9dtItGq+2kgn2oYbO9pR2vEhrI6Wrud+TDL1XDLUFHlY2iuWZOYYZw=="],
 
-    "@stylexjs/eslint-plugin": ["@stylexjs/eslint-plugin@0.18.3", "", { "dependencies": { "@csstools/css-tokenizer": "^3.0.3", "@stylexjs/shared": "0.18.3", "micromatch": "^4.0.5", "postcss-value-parser": "^4.2.0" } }, "sha512-EHRBi0GkdlZFbO5/ZkBc7o5gIzMT7240Q8ebqkZIvZjQ2IbNajt25fHflv6nZ6kVxxKntJNQxn6hsJAANG0iDg=="],
+    "@stylexjs/babel-plugin": ["@stylexjs/babel-plugin@0.19.0", "", { "dependencies": { "@babel/core": "^7.26.8", "@babel/helper-module-imports": "^7.25.9", "@babel/traverse": "^7.26.8", "@babel/types": "^7.26.8", "@dual-bundle/import-meta-resolve": "^4.1.0", "@stylexjs/shared": "0.19.0", "@stylexjs/stylex": "0.19.0", "postcss-value-parser": "^4.1.0" } }, "sha512-2SnVZIl047TtqKW0nRTn7Irz0kmoot1bxdGDE/HwfwfF7dJYHqwkIFg92s87v3hj7zxJobrHWwDx1p3qvQXW4g=="],
 
-    "@stylexjs/shared": ["@stylexjs/shared@0.18.3", "", {}, "sha512-g72AKGGhLTFsaez19zod2je9IQeaub2eM85jwJPvfmxymKW8Aleoxm5/pYIsnyxx3MZNOB5AVN6khfo90f9Lgw=="],
+    "@stylexjs/eslint-plugin": ["@stylexjs/eslint-plugin@0.19.0", "", { "dependencies": { "@csstools/css-tokenizer": "^3.0.3", "@stylexjs/shared": "0.19.0", "micromatch": "^4.0.5", "postcss-value-parser": "^4.2.0" } }, "sha512-zZ6bCYcciaj2YYO0cG2nyCfjX5rclmW+WkcW/84gx4wCtpLvfr9+zYd3oqESr48suFlr8p6hrxGwnjYSLTDD4g=="],
 
-    "@stylexjs/stylex": ["@stylexjs/stylex@0.18.3", "", { "dependencies": { "css-mediaquery": "^0.1.2", "invariant": "^2.2.4", "styleq": "0.2.1" } }, "sha512-15gDzAJAorOE0yzxaWLNxldW2aqdmCiLG5QcPD8nmVCVqvrWp0Asgv45zk7LtN86WJb/4Ym9eQ6qT5MJW59tWQ=="],
+    "@stylexjs/shared": ["@stylexjs/shared@0.19.0", "", {}, "sha512-7Yym70cQH5sPzJHgzJX3FkL9ZCptbC3IbiRijN9YLYU/5OywB/3c519Xv1DOzvxqjv8urSxh98/9HxLaPG7sDg=="],
 
-    "@stylexjs/unplugin": ["@stylexjs/unplugin@0.18.3", "", { "dependencies": { "@babel/core": "^7.26.8", "@babel/plugin-syntax-flow": "^7.26.0", "@babel/plugin-syntax-jsx": "^7.25.9", "@babel/plugin-syntax-typescript": "^7.25.9", "@stylexjs/babel-plugin": "0.18.3", "browserslist": "^4.24.0", "lightningcss": "^1.29.1" }, "peerDependencies": { "unplugin": "^2.3.11" } }, "sha512-qLdYhFB2hmvOSSlz9CSU+jRcDu5W0LBM36EuGvGIBVEputbhIR62G660d2Mw1G6tCw3qe75UDSxlPul2qS6HPQ=="],
+    "@stylexjs/stylex": ["@stylexjs/stylex@0.19.0", "", { "dependencies": { "css-mediaquery": "^0.1.2", "invariant": "^2.2.4", "styleq": "0.2.1" } }, "sha512-CnUFp7YMaDLDeemsWOfJgoC/gKM5P/yBNMcpJaE6ChJmXr7s0DJwSeGTTlHJcqqwN9OW1qGtmARWLFhGZN1pTA=="],
+
+    "@stylexjs/unplugin": ["@stylexjs/unplugin@0.19.0", "", { "dependencies": { "@babel/core": "^7.26.8", "@babel/plugin-syntax-flow": "^7.26.0", "@babel/plugin-syntax-jsx": "^7.25.9", "@babel/plugin-syntax-typescript": "^7.25.9", "@stylexjs/babel-plugin": "0.19.0", "browserslist": "^4.24.0", "lightningcss": "^1.29.1" }, "peerDependencies": { "unplugin": "^2.3.11" } }, "sha512-2QwNYovSwarC/M8DLD78857F6MEi4eQ3UYzgdmyg/K7562M/rV1KWptiATxcKgujlUT6ToNy778SOXf4bGK+Bw=="],
 
     "@stylextras/babel-plugin-bun-macros": ["@stylextras/babel-plugin-bun-macros@workspace:packages/babel-plugin-bun-macros"],
 
