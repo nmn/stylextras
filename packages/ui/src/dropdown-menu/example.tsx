@@ -2,6 +2,7 @@ import { DemoFrame } from '../example-theme/demo'
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -10,6 +11,7 @@ import {
 } from './index'
 
 const menuId = 'project-actions-menu'
+const groupLabelId = 'project-actions-label'
 
 export default function Example() {
   return (
@@ -17,12 +19,14 @@ export default function Example() {
       <DropdownMenu>
         <DropdownMenuTrigger target={menuId}>Actions</DropdownMenuTrigger>
         <DropdownMenuContent id={menuId}>
-          <DropdownMenuLabel>Project</DropdownMenuLabel>
-          <DropdownMenuItem>
-            Rename <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>Duplicate</DropdownMenuItem>
-          <DropdownMenuItem disabled>Deploy (unavailable)</DropdownMenuItem>
+          <DropdownMenuGroup aria-labelledby={groupLabelId}>
+            <DropdownMenuLabel id={groupLabelId}>Project</DropdownMenuLabel>
+            <DropdownMenuItem>
+              Rename <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem>Duplicate</DropdownMenuItem>
+            <DropdownMenuItem disabled>Deploy (unavailable)</DropdownMenuItem>
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Archive</DropdownMenuItem>
         </DropdownMenuContent>

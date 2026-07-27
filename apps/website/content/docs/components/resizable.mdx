@@ -26,7 +26,7 @@ export default function Example() {
     <Resizable defaultValue={38} sx={styles.root}>
       <ResizablePanel id="editor-navigation" sx={styles.panel}>Navigation and files</ResizablePanel>
       <ResizableHandle
-        label="Resize editor panels"
+        aria-label="Resize editor panels"
         aria-controls="editor-navigation editor-preview"
       />
       <ResizablePanel id="editor-preview" sx={styles.panel}>Editor preview</ResizablePanel>
@@ -68,7 +68,11 @@ Each part renders and styles the native element named above. The API reference s
 
 This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
 
-The separator has a density-independent pointer target around its thin visual rule, exposes its bounds and current value, and reverses horizontal Arrow behavior in RTL. Use `aria-controls` to reference the affected panel IDs.
+The separator has a density-independent pointer target around its thin visual
+rule, exposes its finite normalized bounds and current value, and reverses
+horizontal Arrow behavior in RTL. It requires an accessible name and
+`aria-controls` referencing the affected panel IDs. Arrow keys adjust the split,
+Shift+Arrow uses a larger step, and Home/End move to the normalized bounds.
 
 ## API reference
 
@@ -90,9 +94,13 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `ResizableHandleProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-orientation" | "aria-valuemax" | "aria-valuemin" | "aria-valuenow" | "className" | "role" | "style">`. The props below complete `ResizableHandleProps`.
+Complete native/inherited prop base omits the component-owned separator role,
+orientation, numeric value attributes, value text, accessible-name fields, and
+`aria-controls`, then adds back the required name and controls relationship.
 
-- `label` — `string`. Required.
+- `aria-label` or `aria-labelledby` — Required accessible separator name.
+- `aria-controls` — `string`. Required ID reference for the affected panels.
+- `getValueText` — `(value: number) => string`. Default: percentage text such as `"38%"`.
 - `sx` — `stylex.StyleXStyles`.
 - `tabIndex` — `ResizableHandleProps["tabIndex"]`. Default: `0`.
 

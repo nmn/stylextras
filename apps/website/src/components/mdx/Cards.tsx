@@ -8,8 +8,16 @@
 
 import { vars } from "@/theming/vars.stylex";
 import * as stylex from "@stylexjs/stylex";
-import BaseLink from "fumadocs-core/link";
+import {
+  Card as UICard,
+  CardContent as UICardContent,
+  CardDescription as UICardDescription,
+  CardHeader as UICardHeader,
+  CardTitle as UICardTitle,
+} from "@stylextras/ui/card";
 import type { HTMLAttributes, ReactNode } from "react";
+import { RouterLink } from "@/components/router-link";
+import { cardLinkMarker } from "./mdx.stylex";
 
 export interface CardsProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -49,35 +57,39 @@ export function Card({
 }: CardProps) {
   const content = (
     <>
-      {icon != null && <div {...stylex.props(styles.icon)}>{icon}</div>}
-      <h3 {...stylex.props(styles.title)}>{title}</h3>
-      {description != null && (
-        <div {...stylex.props(styles.description)}>{description}</div>
-      )}
+      <UICardHeader>
+        {icon != null && <div {...stylex.props(styles.icon)}>{icon}</div>}
+        <UICardTitle>{title}</UICardTitle>
+        {description != null && (
+          <UICardDescription>{description}</UICardDescription>
+        )}
+      </UICardHeader>
       {children != null && (
-        <div {...stylex.props(styles.content)}>{children}</div>
+        <UICardContent>{children}</UICardContent>
       )}
     </>
   );
 
   if (href != null) {
     return (
-      <BaseLink
+      <RouterLink
         external={external}
         href={href}
-        {...stylex.props(styles.card, styles.cardLink)}
+        sx={
+          [styles.cardLink, cardLinkMarker] as unknown as stylex.StyleXStyles
+        }
         {...props}
         data-card
       >
-        {content}
-      </BaseLink>
+        <UICard sx={styles.linkedCard}>{content}</UICard>
+      </RouterLink>
     );
   }
 
   return (
-    <div {...stylex.props(styles.card)} {...props} data-card>
+    <UICard {...props} data-card>
       {content}
-    </div>
+    </UICard>
   );
 }
 
@@ -95,31 +107,26 @@ const styles = stylex.create({
     marginTop: 12,
     containerType: "inline-size",
   },
-  card: {
-    display: "block",
-    padding: 16,
-    color: vars["--color-fd-card-foreground"],
-    textDecoration: "none",
-    backgroundColor: vars["--color-fd-card"],
-    borderColor: vars["--color-fd-border"],
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderRadius: 12,
-    cornerShape: "squircle",
-    transitionTimingFunction: EASING,
-    transitionDuration: DURATION,
-    transitionProperty: "background-color, border-color",
-  },
   cardLink: {
+    display: "block",
     cursor: "pointer",
+    textDecoration: "none",
+  },
+  linkedCard: {
+    height: "100%",
     backgroundColor: {
       default: vars["--color-fd-card"],
-      ":hover": "light-dark(hsl(0, 0%, 97%), hsl(0, 0%, 16%))",
+      [stylex.when.ancestor(":hover", cardLinkMarker)]:
+        "light-dark(hsl(0, 0%, 97%), hsl(0, 0%, 16%))",
     },
     borderColor: {
       default: vars["--color-fd-border"],
-      ":hover": vars["--color-fd-primary"],
+      [stylex.when.ancestor(":hover", cardLinkMarker)]:
+        vars["--color-fd-primary"],
     },
+    transitionTimingFunction: EASING,
+    transitionDuration: DURATION,
+    transitionProperty: "background-color, border-color",
   },
   icon: {
     width: "fit-content",
@@ -132,24 +139,5 @@ const styles = stylex.create({
     borderWidth: 1,
     borderRadius: 8,
     boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-  },
-  title: {
-    marginTop: 0,
-    marginBottom: 4,
-    fontSize: 14,
-    fontWeight: 500,
-    lineHeight: 1.4,
-  },
-  description: {
-    marginTop: 0,
-    marginBottom: 0,
-    fontSize: 14,
-    lineHeight: 1.5,
-    color: vars["--color-fd-muted-foreground"],
-  },
-  content: {
-    fontSize: 14,
-    lineHeight: 1.5,
-    color: vars["--color-fd-muted-foreground"],
   },
 });

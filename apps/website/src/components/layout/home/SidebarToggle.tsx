@@ -11,12 +11,13 @@ import { vars } from "@/theming/vars.stylex";
 import { SidebarIcon } from "lucide-react";
 import * as stylex from "@stylexjs/stylex";
 import { use } from "react";
+import { Button } from "@stylextras/ui/button";
 
 export default function SidebarToggle() {
   const [_open, setOpen] = use(SidebarContext);
 
   return (
-    <button
+    <Button
       aria-label="Toggle documentation sidebar"
       onClick={() => {
         setOpen((old) => {
@@ -26,25 +27,23 @@ export default function SidebarToggle() {
           return !old;
         });
       }}
-      type="button"
-      {...stylex.props(styles.button)}
+      size="icon-lg"
+      sx={styles.button}
+      variant="ghost"
     >
       <SidebarIcon size={20} />
-    </button>
+    </Button>
   );
 }
 
 const styles = stylex.create({
   button: {
-    width: 56,
-    height: 56,
     marginInline: (20 - 56) / 2,
     color: {
       default: vars["--color-fd-foreground"],
       ":focus-visible": vars["--color-fd-primary"],
       ":hover": vars["--color-fd-primary"],
     },
-    backgroundColor: "transparent",
     scale: {
       default: null,
       ":active": 0.95,

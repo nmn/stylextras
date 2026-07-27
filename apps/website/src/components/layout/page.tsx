@@ -4,26 +4,31 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-"use client";
+'use client'
 
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react'
+import { AnchorProvider, type TOCItemType, useActiveAnchors } from 'fumadocs-core/toc'
+import { useTreeContext } from 'fumadocs-ui/contexts/tree'
+import { usePathname } from 'fumadocs-core/framework'
+import type * as PageTree from 'fumadocs-core/page-tree'
+import * as stylex from '@stylexjs/stylex'
 import {
-  AnchorProvider,
-  type TOCItemType,
-  useActiveAnchors,
-} from "fumadocs-core/toc";
-import { useTreeContext } from "fumadocs-ui/contexts/tree";
-import { Link, usePathname } from "fumadocs-core/framework";
-import type * as PageTree from "fumadocs-core/page-tree";
-import * as stylex from "@stylexjs/stylex";
-import { StyleXComponentProps } from "./shared";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { vars } from "@/theming/vars.stylex";
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  TableOfContentsList,
+  TableOfContentsTitle,
+} from '@stylextras/ui/table-of-contents'
+import { Typography } from '@stylextras/ui/typography'
+import { RouterButtonLink } from '@/components/router-link'
+import { StyleXComponentProps } from './shared'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { vars } from '@/theming/vars.stylex'
 
 export interface DocsPageProps {
-  toc?: TOCItemType[];
+  toc?: TOCItemType[]
 
-  children: ReactNode;
+  children: ReactNode
 }
 
 export function DocsPage({ toc = [], ...props }: DocsPageProps) {
@@ -37,29 +42,29 @@ export function DocsPage({ toc = [], ...props }: DocsPageProps) {
           </article>
         </main>
         {toc.length > 0 && (
-          <div {...stylex.props(pageStyles.sticky)}>
-            <p {...stylex.props(pageStyles.tocPara)}>On this page</p>
-            <div {...stylex.props(pageStyles.flexCol)}>
-              {toc.map((item) => (
-                <TocItem item={item} key={item.url} />
+          <TableOfContents aria-label="On this page" sx={pageStyles.sticky}>
+            <TableOfContentsTitle>On this page</TableOfContentsTitle>
+            <TableOfContentsList>
+              {nestToc(toc).map((node) => (
+                <TocItem node={node} key={node.item.url} />
               ))}
-            </div>
-          </div>
+            </TableOfContentsList>
+          </TableOfContents>
         )}
       </div>
     </AnchorProvider>
-  );
+  )
 }
 const pageStyles = stylex.create({
   wrapper: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    width: "100%",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    width: '100%',
   },
   flexCol: {
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
   },
   main: {
     flexGrow: 1,
@@ -68,200 +73,222 @@ const pageStyles = stylex.create({
   article: {
     flexGrow: 1,
     gap: 24,
-    width: "100%",
+    width: '100%',
     maxWidth: 860,
     paddingBlock: 32,
     paddingInline: 16,
     marginInline: {
       default: null,
-      "@media (min-width: 768px)": "auto",
+      '@media (min-width: 768px)': 'auto',
     },
   },
   sticky: {
-    position: "sticky",
+    position: 'sticky',
     top: 80,
     zIndex: 1,
     display: {
-      default: null,
-      "@media (max-width: 1280px)": "none",
+      default: 'block',
+      '@media (max-width: 1280px)': 'none',
     },
     flexShrink: 0,
     width: 360,
-    maxHeight: "calc(100dvh - 96px)",
+    maxHeight: 'calc(100dvh - 96px)',
     padding: 4 * 4,
     marginBottom: 16,
-    overflow: "auto",
-    borderInlineStartColor: vars["--color-fd-border"],
-    borderInlineStartStyle: "solid",
+    overflow: 'auto',
+    borderInlineStartColor: vars['--color-fd-border'],
+    borderInlineStartStyle: 'solid',
     borderInlineStartWidth: 1,
   },
-  tocPara: {
-    marginBottom: 8,
-    fontSize: `${14 / 16}rem`,
-    lineHeight: 1.42,
-    color: vars["--color-fd-muted-foreground"],
-  },
-});
+})
 
-export function DocsBody({ xstyle, ...props }: StyleXComponentProps<"div">) {
-  const { className, style } = stylex.props(xstyle);
+export function DocsBody({ xstyle, ...props }: StyleXComponentProps<'div'>) {
   return (
-    // TODO: Move `prose` to stylex as a component.
-    <div {...props} className={["prose", className].join(" ")} style={style}>
+    <Typography as="div" sx={[docsBodyStyles.root, xstyle]} {...props}>
       {props.children}
-    </div>
-  );
+    </Typography>
+  )
 }
+const docsBodyStyles = stylex.create({
+  root: {
+    fontSize: '1rem',
+    lineHeight: 1.75,
+    maxWidth: 'none',
+    overflowWrap: 'normal',
+  },
+})
 
-export function DocsDescription({
-  xstyle,
-  ...props
-}: StyleXComponentProps<"p">) {
+export function DocsDescription({ xstyle, ...props }: StyleXComponentProps<'p'>) {
   // don't render if no description provided
-  if (props.children === undefined) return null;
+  if (props.children === undefined) return null
 
   return (
-    <p {...props} {...stylex.props(descStyles.p, xstyle)}>
+    <Typography as="p" scale="body" sx={[descStyles.p, xstyle]} {...props}>
       {props.children}
-    </p>
-  );
+    </Typography>
+  )
 }
 const descStyles = stylex.create({
   p: {
+    maxWidth: 'none',
     fontSize: `${18 / 16}rem`,
     lineHeight: 1.555,
-    color: vars["--color-fd-muted-foreground"],
+    color: vars['--color-fd-muted-foreground'],
+    overflowWrap: 'normal',
   },
-});
+})
 
-export function DocsTitle({ xstyle, ...props }: StyleXComponentProps<"h1">) {
+export function DocsTitle({ xstyle, ...props }: StyleXComponentProps<'h1'>) {
   return (
-    <h1 {...props} {...stylex.props(titleStyles.h1, xstyle)}>
+    <Typography as="h1" scale="title" tone="brand" sx={[titleStyles.h1, xstyle]} {...props}>
       {props.children}
-    </h1>
-  );
+    </Typography>
+  )
 }
 const titleStyles = stylex.create({
   h1: {
     fontSize: `${30 / 16}rem`,
     fontWeight: 600,
     lineHeight: 1.2,
-    color: vars["--color-fd-primary"],
-    wordBreak: "break-word",
+    maxWidth: 'none',
+    wordBreak: 'break-word',
   },
-});
+})
 
-function TocItem({ item }: { item: TOCItemType }) {
-  const isActive = useActiveAnchors().includes(item.url.slice(1));
+interface TocNode {
+  children: TocNode[]
+  item: TOCItemType
+}
+
+function nestToc(items: TOCItemType[]): TocNode[] {
+  const roots: TocNode[] = []
+  const ancestors: TocNode[] = []
+
+  for (const item of items) {
+    const node: TocNode = { children: [], item }
+
+    while (ancestors.length > 0 && ancestors[ancestors.length - 1]!.item.depth >= item.depth) {
+      ancestors.pop()
+    }
+
+    const parent = ancestors[ancestors.length - 1]
+    ;(parent?.children ?? roots).push(node)
+    ancestors.push(node)
+  }
+
+  return roots
+}
+
+function TocItem({ node }: { node: TocNode }) {
+  const { item } = node
+  const isActive = useActiveAnchors().includes(item.url.slice(1))
 
   return (
-    <a
-      href={item.url}
-      {...stylex.props(
-        itemStyles.link(Math.max(0, item.depth - 2) * 16),
-        isActive && itemStyles.active,
-      )}
-    >
-      {item.title}
-    </a>
-  );
+    <TableOfContentsItem>
+      <TableOfContentsLink active={isActive} href={item.url}>
+        {item.title}
+      </TableOfContentsLink>
+      {node.children.length > 0 ? (
+        <TableOfContentsList>
+          {node.children.map((child) => (
+            <TocItem key={child.item.url} node={child} />
+          ))}
+        </TableOfContentsList>
+      ) : null}
+    </TableOfContentsItem>
+  )
 }
-const itemStyles = stylex.create({
-  link: (paddingInlineStart: number) => ({
-    paddingBlock: 4,
-    paddingInlineStart,
-    fontSize: `${14 / 16}rem`,
-    lineHeight: 1.42,
-    color: `color-mix(in oklab, ${vars["--color-fd-foreground"]} 80%, transparent)`,
-  }),
-  active: {
-    color: vars["--color-fd-primary"],
-  },
-});
-
 function Footer() {
-  const { root } = useTreeContext();
-  const pathname = usePathname();
-  const flatten: PageTree.Item[] = [];
+  const { root } = useTreeContext()
+  const pathname = usePathname()
+  const flatten: PageTree.Item[] = []
 
   function scan(items: PageTree.Node[]) {
     for (const item of items) {
-      if (item.type === "page") flatten.push(item);
-      else if (item.type === "folder") {
-        if (item.index) flatten.push(item.index);
-        scan(item.children);
+      if (item.type === 'page') flatten.push(item)
+      else if (item.type === 'folder') {
+        if (item.index) flatten.push(item.index)
+        scan(item.children)
       }
     }
   }
 
-  scan(root.children);
+  scan(root.children)
 
-  const currentIndex = flatten.findIndex((item) => item.url === pathname);
-  const previous = currentIndex === -1 ? undefined : flatten[currentIndex - 1];
-  const next = currentIndex === -1 ? undefined : flatten[currentIndex + 1];
+  const currentIndex = flatten.findIndex((item) => item.url === pathname)
+  const previous = currentIndex === -1 ? undefined : flatten[currentIndex - 1]
+  const next = currentIndex === -1 ? undefined : flatten[currentIndex + 1]
 
   return (
     <div {...stylex.props(footerStyles.div)}>
       {previous ? (
-        <Link
-          {...stylex.props(footerStyles.link, footerStyles.prev)}
+        <RouterButtonLink
           href={previous.url}
+          sx={[footerStyles.link, footerStyles.prev]}
+          variant="ghost"
         >
           <ChevronLeft {...stylex.props(footerStyles.chevron)} />
           {previous.name}
-        </Link>
+        </RouterButtonLink>
       ) : null}
       {next ? (
-        <Link
-          {...stylex.props(footerStyles.link, footerStyles.next)}
+        <RouterButtonLink
           href={next.url}
+          sx={[footerStyles.link, footerStyles.next]}
+          variant="ghost"
         >
           {next.name}
           <ChevronRight {...stylex.props(footerStyles.chevron)} />
-        </Link>
+        </RouterButtonLink>
       ) : null}
     </div>
-  );
+  )
 }
 const footerStyles = stylex.create({
   div: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 2 * 4,
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   link: {
-    display: "flex",
+    display: 'flex',
     flexGrow: 1,
-    flexBasis: "45%",
-    flexDirection: "row",
+    flexShrink: 1,
+    flexBasis: '45%',
+    flexDirection: 'row',
     gap: 8,
-    minWidth: "fit-content",
+    minWidth: 'fit-content',
     padding: 16,
-    color: vars["--color-fd-primary"],
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    lineHeight: 'inherit',
+    overflowWrap: 'normal',
+    color: vars['--color-fd-primary'],
     backgroundColor: {
-      default: "transparent",
-      ":hover": vars["--color-fd-muted"],
+      default: 'transparent',
+      ':hover': vars['--color-fd-muted'],
     },
-    borderColor: vars["--color-fd-border"],
-    borderStyle: "solid",
+    borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 20,
-    cornerShape: "squircle",
+    cornerShape: 'squircle',
   },
   prev: {
-    justifyContent: "flex-start",
-    textAlign: "left",
+    justifyContent: 'flex-start',
+    textAlign: 'left',
   },
   next: {
-    justifyContent: "flex-end",
-    textAlign: "right",
+    justifyContent: 'flex-end',
+    textAlign: 'right',
   },
   chevron: {
-    width: "1em",
-    height: "1em",
+    width: '1em',
+    height: '1em',
     marginTop: 5,
   },
-});
+})

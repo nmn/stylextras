@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import BaseLink from "fumadocs-core/link";
+import { RouterLink } from "@/components/router-link";
 import { ComponentProps } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { vars } from "@/theming/vars.stylex";
@@ -12,13 +12,13 @@ import { vars } from "@/theming/vars.stylex";
 export default function MDXLink({
   xstyle,
   ...props
-}: Omit<ComponentProps<typeof BaseLink>, "className" | "style"> & {
+}: Omit<ComponentProps<typeof RouterLink>, "className" | "style"> & {
   xstyle?: stylex.StyleXStyles;
 }) {
   return (
-    <BaseLink {...stylex.props(styles.base, xstyle)} {...props}>
+    <RouterLink sx={[styles.base, xstyle]} {...props}>
       {props.children}
-    </BaseLink>
+    </RouterLink>
   );
 }
 
@@ -28,17 +28,10 @@ const styles = stylex.create({
       default: vars["--color-fd-primary"],
       [stylex.when.descendant(":is(code)")]: vars["--color-code-green"],
     },
-    textDecoration: {
-      default: "none",
-      ":focus-visible": "underline",
-      ":hover": "underline",
-    },
-    textDecorationThickness: "2px",
     textDecorationColor: {
       default: "transparent",
       ":focus-visible": "color-mix(in srgb, currentColor 50%, transparent)",
       ":hover": "color-mix(in srgb, currentColor 50%, transparent)",
     },
-    textUnderlineOffset: "4px",
   },
 });

@@ -13,12 +13,12 @@ import {
 } from "../shared/index";
 import { LargeSearchToggle } from "../../search-toggle";
 import { ThemeToggle } from "../../theme-toggle";
-import Link from "fumadocs-core/link";
 import { Navbar, NavbarLinkItem } from "./client";
 import * as React from "react";
 import * as stylex from "@stylexjs/stylex";
 import SidebarToggle from "./SidebarToggle";
 import { vars } from "../../../theming/vars.stylex";
+import { RouterLink } from "../../router-link";
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -77,13 +77,13 @@ export function Header({
   return (
     <Navbar disableShadowBlur={disableShadowBlur}>
       {showSidebarToggle && <SidebarToggle />}
-      <a
+      <RouterLink
         aria-label="StyleXtras home"
-        {...stylex.props(styles.navTitleLink)}
         href={nav.url ?? "/"}
+        sx={styles.navTitleLink}
       >
         {nav.title}
-      </a>
+      </RouterLink>
       {nav.children}
       <ul {...stylex.props(styles.navLinkList)}>
         {navItems
@@ -92,6 +92,7 @@ export function Header({
             <NavbarLinkItem
               item={item}
               key={i}
+              menuId={`nd-nav-primary-menu-${i}`}
               xstyle={styles.navbarLinkItem}
             />
           ))}
@@ -102,6 +103,7 @@ export function Header({
           <NavbarLinkItem
             item={item}
             key={i}
+            menuId={`nd-nav-secondary-menu-${i}`}
             xstyle={
               item.type === "icon"
                 ? [

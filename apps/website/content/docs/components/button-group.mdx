@@ -74,8 +74,9 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 `ButtonGroupProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `ButtonGroupProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">` plus one required accessible name.
 
+- `aria-label` or `aria-labelledby` — Required toolbar/group name.
 - `orientation` — `"vertical" | "horizontal"`. Default: `'horizontal'`.
 - `sx` — `stylex.StyleXStyles`.
 - `variant` — `"toolbar" | "actions"`. Default: `'toolbar'`.

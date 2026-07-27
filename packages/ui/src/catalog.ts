@@ -51,7 +51,7 @@ export const componentCatalog = [
     'accordion',
     'native',
     'native',
-    'Exclusive disclosure built on details[name].',
+    'Disclosure group with optional details[name] exclusivity.',
   ),
   stable('Alert', 'alert', 'native', 'native', 'Semantic status message.'),
   stable('AlertDialog', 'alert-dialog', 'enhanced', 'bridge', 'Modal confirmation dialog.'),
@@ -86,6 +86,13 @@ export const componentCatalog = [
   ),
   stable('Combobox', 'combobox', 'client', 'none', 'Filterable input with a popover listbox.'),
   stable('Command', 'command', 'client', 'none', 'Filterable command collection.'),
+  stable(
+    'CopyToClipboardButton',
+    'copy-to-clipboard-button',
+    'client',
+    'none',
+    'Clipboard action with transient success feedback.',
+  ),
   stable(
     'ContextMenu',
     'context-menu',
@@ -131,6 +138,7 @@ export const componentCatalog = [
   stable('Item', 'item', 'native', 'native', 'Reusable content row composition.'),
   stable('Kbd', 'kbd', 'native', 'native', 'Keyboard-key label.'),
   stable('Label', 'label', 'native', 'native', 'Styled native label.'),
+  stable('Link', 'link', 'native', 'native', 'Styled native anchor.'),
   stable('Menubar', 'menubar', 'enhanced', 'bridge', 'Horizontal native-first menu group.'),
   stable(
     'NavigationMenu',
@@ -159,6 +167,13 @@ export const componentCatalog = [
   stable('Spinner', 'spinner', 'native', 'native', 'Reduced-motion-aware progress indicator.'),
   stable('Switch', 'switch', 'native', 'native', 'Styled native checkbox switch.'),
   stable('Table', 'table', 'native', 'native', 'Styled semantic table parts.'),
+  stable(
+    'TableOfContents',
+    'table-of-contents',
+    'native',
+    'native',
+    'Compound in-page navigation outline.',
+  ),
   stable(
     'Tabs',
     'tabs',
@@ -190,9 +205,9 @@ export const componentCatalog = [
   experimental(
     'DateRangePicker',
     'date-range-picker',
+    'client',
     'native',
-    'native',
-    'Native date-range fieldset.',
+    'Enhanced native date-range fieldset with cross-field validation.',
   ),
   experimental('EditableText', 'editable-text', 'native', 'native', 'Native text input or textarea.'),
   experimental('FileDropZone', 'file-drop-zone', 'native', 'native', 'Native file input target.'),

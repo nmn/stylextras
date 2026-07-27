@@ -17,14 +17,14 @@ This component is experimental. Its API and behavior may change before it moves 
 
 ```tsx
 import { Badge } from '../badge';
-import { TagList } from './index';
+import { TagItem, TagList } from './index';
 
 export default function Example() {
   return (
     <TagList aria-label="Component metadata">
-      <Badge>Design system</Badge>
-      <Badge>Experimental</Badge>
-      <Badge>Native popup</Badge>
+      <TagItem><Badge>Design system</Badge></TagItem>
+      <TagItem><Badge>Experimental</Badge></TagItem>
+      <TagItem><Badge>Native popup</Badge></TagItem>
     </TagList>
   );
 }
@@ -33,16 +33,20 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { TagList } from "@stylextras/ui/experimental/tag-group";
+import { TagItem, TagList } from "@stylextras/ui/experimental/tag-group";
 ```
 
 ## Anatomy
 
-- `TagList` — `<ul role="list">` that wraps each child in an `<li>`.
+- `TagList` — `<ul role="list">` preserving markerless-list semantics.
+- `TagItem` — Explicit `<li>` for one static tag.
 
 ## Accessibility and browser behavior
 
-`TagList` preserves native list semantics without JavaScript. It is intended for static metadata tags. Use native checkbox or radio controls when tags are selectable, and buttons when each tag performs an action.
+`TagList` and `TagItem` preserve native list semantics without JavaScript. The
+explicit item contract prevents children from being silently wrapped and keeps
+refs and item props on the actual `<li>`. Use native checkbox or radio controls
+when tags are selectable, and buttons when each tag performs an action.
 
 Native `ul` props, including accessible naming, standard ARIA/data attributes, event handlers, and `ref`, remain accepted. `TagGroup` remains as a deprecated compatibility alias. `sx` is composed last.
 
@@ -55,6 +59,10 @@ Native `ul` props, including accessible naming, standard ARIA/data attributes, e
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `TagListProps`.
 
 - `sx` — `stylex.StyleXStyles`.
+
+### TagItem
+
+`TagItemProps` extends native `<li>` props, accepts a forwarded ref, and adds `sx`.
 
 ### TagGroup (deprecated alias)
 

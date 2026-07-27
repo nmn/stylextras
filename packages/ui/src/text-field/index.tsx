@@ -1,15 +1,16 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { useId } from 'react'
 import type { AccessibleNameProps } from '../accessibility'
+import { isAriaInvalid, mergeIdRefs } from '../internal/field-relationships'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<'input'>
+type BaseProps = ComponentPropsWithRef<'input'>
 
 export type TextFieldSize = 'sm' | 'md'
 
@@ -39,6 +40,9 @@ export type TextFieldProps = Omit<
  * - Label, description, and error relationships must be composed by the caller.
  */
 export function TextField({
+  'aria-describedby': ariaDescribedBy,
+  'aria-errormessage': ariaErrorMessage,
+  'aria-invalid': ariaInvalid,
   description,
   descriptionSx,
   disabled,
@@ -49,6 +53,7 @@ export function TextField({
   invalid = false,
   label,
   labelSx,
+  ref,
   size = 'md',
   sx,
   type = 'text',
@@ -58,22 +63,32 @@ export function TextField({
   const id = idProp ?? generatedId
   const descriptionId = description ? `${id}-description` : undefined
   const errorId = error ? `${id}-error` : undefined
-  const describedBy = [descriptionId, errorId].filter(Boolean).join(' ') || undefined
+  const isInvalid =
+    invalid ||
+    isAriaInvalid(ariaInvalid)
+  const errorMessage = isInvalid ? mergeIdRefs(ariaErrorMessage, errorId) : undefined
+  const describedBy = mergeIdRefs(ariaDescribedBy, descriptionId, errorMessage)
 
   return (
-    <label {...stylex.props(rootStyles.root, sx)}>
-      {label ? <span {...stylex.props(labelStyles.label, labelSx)}>{label}</span> : null}
+    <div {...stylex.props(rootStyles.root, sx)}>
+      {label ? (
+        <label htmlFor={id} {...stylex.props(labelStyles.label, labelSx)}>
+          {label}
+        </label>
+      ) : null}
       <input
+        ref={ref}
         {...props}
         aria-describedby={describedBy}
-        aria-invalid={invalid || undefined}
+        aria-errormessage={errorMessage}
+        aria-invalid={invalid ? true : ariaInvalid}
         disabled={disabled}
         id={id}
         type={type}
         {...stylex.props(
           inputStyles.base,
           sizeStyles[size],
-          invalid && stateStyles.invalid,
+          isInvalid && stateStyles.invalid,
           disabled && stateStyles.disabled,
           inputSx,
         )}
@@ -88,7 +103,7 @@ export function TextField({
           {error}
         </span>
       ) : null}
-    </label>
+    </div>
   )
 }
 
@@ -179,7 +194,7 @@ const descriptionStyles = stylex.create({
 
 const errorStyles = stylex.create({
   base: {
-    color: colors.danger,
+    color: colors.dangerText,
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     fontWeight: typography.weightMedium,

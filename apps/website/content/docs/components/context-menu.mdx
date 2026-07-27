@@ -22,6 +22,7 @@ import { stroke } from '../tokens/stroke.stylex';
 import {
   ContextMenu,
   ContextMenuButton,
+  ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
   ContextMenuSeparator,
@@ -29,6 +30,7 @@ import {
 } from './index';
 
 const menuId = 'canvas-context-menu';
+const groupLabelId = 'canvas-context-menu-label';
 
 export default function Example() {
   return (
@@ -38,9 +40,11 @@ export default function Example() {
         Open the context menu anywhere in this area
       </ContextMenuTrigger>
       <ContextMenu id={menuId} aria-label="Canvas actions">
-        <ContextMenuLabel>Canvas</ContextMenuLabel>
-        <ContextMenuItem>Paste</ContextMenuItem>
-        <ContextMenuItem>Duplicate</ContextMenuItem>
+        <ContextMenuGroup aria-labelledby={groupLabelId}>
+          <ContextMenuLabel id={groupLabelId}>Canvas</ContextMenuLabel>
+          <ContextMenuItem>Paste</ContextMenuItem>
+          <ContextMenuItem>Duplicate</ContextMenuItem>
+        </ContextMenuGroup>
         <ContextMenuSeparator />
         <ContextMenuItem>Delete</ContextMenuItem>
       </ContextMenu>
@@ -65,6 +69,7 @@ const styles = stylex.create({
 import {
   ContextMenu,
   ContextMenuButton,
+  ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
   ContextMenuSeparator,
@@ -76,6 +81,7 @@ import {
 
 - `ContextMenu` — Styled `<div>`.
 - `ContextMenuButton` — Visible `<button>` alternative to the context gesture.
+- `ContextMenuGroup` — `<div role="group">` named by a menu label.
 - `ContextMenuItem` — Styled `<button>`.
 - `ContextMenuLabel` — Styled `<div>`.
 - `ContextMenuSeparator` — Styled `<hr>`.
@@ -86,6 +92,9 @@ import {
 Give both the trigger region and menu an accessible name. Pointer users can right-click or long-press the region; keyboard users can press the Context Menu key or Shift+F10. Always render `ContextMenuButton` as the visible keyboard and touch alternative when the context action is not available elsewhere.
 
 Disabled items remain arrow-key focusable so their labels are discoverable, but cannot be activated. Escape closes the menu and restores focus to its invoker. `sx` is composed last.
+
+Wrap related items and their visible label in `ContextMenuGroup`, and connect
+the group to `ContextMenuLabel` with `aria-labelledby`.
 
 This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
 
@@ -115,8 +124,15 @@ Complete inherited prop base: `AccessibleButtonPropsWithout<"aria-controls" | "a
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "role" | "style">`. The props below complete `ContextMenuItemProps`.
 
+- `disabled` — `boolean`. Default: `false`. Rendered as `aria-disabled` so the item remains discoverable.
 - `sx` — `stylex.StyleXStyles`.
 - `type` — `ContextMenuItemProps["type"]`. Default: `'button'`.
+
+### ContextMenuGroup
+
+`ContextMenuGroupProps` extends native `div` props with a forwarded ref and `sx`.
+
+- `aria-labelledby` — Required ID reference to the group's `ContextMenuLabel`.
 
 ### ContextMenuLabel
 

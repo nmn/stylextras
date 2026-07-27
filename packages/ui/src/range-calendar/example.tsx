@@ -12,6 +12,8 @@ export default function Example() {
           legend="Release window"
           startDefaultValue="2026-07-11"
           endDefaultValue="2026-07-18"
+          startProps={{ required: true }}
+          endProps={{ required: true }}
         />
       </DemoFrame>
     </>

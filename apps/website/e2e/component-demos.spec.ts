@@ -29,6 +29,10 @@ test('every component page renders its live demo', async ({ browserName, page })
       'data-preview-ready',
       'true',
     )
+    await expect(preview, `${entry.export} inherited appearance`).toHaveAttribute(
+      'data-preview-appearance',
+      'inherit',
+    )
     await expect(preview, `${entry.export} styled preview`).toHaveCSS('display', 'grid')
     for (const label of [
       'Style preset',
@@ -66,6 +70,18 @@ test('every component page renders its live demo', async ({ browserName, page })
       .include(`[data-component-demo="${entry.name}"]`)
       .analyze()
     expect(results.violations, `${entry.export} axe results`).toEqual([])
+
+    const potentiallyFocusable = preview.locator(
+      ':is(a[href], button, input:not([type="hidden"]), select, summary, textarea, [contenteditable="true"], [tabindex]:not([tabindex="-1"])):not([disabled]):not([inert])',
+    )
+    for (let index = 0; index < (await potentiallyFocusable.count()); index += 1) {
+      const control = potentiallyFocusable.nth(index)
+      if (!(await control.isVisible())) continue
+      await expect(
+        control,
+        `${entry.export} focusable control ${index + 1} accessible name`,
+      ).toHaveAccessibleName(/\S/)
+    }
   }
 
   expect(errors).toEqual([])
@@ -146,16 +162,20 @@ test('Accordion keeps a stable width as native details items toggle', async ({ p
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/accordion')
   const preview = page.locator('[data-component-demo="Accordion"]')
+  const exclusiveItems = preview.locator('details[name="component-docs-accordion"]')
+  const independentItem = preview.locator('details:not([name])')
   await expect(preview).toBeVisible()
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
-  await expect(preview.locator('details')).toHaveCount(3)
-  await expect(preview.locator('summary')).toHaveCount(3)
+  await expect(exclusiveItems).toHaveCount(3)
+  await expect(independentItem).toHaveCount(1)
+  await expect(preview.locator('summary')).toHaveCount(4)
   await expect(preview.locator('summary').first()).toHaveCSS('display', 'grid')
   await expect(preview.locator('summary').first()).toHaveCSS('list-style-type', 'none')
   await expect(preview.locator('summary span[aria-hidden="true"]')).toHaveCount(3)
+  await expect(independentItem.locator('summary span[aria-hidden="true"]')).toHaveCount(0)
 
   const measure = () =>
-    preview.locator('details').evaluateAll((items) => ({
+    exclusiveItems.evaluateAll((items) => ({
       iconRotations: items.map(
         (item) => getComputedStyle(item.querySelector('span[aria-hidden="true"] > span')!).rotate,
       ),
@@ -176,15 +196,47 @@ test('Accordion keeps a stable width as native details items toggle', async ({ p
   expect(after.iconRotations[1]).not.toBe(before.iconRotations[1])
 })
 
-test('Carousel uses native scroll snap across an extended example', async ({ page }) => {
+test('Carousel uses native scroll snap across an extended example', async ({
+  browserName,
+  page,
+}) => {
   await page.goto('/docs/components/carousel')
   const preview = page.locator('[data-component-demo="Carousel"]')
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   const carousel = preview.getByRole('region', { name: 'Browser API highlights' })
   const items = carousel.locator('[role="group"][aria-roledescription="slide"]')
   await expect(items).toHaveCount(10)
+  await expect(carousel).toHaveAttribute('data-carousel-previous-button-label', 'Previous slide')
+  await expect(carousel).toHaveAttribute('data-carousel-next-button-label', 'Next slide')
+  await expect(items.first()).toHaveAccessibleName('1 of 10: Native controls')
+  await expect(items.last()).toHaveAccessibleName('10 of 10: StyleX themes')
   await expect(carousel).toHaveCSS('scroll-snap-type', /mandatory/)
   await expect(items.first()).toHaveCSS('scroll-snap-align', /start/)
+
+  await carousel.focus()
+  const initialScroll = await carousel.evaluate((element) => element.scrollLeft)
+  await page.keyboard.press('ArrowRight')
+  await expect
+    .poll(() => carousel.evaluate((element) => element.scrollLeft))
+    .not.toBe(initialScroll)
+
+  if (browserName === 'chromium') {
+    // Chromium exposes generated scroll controls in its AX tree even though
+    // CSSOM currently returns the same pseudo style for both scroll buttons.
+    const session = await page.context().newCDPSession(page)
+    const { nodes } = await session.send('Accessibility.getFullAXTree')
+    await session.detach()
+    const generatedControlNames = nodes
+      .filter(
+        (node) => !node.ignored && (node.role?.value === 'button' || node.role?.value === 'tab'),
+      )
+      .map((node) => node.name?.value)
+    expect(generatedControlNames).toContain('Previous slide')
+    expect(generatedControlNames).toContain('Next slide')
+    for (const item of await items.all()) {
+      expect(generatedControlNames).toContain(await item.getAttribute('aria-label'))
+    }
+  }
 })
 
 test('ButtonGroup action choices are equal-width inline-grid tracks', async ({ page }) => {
@@ -212,20 +264,18 @@ test('ButtonGroup action choices are equal-width inline-grid tracks', async ({ p
   ).toBeLessThanOrEqual(2)
 })
 
-test('Collapsible keeps a stable inline-end disclosure icon', async ({ page }) => {
+test('Collapsible keeps a stable custom inline-start indicator', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/collapsible')
   const preview = page.locator('[data-component-demo="Collapsible"]')
   const details = preview.locator('details')
   const trigger = details.locator('summary')
-  const label = trigger.locator('span').first()
-  const icon = trigger.locator('span[aria-hidden="true"]')
-  const iconGlyph = icon.locator('span')
+  const label = trigger.locator(':scope > span:not([aria-hidden])')
+  const icon = trigger.locator(':scope > span[aria-hidden="true"]')
   await expect(details).not.toHaveAttribute('open', '')
   await expect(trigger).toHaveCSS('display', 'grid')
   await expect(icon).toHaveCount(1)
-  await expect(iconGlyph).toHaveCount(1)
-  const closedRotation = await iconGlyph.evaluate((element) => getComputedStyle(element).rotate)
+  await expect(icon).toHaveText('＋')
   const [closedDetailsBox, closedTriggerBox, labelBox, iconBox] = await Promise.all([
     details.boundingBox(),
     trigger.boundingBox(),
@@ -236,12 +286,9 @@ test('Collapsible keeps a stable inline-end disclosure icon', async ({ page }) =
   expect(closedTriggerBox).not.toBeNull()
   expect(labelBox).not.toBeNull()
   expect(iconBox).not.toBeNull()
-  expect(iconBox!.x).toBeGreaterThan(labelBox!.x + labelBox!.width)
+  expect(iconBox!.x + iconBox!.width).toBeLessThanOrEqual(labelBox!.x)
   await trigger.click()
   await expect(details).toHaveAttribute('open', '')
-  expect(await iconGlyph.evaluate((element) => getComputedStyle(element).rotate)).not.toBe(
-    closedRotation,
-  )
   const [openDetailsBox, openTriggerBox] = await Promise.all([
     details.boundingBox(),
     trigger.boundingBox(),
@@ -251,16 +298,52 @@ test('Collapsible keeps a stable inline-end disclosure icon', async ({ page }) =
   await details.evaluate((element) => {
     element.setAttribute('dir', 'rtl')
   })
-  await expect
-    .poll(() => icon.evaluate((element) => getComputedStyle(element).scale))
-    .toMatch(/^-1(?: 1)?$/)
-  expect(await iconGlyph.evaluate((element) => getComputedStyle(element).rotate)).not.toBe(
-    closedRotation,
-  )
   const [rtlLabelBox, rtlIconBox] = await Promise.all([label.boundingBox(), icon.boundingBox()])
   expect(rtlLabelBox).not.toBeNull()
   expect(rtlIconBox).not.toBeNull()
-  expect(rtlIconBox!.x + rtlIconBox!.width).toBeLessThan(rtlLabelBox!.x)
+  expect(rtlIconBox!.x).toBeGreaterThanOrEqual(rtlLabelBox!.x + rtlLabelBox!.width)
+})
+
+test('ScrollArea exposes stable and thin overlay scrollbar modes', async ({
+  browserName,
+  page,
+}) => {
+  await page.goto('/docs/components/scroll-area')
+  const preview = page.locator('[data-component-demo="ScrollArea"]')
+  const stable = preview.getByLabel('Stable release history')
+  const overlay = preview.getByLabel('Overlay release history')
+
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  await expect(stable).toHaveCSS('scrollbar-gutter', 'stable')
+  await expect(overlay).toHaveCSS('scrollbar-gutter', 'auto')
+
+  if (browserName === 'chromium') {
+    await expect(overlay).toHaveCSS('scrollbar-width', 'thin')
+    const scrollbarWidths = await Promise.all(
+      [stable, overlay].map((area) =>
+        area.evaluate((element) => getComputedStyle(element, '::-webkit-scrollbar').width),
+      ),
+    )
+    expect(scrollbarWidths).toEqual(['14px', '6px'])
+  }
+})
+
+test('TableOfContents renders real outline nesting and active location semantics', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/table-of-contents')
+  const preview = page.locator('[data-component-demo="TableOfContents"]')
+  const toc = preview.getByRole('navigation', { name: 'On this page' })
+  const topLevelList = toc.locator(':scope > ol')
+  const active = toc.getByRole('link', { name: 'Overview' })
+
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  await expect(topLevelList.locator(':scope > li')).toHaveCount(3)
+  await expect(toc.locator('ol')).toHaveCount(2)
+  await expect(active).toHaveAttribute('aria-current', 'location')
+  await expect(
+    toc.getByRole('link', { name: 'Examples' }).locator('xpath=../parent::ol/parent::li'),
+  ).toContainText('Usage')
 })
 
 test('Switch thumb position follows the inline axis', async ({ page }) => {
@@ -270,9 +353,7 @@ test('Switch thumb position follows the inline axis', async ({ page }) => {
   const unchecked = preview.locator('input[role="switch"]:not(:checked)').first()
 
   const thumbLeft = (input: typeof checked) =>
-    input.evaluate((element) =>
-      Number.parseFloat(getComputedStyle(element, '::after').left),
-    )
+    input.evaluate((element) => Number.parseFloat(getComputedStyle(element, '::after').left))
 
   const ltrChecked = await thumbLeft(checked)
   const ltrUnchecked = await thumbLeft(unchecked)
@@ -302,8 +383,10 @@ test('Radio indicator follows the native checked state', async ({ page }) => {
 })
 
 test('Card action stays on the inline end edge', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/card')
   const preview = page.locator('[data-component-demo="Card"]')
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   const card = preview.getByRole('article', { name: 'Native popups', exact: true })
   const action = card.getByRole('button', { name: 'Options for Native popups' })
 
@@ -368,8 +451,25 @@ test('ContextMenu pointer placement follows inline start in RTL', async ({ page 
     x: Math.min(120, triggerBox!.width / 2),
     y: triggerBox!.height / 2,
   }
+  const openAt = (box: NonNullable<typeof triggerBox>) =>
+    trigger.evaluate(
+      (element, coordinates) =>
+        element.dispatchEvent(
+          new MouseEvent('contextmenu', {
+            bubbles: true,
+            button: 2,
+            cancelable: true,
+            clientX: coordinates.x,
+            clientY: coordinates.y,
+          }),
+        ),
+      {
+        x: box.x + clickPosition.x,
+        y: box.y + clickPosition.y,
+      },
+    )
 
-  await trigger.click({ button: 'right', position: clickPosition })
+  await openAt(triggerBox!)
   await expect(menu).toBeVisible()
   const ltrMenuBox = await menu.boundingBox()
   expect(ltrMenuBox).not.toBeNull()
@@ -380,7 +480,7 @@ test('ContextMenu pointer placement follows inline start in RTL', async ({ page 
   await preview.evaluate((element) => element.setAttribute('dir', 'rtl'))
   const rtlTriggerBox = await trigger.boundingBox()
   expect(rtlTriggerBox).not.toBeNull()
-  await trigger.click({ button: 'right', position: clickPosition })
+  await openAt(rtlTriggerBox!)
   await expect(menu).toBeVisible()
   const rtlMenuBox = await menu.boundingBox()
   expect(rtlMenuBox).not.toBeNull()
@@ -415,6 +515,8 @@ test('Sheet sides follow the requested logical viewport edges', async ({ page })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/sheet')
   const preview = page.locator('[data-component-demo="Sheet"]')
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  await expect(preview).toHaveCSS('display', 'grid')
   const viewportWidth = page.viewportSize()!.width
 
   await preview.getByRole('button', { name: 'Open end sheet' }).click()
@@ -492,6 +594,110 @@ test('Command stays out of layout while closed and reports empty results accurat
   await expect(dialog.getByText('No results.', { exact: true })).toBeVisible()
 })
 
+test('Resizable exposes separator relationships and supports every input axis', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/resizable')
+  const preview = page.locator('[data-component-demo="Resizable"]')
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+
+  const horizontalRoot = preview.getByTestId('horizontal-resizable')
+  const horizontalHandle = horizontalRoot.getByRole('separator', {
+    name: 'Resize editor panels',
+  })
+  await expect(horizontalHandle).toHaveAttribute(
+    'aria-controls',
+    'editor-navigation editor-preview',
+  )
+  await expect(horizontalRoot.locator('#editor-navigation')).toHaveCount(1)
+  await expect(horizontalRoot.locator('#editor-preview')).toHaveCount(1)
+  await expect(horizontalHandle).toHaveAttribute('aria-orientation', 'vertical')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuemin', '10')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuemax', '90')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '38')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuetext', 'Navigation panel 38%')
+
+  await horizontalHandle.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '40')
+  await page.keyboard.press('Shift+ArrowRight')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '50')
+  await page.keyboard.press('ArrowLeft')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '48')
+  await page.keyboard.press('Shift+ArrowLeft')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '38')
+  await page.keyboard.press('Home')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '10')
+  await page.keyboard.press('End')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '90')
+
+  const dragTo = async (
+    handle: typeof horizontalHandle,
+    root: typeof horizontalRoot,
+    ratio: number,
+    axis: 'horizontal' | 'vertical',
+  ) => {
+    await handle.scrollIntoViewIfNeeded()
+    const [handleBox, rootBox] = await Promise.all([handle.boundingBox(), root.boundingBox()])
+    expect(handleBox).not.toBeNull()
+    expect(rootBox).not.toBeNull()
+    await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(
+      axis === 'horizontal' ? rootBox!.x + rootBox!.width * ratio : rootBox!.x + rootBox!.width / 2,
+      axis === 'vertical' ? rootBox!.y + rootBox!.height * ratio : rootBox!.y + rootBox!.height / 2,
+      { steps: 3 },
+    )
+    await page.mouse.up()
+  }
+
+  await dragTo(horizontalHandle, horizontalRoot, 0.64, 'horizontal')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '64')
+  await expect(horizontalHandle).toHaveAttribute('aria-valuetext', 'Navigation panel 64%')
+
+  const rtlRoot = preview.getByTestId('rtl-resizable')
+  const rtlHandle = rtlRoot.getByRole('separator', { name: 'Resize RTL panels' })
+  await expect(rtlHandle).toHaveAttribute('aria-orientation', 'vertical')
+  await expect(rtlHandle).toHaveAttribute('aria-valuemin', '20')
+  await expect(rtlHandle).toHaveAttribute('aria-valuemax', '80')
+  await expect(rtlHandle).toHaveAttribute('aria-valuenow', '50')
+  await expect(rtlHandle).toHaveAttribute('aria-valuetext', '50%')
+
+  await rtlHandle.focus()
+  await page.keyboard.press('ArrowLeft')
+  await expect(rtlHandle).toHaveAttribute('aria-valuenow', '52')
+  await page.keyboard.press('ArrowRight')
+  await expect(rtlHandle).toHaveAttribute('aria-valuenow', '50')
+  await dragTo(rtlHandle, rtlRoot, 0.25, 'horizontal')
+  await expect(rtlHandle).toHaveAttribute('aria-valuenow', '75')
+
+  const verticalRoot = preview.getByTestId('vertical-resizable')
+  const verticalHandle = verticalRoot.getByRole('separator', {
+    name: 'Resize stacked panels',
+  })
+  await expect(verticalHandle).toHaveAttribute('aria-controls', 'stacked-editor stacked-preview')
+  await expect(verticalRoot.locator('#stacked-editor')).toHaveCount(1)
+  await expect(verticalRoot.locator('#stacked-preview')).toHaveCount(1)
+  await expect(verticalHandle).toHaveAttribute('aria-orientation', 'horizontal')
+  await expect(verticalHandle).toHaveAttribute('aria-valuemin', '10')
+  await expect(verticalHandle).toHaveAttribute('aria-valuemax', '90')
+  await expect(verticalHandle).toHaveAttribute('aria-valuenow', '50')
+  await expect(verticalHandle).toHaveAttribute('aria-valuetext', 'Top panel 50 percent')
+
+  await verticalHandle.focus()
+  await page.keyboard.press('ArrowUp')
+  await expect(verticalHandle).toHaveAttribute('aria-valuenow', '48')
+  await page.keyboard.press('Shift+ArrowDown')
+  await expect(verticalHandle).toHaveAttribute('aria-valuenow', '58')
+  await page.keyboard.press('Home')
+  await expect(verticalHandle).toHaveAttribute('aria-valuenow', '10')
+  await page.keyboard.press('End')
+  await expect(verticalHandle).toHaveAttribute('aria-valuenow', '90')
+  await dragTo(verticalHandle, verticalRoot, 0.35, 'vertical')
+  await expect(verticalHandle).toHaveAttribute('aria-valuenow', '35')
+  await expect(verticalHandle).toHaveAttribute('aria-valuetext', 'Top panel 35 percent')
+})
+
 test('NavigationMenu anchors its native popover to the trigger', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/navigation-menu')
@@ -509,9 +715,16 @@ test('NavigationMenu anchors its native popover to the trigger', async ({ page }
   const triggerBottom = triggerBox!.y + triggerBox!.height
   expect(contentBottom <= triggerBox!.y + 1 || contentBox!.y >= triggerBottom - 1).toBe(true)
   expect(Math.abs(contentBox!.x - triggerBox!.x)).toBeLessThan(24)
+
+  await content.getByRole('link', { name: 'Form controls' }).click()
+  await expect(content).toBeHidden()
+  await expect(page).toHaveURL(/#forms$/)
 })
 
-test('Menubar keeps a keyboard-opened menu anchored to its trigger', async ({ browserName, page }) => {
+test('Menubar keeps a keyboard-opened menu anchored to its trigger', async ({
+  browserName,
+  page,
+}) => {
   test.skip(browserName !== 'chromium', 'Programmatic popover source positioning is checked once.')
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/menubar')
@@ -533,6 +746,108 @@ test('Menubar keeps a keyboard-opened menu anchored to its trigger', async ({ br
   expect(opensAbove || opensBelow).toBe(true)
   expect(menuBox!.x).toBeLessThan(triggerBox!.x + triggerBox!.width)
   expect(menuBox!.x + menuBox!.width).toBeGreaterThan(triggerBox!.x)
+})
+
+test('Menubar switches menus with wrapped, directional, typeahead, and pointer input', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/menubar')
+  const preview = page.locator('[data-component-demo="Menubar"]')
+  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const menubar = preview.getByRole('menubar', { name: 'Application menu' })
+  const fileTrigger = menubar.getByRole('menuitem', { name: 'File', exact: true })
+  const editTrigger = menubar.getByRole('menuitem', { name: 'Edit', exact: true })
+  const viewTrigger = menubar.getByRole('menuitem', { name: 'View', exact: true })
+  const fileMenu = preview.locator('#file-menu')
+  const editMenu = preview.locator('#edit-menu')
+  const viewMenu = preview.locator('#view-menu')
+
+  await fileTrigger.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(editTrigger).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(viewTrigger).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(fileTrigger).toBeFocused()
+  await page.keyboard.press('ArrowLeft')
+  await expect(viewTrigger).toBeFocused()
+
+  await fileTrigger.focus()
+  await page.keyboard.press('v')
+  await expect(viewTrigger).toBeFocused()
+
+  await menubar.evaluate((element) => element.setAttribute('dir', 'rtl'))
+  await fileTrigger.focus()
+  await page.keyboard.press('ArrowLeft')
+  await expect(editTrigger).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(fileTrigger).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(viewTrigger).toBeFocused()
+  await menubar.evaluate((element) => element.removeAttribute('dir'))
+
+  await fileTrigger.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(fileMenu).toBeVisible()
+  await expect(fileMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(fileMenu).toBeHidden()
+  await expect(editMenu).toBeVisible()
+  await expect(editMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(editMenu).toBeHidden()
+  await expect(viewMenu).toBeVisible()
+  await expect(viewMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(viewMenu).toBeHidden()
+  await expect(fileMenu).toBeVisible()
+  await expect(fileMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(fileMenu).toBeHidden()
+  await expect(fileTrigger).toBeFocused()
+
+  await menubar.evaluate((element) => element.setAttribute('dir', 'rtl'))
+  await page.keyboard.press('ArrowDown')
+  await expect(fileMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('ArrowLeft')
+  await expect(fileMenu).toBeHidden()
+  await expect(editMenu).toBeVisible()
+  await expect(editMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(editMenu).toBeHidden()
+  await expect(fileMenu).toBeVisible()
+  await expect(fileMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect(fileMenu).toBeHidden()
+  await expect(viewMenu).toBeVisible()
+  await expect(viewMenu.getByRole('menuitem').first()).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(viewMenu).toBeHidden()
+  await expect(viewTrigger).toBeFocused()
+  await menubar.evaluate((element) => element.removeAttribute('dir'))
+
+  await fileTrigger.click()
+  await expect(fileMenu).toBeVisible()
+  await fileTrigger.focus()
+  await expect(fileTrigger).toBeFocused()
+  await editTrigger.evaluate((element) => {
+    document.documentElement.dataset.menubarEditClicks = '0'
+    element.addEventListener('click', () => {
+      const previous = Number(document.documentElement.dataset.menubarEditClicks ?? 0)
+      document.documentElement.dataset.menubarEditClicks = String(previous + 1)
+    })
+  })
+  await editTrigger.hover()
+  await expect(fileMenu).toBeHidden()
+  await expect(editMenu).toBeVisible()
+  await expect(fileTrigger).toBeFocused()
+  await expect(editTrigger).toHaveAttribute('aria-expanded', 'true')
+  await expect(fileTrigger).toHaveAttribute('aria-expanded', 'false')
+  await expect
+    .poll(() =>
+      page.evaluate(() => Number(document.documentElement.dataset.menubarEditClicks ?? 0)),
+    )
+    .toBe(0)
 })
 
 test('preview controls theme each variable group independently', async ({ browserName, page }) => {
@@ -613,8 +928,7 @@ test('selected tabs use the active elevation theme', async ({ browserName, page 
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   const selectedTab = preview.getByRole('tab', { name: 'Overview' })
   await expect(selectedTab).toHaveAttribute('aria-selected', 'true')
-  const readShadow = () =>
-    selectedTab.evaluate((element) => getComputedStyle(element).boxShadow)
+  const readShadow = () => selectedTab.evaluate((element) => getComputedStyle(element).boxShadow)
   const initialShadow = await readShadow()
 
   await preview.getByLabel('Elevation theme').selectOption('flat')
@@ -656,28 +970,28 @@ test('docs Option states use blue highlights without tinting the picker surface'
         canvas.width = 1
         canvas.height = 1
         const context = canvas.getContext('2d')!
-        const serializeColor = (variable: string) => {
-          probe.style.backgroundColor = `var(${variable})`
+        const serializeColor = (value: string) => {
+          probe.style.backgroundColor = value
           return getComputedStyle(probe).backgroundColor
         }
-        const resolveColor = (variable: string) => {
+        const resolveColor = (value: string) => {
           context.clearRect(0, 0, 1, 1)
-          context.fillStyle = serializeColor(variable)
+          context.fillStyle = serializeColor(value)
           context.fillRect(0, 0, 1, 1)
           return Array.from(context.getImageData(0, 0, 1, 1).data)
         }
         const palette = {
-          accent: resolveColor('--x4dxi9b'),
-          brand: resolveColor('--x1kcb9w4'),
-          controlHover: resolveColor('--x1cugl89'),
-          secondary: resolveColor('--xeg5xua'),
-          selection: resolveColor('--x1k61mgv'),
+          accent: resolveColor('var(--color-fd-accent-foreground)'),
+          brand: resolveColor('var(--color-fd-primary)'),
+          controlHover: resolveColor('var(--color-fd-muted)'),
+          secondary: resolveColor('var(--color-fd-secondary)'),
+          selection: resolveColor('color-mix(in oklab, var(--color-fd-primary) 18%, transparent)'),
         }
         const pickerBackground = getComputedStyle(
           option.closest('select')!,
           '::picker(select)',
         ).backgroundColor
-        const controlHover = serializeColor('--x1cugl89')
+        const controlHover = serializeColor('var(--color-fd-muted)')
         probe.remove()
 
         return {
@@ -696,6 +1010,7 @@ test('docs Option states use blue highlights without tinting the picker surface'
         }
       })
 
+  await preview.getByLabel('Appearance').selectOption('light')
   const light = await readOptionTheme()
   await preview.getByLabel('Appearance').selectOption('dark')
   const dark = await readOptionTheme()
@@ -753,11 +1068,12 @@ test('DropdownMenu follows the menu button keyboard contract', async ({ browserN
     const previewRoot = item.closest<HTMLElement>('[data-component-demo="DropdownMenu"]')!
     const probe = document.createElement('div')
     previewRoot.append(probe)
-    probe.style.backgroundColor = 'var(--x4dxi9b)'
-    probe.style.color = 'var(--x5dx901)'
+    probe.style.backgroundColor = 'var(--color-fd-accent)'
+    probe.style.color =
+      'color-mix(in oklab, var(--color-fd-accent-foreground) 72%, var(--color-fd-foreground))'
     const result = {
       accent: getComputedStyle(probe).backgroundColor,
-      accentForeground: getComputedStyle(probe).color,
+      accentText: getComputedStyle(probe).color,
       background: getComputedStyle(item).backgroundColor,
       foreground: getComputedStyle(item).color,
     }
@@ -765,7 +1081,7 @@ test('DropdownMenu follows the menu button keyboard contract', async ({ browserN
     return result
   })
   expect(focusedColors.background).toBe(focusedColors.accent)
-  expect(focusedColors.foreground).toBe(focusedColors.accentForeground)
+  expect(focusedColors.foreground).toBe(focusedColors.accentText)
   const seriousAccessibilityViolations = async () => {
     const accessibility = await new AxeBuilder({ page })
       .include('[data-component-demo="DropdownMenu"] [role="menu"]')

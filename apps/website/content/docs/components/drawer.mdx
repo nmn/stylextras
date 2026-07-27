@@ -14,7 +14,10 @@ import Example from "@stylextras/ui/drawer/example";
 ### Example code
 
 ```tsx
+'use client';
+
 import { ButtonGroup } from '../button-group';
+import { DialogCommandBridge } from '../dialog/client';
 import {
   Drawer,
   DrawerBody,
@@ -27,11 +30,20 @@ import {
 
 function PageSettingsDrawer({ id, side }: { id: string; side: DrawerSide }) {
   return (
-    <Drawer id={id} side={side} aria-labelledby={`${id}-title`}>
+    <Drawer
+      id={id}
+      side={side}
+      aria-labelledby={`${id}-title`}
+      aria-describedby={`${id}-description`}
+    >
       <DrawerHeader>
-        <strong id={`${id}-title`}>Page settings</strong>
+        <h2 id={`${id}-title`}>Page settings</h2>
       </DrawerHeader>
-      <DrawerBody>Nearby controls stay in the current page.</DrawerBody>
+      <DrawerBody>
+        <p id={`${id}-description`}>
+          Change the settings for this page.
+        </p>
+      </DrawerBody>
       <DrawerFooter>
         <ButtonGroup variant="actions" aria-label="Page settings actions">
           <DrawerClose target={id}>Cancel</DrawerClose>
@@ -40,6 +52,7 @@ function PageSettingsDrawer({ id, side }: { id: string; side: DrawerSide }) {
           </DrawerClose>
         </ButtonGroup>
       </DrawerFooter>
+      <DialogCommandBridge target={id} />
     </Drawer>
   );
 }
@@ -63,6 +76,7 @@ export default function Example() {
 
 ```tsx
 import { Drawer, DrawerBody, DrawerClose, DrawerFooter, DrawerHeader, DrawerTrigger } from "@stylextras/ui/drawer";
+import { DialogCommandBridge } from "@stylextras/ui/dialog/client";
 ```
 
 ## Anatomy
@@ -73,12 +87,16 @@ import { Drawer, DrawerBody, DrawerClose, DrawerFooter, DrawerHeader, DrawerTrig
 - `DrawerFooter` — Styled `<div>`.
 - `DrawerHeader` — Styled `<div>`.
 - `DrawerTrigger` — Styled `<button>`.
+- `DialogCommandBridge` — Optional feature-detected invoker-command fallback.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component starts with semantic HTML and native invoker commands. The example opts into `DialogCommandBridge` from `@stylextras/ui/dialog/client`; it feature-detects older engines and only then lazy-loads the narrowly scoped command fallback. Omit that bridge when native-only browser support is sufficient.
+Give the native dialog a heading relationship and associate concise descriptive
+copy when it helps explain the task. The example installs
+`DialogCommandBridge`, which feature-detects native invoker commands before
+loading its fallback. `LazyDrawer` installs the same fallback internally.
 
 ## API reference
 
@@ -86,8 +104,9 @@ This component starts with semantic HTML and native invoker commands. The exampl
 
 `DrawerProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "style">`. The props below complete `DrawerProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "aria-label" | "aria-labelledby" | "className" | "style">` plus one required accessible name.
 
+- `aria-label` or `aria-labelledby` — Required accessible dialog name.
 - `side` — `DrawerSide`. Default: `'bottom'`.
 - `sx` — `stylex.StyleXStyles`.
 

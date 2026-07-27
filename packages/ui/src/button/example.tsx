@@ -1,5 +1,5 @@
-import { Button } from './index';
-import { DemoFrame, DemoRow, DemoStack } from '../example-theme/demo';
+import { DemoFrame, DemoRow, DemoStack } from '../example-theme/demo'
+import { Button, ButtonLink } from './index'
 
 export function ButtonVariantsDemo() {
   return (
@@ -17,7 +17,7 @@ export function ButtonVariantsDemo() {
         <Button variant="danger">Danger</Button>
       </DemoRow>
     </DemoFrame>
-  );
+  )
 }
 
 export function ButtonSizesDemo() {
@@ -37,7 +37,27 @@ export function ButtonSizesDemo() {
         <Button disabled>Disabled</Button>
       </DemoRow>
     </DemoFrame>
-  );
+  )
+}
+
+export function ButtonLinksDemo() {
+  return (
+    <DemoFrame
+      title="Link actions"
+      description="ButtonLink keeps native anchor behavior while sharing Button presentation."
+      showThemes={true}
+    >
+      <DemoRow>
+        <ButtonLink href="#button-link-primary">Primary link</ButtonLink>
+        <ButtonLink href="#button-link-outline" variant="outline">
+          Outline link
+        </ButtonLink>
+        <ButtonLink href="#button-link-icon" size="icon" aria-label="Open linked item">
+          ↗
+        </ButtonLink>
+      </DemoRow>
+    </DemoFrame>
+  )
 }
 
 export default function Example() {
@@ -45,6 +65,7 @@ export default function Example() {
     <DemoStack>
       <ButtonVariantsDemo />
       <ButtonSizesDemo />
+      <ButtonLinksDemo />
     </DemoStack>
-  );
+  )
 }

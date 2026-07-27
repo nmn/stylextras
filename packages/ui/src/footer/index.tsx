@@ -1,11 +1,11 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"footer">;
+type BaseProps = ComponentPropsWithRef<"footer">;
 
 export type FooterProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
@@ -20,8 +20,8 @@ export type FooterProps = Omit<BaseProps, "className" | "style"> & {
  * - Uses native footer semantics.
  * - Link grouping and landmark naming remain the caller’s responsibility.
  */
-export function Footer({ sx, ...props }: FooterProps) {
-  return <footer {...props} {...stylex.props(styles.base, sx)} />;
+export function Footer({ ref, sx, ...props }: FooterProps) {
+  return <footer ref={ref} {...props} {...stylex.props(styles.base, sx)} />;
 }
 
 const styles = stylex.create({

@@ -6,12 +6,15 @@ import { Button } from "@stylextras/ui/button";
 import { ButtonGroup } from "@stylextras/ui/button-group";
 import { Calendar } from "@stylextras/ui/calendar";
 import { Checkbox } from "@stylextras/ui/checkbox";
+import { ColorSwatchPicker } from "@stylextras/ui/experimental/color-swatch-picker";
 import {
   Combobox,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
+  ComboboxList,
+  ComboboxStatus,
 } from "@stylextras/ui/combobox";
 import {
   Command,
@@ -19,6 +22,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandStatus,
   CommandTrigger,
 } from "@stylextras/ui/command";
 import {
@@ -34,6 +38,7 @@ import {
   LazyContextMenuTrigger,
 } from "@stylextras/ui/context-menu/lazy";
 import { DatePicker } from "@stylextras/ui/date-picker";
+import { DateRangePicker } from "@stylextras/ui/experimental/date-range-picker";
 import {
   DialogBody,
   DialogClose,
@@ -95,6 +100,10 @@ import { installInterestInvokerFallback } from "@stylextras/ui/platform-polyfill
 import { colorThemes } from "@stylextras/ui/color-themes";
 import { radiusThemes } from "@stylextras/ui/radius-themes";
 import { spacingThemes } from "@stylextras/ui/spacing-themes";
+import { FileTrigger } from "../../../../../packages/ui/src/file-trigger";
+import { NumberField } from "../../../../../packages/ui/src/number-field";
+import { SearchField } from "../../../../../packages/ui/src/search-field";
+import { TextField } from "../../../../../packages/ui/src/text-field";
 
 const managedTabsListOverrides = {
   "aria-orientation": "vertical",
@@ -130,17 +139,29 @@ export function UiTestHarness() {
   const [hydrated, setHydrated] = useState(false);
   const [selectResult, setSelectResult] = useState("");
   const [comboboxResult, setComboboxResult] = useState("");
+  const [comboboxDisabled, setComboboxDisabled] = useState(false);
   const [controlledComboboxValue, setControlledComboboxValue] =
     useState("react");
   const [showControlledVue, setShowControlledVue] = useState(false);
   const [dateResult, setDateResult] = useState("");
+  const [dateRangeResult, setDateRangeResult] = useState("");
+  const [fileResult, setFileResult] = useState("");
   const [calendarValue, setCalendarValue] = useState("2026-07-11");
+  const [calendarBoundsMode, setCalendarBoundsMode] = useState<
+    "malformed" | "normal" | "reversed" | "shifted"
+  >("normal");
+  const [commandSelection, setCommandSelection] = useState("");
   const [tabChangeCount, setTabChangeCount] = useState(0);
+  const [showPrimaryToaster, setShowPrimaryToaster] = useState(true);
+  const [showSecondaryToaster, setShowSecondaryToaster] = useState(false);
   const [fallbackSubmitCount, setFallbackSubmitCount] = useState(0);
   const [canceledLazyErrorCount, setCanceledLazyErrorCount] = useState(0);
   const [showDefaultOpenDialog, setShowDefaultOpenDialog] = useState(false);
   const fallbackTriggerRef = useRef<HTMLButtonElement>(null);
   const fallbackPopoverRef = useRef<HTMLDivElement>(null);
+  const rangeStartRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const numberFieldRef = useRef<HTMLInputElement>(null);
   const lazyDialogRetryAttempts = useRef(0);
   const lazyMenuRetryAttempts = useRef(0);
 
@@ -160,6 +181,7 @@ export function UiTestHarness() {
     <main
       {...stylex.props(
         colorThemes.neutral,
+        colorThemes.zinc,
         spacingThemes.compact,
         radiusThemes.rounded,
         styles.main,
@@ -244,27 +266,38 @@ export function UiTestHarness() {
             >
               <Field>
                 <FieldLabel htmlFor="test-framework">Framework</FieldLabel>
-                <Combobox name="framework" defaultValue="react" required>
+                <Combobox
+                  name="framework"
+                  defaultValue="react"
+                  disabled={comboboxDisabled}
+                  required
+                >
                   <ComboboxInput
                     id="test-framework"
                     data-testid="combobox-input"
                     placeholder="Search frameworks"
                   />
                   <ComboboxContent data-testid="combobox-content">
-                    <ComboboxItem value="react">React</ComboboxItem>
-                    <ComboboxItem value="preact">Preact</ComboboxItem>
-                    <ComboboxItem
-                      value="svelte"
-                      data-testid="managed-combobox-item"
-                      {...managedComboboxItemOverrides}
-                    >
-                      Svelte
-                    </ComboboxItem>
-                    <ComboboxItem value="vue">Vue</ComboboxItem>
-                    <ComboboxItem value="angular" disabled>
-                      Angular
-                    </ComboboxItem>
+                    <ComboboxList>
+                      <ComboboxItem value="react">React</ComboboxItem>
+                      <ComboboxItem value="preact">Preact</ComboboxItem>
+                      <ComboboxItem
+                        value="svelte"
+                        data-testid="managed-combobox-item"
+                        {...managedComboboxItemOverrides}
+                      >
+                        Svelte
+                      </ComboboxItem>
+                      <ComboboxItem value="vue">Vue</ComboboxItem>
+                      <ComboboxItem value="angular" disabled>
+                        Angular
+                      </ComboboxItem>
+                      <ComboboxItem value="react">React legacy</ComboboxItem>
+                    </ComboboxList>
                     <ComboboxEmpty>No results found.</ComboboxEmpty>
+                    <ComboboxStatus>
+                      {(count) => `${count} framework${count === 1 ? "" : "s"} available.`}
+                    </ComboboxStatus>
                   </ComboboxContent>
                 </Combobox>
               </Field>
@@ -275,6 +308,15 @@ export function UiTestHarness() {
                 <Button type="reset" size="sm" variant="outline">
                   Reset
                 </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  data-testid="toggle-combobox-disabled"
+                  onClick={() => setComboboxDisabled((current) => !current)}
+                >
+                  {comboboxDisabled ? "Enable combobox" : "Disable combobox"}
+                </Button>
               </div>
               <output
                 data-testid="combobox-result"
@@ -283,6 +325,26 @@ export function UiTestHarness() {
                 {comboboxResult}
               </output>
             </form>
+          </TestCard>
+
+          <TestCard title="Color swatch picker field contracts">
+            <ColorSwatchPicker
+              colors={[
+                {
+                  color: "#6b7280",
+                  inputProps: { disabled: true },
+                  label: "Unavailable gray",
+                  value: "gray",
+                },
+                {
+                  color: "#2563eb",
+                  label: "Blue",
+                  value: "blue",
+                },
+              ]}
+              legend="Harness accent color"
+              name="harnessAccent"
+            />
           </TestCard>
 
           <TestCard title="Controlled combobox synchronization">
@@ -299,10 +361,12 @@ export function UiTestHarness() {
                   data-testid="controlled-combobox-input"
                 />
                 <ComboboxContent>
-                  <ComboboxItem value="react">React</ComboboxItem>
-                  {showControlledVue ? (
-                    <ComboboxItem value="vue">Vue</ComboboxItem>
-                  ) : null}
+                  <ComboboxList>
+                    <ComboboxItem value="react">React</ComboboxItem>
+                    {showControlledVue ? (
+                      <ComboboxItem value="vue">Vue</ComboboxItem>
+                    ) : null}
+                  </ComboboxList>
                   <ComboboxEmpty>No controlled results.</ComboboxEmpty>
                 </ComboboxContent>
               </Combobox>
@@ -369,6 +433,135 @@ export function UiTestHarness() {
             </form>
           </TestCard>
 
+          <TestCard title="Enhanced native date range">
+            <DateRangePicker
+              form="test-date-range-form"
+              legend="Travel dates"
+              min="2026-07-01"
+              max="2026-08-31"
+              startDefaultValue="2026-07-11"
+              endDefaultValue="2026-07-18"
+              startId="test-date-range-start"
+              endId="test-date-range-end"
+              startName="travelStart"
+              endName="travelEnd"
+              startProps={{
+                ref: rangeStartRef,
+                required: true,
+              }}
+              endProps={{
+                required: true,
+              }}
+              invalidRangeMessage="Return date must be on or after departure date."
+            />
+            <form
+              id="test-date-range-form"
+              data-testid="date-range-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const data = new FormData(event.currentTarget);
+                setDateRangeResult(
+                  `${String(data.get("travelStart") ?? "")}|${String(data.get("travelEnd") ?? "")}`,
+                );
+              }}
+            >
+              <div {...stylex.props(styles.actions)}>
+                <Button type="submit" size="sm">
+                  Submit date range
+                </Button>
+                <Button type="reset" size="sm" variant="outline">
+                  Reset date range
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => rangeStartRef.current?.focus()}
+                >
+                  Focus departure date
+                </Button>
+              </div>
+              <output data-testid="date-range-result" {...stylex.props(styles.output)}>
+                {dateRangeResult}
+              </output>
+            </form>
+          </TestCard>
+
+          <TestCard title="Native file trigger">
+            <form
+              data-testid="file-trigger-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const file = new FormData(event.currentTarget).get("attachment");
+                setFileResult(file instanceof File ? file.name : "");
+              }}
+            >
+              <FileTrigger
+                ref={fileInputRef}
+                data-testid="file-trigger-input"
+                label="Upload attachment"
+                name="attachment"
+                required
+              />
+              <div {...stylex.props(styles.actions)}>
+                <Button type="submit" size="sm">
+                  Submit attachment
+                </Button>
+                <Button type="reset" size="sm" variant="outline">
+                  Reset attachment
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.focus()}
+                >
+                  Focus file input
+                </Button>
+              </div>
+              <output data-testid="file-trigger-result" {...stylex.props(styles.output)}>
+                {fileResult}
+              </output>
+            </form>
+          </TestCard>
+
+          <TestCard title="Associated internal fields">
+            <span id="external-text-help">Kept from the caller.</span>
+            <span id="external-text-error">External validation detail.</span>
+            <TextField
+              id="associated-text-field"
+              label="Project slug"
+              description="Lowercase letters and hyphens."
+              error="This slug is already in use."
+              invalid
+              aria-describedby="external-text-help"
+              aria-errormessage="external-text-error"
+            />
+            <NumberField
+              id="associated-number-field"
+              ref={numberFieldRef}
+              label="Retry count"
+              description="Choose one to five attempts."
+              error="Retry count is outside the supported range."
+              invalid
+              min={1}
+              max={5}
+            />
+            <SearchField
+              id="associated-search-field"
+              label="Search documentation"
+              description="Results update after you type."
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => numberFieldRef.current?.focus()}
+            >
+              Focus retry count
+            </Button>
+          </TestCard>
+
           <TestCard title="Native choices">
             <div {...stylex.props(styles.choices)}>
               <label {...stylex.props(styles.choice)}>
@@ -427,6 +620,12 @@ export function UiTestHarness() {
                   </PopoverTrigger>
                   <Popover id="dialog-popover" size="sm">
                     <p {...stylex.props(styles.copy)}>Nested popover content.</p>
+                    <PopoverTrigger target="dialog-child-popover" size="sm">
+                      Open deeper popover
+                    </PopoverTrigger>
+                    <Popover id="dialog-child-popover" size="sm">
+                      <p {...stylex.props(styles.copy)}>Topmost child popover.</p>
+                    </Popover>
                     <PopoverClose target="dialog-popover" size="sm">
                       Close popover
                     </PopoverClose>
@@ -464,6 +663,21 @@ export function UiTestHarness() {
                 </DialogFooter>
               </DialogClient>
             ) : null}
+            <DialogTrigger target="test-cancelable-backdrop-dialog" variant="outline">
+              Open cancelable backdrop dialog
+            </DialogTrigger>
+            <DialogClient
+              id="test-cancelable-backdrop-dialog"
+              aria-label="Cancelable backdrop dialog"
+              onCancel={(event) => event.preventDefault()}
+            >
+              <DialogBody>Backdrop close is canceled by the consumer.</DialogBody>
+              <DialogFooter>
+                <form method="dialog">
+                  <Button type="submit">Force close cancelable dialog</Button>
+                </form>
+              </DialogFooter>
+            </DialogClient>
           </TestCard>
 
           <TestCard title="Deferred dialog">
@@ -499,7 +713,7 @@ export function UiTestHarness() {
               contentProps={{ titleId: "test-cancel-lazy-dialog-title" }}
               load={() =>
                 new Promise<never>((_resolve, reject) => {
-                  setTimeout(() => reject(new Error("Canceled dialog load")), 250);
+                  setTimeout(() => reject(new Error("Canceled dialog load")), 1_000);
                 })
               }
               loadingLabel="Loading cancelable dialog"
@@ -567,7 +781,7 @@ export function UiTestHarness() {
                 contentProps={{}}
                 load={() =>
                   new Promise<never>((_resolve, reject) => {
-                    setTimeout(() => reject(new Error("Canceled menu load")), 250);
+                    setTimeout(() => reject(new Error("Canceled menu load")), 1_000);
                   })
                 }
                 loadingLabel="Loading cancelable menu"
@@ -724,13 +938,60 @@ export function UiTestHarness() {
             <Calendar
               data-testid="bounded-calendar"
               value={calendarValue}
-              min="2026-07-01"
-              max="2026-08-20"
+              min={
+                calendarBoundsMode === "shifted"
+                  ? "2026-09-10"
+                  : calendarBoundsMode === "malformed"
+                    ? "not-a-date"
+                    : calendarBoundsMode === "reversed"
+                      ? "2026-08-01"
+                      : "2026-07-01"
+              }
+              max={
+                calendarBoundsMode === "shifted"
+                  ? "2026-09-20"
+                  : calendarBoundsMode === "malformed"
+                    ? "2026-99-99"
+                    : calendarBoundsMode === "reversed"
+                      ? "2026-07-01"
+                      : "2026-08-20"
+              }
               onValueChange={setCalendarValue}
             />
             <output data-testid="calendar-result" {...stylex.props(styles.output)}>
               {calendarValue}
             </output>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              data-testid="shift-calendar-bounds"
+              onClick={() =>
+                setCalendarBoundsMode((current) =>
+                  current === "shifted" ? "normal" : "shifted",
+                )
+              }
+            >
+              {calendarBoundsMode === "shifted"
+                ? "Restore calendar bounds"
+                : "Move calendar bounds"}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setCalendarBoundsMode("malformed")}
+            >
+              Use malformed calendar bounds
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setCalendarBoundsMode("reversed")}
+            >
+              Reverse calendar bounds
+            </Button>
           </TestCard>
 
           <TestCard title="Command visibility model">
@@ -741,15 +1002,27 @@ export function UiTestHarness() {
                 data-testid="command-input"
               />
               <CommandList>
-                <CommandItem value="visible">Visible command</CommandItem>
+                <CommandItem value="visible" onSelect={setCommandSelection}>
+                  Visible command
+                </CommandItem>
+                <CommandItem value="second" onSelect={setCommandSelection}>
+                  Second command
+                </CommandItem>
+                <CommandItem value="disabled" disabled>
+                  Disabled command
+                </CommandItem>
                 <CommandItem value="hidden" hidden>
                   Hidden command
                 </CommandItem>
-                <CommandEmpty data-testid="command-empty">
-                  No available commands.
-                </CommandEmpty>
               </CommandList>
+              <CommandEmpty data-testid="command-empty">
+                No available commands.
+              </CommandEmpty>
+              <CommandStatus>
+                {(count) => `${count} command${count === 1 ? "" : "s"} available.`}
+              </CommandStatus>
             </Command>
+            <output data-testid="command-selection">{commandSelection}</output>
           </TestCard>
 
           <TestCard title="RTL">
@@ -802,11 +1075,59 @@ export function UiTestHarness() {
               >
                 Show toast batch
               </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  for (const [index, title] of [
+                    "First queued notification",
+                    "Second queued notification",
+                    "Third queued notification",
+                    "Fourth queued notification",
+                  ].entries()) {
+                    toast({
+                      description: `Queue position ${index + 1}.`,
+                      duration: 0,
+                      id: `fifo-toast-${index + 1}`,
+                      title,
+                    });
+                  }
+                }}
+              >
+                Show queued toasts
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  toast({
+                    duration: 10_000,
+                    id: "urgent-toast",
+                    priority: "assertive",
+                    title: "Connection lost",
+                  })
+                }
+              >
+                Show urgent toast
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowSecondaryToaster((current) => !current)}
+              >
+                {showSecondaryToaster ? "Unmount secondary toaster" : "Mount secondary toaster"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowPrimaryToaster((current) => !current)}
+              >
+                {showPrimaryToaster ? "Unmount primary toaster" : "Mount primary toaster"}
+              </Button>
             </div>
           </TestCard>
         </div>
       </section>
-      <Toaster />
+      {showPrimaryToaster ? <Toaster /> : null}
+      {showSecondaryToaster ? (
+        <Toaster aria-label="Secondary notifications" getDismissLabel={() => ""} />
+      ) : null}
     </main>
   );
 }
@@ -824,6 +1145,7 @@ const styles = stylex.create({
   main: {
     backgroundColor: "light-dark(oklch(98.5% 0 0), oklch(13.5% 0 0))",
     color: "light-dark(oklch(14.5% 0 0), oklch(98.5% 0 0))",
+    colorScheme: "light",
     display: "grid",
     fontFamily: 'Geist, "Geist Sans", ui-sans-serif, system-ui, sans-serif',
     gap: 36,

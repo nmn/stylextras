@@ -17,6 +17,12 @@ import {
   useRef,
   useState,
 } from 'react'
+import {
+  type DomOrderedCollectionRecord,
+  getAdjacentItem,
+  useDomOrderedCollection,
+} from '../internal/dom-ordered-collection'
+import { composeRefs } from '../internal/refs'
 import { showPopoverWithSource } from '../platform-polyfills/popover-source'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
@@ -26,33 +32,34 @@ import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
-type ItemRecord = {
+type ItemRecord = DomOrderedCollectionRecord & {
   disabled: boolean
-  id: string
   label: string
-  value: string
 }
 
 type ComboboxContextValue = {
   activeDescendant: string | undefined
-  activeValue: string | null
+  activeId: string | null
   close: () => void
   contentId: string
   contentRef: React.RefObject<HTMLDivElement | null>
   disabled: boolean
   filterTerm: string
   form: string | undefined
+  getMatchingItems: () => ItemRecord[]
   getNavigableItems: () => ItemRecord[]
   inputId: string
   inputRef: React.RefObject<HTMLInputElement | null>
   isOpen: boolean
+  listId: string
   open: () => void
   query: string
   registerItem: (item: ItemRecord) => () => void
   required: boolean
+  restoreCommitted: () => void
   select: (item: ItemRecord) => void
-  selectedValue: string
-  setActiveValue: (value: string | null) => void
+  selectedId: string | null
+  setActiveId: (id: string | null) => void
   syncOpenState: (open: boolean) => void
   typeQuery: (query: string) => void
 }
@@ -99,21 +106,26 @@ export function Combobox({
   const generatedId = useId().replaceAll(':', '')
   const inputId = `stylextras-combobox-input-${generatedId}`
   const contentId = `stylextras-combobox-content-${generatedId}`
+  const listId = `stylextras-combobox-list-${generatedId}`
   const inputRef = useRef<HTMLInputElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const itemsRef = useRef(new Map<string, ItemRecord>())
+  const {
+    getItems,
+    register: registerCollectionItem,
+    version,
+  } = useDomOrderedCollection<ItemRecord>('Combobox')
   const defaultValueRef = useRef(defaultValue)
   const controlled = value !== undefined
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const selectedValue = controlled ? value : uncontrolledValue
   const selectedValueRef = useRef(selectedValue)
   const [query, setQuery] = useState('')
-  const preserveTypedQueryRef = useRef(false)
+  const isDraftingRef = useRef(false)
   const [filterTerm, setFilterTerm] = useState('')
   const filterTermRef = useRef(filterTerm)
-  const [activeValue, setActiveValue] = useState<string | null>(null)
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
-  const [itemsVersion, setItemsVersion] = useState(0)
 
   selectedValueRef.current = selectedValue
   filterTermRef.current = filterTerm
@@ -124,7 +136,16 @@ export function Combobox({
       content.hidePopover()
     }
     setIsOpen(false)
+    setActiveId(null)
   }, [])
+
+  const getCommittedItem = useCallback(() => {
+    const items = getItems()
+    const currentItem = selectedId
+      ? items.find((item) => item.id === selectedId && item.value === selectedValueRef.current)
+      : undefined
+    return currentItem ?? items.find((item) => item.value === selectedValueRef.current)
+  }, [getItems, selectedId])
 
   const open = useCallback(() => {
     if (disabled) return
@@ -137,10 +158,15 @@ export function Combobox({
         // The state still updates in DOM environments without Popover API support.
       }
     }
+    const selectedItem = getCommittedItem()
+    setActiveId(selectedItem && !selectedItem.disabled ? selectedItem.id : null)
     setIsOpen(true)
-  }, [disabled])
+  }, [disabled, getCommittedItem])
 
-  const syncOpenState = useCallback((nextOpen: boolean) => setIsOpen(nextOpen), [])
+  const syncOpenState = useCallback((nextOpen: boolean) => {
+    setIsOpen(nextOpen)
+    if (!nextOpen) setActiveId(null)
+  }, [])
 
   const matchesFilter = useCallback((item: ItemRecord) => {
     const normalizedQuery = filterTermRef.current.trim().toLocaleLowerCase()
@@ -151,23 +177,20 @@ export function Combobox({
     )
   }, [])
 
-  const getNavigableItems = useCallback(
-    () => [...itemsRef.current.values()].filter((item) => !item.disabled && matchesFilter(item)),
-    [matchesFilter],
+  const getMatchingItems = useCallback(
+    () => getItems().filter(matchesFilter),
+    [getItems, matchesFilter],
   )
 
-  const registerItem = useCallback((item: ItemRecord) => {
-    itemsRef.current.set(item.value, item)
-    if (item.value === selectedValueRef.current && !preserveTypedQueryRef.current) {
-      setQuery(item.label)
-      setFilterTerm('')
-    }
-    setItemsVersion((version) => version + 1)
-    return () => {
-      itemsRef.current.delete(item.value)
-      setItemsVersion((version) => version + 1)
-    }
-  }, [])
+  const getNavigableItems = useCallback(
+    () => getMatchingItems().filter((item) => !item.disabled),
+    [getMatchingItems],
+  )
+
+  const registerItem = useCallback(
+    (item: ItemRecord) => registerCollectionItem(item),
+    [registerCollectionItem],
+  )
 
   const commitValue = useCallback(
     (nextValue: string) => {
@@ -179,56 +202,65 @@ export function Combobox({
 
   const select = useCallback(
     (item: ItemRecord) => {
-      if (item.disabled) return
-      preserveTypedQueryRef.current = false
+      if (disabled || item.disabled) return
+      isDraftingRef.current = false
       commitValue(item.value)
       setQuery(item.label)
       setFilterTerm('')
-      setActiveValue(item.value)
+      setSelectedId(item.id)
       close()
       inputRef.current?.focus()
     },
-    [close, commitValue],
+    [close, commitValue, disabled],
   )
 
   const typeQuery = useCallback(
     (nextQuery: string) => {
+      isDraftingRef.current = true
       setQuery(nextQuery)
       setFilterTerm(nextQuery)
-      setActiveValue(null)
-      if (selectedValueRef.current) {
-        preserveTypedQueryRef.current = true
-        commitValue('')
-      }
       open()
+      setActiveId(null)
     },
-    [commitValue, open],
+    [open],
   )
+
+  const restoreCommitted = useCallback(() => {
+    isDraftingRef.current = false
+    const selectedItem = getCommittedItem()
+    setQuery(selectedItem?.label ?? '')
+    setFilterTerm('')
+    setSelectedId(selectedItem?.id ?? null)
+    setActiveId(selectedItem && !selectedItem.disabled ? selectedItem.id : null)
+  }, [getCommittedItem])
 
   useEffect(() => {
     const input = inputRef.current
     const form = input?.form
     if (!form || controlled) return
     const reset = () => {
-      preserveTypedQueryRef.current = false
+      isDraftingRef.current = false
       const nextValue = defaultValueRef.current
       setUncontrolledValue(nextValue)
       setFilterTerm('')
-      setActiveValue(null)
-      setQuery(itemsRef.current.get(nextValue)?.label ?? '')
+      setActiveId(null)
+      setSelectedId(null)
+      setQuery(getItems().find((item) => item.value === nextValue)?.label ?? '')
       close()
     }
     form.addEventListener('reset', reset)
     return () => form.removeEventListener('reset', reset)
-  }, [close, controlled])
+  }, [close, controlled, getItems])
 
   useEffect(() => {
-    if (preserveTypedQueryRef.current && selectedValue === '') {
-      preserveTypedQueryRef.current = false
-      return
-    }
-    preserveTypedQueryRef.current = false
-    const selectedItem = itemsRef.current.get(selectedValue)
+    const items = getItems()
+    const currentItem = selectedId
+      ? items.find((item) => item.id === selectedId && item.value === selectedValue)
+      : undefined
+    const selectedItem = currentItem ?? items.find((item) => item.value === selectedValue)
+    const nextSelectedId = selectedItem?.id ?? null
+    if (nextSelectedId !== selectedId) setSelectedId(nextSelectedId)
+    if (isDraftingRef.current) return
     if (selectedItem) {
       setQuery(selectedItem.label)
       setFilterTerm('')
@@ -236,55 +268,74 @@ export function Combobox({
       setQuery('')
       setFilterTerm('')
     }
-  }, [selectedValue])
+  }, [getItems, selectedId, selectedValue, version])
 
   useEffect(() => {
     inputRef.current?.setCustomValidity(required && !selectedValue ? requiredMessage : '')
   }, [required, requiredMessage, selectedValue])
 
+  useEffect(() => {
+    if (disabled) close()
+  }, [close, disabled])
+
+  useEffect(() => {
+    if (isOpen && activeId && !getNavigableItems().some((item) => item.id === activeId)) {
+      setActiveId(null)
+    }
+  }, [activeId, filterTerm, getNavigableItems, isOpen, version])
+
   const context = useMemo<ComboboxContextValue>(
     () => ({
-      activeDescendant: activeValue ? itemsRef.current.get(activeValue)?.id : undefined,
-      activeValue,
+      activeDescendant:
+        isOpen && activeId && getNavigableItems().some((item) => item.id === activeId)
+          ? activeId
+          : undefined,
+      activeId,
       close,
       contentId,
       contentRef,
       disabled,
       filterTerm,
       form,
+      getMatchingItems,
       getNavigableItems,
       inputId,
       inputRef,
       isOpen,
+      listId,
       open,
       query,
       registerItem,
       required,
+      restoreCommitted,
       select,
-      selectedValue,
-      setActiveValue,
+      selectedId,
+      setActiveId,
       syncOpenState,
       typeQuery,
     }),
     [
-      activeValue,
+      activeId,
       close,
       contentId,
       disabled,
       filterTerm,
       form,
+      getMatchingItems,
       getNavigableItems,
       inputId,
       isOpen,
-      itemsVersion,
+      listId,
       open,
       query,
       registerItem,
       required,
+      restoreCommitted,
       select,
-      selectedValue,
+      selectedId,
       syncOpenState,
       typeQuery,
+      version,
     ],
   )
 
@@ -309,17 +360,21 @@ export type ComboboxInputProps = Omit<
   | 'aria-controls'
   | 'aria-expanded'
   | 'className'
+  | 'disabled'
+  | 'form'
   | 'name'
+  | 'required'
   | 'role'
   | 'style'
+  | 'type'
   | 'value'
 > & {
   sx?: StyleXStyles
+  type?: 'search' | 'text'
 }
 
 export function ComboboxInput({
-  disabled,
-  form,
+  autoComplete = 'off',
   id,
   onChange,
   onClick,
@@ -336,14 +391,7 @@ export function ComboboxInput({
   const context = useComboboxContext('ComboboxInput')
   const pointerFocusRef = useRef(false)
 
-  const setRefs = useCallback(
-    (node: HTMLInputElement | null) => {
-      context.inputRef.current = node
-      if (typeof ref === 'function') ref(node)
-      else if (ref) ref.current = node
-    },
-    [context.inputRef, ref],
-  )
+  const setRefs = useMemo(() => composeRefs(context.inputRef, ref), [context.inputRef, ref])
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     onKeyDown?.(event)
@@ -351,33 +399,34 @@ export function ComboboxInput({
     if (event.nativeEvent.isComposing) return
 
     const items = context.getNavigableItems()
-    const currentIndex = items.findIndex((item) => item.value === context.activeValue)
     let nextItem: ItemRecord | undefined
 
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()
         context.open()
-        nextItem = items[(currentIndex + 1 + items.length) % items.length]
+        nextItem = getAdjacentItem(items, context.activeId, 1)
         break
       case 'ArrowUp':
         event.preventDefault()
         context.open()
-        nextItem = items[(currentIndex - 1 + items.length) % items.length]
+        nextItem = getAdjacentItem(items, context.activeId, -1)
         break
       case 'Home':
         if (!context.isOpen) return
-        event.preventDefault()
         nextItem = items[0]
+        if (!nextItem) return
+        event.preventDefault()
         break
       case 'End':
         if (!context.isOpen) return
-        event.preventDefault()
         nextItem = items.at(-1)
+        if (!nextItem) return
+        event.preventDefault()
         break
       case 'Enter': {
-        if (!context.isOpen || !context.activeValue) return
-        const activeItem = items.find((item) => item.value === context.activeValue)
+        if (!context.isOpen || !context.activeId) return
+        const activeItem = items.find((item) => item.id === context.activeId)
         if (activeItem) {
           event.preventDefault()
           context.select(activeItem)
@@ -387,6 +436,7 @@ export function ComboboxInput({
       case 'Escape':
         if (context.isOpen) {
           event.preventDefault()
+          context.restoreCommitted()
           context.close()
         }
         return
@@ -398,24 +448,26 @@ export function ComboboxInput({
     }
 
     if (nextItem) {
-      context.setActiveValue(nextItem.value)
-      document.getElementById(nextItem.id)?.scrollIntoView({ block: 'nearest' })
+      context.setActiveId(nextItem.id)
+      nextItem.getElement()?.scrollIntoView({ block: 'nearest' })
     }
   }
 
   return (
     <input
       ref={setRefs}
+      {...props}
       id={id ?? context.inputId}
       type={type}
       role="combobox"
       aria-activedescendant={context.activeDescendant}
       aria-autocomplete="list"
-      aria-controls={context.contentId}
+      aria-controls={context.listId}
       aria-expanded={context.isOpen}
-      autoComplete="off"
-      disabled={context.disabled || disabled}
-      form={form ?? context.form}
+      autoComplete={autoComplete}
+      disabled={context.disabled}
+      form={context.form}
+      name={undefined}
       required={context.required}
       value={context.query}
       onChange={(event) => {
@@ -446,7 +498,6 @@ export function ComboboxInput({
         onPointerUp?.(event)
         pointerFocusRef.current = false
       }}
-      {...props}
       {...stylex.props(styles.input, sx)}
     />
   )
@@ -463,26 +514,19 @@ export type ComboboxContentProps = Omit<
 
 export function ComboboxContent({ children, onToggle, ref, sx, ...props }: ComboboxContentProps) {
   const context = useComboboxContext('ComboboxContent')
-  const setRefs = useCallback(
-    (node: HTMLDivElement | null) => {
-      context.contentRef.current = node
-      if (typeof ref === 'function') ref(node)
-      else if (ref) ref.current = node
-    },
-    [context.contentRef, ref],
-  )
+  const setRefs = useMemo(() => composeRefs(context.contentRef, ref), [context.contentRef, ref])
 
   return (
     <div
       ref={setRefs}
+      {...props}
       id={context.contentId}
       popover="auto"
-      role="listbox"
+      role={undefined}
       onToggle={(event) => {
         onToggle?.(event)
         context.syncOpenState(event.currentTarget.matches(':popover-open'))
       }}
-      {...props}
       {...stylex.props(styles.content, sx)}
     >
       {children}
@@ -490,11 +534,40 @@ export function ComboboxContent({ children, onToggle, ref, sx, ...props }: Combo
   )
 }
 
+export type ComboboxListProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'id' | 'role' | 'style'
+> & {
+  sx?: StyleXStyles
+}
+
+/** The listbox owner for ComboboxItem options. Keep status and empty content as siblings. */
+export function ComboboxList({ ref, sx, ...props }: ComboboxListProps) {
+  const context = useComboboxContext('ComboboxList')
+  return (
+    <div
+      ref={ref}
+      {...props}
+      id={context.listId}
+      role="listbox"
+      {...stylex.props(styles.list, sx)}
+    />
+  )
+}
+
 type NativeItemProps = ComponentPropsWithRef<'div'>
 
 export type ComboboxItemProps = Omit<
   NativeItemProps,
-  'aria-disabled' | 'aria-selected' | 'className' | 'hidden' | 'id' | 'onClick' | 'role' | 'style'
+  | 'aria-disabled'
+  | 'aria-selected'
+  | 'className'
+  | 'hidden'
+  | 'id'
+  | 'onClick'
+  | 'role'
+  | 'style'
+  | 'tabIndex'
 > & {
   disabled?: boolean
   onClick?: (event: MouseEvent<HTMLDivElement>) => void
@@ -517,10 +590,11 @@ export function ComboboxItem({
 }: ComboboxItemProps) {
   const context = useComboboxContext('ComboboxItem')
   const generatedId = useId().replaceAll(':', '')
+  const itemRef = useRef<HTMLDivElement>(null)
   const label = textValue ?? (typeof children === 'string' ? children : value)
   const id = `${context.contentId}-option-${generatedId}`
   const item = useMemo<ItemRecord>(
-    () => ({ disabled, id, label, value }),
+    () => ({ disabled, getElement: () => itemRef.current, id, label, value }),
     [disabled, id, label, value],
   )
   const normalizedFilter = context.filterTerm.trim().toLocaleLowerCase()
@@ -532,19 +606,22 @@ export function ComboboxItem({
 
   useEffect(() => context.registerItem(item), [context.registerItem, item])
 
+  const setRefs = useMemo(() => composeRefs(itemRef, ref), [ref])
+
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
     onPointerMove?.(event)
-    if (!event.defaultPrevented && !disabled) context.setActiveValue(value)
+    if (!event.defaultPrevented && !context.disabled && !disabled) context.setActiveId(id)
   }
 
   return (
     <div
-      ref={ref}
+      ref={setRefs}
       {...props}
       id={id}
       role="option"
-      aria-disabled={disabled || undefined}
-      aria-selected={context.selectedValue === value}
+      aria-disabled={context.disabled || disabled || undefined}
+      aria-selected={context.isOpen ? context.activeId === id : context.selectedId === id}
+      tabIndex={undefined}
       hidden={hidden}
       onClick={(event) => {
         onClick?.(event)
@@ -557,8 +634,8 @@ export function ComboboxItem({
       onPointerMove={handlePointerMove}
       {...stylex.props(
         styles.item,
-        context.activeValue === value && styles.itemActive,
-        disabled && styles.itemDisabled,
+        context.activeId === id && styles.itemActive,
+        (context.disabled || disabled) && styles.itemDisabled,
         hidden && styles.hidden,
         sx,
       )}
@@ -568,7 +645,10 @@ export function ComboboxItem({
   )
 }
 
-export type ComboboxEmptyProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & {
+export type ComboboxEmptyProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'hidden' | 'style'
+> & {
   children?: ReactNode
   sx?: StyleXStyles
 }
@@ -577,36 +657,47 @@ export type ComboboxStatusProps = Omit<
   ComponentPropsWithRef<'div'>,
   'aria-atomic' | 'aria-live' | 'children' | 'className' | 'role' | 'style'
 > & {
-  children: ReactNode | ((count: number) => ReactNode)
+  children: string | ((count: number) => string)
+  delay?: number
   sx?: StyleXStyles
 }
 
-/** A polite, visually hidden result-count announcement controlled by the caller's language. */
-export function ComboboxStatus({ children, ref, sx, ...props }: ComboboxStatusProps) {
+/** A polite, visually hidden plain-text result count controlled by the caller's language. */
+export function ComboboxStatus({ children, delay = 150, ref, sx, ...props }: ComboboxStatusProps) {
   const context = useComboboxContext('ComboboxStatus')
-  const count = context.getNavigableItems().length
+  const count = context.getMatchingItems().length
+  const [announcedCount, setAnnouncedCount] = useState(count)
+
+  useEffect(() => {
+    const timeout = window.setTimeout(
+      () => setAnnouncedCount(count),
+      Number.isFinite(delay) ? Math.max(0, delay) : 150,
+    )
+    return () => window.clearTimeout(timeout)
+  }, [count, delay])
+
   return (
     <div
       ref={ref}
+      {...props}
       role="status"
       aria-atomic="true"
       aria-live="polite"
-      {...props}
       {...stylex.props(styles.status, sx)}
     >
-      {typeof children === 'function' ? children(count) : children}
+      {typeof children === 'function' ? children(announcedCount) : children}
     </div>
   )
 }
 
 export function ComboboxEmpty({ children = 'No results.', ref, sx, ...props }: ComboboxEmptyProps) {
   const context = useComboboxContext('ComboboxEmpty')
-  const hidden = context.getNavigableItems().length > 0
+  const hidden = context.getMatchingItems().length > 0
   return (
     <div
       ref={ref}
-      hidden={hidden}
       {...props}
+      hidden={hidden}
       {...stylex.props(styles.empty, hidden && styles.hidden, sx)}
     >
       {children}
@@ -731,6 +822,10 @@ const styles = stylex.create({
     },
     width: 'max-content',
   },
+  list: {
+    gap: spacing.xxxs,
+    display: 'grid',
+  },
   item: {
     borderRadius: radius.xs,
     outline: 'none',
@@ -742,7 +837,7 @@ const styles = stylex.create({
     },
     color: {
       default: colors.popoverForeground,
-      ':hover': colors.accentForeground,
+      ':hover': colors.accentText,
     },
     cursor: 'default',
     display: 'flex',
@@ -760,7 +855,7 @@ const styles = stylex.create({
   },
   itemActive: {
     backgroundColor: colors.accent,
-    color: colors.accentForeground,
+    color: colors.accentText,
   },
   hidden: {
     display: 'none',

@@ -7,8 +7,8 @@ import type { ReactNode } from "react";
  */
 
 import * as stylex from "@stylexjs/stylex";
-import { Link } from "waku";
 import { vars } from "../theming/vars.stylex";
+import { RouterButtonLink } from "./router-link";
 
 export default function CtaButton({
   children,
@@ -20,23 +20,23 @@ export default function CtaButton({
   to: string;
 }) {
   return (
-    <Link
-      {...stylex.props(
+    <RouterButtonLink
+      href={to}
+      size="lg"
+      sx={[
         styles.base,
         color === "pink" && styles.pink,
         color === "blue" && styles.blue,
-      )}
-      to={to}
+      ]}
+      variant="primary"
     >
       {children}
-    </Link>
+    </RouterButtonLink>
   );
 }
 const styles = stylex.create({
   base: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    height: 60,
     paddingBlock: "1rem",
     paddingInline: "2rem",
     fontWeight: 400,
@@ -46,9 +46,7 @@ const styles = stylex.create({
       default: "none",
       ":hover": "none",
     },
-    backgroundColor: "transparent",
     borderColor: "currentColor",
-    borderStyle: "solid",
     borderWidth: 2,
     borderRadius: 10,
     scale: {

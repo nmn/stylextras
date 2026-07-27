@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef, ElementType } from 'react'
 import { colors } from '../tokens/color.stylex'
+import { elevation } from '../tokens/elevation.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
@@ -22,11 +23,14 @@ export type AlertDescriptionProps = Omit<
 > &
   SxProp
 
-export function Alert({ ref, role = 'status', sx, variant = 'default', ...props }: AlertProps) {
+/**
+ * A static callout by default. Pass `role="status"` or `role="alert"` only when
+ * content is inserted in response to an action and should be announced.
+ */
+export function Alert({ ref, sx, variant = 'default', ...props }: AlertProps) {
   return (
     <div
       ref={ref}
-      role={role}
       {...props}
       {...stylex.props(styles.alert, variantStyles[variant], sx)}
     />
@@ -49,13 +53,14 @@ export function AlertDescription({ ref, sx, ...props }: AlertDescriptionProps) {
 const styles = stylex.create({
   alert: {
     borderColor: colors.border,
-    borderRadius: radius.sm,
+    borderRadius: radius.lg,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
     color: colors.fg,
+    boxShadow: elevation.sm,
     display: 'grid',
     forcedColorAdjust: 'auto',
-    gap: spacing.xxs,
+    gap: spacing.sm,
     minWidth: 0,
     overflowWrap: 'anywhere',
     padding: spacing.md,
@@ -63,7 +68,7 @@ const styles = stylex.create({
   title: {
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    fontWeight: typography.weightSemibold,
+    fontWeight: typography.weightMedium,
     lineHeight: typography.lineHeightSnug,
     margin: 0,
     overflowWrap: 'anywhere',

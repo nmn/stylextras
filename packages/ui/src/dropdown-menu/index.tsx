@@ -51,6 +51,11 @@ export type DropdownMenuItemProps = Omit<
   'className' | 'role' | 'style'
 > &
   SxProp & { closeOnSelect?: boolean }
+export type DropdownMenuGroupProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
+> &
+  SxProp & { 'aria-labelledby': string }
 export type DropdownMenuLabelProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> &
   SxProp
 export type DropdownMenuSeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'className' | 'style'> &
@@ -271,7 +276,7 @@ export function DropdownMenuContent({
   ...props
 }: DropdownMenuContentProps) {
   const menuContext = useContext(DropdownMenuContext)
-  const setRef = focusgroupRef(ref)
+  const setRef = useMemo(() => focusgroupRef(ref), [ref])
   return (
     <div
       ref={setRef}
@@ -312,8 +317,11 @@ export function DropdownMenuContent({
         menuContext?.setExpanded(expanded)
         if (!expanded) return
 
-        const target = menu.dataset.initialFocus === 'last' ? 'last' : 'first'
+        const requestedFocus = menu.dataset.initialFocus
         delete menu.dataset.initialFocus
+        if (requestedFocus === 'none') return
+        if (menu.contains(document.activeElement)) return
+        const target = requestedFocus === 'last' ? 'last' : 'first'
         focusMenuWhenReady(menu, target)
       }}
       {...props}
@@ -356,6 +364,11 @@ export function DropdownMenuItem({
       {...stylex.props(styles.item, sx)}
     />
   )
+}
+
+/** Groups related menu items and names the group through a visible menu label. */
+export function DropdownMenuGroup({ ref, sx, ...props }: DropdownMenuGroupProps) {
+  return <div ref={ref} {...props} role="group" {...stylex.props(styles.group, sx)} />
 }
 
 export function DropdownMenuLabel({ ref, sx, ...props }: DropdownMenuLabelProps) {
@@ -411,6 +424,10 @@ const styles = stylex.create({
     transitionProperty: 'display, opacity, overlay, transform',
     transitionTimingFunction: motion.easeEmphasized,
   },
+  group: {
+    gap: spacing.xxxs,
+    display: 'grid',
+  },
   item: {
     alignItems: 'center',
     backgroundColor: {
@@ -424,8 +441,8 @@ const styles = stylex.create({
     borderWidth: 0,
     color: {
       default: colors.popoverForeground,
-      ':focus': colors.accentForeground,
-      ':hover': colors.accentForeground,
+      ':focus': colors.accentText,
+      ':hover': colors.accentText,
       '[aria-disabled="true"]': colors.fgDisabled,
     },
     cursor: { default: 'default', '[aria-disabled="true"]': 'not-allowed' },

@@ -2,8 +2,15 @@
 
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithRef } from 'react'
+import {
+  type ComponentPropsWithRef,
+  type RefObject,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import { Button, type AccessibleButtonPropsWithout } from '../button'
+import { composeRefs } from '../internal/refs'
 import { useInterestInvoker } from '../platform-polyfills/interest-invoker'
 import { colors } from '../tokens/color.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -28,10 +35,132 @@ export type TooltipTriggerProps = AccessibleButtonPropsWithout<
   target: string
 }
 
+const INTERACTIVE_TOOLTIP_SELECTOR = [
+  'a[href]',
+  'area[href]',
+  'audio[controls]',
+  'button',
+  'dialog',
+  'details',
+  'embed',
+  'iframe',
+  'input:not([type="hidden"])',
+  'label[for]',
+  'object',
+  'select',
+  'summary',
+  'textarea',
+  'video[controls]',
+  '[contenteditable]:not([contenteditable="false"])',
+  '[draggable="true"]',
+  '[popover]',
+  '[tabindex]',
+  '[aria-activedescendant]',
+  '[aria-haspopup]',
+  '[role~="button"]',
+  '[role~="checkbox"]',
+  '[role~="combobox"]',
+  '[role~="link"]',
+  '[role~="menuitem"]',
+  '[role~="menuitemcheckbox"]',
+  '[role~="menuitemradio"]',
+  '[role~="option"]',
+  '[role~="radio"]',
+  '[role~="scrollbar"]',
+  '[role~="searchbox"]',
+  '[role~="slider"]',
+  '[role~="spinbutton"]',
+  '[role~="switch"]',
+  '[role~="tab"]',
+  '[role~="textbox"]',
+  '[role~="treeitem"]',
+].join(',')
+
+const warnedInteractiveElements = new WeakSet<Element>()
+
+function isInteractionSuppressed(element: Element, tooltip: HTMLElement) {
+  let candidate: Element | null = element
+  while (candidate) {
+    if (
+      candidate.hasAttribute('hidden') ||
+      candidate.hasAttribute('inert')
+    ) {
+      return true
+    }
+    if (candidate === tooltip) break
+    candidate = candidate.parentElement
+  }
+  return false
+}
+
+function hasActivationHandler(element: Element) {
+  if (!(element instanceof HTMLElement)) return false
+  return (
+    typeof element.onclick === 'function' ||
+    typeof element.onkeydown === 'function' ||
+    typeof element.onkeyup === 'function'
+  )
+}
+
+function useNonInteractiveContentInvariant(tooltipRef: RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return
+    const tooltip = tooltipRef.current
+    if (!tooltip) return
+    const validate = () => {
+      for (const element of tooltip.querySelectorAll('*')) {
+        if (
+          warnedInteractiveElements.has(element) ||
+          isInteractionSuppressed(element, tooltip) ||
+          (!element.matches(INTERACTIVE_TOOLTIP_SELECTOR) && !hasActivationHandler(element))
+        ) {
+          continue
+        }
+
+        warnedInteractiveElements.add(element)
+        console.warn(
+          `Tooltip content must be non-interactive. Move <${element.localName}> content to HoverCard, Popover, or Dialog.`,
+          element,
+        )
+      }
+    }
+
+    validate()
+    const observer = new MutationObserver(validate)
+    observer.observe(tooltip, {
+      attributeFilter: [
+        'aria-activedescendant',
+        'aria-haspopup',
+        'contenteditable',
+        'controls',
+        'draggable',
+        'hidden',
+        'href',
+        'inert',
+        'onclick',
+        'onkeydown',
+        'onkeyup',
+        'popover',
+        'role',
+        'tabindex',
+        'type',
+      ],
+      attributes: true,
+      childList: true,
+      subtree: true,
+    })
+    return () => observer.disconnect()
+  }, [tooltipRef])
+}
+
 export function Tooltip({ placement = 'top', ref, sx, ...props }: TooltipProps) {
+  const tooltipRef = useRef<HTMLDivElement>(null)
+  const setRef = useMemo(() => composeRefs(tooltipRef, ref), [ref])
+  useNonInteractiveContentInvariant(tooltipRef)
+
   return (
     <div
-      ref={ref}
+      ref={setRef}
       popover="hint"
       role="tooltip"
       {...props}
@@ -96,7 +225,6 @@ const styles = stylex.create({
     opacity: { default: 0, ':popover-open': 1 },
     paddingBlock: spacing.xxxs,
     paddingInline: spacing.xs,
-    pointerEvents: 'none',
     position: 'fixed',
     positionAnchor: 'auto',
     transitionBehavior: 'allow-discrete',

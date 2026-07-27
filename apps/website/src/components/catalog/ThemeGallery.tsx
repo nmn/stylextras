@@ -69,6 +69,7 @@ function StyleTile({ name }: { name: PreviewStyleName }) {
     <section
       aria-label={`${displayName} style preset`}
       {...stylex.props(
+        colorThemes.neutral,
         colorThemes[preset.color ?? 'neutral'],
         spacingThemes[preset.spacing],
         radiusThemes[preset.radius],
@@ -114,6 +115,7 @@ function ThemeTile({
     <section
       aria-label={`${displayName} ${appearance} theme`}
       {...stylex.props(
+        colorThemes.neutral,
         colorThemes[name],
         spacingThemes.compact,
         radiusThemes.rounded,

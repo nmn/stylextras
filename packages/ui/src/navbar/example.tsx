@@ -11,7 +11,7 @@ export default function Example() {
         title="Navigation bar"
         description="Navbar should show a straightforward set of primary links."
       >
-        <Navbar>
+        <Navbar aria-label="Primary navigation">
           <Link href="#docs">Docs</Link>
           <Link href="#components">Components</Link>
           <Link href="#themes">Themes</Link>

@@ -3,9 +3,11 @@ import { elevation } from '../tokens/elevation.stylex'
 
 const lightDark = (light: string, dark: string) => `light-dark(${light}, ${dark})`
 
-export const baseTheme = stylex.createTheme(elevation, {})
+export type ElevationTheme = stylex.Theme<typeof elevation>
 
-export const docsTheme = stylex.createTheme(elevation, {
+export const baseTheme: ElevationTheme = stylex.createTheme(elevation, {})
+
+export const docsTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: lightDark('rgba(0, 0, 0, 0.12)', 'rgba(0, 0, 0, 0.56)'),
   offset: '1px',
   blur: '3px',
@@ -22,51 +24,61 @@ export const docsTheme = stylex.createTheme(elevation, {
   xl: lightDark('0 25px 50px -12px rgba(0, 0, 0, 0.25)', '0 25px 50px -12px rgba(0, 0, 0, 0.72)'),
 })
 
-export const flatTheme = stylex.createTheme(elevation, {
+export const flatTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: 'transparent',
   offset: '0px',
   blur: '0px',
 })
 
-export const softTheme = stylex.createTheme(elevation, {
+export const softTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: lightDark('rgba(9, 9, 11, 0.12)', 'rgba(0, 0, 0, 0.4)'),
   offset: '1px',
   blur: '4px',
 })
 
-export const floatTheme = stylex.createTheme(elevation, {
+export const floatTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: lightDark('rgba(9, 9, 11, 0.16)', 'rgba(0, 0, 0, 0.52)'),
   offset: '2px',
   blur: '5px',
 })
 
-export const hardTheme = stylex.createTheme(elevation, {
+export const hardTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: lightDark('rgba(9, 9, 11, 0.28)', 'rgba(0, 0, 0, 0.72)'),
   offset: '2px',
   blur: '2px',
 })
 
-export const posterTheme = stylex.createTheme(elevation, {
+export const posterTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: lightDark('rgba(9, 9, 11, 0.36)', 'rgba(0, 0, 0, 0.8)'),
   offset: '3px',
   blur: '1px',
 })
 
 /** Barely-there micro shadow for near-flat, minimal interfaces. */
-export const whisperTheme = stylex.createTheme(elevation, {
+export const whisperTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: lightDark('rgba(9, 9, 11, 0.08)', 'rgba(0, 0, 0, 0.3)'),
   offset: '0.5px',
   blur: '1.5px',
 })
 
 /** Large, soft, diffused shadow suited to glassmorphism and blurred surfaces. */
-export const glassTheme = stylex.createTheme(elevation, {
+export const glassTheme: ElevationTheme = stylex.createTheme(elevation, {
   shadowColor: lightDark('rgba(9, 9, 11, 0.14)', 'rgba(0, 0, 0, 0.46)'),
   offset: '3px',
   blur: '10px',
 })
 
-export const elevationThemes = {
+export const elevationThemes: Readonly<{
+  base: ElevationTheme
+  docs: ElevationTheme
+  flat: ElevationTheme
+  whisper: ElevationTheme
+  soft: ElevationTheme
+  float: ElevationTheme
+  glass: ElevationTheme
+  hard: ElevationTheme
+  poster: ElevationTheme
+}> = {
   base: baseTheme,
   docs: docsTheme,
   flat: flatTheme,
@@ -76,6 +88,6 @@ export const elevationThemes = {
   glass: glassTheme,
   hard: hardTheme,
   poster: posterTheme,
-} as const
+}
 
 export type ElevationThemeName = keyof typeof elevationThemes

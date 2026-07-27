@@ -21,8 +21,8 @@ import { Spinner } from './index';
 export default function Example() {
   return (
     <>
-      <Spinner aria-label="Loading" />
-      <span>Loading…</span>
+      <Spinner aria-labelledby="loading-label" />
+      <span id="loading-label">Loading account data…</span>
     </>
   );
 }

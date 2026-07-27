@@ -8,7 +8,7 @@ export default function Example() {
         {(['default', 'info', 'success', 'warning', 'danger'] as const).map((variant) => (
           <Alert key={variant} variant={variant}>
             <AlertTitle>{variant === 'default' ? 'Update available' : variant}</AlertTitle>
-            <AlertDescription>A concise message with semantic status treatment.</AlertDescription>
+            <AlertDescription>A concise static callout that can opt into live semantics.</AlertDescription>
           </Alert>
         ))}
       </DemoStack>

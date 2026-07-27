@@ -1,15 +1,15 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"select">;
+type BaseProps = ComponentPropsWithRef<"select">;
 
-type ListboxOption = string | { label: string; value: string };
+export type ListboxOption = string | { label: string; value: string };
 
 export type ListboxProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
@@ -34,13 +34,16 @@ const defaultOptions = [
 export function Listbox({
   children,
   options = defaultOptions,
+  ref,
   sx,
   ...props
 }: ListboxProps) {
+  const uniqueOptions = dedupeOptions(options);
+
   return (
-    <select multiple {...props} {...stylex.props(styles.base, sx)}>
+    <select ref={ref} multiple {...props} {...stylex.props(styles.base, sx)}>
       {children ??
-        options.map((option) => {
+        uniqueOptions.map((option) => {
           const normalizedOption =
             typeof option === "string"
               ? { label: option, value: option }
@@ -54,6 +57,36 @@ export function Listbox({
         })}
     </select>
   );
+}
+
+const warnedDuplicateOptionSets = new Set<string>();
+
+function dedupeOptions(options: ListboxOption[]) {
+  const seen = new Set<string>();
+  const duplicates = new Set<string>();
+  const unique = options.filter((option) => {
+    const value = typeof option === "string" ? option : option.value;
+    if (seen.has(value)) {
+      duplicates.add(value);
+      return false;
+    }
+    seen.add(value);
+    return true;
+  });
+
+  if (process.env.NODE_ENV !== "production" && duplicates.size > 0) {
+    const key = [...duplicates].sort().join("|");
+    if (!warnedDuplicateOptionSets.has(key)) {
+      warnedDuplicateOptionSets.add(key);
+      console.warn(
+        `[stylextras] Listbox ignored duplicate option values: ${[
+          ...duplicates,
+        ].join(", ")}`,
+      );
+    }
+  }
+
+  return unique;
 }
 
 const styles = stylex.create({

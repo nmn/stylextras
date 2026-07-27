@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithRef } from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { colors } from '../tokens/color.stylex'
 import { motion } from '../tokens/motion.stylex'
 import { radius } from '../tokens/radius.stylex'
@@ -17,19 +17,54 @@ export type CollapsibleTriggerProps = Omit<
   ComponentPropsWithRef<'summary'>,
   'className' | 'style'
 > &
-  SxProp
+  SxProp & {
+    indicator?: ReactNode | false
+    indicatorPosition?: CollapsibleIndicatorPosition
+  }
 export type CollapsibleContentProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> &
+  SxProp
+export type CollapsibleIndicatorPosition = 'start' | 'end'
+export type CollapsibleIndicatorProps = Omit<
+  ComponentPropsWithRef<'span'>,
+  'children' | 'className' | 'style'
+> &
   SxProp
 
 export function Collapsible({ ref, sx, ...props }: CollapsibleProps) {
   return <details ref={ref} {...props} {...stylex.props(disclosureMarker, styles.root, sx)} />
 }
 
-export function CollapsibleTrigger({ children, ref, sx, ...props }: CollapsibleTriggerProps) {
+export function CollapsibleTrigger({
+  children,
+  indicator,
+  indicatorPosition = 'end',
+  ref,
+  sx,
+  ...props
+}: CollapsibleTriggerProps) {
+  const renderedIndicator =
+    indicator === undefined ? (
+      <CollapsibleIndicator />
+    ) : indicator === false || indicator === true || indicator == null ? null : (
+      <span aria-hidden="true" {...stylex.props(styles.customIndicator)}>
+        {indicator}
+      </span>
+    )
+  const hasIndicator = renderedIndicator != null
+
   return (
-    <summary ref={ref} {...props} {...stylex.props(styles.trigger, sx)}>
+    <summary
+      ref={ref}
+      {...props}
+      {...stylex.props(
+        styles.trigger,
+        hasIndicator ? indicatorPositionStyles[indicatorPosition] : styles.triggerWithoutIndicator,
+        sx,
+      )}
+    >
+      {hasIndicator && indicatorPosition === 'start' ? renderedIndicator : null}
       <span {...stylex.props(styles.triggerLabel)}>{children}</span>
-      <CollapsibleIcon />
+      {hasIndicator && indicatorPosition === 'end' ? renderedIndicator : null}
     </summary>
   )
 }
@@ -38,9 +73,9 @@ export function CollapsibleContent({ ref, sx, ...props }: CollapsibleContentProp
   return <div ref={ref} {...props} {...stylex.props(styles.content, sx)} />
 }
 
-function CollapsibleIcon() {
+export function CollapsibleIndicator({ ref, sx, ...props }: CollapsibleIndicatorProps) {
   return (
-    <span aria-hidden="true" {...stylex.props(styles.iconFrame)}>
+    <span ref={ref} {...props} aria-hidden="true" {...stylex.props(styles.iconFrame, sx)}>
       <span {...stylex.props(styles.icon)} />
     </span>
   )
@@ -48,6 +83,7 @@ function CollapsibleIcon() {
 
 const styles = stylex.create({
   root: {
+    backgroundColor: colors.card,
     boxSizing: 'border-box',
     borderColor: {
       default: colors.border,
@@ -56,15 +92,17 @@ const styles = stylex.create({
     borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    overflow: 'visible',
+    overflow: 'hidden',
     minWidth: 0,
+    paddingBlock: spacing.sm,
+    paddingInline: spacing.lg,
     width: '100%',
   },
   trigger: {
     alignItems: 'center',
     backgroundColor: {
-      default: colors.surface,
-      ':hover': colors.accent,
+      default: 'transparent',
+      ':hover': 'transparent',
     },
     outlineColor: {
       default: colors.focusRing,
@@ -81,15 +119,14 @@ const styles = stylex.create({
     fontSize: typography.step0,
     fontWeight: typography.weightMedium,
     gap: spacing.sm,
-    gridTemplateColumns: 'minmax(0, 1fr) auto',
+    lineHeight: typography.lineHeightBody,
     listStyle: 'none',
     minHeight: {
-      default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
-      '@media (pointer: coarse)': spacing.targetCoarse,
+      default: 'auto',
+      '@media (pointer: coarse)': 'auto',
     },
     overflowWrap: 'anywhere',
-    paddingBlock: spacing.sm,
-    paddingInline: spacing.md,
+    padding: 0,
     transitionDuration: {
       default: motion.durationFast,
       '@media (prefers-reduced-motion: reduce)': motion.durationInstant,
@@ -98,7 +135,15 @@ const styles = stylex.create({
     transitionTimingFunction: motion.easeStandard,
     width: '100%',
   },
+  triggerWithoutIndicator: {
+    gridTemplateColumns: 'minmax(0, 1fr)',
+  },
   triggerLabel: {
+    minWidth: 0,
+  },
+  customIndicator: {
+    alignItems: 'center',
+    display: 'inline-flex',
     minWidth: 0,
   },
   iconFrame: {
@@ -142,13 +187,22 @@ const styles = stylex.create({
       '@media (forced-colors: active)': 'CanvasText',
     },
     borderStyle: 'solid',
-    borderWidth: `${stroke.thin} 0 0`,
+    borderWidth: 0,
     color: colors.fgSoft,
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
     lineHeight: typography.lineHeightBody,
     minWidth: 0,
     overflowWrap: 'anywhere',
-    padding: spacing.md,
+    padding: 0,
+  },
+})
+
+const indicatorPositionStyles = stylex.create({
+  start: {
+    gridTemplateColumns: 'auto minmax(0, 1fr)',
+  },
+  end: {
+    gridTemplateColumns: 'minmax(0, 1fr) auto',
   },
 })

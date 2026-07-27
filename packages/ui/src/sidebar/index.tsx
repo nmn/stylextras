@@ -26,13 +26,23 @@ export type SidebarTriggerProps = AccessibleIconButtonPropsWithout<
 export type SidebarHeaderProps = DivProps
 export type SidebarContentProps = DivProps
 export type SidebarFooterProps = DivProps
+export type SidebarNavigationProps = Omit<
+  ComponentPropsWithRef<'nav'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'style'
+> &
+  AccessibleAriaNameProps &
+  SxProp
 export type SidebarGroupProps = DivProps
 export type SidebarGroupLabelProps<T extends ElementType = 'h3'> = Omit<
   ComponentPropsWithRef<T>,
   'className' | 'style'
 > &
   SxProp & { as?: T }
-export type SidebarMenuProps = Omit<ComponentPropsWithRef<'ul'>, 'className' | 'style'> & SxProp
+export type SidebarMenuProps = Omit<
+  ComponentPropsWithRef<'ul'>,
+  'className' | 'role' | 'style'
+> &
+  SxProp
 export type SidebarMenuItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> & SxProp
 export type SidebarMenuButtonProps = Omit<ComponentPropsWithRef<'button'>, 'className' | 'style'> &
   SxProp
@@ -75,6 +85,11 @@ export function SidebarFooter({ ref, sx, ...props }: SidebarFooterProps) {
   return <div ref={ref} {...props} {...stylex.props(styles.footer, sx)} />
 }
 
+/** A named navigation landmark for the sidebar's primary navigation groups. */
+export function SidebarNavigation({ ref, sx, ...props }: SidebarNavigationProps) {
+  return <nav ref={ref} {...props} {...stylex.props(sx)} />
+}
+
 export function SidebarGroup({ ref, sx, ...props }: SidebarGroupProps) {
   return <div ref={ref} {...props} {...stylex.props(styles.group, sx)} />
 }
@@ -89,7 +104,7 @@ export function SidebarGroupLabel<T extends ElementType = 'h3'>({
 }
 
 export function SidebarMenu({ ref, sx, ...props }: SidebarMenuProps) {
-  return <ul ref={ref} {...props} {...stylex.props(styles.menu, sx)} />
+  return <ul ref={ref} {...props} role="list" {...stylex.props(styles.menu, sx)} />
 }
 
 export function SidebarMenuItem({ ref, sx, ...props }: SidebarMenuItemProps) {

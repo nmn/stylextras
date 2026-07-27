@@ -1,9 +1,9 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type FlexDirection = "row" | "column";
 export type FlexAlign = "start" | "center" | "end" | "stretch";
@@ -33,12 +33,14 @@ export function Flex({
   direction = "row",
   gap = "md",
   justify = "start",
+  ref,
   sx,
   wrap = false,
   ...props
 }: FlexProps) {
   return (
     <div
+      ref={ref}
       {...props}
       {...stylex.props(
         baseStyles.base,

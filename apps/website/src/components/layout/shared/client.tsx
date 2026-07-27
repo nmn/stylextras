@@ -8,9 +8,8 @@
 
 import { usePathname } from "fumadocs-core/framework";
 import { isActive } from "../../../lib/is-active";
-import Link from "fumadocs-core/link";
 import type { BaseLinkType, StyleXComponentProps } from "./index";
-import * as stylex from "@stylexjs/stylex";
+import { RouterLink } from "../../router-link";
 
 export function BaseLinkItem({
   ref,
@@ -25,15 +24,15 @@ export function BaseLinkItem({
     isActive(item.url, pathname, activeType === "nested-url");
 
   return (
-    <Link
+    <RouterLink
       external={item.external}
       href={item.url}
       ref={ref}
       {...props}
-      {...stylex.props(xstyle)}
+      sx={xstyle}
       data-active={active}
     >
       {props.children}
-    </Link>
+    </RouterLink>
   );
 }

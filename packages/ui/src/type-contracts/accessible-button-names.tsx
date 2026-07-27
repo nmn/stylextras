@@ -1,6 +1,6 @@
 import { AlertDialogAction, AlertDialogCancel, AlertDialogTrigger } from '../alert-dialog'
 import { LazyAlertDialogTrigger } from '../alert-dialog/lazy'
-import { Button, type ButtonSize } from '../button'
+import { Button, ButtonLink, type ButtonSize } from '../button'
 import { CommandTrigger } from '../command'
 import { ContextMenuButton } from '../context-menu'
 import { LazyContextMenuButton } from '../context-menu/lazy'
@@ -23,6 +23,10 @@ declare const dynamicSize: ButtonSize
 const invalidButton = <Button size="icon">×</Button>
 // @ts-expect-error a dynamic size that could be icon-only also requires an accessible name
 const invalidDynamicButton = <Button size={dynamicSize}>Dynamic</Button>
+// @ts-expect-error icon ButtonLinks require an accessible name
+const invalidButtonLink = <ButtonLink href="#x" size="icon" />
+// @ts-expect-error a dynamic ButtonLink size that could be icon-only requires an accessible name
+const invalidDynamicButtonLink = <ButtonLink href="#x" size={dynamicSize} />
 // @ts-expect-error icon dialog triggers require an accessible name
 const invalidDialogTrigger = <DialogTrigger target="dialog" size="icon-sm" />
 // @ts-expect-error icon dialog close buttons require an accessible name
@@ -73,6 +77,21 @@ const invalidSidebarTrigger = <SidebarTrigger target="sidebar" />
 const namedButton = <Button size="icon" aria-label="Close" />
 const labelledButton = <Button size="icon-sm" aria-labelledby="close-label" />
 const namedDynamicButton = <Button size={dynamicSize} aria-label="Dynamic action" />
+const namedButtonLink = (
+  <ButtonLink href="#named-button-link" size="icon" aria-label="Open linked item">
+    ↗
+  </ButtonLink>
+)
+const labelledButtonLink = (
+  <ButtonLink href="#labelled-button-link" size="icon-sm" aria-labelledby="linked-item-label">
+    ↗
+  </ButtonLink>
+)
+const namedDynamicButtonLink = (
+  <ButtonLink href="#named-dynamic-button-link" size={dynamicSize} aria-label="Open linked item">
+    ↗
+  </ButtonLink>
+)
 const namedDialogTrigger = <DialogTrigger target="dialog" size="icon" aria-label="Open" />
 const namedDialogClose = <DialogClose target="dialog" size="icon" aria-label="Close" />
 const namedLazyDialogTrigger = <LazyDialogTrigger size="icon" aria-label="Open" />
@@ -83,9 +102,7 @@ const namedLazyPopoverMenuTrigger = <LazyPopoverMenuTrigger size="icon" aria-lab
 const namedDropdownMenuTrigger = (
   <DropdownMenuTrigger target="menu" size="icon" aria-label="Open menu" />
 )
-const namedLazyDropdownMenuTrigger = (
-  <LazyDropdownMenuTrigger size="icon" aria-label="Open menu" />
-)
+const namedLazyDropdownMenuTrigger = <LazyDropdownMenuTrigger size="icon" aria-label="Open menu" />
 const namedContextMenuButton = (
   <ContextMenuButton target="context-menu" size="icon" aria-label="Open context menu" />
 )
@@ -95,15 +112,9 @@ const namedLazyContextMenuButton = (
 const namedAlertDialogTrigger = (
   <AlertDialogTrigger target="alert" size="icon" aria-label="Open warning" />
 )
-const namedAlertDialogCancel = (
-  <AlertDialogCancel target="alert" size="icon" aria-label="Cancel" />
-)
-const namedAlertDialogAction = (
-  <AlertDialogAction target="alert" size="icon" aria-label="Confirm" />
-)
-const namedLazyAlertDialogTrigger = (
-  <LazyAlertDialogTrigger size="icon" aria-label="Open warning" />
-)
+const namedAlertDialogCancel = <AlertDialogCancel target="alert" size="icon" aria-label="Cancel" />
+const namedAlertDialogAction = <AlertDialogAction target="alert" size="icon" aria-label="Confirm" />
+const namedLazyAlertDialogTrigger = <LazyAlertDialogTrigger size="icon" aria-label="Open warning" />
 const namedDrawerTrigger = <DrawerTrigger target="drawer" size="icon" aria-label="Open drawer" />
 const namedDrawerClose = <DrawerClose target="drawer" size="icon" aria-label="Close drawer" />
 const namedSheetTrigger = <SheetTrigger target="sheet" size="icon" aria-label="Open sheet" />
@@ -119,6 +130,8 @@ const internallyNamedCopyButton = <CopyToClipboardButton value="copy me" />
 void [
   invalidButton,
   invalidDynamicButton,
+  invalidButtonLink,
+  invalidDynamicButtonLink,
   invalidDialogTrigger,
   invalidDialogClose,
   invalidLazyDialogTrigger,
@@ -145,6 +158,9 @@ void [
   namedButton,
   labelledButton,
   namedDynamicButton,
+  namedButtonLink,
+  labelledButtonLink,
+  namedDynamicButtonLink,
   namedDialogTrigger,
   namedDialogClose,
   namedLazyDialogTrigger,

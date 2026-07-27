@@ -1,6 +1,11 @@
 "use client";
 
-import { Pagination } from "./index";
+import {
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  PaginationList,
+} from "./index";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
 
 export default function Example() {
@@ -8,11 +13,37 @@ export default function Example() {
     <>
       <DemoFrame
         title="Page states"
-        description="Pagination is easiest to read when two current-page states are shown directly."
+        description="Each named pagination landmark owns one current destination."
       >
         <DemoStack>
-          <Pagination currentPage={2} totalPages={5} />
-          <Pagination currentPage={4} totalPages={8} />
+          <Pagination aria-label="Search result pages" currentHref="?page=2">
+            <PaginationList>
+              {[1, 2, 3, 4, 5].map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    href={`?page=${page}`}
+                    aria-label={`Page ${page}`}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+            </PaginationList>
+          </Pagination>
+          <Pagination aria-label="Audit log pages" currentHref="?audit-page=4">
+            <PaginationList>
+              {[1, 2, 3, 4, 5].map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    href={`?audit-page=${page}`}
+                    aria-label={`Page ${page}`}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+            </PaginationList>
+          </Pagination>
         </DemoStack>
       </DemoFrame>
     </>

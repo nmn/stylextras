@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { CopyToClipboardButton } from "./index";
-import { DemoFrame, DemoRow } from "../example-theme/demo";
+import { DemoFrame, DemoRow } from '../example-theme/demo'
+import { CopyToClipboardButton } from './index'
 
 export default function Example() {
   return (
@@ -12,14 +12,21 @@ export default function Example() {
       <DemoRow>
         <CopyToClipboardButton
           label="Copy install command"
-          value="npx create-stylextras app"
+          resetAfterMs={2000}
+          value={() => 'npx create-stylextras app'}
         />
         <CopyToClipboardButton
+          copiedIcon="Done"
           label="Copy package name"
           copiedText="Package copied!"
           value="@stylextras/ui"
         />
+        <CopyToClipboardButton
+          feedback="none"
+          label="Copy without popover feedback"
+          value="@stylextras/ui/button"
+        />
       </DemoRow>
     </DemoFrame>
-  );
+  )
 }

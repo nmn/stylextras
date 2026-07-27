@@ -1,12 +1,12 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import type { AccessibleNameProps } from "../accessibility";
 import { colors } from "../tokens/color.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"meter">;
+type BaseProps = ComponentPropsWithRef<"meter">;
 
 export type MeterProps = Omit<
   BaseProps,
@@ -25,11 +25,11 @@ export type MeterProps = Omit<
  * - Uses native meter semantics.
  * - Meaningful labeling still needs to be provided by the caller.
  */
-export function Meter({ label, sx, ...props }: MeterProps) {
+export function Meter({ label, ref, sx, ...props }: MeterProps) {
   return (
     <label {...stylex.props(rootStyles.base, sx)}>
       {label ? <span {...stylex.props(labelStyles.base)}>{label}</span> : null}
-      <meter {...props} {...stylex.props(meterStyles.base)} />
+      <meter ref={ref} {...props} {...stylex.props(meterStyles.base)} />
     </label>
   );
 }

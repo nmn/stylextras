@@ -1,9 +1,9 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type GridCols = 1 | 2 | 3 | 4;
 
@@ -21,9 +21,10 @@ export type GridProps = Omit<BaseProps, "className" | "style"> & {
  * - Provides layout only.
  * - It does not imply data-grid semantics.
  */
-export function Grid({ cols = 2, sx, ...props }: GridProps) {
+export function Grid({ cols = 2, ref, sx, ...props }: GridProps) {
   return (
     <div
+      ref={ref}
       {...props}
       {...stylex.props(
         baseStyles.base,

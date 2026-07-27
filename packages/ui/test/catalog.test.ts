@@ -43,7 +43,7 @@ describe('public catalog manifest', () => {
     expect(new Set(componentCatalog.map((entry) => entry.export)).size).toBe(
       componentCatalog.length,
     )
-    expect(stableCatalog).toHaveLength(54)
+    expect(stableCatalog).toHaveLength(57)
     expect(experimentalCatalog).toHaveLength(16)
   })
 

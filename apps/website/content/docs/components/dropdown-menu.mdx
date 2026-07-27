@@ -17,6 +17,7 @@ import Example from "@stylextras/ui/dropdown-menu/example";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -25,37 +26,40 @@ import {
 } from './index';
 
 const menuId = 'project-actions-menu';
+const groupLabelId = 'project-actions-label';
 
 export default function Example() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger target={menuId}>Actions</DropdownMenuTrigger>
       <DropdownMenuContent id={menuId}>
-        <DropdownMenuLabel>Project</DropdownMenuLabel>
-        <DropdownMenuItem>
-          Rename <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>Duplicate</DropdownMenuItem>
-        <DropdownMenuItem disabled>Deploy (unavailable)</DropdownMenuItem>
+        <DropdownMenuGroup aria-labelledby={groupLabelId}>
+          <DropdownMenuLabel id={groupLabelId}>Project</DropdownMenuLabel>
+          <DropdownMenuItem>
+            Rename <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>Duplicate</DropdownMenuItem>
+          <DropdownMenuItem disabled>Deploy (unavailable)</DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Archive</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
-('use client');
 ```
 
 ## Import
 
 ```tsx
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "@stylextras/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "@stylextras/ui/dropdown-menu";
 ```
 
 ## Anatomy
 
 - `DropdownMenu` — Styled `<div>`.
 - `DropdownMenuContent` — Styled `<div>`.
+- `DropdownMenuGroup` — `<div role="group">` named by a menu label.
 - `DropdownMenuItem` — Styled `<button>`.
 - `DropdownMenuLabel` — Styled `<div>`.
 - `DropdownMenuSeparator` — Styled `<hr>`.
@@ -69,6 +73,9 @@ Each part renders and styles the native element named above. The API reference s
 The trigger supports <kbd>Enter</kbd>, <kbd>Space</kbd>, <kbd>ArrowDown</kbd>, and <kbd>ArrowUp</kbd>. The menu uses `focusgroup` for wrapped arrow-key navigation plus <kbd>Home</kbd> and <kbd>End</kbd>; a feature-detected polyfill supplies that behavior where necessary. Printable keys move focus by item label, <kbd>Escape</kbd> closes the menu and restores trigger focus, and <kbd>Tab</kbd> closes it after focus moves out.
 
 Disabled items use `aria-disabled` so they remain discoverable by arrow-key navigation while activation is suppressed. `aria-controls`, `aria-expanded`, and the menu's accessible name are synchronized with the native popover state.
+
+Wrap related items and their visible label in `DropdownMenuGroup`, and connect
+the group to `DropdownMenuLabel` with `aria-labelledby`.
 
 ## API reference
 
@@ -99,6 +106,12 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">
 - `disabled` — `boolean`. Default: `false`. Rendered as `aria-disabled` so the item remains focusable.
 - `sx` — `stylex.StyleXStyles`.
 - `type` — `DropdownMenuItemProps["type"]`. Default: `'button'`.
+
+### DropdownMenuGroup
+
+`DropdownMenuGroupProps` extends native `div` props with a forwarded ref and `sx`.
+
+- `aria-labelledby` — Required ID reference to the group's `DropdownMenuLabel`.
 
 ### DropdownMenuLabel
 

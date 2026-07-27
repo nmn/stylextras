@@ -1,9 +1,9 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"form">;
+type BaseProps = ComponentPropsWithRef<"form">;
 
 export type FormProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
@@ -18,8 +18,8 @@ export type FormProps = Omit<BaseProps, "className" | "style"> & {
  * - Uses native form semantics.
  * - Validation, field associations, and submission messaging must be composed by the caller.
  */
-export function Form({ sx, ...props }: FormProps) {
-  return <form {...props} {...stylex.props(styles.base, sx)} />;
+export function Form({ ref, sx, ...props }: FormProps) {
+  return <form ref={ref} {...props} {...stylex.props(styles.base, sx)} />;
 }
 
 const styles = stylex.create({

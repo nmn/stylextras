@@ -5,45 +5,69 @@
  * LICENSE file in the root directory of this source tree.
  */
 import * as stylex from "@stylexjs/stylex";
-import { Link } from "lucide-react";
+import { Link as UILink } from "@stylextras/ui/link";
+import { Typography } from "@stylextras/ui/typography";
+import { Link as LinkIcon } from "lucide-react";
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { headingMarker } from "./mdx.stylex";
 import { vars } from "@/theming/vars.stylex";
 
 type Types = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-type HeadingProps<T extends Types> = Omit<
-  ComponentPropsWithoutRef<T>,
+type HeadingProps = Omit<
+  ComponentPropsWithoutRef<"h1">,
   "as" | "className" | "style"
 > & {
-  as?: T;
+  as?: Types;
   xstyle?: stylex.StyleXStyles;
 };
 
-export default function Heading<T extends Types = "h1">({
+type TypographyHeadingProps = Omit<
+  ComponentPropsWithoutRef<"h1">,
+  "className" | "style"
+> & {
+  as: Types;
+  sx?: stylex.StyleXStyles;
+};
+
+const TypographyHeading = Typography as unknown as (
+  props: TypographyHeadingProps,
+) => ReactElement;
+
+export default function Heading({
   as,
   xstyle,
   ...props
-}: HeadingProps<T>): ReactElement {
+}: HeadingProps): ReactElement {
   const As = as ?? "h1";
+  const size = sizes[As as keyof typeof sizes] ?? {};
 
-  if (!props.id) return <As {...stylex.props(xstyle)} {...props} />;
+  if (!props.id) {
+    return (
+      <TypographyHeading
+        as={As}
+        sx={[styles.heading, size, xstyle] as stylex.StyleXStyles}
+        {...props}
+      />
+    );
+  }
 
   return (
-    <As
-      {...stylex.props(
+    <TypographyHeading
+      as={As}
+      sx={[
         styles.heading,
-        sizes[As as keyof typeof sizes] ?? {},
+        size,
         stylex.defaultMarker(),
         headingMarker,
         xstyle,
-      )}
+      ] as stylex.StyleXStyles}
       {...props}
     >
-      <a data-card="" href={`#${props.id}`} {...stylex.props(styles.anchor)}>
+      <UILink data-card="" href={`#${props.id}`} sx={styles.anchor}>
         {props.children}
-      </a>
-      <Link aria-hidden {...stylex.props(styles.icon)} />
-    </As>
+      </UILink>
+      <LinkIcon aria-hidden {...stylex.props(styles.icon)} />
+    </TypographyHeading>
   );
 }
 
@@ -53,13 +77,17 @@ const styles = stylex.create({
     flexDirection: "row",
     gap: 8,
     alignItems: "center",
+    maxWidth: "none",
     marginTop: "1em",
+    overflowWrap: "normal",
     scrollMarginTop: "7rem",
     // marginBottom: '0.5em',
   },
   anchor: {
     display: "inline-flex",
     gap: 8,
+    fontFamily: "inherit",
+    fontSize: "inherit",
     color: "inherit",
     textDecoration: "none",
   },

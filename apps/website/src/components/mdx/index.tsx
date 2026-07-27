@@ -11,20 +11,29 @@ import { vars } from '@/theming/vars.stylex'
 import { StyleXStyles } from '@stylexjs/stylex'
 import * as stylex from '@stylexjs/stylex'
 import { Button as AriaButton } from '@stylextras/ui/button'
-import type { ComponentProps, HTMLAttributes } from 'react'
+import { Collapsible, CollapsibleTrigger } from '@stylextras/ui/collapsible'
+import {
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@stylextras/ui/table'
+import { Typography } from '@stylextras/ui/typography'
+import type { ComponentProps, ComponentPropsWithoutRef, HTMLAttributes } from 'react'
 import Dial from '../Dial'
-import { Callout, CalloutContainer, CalloutDescription, CalloutTitle } from './Callout'
+import { Callout, CalloutContainer } from './Callout'
 import { Card, Cards } from './Cards'
 import { CodeBlock, Pre } from './CodeBlock'
-import { Accordion, Accordions, Details, Summary } from './Details'
 import Heading from './Heading'
 import Image from './Image'
 import { LLMInstallationFile, LLMStylingFile } from './LLMFiles'
 import MDXLink from './Link'
 import { DevInstallExample } from './PackageInstall'
-import { TabItem, Tabs } from './Tabs'
+import Table from './Table'
 import { Card as WhenDemo } from './WhenDemo'
-import { Li, Ol, P, Ul } from './core'
 import { preMarker } from './mdx.stylex'
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
@@ -34,9 +43,41 @@ type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   xstyle?: StyleXStyles
 }
 
-// PENDING ELEMENTS:
-//
-// table
+function Paragraph({
+  xstyle,
+  ...props
+}: Omit<ComponentPropsWithoutRef<'p'>, 'className' | 'style'> & {
+  xstyle?: StyleXStyles
+}) {
+  return <Typography as="p" sx={[styles.p, stylex.defaultMarker(), xstyle]} {...props} />
+}
+
+function UnorderedList({
+  xstyle,
+  ...props
+}: Omit<ComponentPropsWithoutRef<'ul'>, 'className' | 'style'> & {
+  xstyle?: StyleXStyles
+}) {
+  return <ul {...stylex.props(styles.list, styles.ul, stylex.defaultMarker(), xstyle)} {...props} />
+}
+
+function OrderedList({
+  xstyle,
+  ...props
+}: Omit<ComponentPropsWithoutRef<'ol'>, 'className' | 'style'> & {
+  xstyle?: StyleXStyles
+}) {
+  return <ol {...stylex.props(styles.list, styles.ol, stylex.defaultMarker(), xstyle)} {...props} />
+}
+
+function ListItem({
+  xstyle,
+  ...props
+}: Omit<ComponentPropsWithoutRef<'li'>, 'className' | 'style'> & {
+  xstyle?: StyleXStyles
+}) {
+  return <li {...stylex.props(styles.li, stylex.defaultMarker(), xstyle)} {...props} />
+}
 
 export const mdxComponents = {
   a: MDXLink,
@@ -49,27 +90,27 @@ export const mdxComponents = {
   code: (props: StyleXHTMLProps<HTMLElement>) => (
     <code {...props} {...stylex.props(styles.code, stylex.defaultMarker())} />
   ),
-  p: P,
-  ul: Ul,
-  ol: Ol,
-  li: Li,
-  TabItem,
-  Tabs,
+  p: Paragraph,
+  ul: UnorderedList,
+  ol: OrderedList,
+  li: ListItem,
+  table: Table,
+  thead: TableHeader,
+  tbody: TableBody,
+  tfoot: TableFooter,
+  tr: TableRow,
+  th: TableHead,
+  td: TableCell,
+  caption: TableCaption,
   Dial,
   DevInstallExample,
   WhenDemo,
   Card,
   Cards,
-  details: Details,
-  summary: Summary,
-  Accordion,
-  Accordions,
-  Details,
-  Summary,
+  details: Collapsible,
+  summary: CollapsibleTrigger,
   Callout,
   CalloutContainer,
-  CalloutTitle,
-  CalloutDescription,
   img: Image,
   pre: (props: ComponentProps<'pre'>) => (
     <CodeBlock {...props}>
@@ -85,6 +126,47 @@ export const mdxComponents = {
 }
 
 const styles = stylex.create({
+  p: {
+    marginTop: {
+      default: '1.25em',
+      ':first-child': 0,
+    },
+    marginBottom: {
+      default: '1.25em',
+      ':last-child': 0,
+    },
+    color: vars['--color-fd-foreground'],
+  },
+  list: {
+    paddingInlineStart: '1.25rem',
+    marginTop: {
+      default: '1.25em',
+      [stylex.when.ancestor(':where(p)')]: 0,
+      [stylex.when.ancestor(':where(ul, ol)')]: '0.75em',
+    },
+  },
+  ul: {
+    listStyleType: 'disc',
+  },
+  ol: {
+    listStyleType: {
+      default: 'decimal',
+      ':is([type="A"])': 'upper-alpha',
+      ':is([type="I"])': 'upper-roman',
+      ':is([type="a"])': 'lower-alpha',
+      ':is([type="i"])': 'lower-roman',
+    },
+  },
+  li: {
+    minWidth: 0,
+    overflowWrap: 'anywhere',
+    paddingInlineStart: {
+      default: 0,
+      [stylex.when.ancestor(':where(ol)')]: '0.375em',
+      [stylex.when.ancestor(':where(ul)')]: 0,
+    },
+    marginBlock: '0.5em',
+  },
   code: {
     paddingBlock: {
       default: 3,

@@ -1,5 +1,151 @@
 import { type Locator, expect, test } from '@playwright/test'
 
+const websitePalette = {
+  light: {
+    '--color-code-green': 'hsl(146, 55%, 31%)',
+    '--color-fd-accent': 'hsl(222, 16%, 83%)',
+    '--color-fd-accent-foreground': 'hsl(222, 67%, 58%)',
+    '--color-fd-background': 'hsl(0, 0%, 100%)',
+    '--color-fd-border': 'hsla(0, 0%, 80%, 55%)',
+    '--color-fd-card': 'hsl(0, 0%, 97%)',
+    '--color-fd-card-foreground': 'hsl(0, 0%, 3.9%)',
+    '--color-fd-error': 'oklch(63.7% 0.237 25.331)',
+    '--color-fd-foreground': 'hsl(0, 0%, 3.9%)',
+    '--color-fd-info': 'oklch(62.3% 0.214 259.815)',
+    '--color-fd-muted': 'hsl(0, 0%, 96.1%)',
+    '--color-fd-muted-foreground': 'hsl(0, 0%, 42%)',
+    '--color-fd-overlay': 'transparent',
+    '--color-fd-popover': 'hsl(0, 0%, 98%)',
+    '--color-fd-popover-foreground': 'hsl(0, 0%, 15.1%)',
+    '--color-fd-primary': 'hsl(266, 58%, 57%)',
+    '--color-fd-primary-foreground': 'hsl(0, 0%, 100%)',
+    '--color-fd-ring': 'hsl(267, 84%, 81%)',
+    '--color-fd-secondary': 'hsl(0, 0%, 93.1%)',
+    '--color-fd-secondary-foreground': 'hsl(0, 0%, 9%)',
+    '--color-fd-success': 'oklch(72.3% 0.219 149.579)',
+    '--color-fd-warning': 'oklch(76.9% 0.188 70.08)',
+  },
+  dark: {
+    '--color-code-green': 'hsl(146, 52%, 68%)',
+    '--color-fd-accent': 'hsl(222, 16%, 23%)',
+    '--color-fd-accent-foreground': 'hsl(222, 87%, 78%)',
+    '--color-fd-background': 'hsl(0, 0%, 7%)',
+    '--color-fd-border': 'hsla(0, 0%, 30%, 25%)',
+    '--color-fd-card': 'hsl(0, 0%, 8.5%)',
+    '--color-fd-card-foreground': 'hsl(0, 0%, 98%)',
+    '--color-fd-error': 'oklch(63.7% 0.237 25.331)',
+    '--color-fd-foreground': 'hsl(0, 0%, 92%)',
+    '--color-fd-info': 'oklch(62.3% 0.214 259.815)',
+    '--color-fd-muted': 'hsl(0, 0%, 12.9%)',
+    '--color-fd-muted-foreground': 'hsla(0, 0%, 70%, 0.8)',
+    '--color-fd-overlay': 'hsla(0, 0%, 0%, 0.2)',
+    '--color-fd-popover': 'hsl(0, 0%, 11.6%)',
+    '--color-fd-popover-foreground': 'hsl(0, 0%, 86.9%)',
+    '--color-fd-primary': 'hsl(270, 72%, 77%)',
+    '--color-fd-primary-foreground': 'hsl(240, 23%, 9%)',
+    '--color-fd-ring': 'hsl(267, 84%, 81%)',
+    '--color-fd-secondary': 'hsl(0, 0%, 12.9%)',
+    '--color-fd-secondary-foreground': 'hsl(0, 0%, 70%)',
+    '--color-fd-success': 'oklch(72.3% 0.219 149.579)',
+    '--color-fd-warning': 'oklch(76.9% 0.188 70.08)',
+  },
+} as const
+
+for (const appearance of ['light', 'dark'] as const) {
+  test(`website ${appearance} preset preserves the legacy color bridge`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: appearance })
+    await page.addInitScript((theme) => {
+      localStorage.setItem('theme', theme)
+    }, appearance)
+    await page.goto('/')
+
+    await expect(page.locator('html')).toHaveCSS('color-scheme', appearance)
+    await expect
+      .poll(() =>
+        page.locator('body').evaluate((body, expected) => {
+          const probe = document.createElement('span')
+          body.append(probe)
+          probe.style.color = 'var(--color-code-green)'
+          const actual = getComputedStyle(probe).color
+          probe.style.color = expected
+          const target = getComputedStyle(probe).color
+          probe.remove()
+          return actual === target
+        }, websitePalette[appearance]['--color-code-green']),
+      )
+      .toBe(true)
+
+    const resolved = await page.locator('body').evaluate((body, palette) => {
+      const probe = document.createElement('span')
+      probe.hidden = true
+      body.append(probe)
+      const canvas = document.createElement('canvas')
+      canvas.width = 1
+      canvas.height = 1
+      const context = canvas.getContext('2d', { willReadFrequently: true })
+      if (!context) throw new Error('Canvas 2D context is unavailable')
+
+      const resolve = (value: string) => {
+        probe.style.color = value
+        const css = getComputedStyle(probe).color
+        context.clearRect(0, 0, 1, 1)
+        context.fillStyle = css
+        context.fillRect(0, 0, 1, 1)
+        return {
+          css,
+          pixel: Array.from(context.getImageData(0, 0, 1, 1).data),
+        }
+      }
+
+      const result = Object.fromEntries(
+        Object.entries(palette).map(([name, expected]) => [
+          name,
+          {
+            actual: resolve(`var(${name})`),
+            expected: resolve(expected),
+          },
+        ]),
+      )
+      probe.remove()
+      return result
+    }, websitePalette[appearance])
+
+    for (const [name, value] of Object.entries(resolved)) {
+      if (value.actual.css === value.expected.css) continue
+      for (const [index, channel] of value.actual.pixel.entries()) {
+        expect(Math.abs(channel! - value.expected.pixel[index]!), `${name}[${index}]`).toBeLessThanOrEqual(
+          1,
+        )
+      }
+    }
+  })
+}
+
+for (const appearance of ['light', 'dark'] as const) {
+  test(`catalog previews inherit the ${appearance} website appearance by default`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: appearance })
+    await page.addInitScript((theme) => {
+      localStorage.setItem('theme', theme)
+    }, appearance)
+
+    await page.goto('/docs/components/button')
+    const componentPreview = page.locator('[data-component-demo="Button"]')
+    await expect(componentPreview).toHaveAttribute('data-preview-ready', 'true')
+    await expect(componentPreview).toHaveAttribute('data-preview-appearance', 'inherit')
+    await expect(componentPreview).toHaveCSS('color-scheme', appearance)
+
+    await page.goto('/docs')
+    const referenceGallery = page.getByTestId('reference-gallery')
+    await expect(referenceGallery).toHaveAttribute('data-preview-ready', 'true')
+    await expect(referenceGallery).toHaveAttribute('data-preview-appearance', 'inherit')
+    await expect(referenceGallery).toHaveCSS('color-scheme', appearance)
+  })
+}
+
 const accentThemeNames = [
   'Amber',
   'Blue',

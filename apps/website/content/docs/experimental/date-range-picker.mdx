@@ -45,7 +45,12 @@ import { DateRangePicker } from "@stylextras/ui/experimental/date-range-picker";
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-The native controls work without JavaScript and retain platform date entry, validation, reset, and form submission.
+`DateRangePicker` enhances the zero-JavaScript `RangeCalendar` composition with
+cross-field range-order validation. It uses the end input's native constraint
+validation and `setCustomValidity`, exposes `aria-invalid` only after the user
+interacts, associates a localizable error with `aria-errormessage`, preserves
+caller descriptions, and clears interaction state on form reset. Native entry,
+external form association, and submission remain intact.
 
 ## API reference
 
@@ -59,5 +64,7 @@ Complete native/inherited prop base: `RangeCalendarProps`. The props below compl
 - `startLabel`, `endLabel` — `ReactNode`.
 - `startName`, `endName` — `string`.
 - `startDefaultValue`, `endDefaultValue` — `string`.
+- `startProps`, `endProps` — Per-field props, including refs and event handlers, merged with the wrapper's validation behavior.
+- `invalidRangeMessage` — Plain localized range-order error. Default: `'End date must be on or after start date.'`.
 - `min`, `max` — ISO date strings.
 - `sx` — `stylex.StyleXStyles`.

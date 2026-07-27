@@ -1,11 +1,13 @@
 import * as stylex from '@stylexjs/stylex'
 import { typography } from '../tokens/typography.stylex'
 
-export const uiTheme = stylex.createTheme(typography, {})
+export type TypographyTheme = stylex.Theme<typeof typography>
 
-export const docsTheme = stylex.createTheme(typography, {
+export const uiTheme: TypographyTheme = stylex.createTheme(typography, {})
+
+export const docsTheme: TypographyTheme = stylex.createTheme(typography, {
   fontSizeMin: '0.875rem',
-  fontSizeMax: '0.9375rem',
+  fontSizeMax: '0.875rem',
   scaleMin: '1.125',
   scaleMax: '1.2',
   fontSans: `ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
@@ -23,7 +25,7 @@ export const docsTheme = stylex.createTheme(typography, {
   weightBold: '700',
 })
 
-export const editorialTheme = stylex.createTheme(typography, {
+export const editorialTheme: TypographyTheme = stylex.createTheme(typography, {
   fontSizeMin: '0.9375rem',
   fontSizeMax: '1rem',
   scaleMin: '1.15',
@@ -38,7 +40,7 @@ export const editorialTheme = stylex.createTheme(typography, {
   trackingWide: '0.01em',
 })
 
-export const monoTheme = stylex.createTheme(typography, {
+export const monoTheme: TypographyTheme = stylex.createTheme(typography, {
   fontSizeMin: '0.8125rem',
   fontSizeMax: '0.875rem',
   scaleMin: '1.12',
@@ -54,7 +56,7 @@ export const monoTheme = stylex.createTheme(typography, {
   trackingWide: '0.03em',
 })
 
-export const industrialTheme = stylex.createTheme(typography, {
+export const industrialTheme: TypographyTheme = stylex.createTheme(typography, {
   fontSizeMin: '0.875rem',
   fontSizeMax: '0.9375rem',
   scaleMin: '1.14',
@@ -73,7 +75,7 @@ export const industrialTheme = stylex.createTheme(typography, {
 })
 
 /** Rounded, friendly type for consumer and wellness products. */
-export const humanistTheme = stylex.createTheme(typography, {
+export const humanistTheme: TypographyTheme = stylex.createTheme(typography, {
   fontSizeMin: '0.875rem',
   fontSizeMax: '0.9375rem',
   scaleMin: '1.15',
@@ -89,7 +91,7 @@ export const humanistTheme = stylex.createTheme(typography, {
 })
 
 /** Small, tight type scale for data-dense dashboards and utility UI. */
-export const compactTheme = stylex.createTheme(typography, {
+export const compactTheme: TypographyTheme = stylex.createTheme(typography, {
   fontSizeMin: '0.75rem',
   fontSizeMax: '0.8125rem',
   scaleMin: '1.1',
@@ -102,7 +104,15 @@ export const compactTheme = stylex.createTheme(typography, {
   trackingWide: '0.02em',
 })
 
-export const typographyThemes = {
+export const typographyThemes: Readonly<{
+  ui: TypographyTheme
+  docs: TypographyTheme
+  editorial: TypographyTheme
+  mono: TypographyTheme
+  industrial: TypographyTheme
+  humanist: TypographyTheme
+  compact: TypographyTheme
+}> = {
   ui: uiTheme,
   docs: docsTheme,
   editorial: editorialTheme,
@@ -110,6 +120,6 @@ export const typographyThemes = {
   industrial: industrialTheme,
   humanist: humanistTheme,
   compact: compactTheme,
-} as const
+}
 
 export type TypographyThemeName = keyof typeof typographyThemes

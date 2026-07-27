@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type { ComponentPropsWithoutRef } from 'react'
+import type { ComponentPropsWithRef } from 'react'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
 
@@ -8,7 +8,7 @@ export type ImageCropperRatio = 'square' | 'video' | 'portrait' | 'landscape'
 export type ImageCropperPosition = 'center' | 'top' | 'bottom' | 'start' | 'end'
 
 export type ImageCropperProps = Omit<
-  ComponentPropsWithoutRef<'img'>,
+  ComponentPropsWithRef<'img'>,
   'alt' | 'className' | 'style'
 > & {
   alt: string
@@ -34,6 +34,7 @@ export function ImageCropPreview({
   frameSx,
   position = 'center',
   ratio = 'square',
+  ref,
   src,
   sx,
   ...props
@@ -41,6 +42,7 @@ export function ImageCropPreview({
   return (
     <div {...stylex.props(frameStyles.base, ratioStyles[ratio], frameSx)}>
       <img
+        ref={ref}
         {...props}
         alt={alt}
         src={src}

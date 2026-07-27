@@ -21,15 +21,15 @@ import {
   addDays,
   addMonths,
   addMonthsToValue,
-  clampDateValue,
+  clampNormalizedDateValue,
   createMonthGrid,
   formatDateValue,
   formatDayLabel,
   formatMonthLabel,
   getWeekStartsOn,
   getWeekdayLabels,
-  isDateDisabled,
   monthForValue,
+  normalizeDateBounds,
   parseDateValue,
   todayValue,
 } from './date-utils'
@@ -73,11 +73,14 @@ export function Calendar({
   const selectedValue = controlled ? value : internalValue
   const validSelectedValue = parseDateValue(selectedValue) ? selectedValue : ''
   const suppliedToday = todayProp && parseDateValue(todayProp) ? todayProp : ''
+  const bounds = useMemo(() => normalizeDateBounds(min, max), [max, min])
+  const isDisabled = (dateValue: string) =>
+    Boolean((bounds.min && dateValue < bounds.min) || (bounds.max && dateValue > bounds.max))
   // Keep the server and first client render deterministic. When neither a
   // selection nor a caller-supplied date exists, the local date is resolved
   // after hydration before the grid is exposed.
   const rawInitialValue = validSelectedValue || suppliedToday || '1970-01-01'
-  const initialValue = clampDateValue(rawInitialValue, min, max)
+  const initialValue = clampNormalizedDateValue(rawInitialValue, bounds)
   const normalizedWeekStartsOn = ((weekStartsOn % 7) + 7) % 7
   const [visibleMonth, setVisibleMonth] = useState(
     () => monthForValue(initialValue)!,
@@ -87,10 +90,31 @@ export function Calendar({
   const dayRefs = useRef(new Map<string, HTMLButtonElement>())
   const shouldFocus = useRef(false)
   const calendarReady = Boolean(validSelectedValue || currentDate)
-  const days = useMemo(
-    () => createMonthGrid(visibleMonth, normalizedWeekStartsOn),
-    [visibleMonth, normalizedWeekStartsOn],
+  const boundedActiveValue = clampNormalizedDateValue(activeValue, bounds)
+  const visibleMonthLastDay = new Date(
+    Date.UTC(visibleMonth.year, visibleMonth.month, 0),
+  ).getUTCDate()
+  const visibleMonthBeforeMin = Boolean(
+    bounds.min &&
+      formatDateValue({ ...visibleMonth, day: visibleMonthLastDay }) < bounds.min,
   )
+  const visibleMonthAfterMax = Boolean(
+    bounds.max && formatDateValue({ ...visibleMonth, day: 1 }) > bounds.max,
+  )
+  // Bounds can change between renders. Derive the rendered month synchronously so
+  // the grid never exposes a disabled roving tab stop while state catches up.
+  const renderedMonth =
+    visibleMonthBeforeMin || visibleMonthAfterMax
+      ? monthForValue(boundedActiveValue)!
+      : visibleMonth
+  const days = useMemo(
+    () => createMonthGrid(renderedMonth, normalizedWeekStartsOn),
+    [renderedMonth, normalizedWeekStartsOn],
+  )
+  const rovingValue =
+    days.some((day) => day.value === boundedActiveValue && !isDisabled(day.value))
+      ? boundedActiveValue
+      : (days.find((day) => !isDisabled(day.value))?.value ?? boundedActiveValue)
   const weeks = useMemo(
     () => Array.from({ length: 6 }, (_, index) => days.slice(index * 7, index * 7 + 7)),
     [days],
@@ -99,21 +123,33 @@ export function Calendar({
     () => getWeekdayLabels(locale, normalizedWeekStartsOn),
     [locale, normalizedWeekStartsOn],
   )
-  const previousMonth = addMonths(visibleMonth, -1)
-  const nextMonth = addMonths(visibleMonth, 1)
+  const previousMonth = addMonths(renderedMonth, -1)
+  const nextMonth = addMonths(renderedMonth, 1)
   const previousMonthLastDay = new Date(
     Date.UTC(previousMonth.year, previousMonth.month, 0),
   ).getUTCDate()
   const previousMonthDisabled = Boolean(
-    min && formatDateValue({ ...previousMonth, day: previousMonthLastDay }) < min,
+    bounds.min && formatDateValue({ ...previousMonth, day: previousMonthLastDay }) < bounds.min,
   )
-  const nextMonthDisabled = Boolean(max && formatDateValue(nextMonth) > max)
+  const nextMonthDisabled = Boolean(bounds.max && formatDateValue(nextMonth) > bounds.max)
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production' && bounds.invalidRange) {
+      console.warn(
+        `Calendar received min "${min}" after max "${max}". Both bounds were ignored.`,
+      )
+    }
+  }, [bounds.invalidRange, max, min])
+
+  useEffect(() => {
+    if (rovingValue !== activeValue) setActiveValue(rovingValue)
+  }, [activeValue, rovingValue])
 
   useEffect(() => {
     if (!shouldFocus.current) return
     shouldFocus.current = false
     dayRefs.current.get(activeValue)?.focus()
-  }, [activeValue, visibleMonth])
+  }, [activeValue, renderedMonth])
 
   useEffect(() => {
     setCurrentDate(suppliedToday || todayValue())
@@ -121,24 +157,24 @@ export function Calendar({
 
   useEffect(() => {
     if (!selectedValue || !parseDateValue(selectedValue)) return
-    const nextActiveValue = clampDateValue(selectedValue, min, max)
+    const nextActiveValue = clampNormalizedDateValue(selectedValue, bounds)
     setActiveValue(nextActiveValue)
     setVisibleMonth(monthForValue(nextActiveValue)!)
-  }, [max, min, selectedValue])
+  }, [bounds, selectedValue])
 
   useEffect(() => {
     if (validSelectedValue || !currentDate) return
-    const nextActiveValue = clampDateValue(currentDate, min, max)
+    const nextActiveValue = clampNormalizedDateValue(currentDate, bounds)
     setActiveValue(nextActiveValue)
     setVisibleMonth(monthForValue(nextActiveValue)!)
-  }, [currentDate, max, min, validSelectedValue])
+  }, [bounds, currentDate, validSelectedValue])
 
   useEffect(() => {
-    const nextActiveValue = clampDateValue(activeValue, min, max)
+    const nextActiveValue = clampNormalizedDateValue(activeValue, bounds)
     if (nextActiveValue === activeValue) return
     setActiveValue(nextActiveValue)
     setVisibleMonth(monthForValue(nextActiveValue)!)
-  }, [activeValue, max, min])
+  }, [activeValue, bounds])
 
   if (!calendarReady) {
     return (
@@ -151,7 +187,7 @@ export function Calendar({
   }
 
   const choose = (nextValue: string) => {
-    if (isDateDisabled(nextValue, min, max)) return
+    if (isDisabled(nextValue)) return
     if (!controlled) setInternalValue(nextValue)
     setActiveValue(nextValue)
     setVisibleMonth(monthForValue(nextValue)!)
@@ -159,14 +195,14 @@ export function Calendar({
   }
 
   const moveFocus = (nextValue: string) => {
-    nextValue = clampDateValue(nextValue, min, max)
+    nextValue = clampNormalizedDateValue(nextValue, bounds)
     shouldFocus.current = true
     setActiveValue(nextValue)
     setVisibleMonth(monthForValue(nextValue)!)
   }
 
   const moveMonth = (amount: number) => {
-    const nextActiveValue = clampDateValue(addMonthsToValue(activeValue, amount), min, max)
+    const nextActiveValue = clampNormalizedDateValue(addMonthsToValue(activeValue, amount), bounds)
     setActiveValue(nextActiveValue)
     setVisibleMonth(monthForValue(nextActiveValue)!)
   }
@@ -234,7 +270,7 @@ export function Calendar({
           ‹
         </Button>
         <div aria-live="polite" {...stylex.props(styles.monthLabel)}>
-          {formatMonthLabel(visibleMonth, locale)}
+          {formatMonthLabel(renderedMonth, locale)}
         </div>
         <Button
           size="icon-sm"
@@ -248,7 +284,7 @@ export function Calendar({
       </div>
       <div
         role="grid"
-        aria-label={ariaLabelledby ? undefined : (ariaLabel ?? formatMonthLabel(visibleMonth, locale))}
+        aria-label={ariaLabelledby ? undefined : (ariaLabel ?? formatMonthLabel(renderedMonth, locale))}
         aria-labelledby={ariaLabelledby}
         {...stylex.props(styles.grid)}
       >
@@ -267,8 +303,8 @@ export function Calendar({
         {weeks.map((week) => (
           <div key={week[0]?.value} role="row" {...stylex.props(styles.row)}>
             {week.map((day) => {
-              const disabled = isDateDisabled(day.value, min, max)
-              const active = activeValue === day.value
+              const disabled = isDisabled(day.value)
+              const active = rovingValue === day.value
               const selected = selectedValue === day.value
               return (
                 <div

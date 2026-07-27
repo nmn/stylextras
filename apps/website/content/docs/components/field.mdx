@@ -22,20 +22,32 @@ export default function Example() {
     <>
       <Field>
         <FieldLabel htmlFor="field-email">Email</FieldLabel>
-        <Input id="field-email" type="email" placeholder="you@example.com" />
-        <FieldDescription>
+        <Input
+          id="field-email"
+          aria-describedby="field-email-description"
+          type="email"
+          placeholder="you@example.com"
+        />
+        <FieldDescription id="field-email-description">
           Used only for account notifications.
         </FieldDescription>
       </Field>
       <Field>
         <FieldLabel htmlFor="field-handle">Handle</FieldLabel>
-        <Input id="field-handle" aria-invalid defaultValue="two words" />
-        <FieldError>Use letters, numbers, and hyphens only.</FieldError>
+        <Input
+          id="field-handle"
+          aria-describedby="field-handle-error"
+          aria-errormessage="field-handle-error"
+          aria-invalid="true"
+          defaultValue="two words"
+        />
+        <FieldError id="field-handle-error">
+          Use letters, numbers, and hyphens only.
+        </FieldError>
       </Field>
     </>
   );
 }
-('use client');
 ```
 
 ## Import
@@ -53,9 +65,11 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "@stylextras/ui/
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
-
-This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+Associate `FieldLabel` with its control through matching `htmlFor` and `id`.
+Reference help text with `aria-describedby`. When the control is invalid, set
+`aria-invalid="true"` and reference `FieldError` with `aria-errormessage`.
+`FieldError` is static by default; opt into `role="alert"` only when a newly
+inserted error must be announced immediately.
 
 ## API reference
 
@@ -81,7 +95,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 
 Complete native/inherited prop base: `FieldDescriptionProps`. The props below complete `FieldErrorProps`.
 
-- `role` — `FieldErrorProps["role"]`. Default: `'alert'`.
+- `role` — Native paragraph role. No default; live announcement is caller opt-in.
 - `sx` — `stylex.StyleXStyles`.
 
 ### FieldLabel

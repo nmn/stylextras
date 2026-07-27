@@ -1,13 +1,13 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"input">;
+type BaseProps = ComponentPropsWithRef<"input">;
 
 export type InputFieldsProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
@@ -22,8 +22,8 @@ export type InputFieldsProps = Omit<BaseProps, "className" | "style"> & {
  * - Relies on native input semantics.
  * - Labeling and error associations must be composed by the caller.
  */
-export function InputFields({ sx, ...props }: InputFieldsProps) {
-  return <input {...props} {...stylex.props(styles.base, sx)} />;
+export function InputFields({ ref, sx, ...props }: InputFieldsProps) {
+  return <input ref={ref} {...props} {...stylex.props(styles.base, sx)} />;
 }
 
 const styles = stylex.create({

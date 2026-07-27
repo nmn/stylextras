@@ -7,6 +7,7 @@ import { stroke } from '../tokens/stroke.stylex'
 import {
   ContextMenu,
   ContextMenuButton,
+  ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
   ContextMenuSeparator,
@@ -14,6 +15,7 @@ import {
 } from './index'
 
 const menuId = 'canvas-context-menu'
+const groupLabelId = 'canvas-context-menu-label'
 
 export default function Example() {
   return (
@@ -26,9 +28,11 @@ export default function Example() {
         Open the context menu anywhere in this area
       </ContextMenuTrigger>
       <ContextMenu id={menuId} aria-label="Canvas actions">
-        <ContextMenuLabel>Canvas</ContextMenuLabel>
-        <ContextMenuItem>Paste</ContextMenuItem>
-        <ContextMenuItem>Duplicate</ContextMenuItem>
+        <ContextMenuGroup aria-labelledby={groupLabelId}>
+          <ContextMenuLabel id={groupLabelId}>Canvas</ContextMenuLabel>
+          <ContextMenuItem>Paste</ContextMenuItem>
+          <ContextMenuItem>Duplicate</ContextMenuItem>
+        </ContextMenuGroup>
         <ContextMenuSeparator />
         <ContextMenuItem>Delete</ContextMenuItem>
       </ContextMenu>

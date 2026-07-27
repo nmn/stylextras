@@ -23,7 +23,7 @@ import { Toast, Toaster, ToastDescription, ToastTitle, toast } from './index';
 export default function Example() {
   return (
     <>
-      <ol aria-label="Toast variants" {...stylex.props(styles.list)}>
+      <ol role="list" aria-label="Toast variants" {...stylex.props(styles.list)}>
         <Toast>
           <div>
             <ToastTitle>Draft restored</ToastTitle>
@@ -91,7 +91,7 @@ import { Toast, ToastDescription, Toaster, ToastTitle } from "@stylextras/ui/toa
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-The queue uses one polite and one assertive text-only announcer, keeping interactive controls outside live regions. Primitive string/number titles and descriptions are extracted safely; pass `announcement` whenever the visual content contains React elements. Batched records are announced together without cloning visible nodes, IDs, or controls. Visual urgency is independent from announcement priority. Timers pause while the page is hidden and while users hover or focus notifications; actionable notifications remain until dismissed unless a duration is supplied.
+The queue uses one polite and one assertive text-only announcer owner, keeping interactive controls outside live regions. Primitive string/number titles and descriptions are extracted safely; `announcement` is required whenever visual content contains React elements. Only visible FIFO records start timers or announce, so queued actions never become audible before they are reachable. Visual urgency is independent from announcement priority. Timers pause while the page is hidden and while users hover or focus notifications; actionable notifications remain until dismissed unless a duration is supplied.
 
 ## API reference
 
@@ -102,19 +102,20 @@ The queue uses one polite and one assertive text-only announcer, keeping interac
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "role" | "style">`. The props below complete `ToastProps`.
 
 - `sx` — `stylex.StyleXStyles`.
-- `priority` — `"polite" | "assertive" | "off"`. Default: `'polite'`.
+- `announcement` — Plain text required when `priority` is `"polite"` or `"assertive"`.
+- `priority` — `"polite" | "assertive" | "off"`. Default: `'off'`.
 - `variant` — `"default" | "success" | "danger"`. Default: `'default'`.
 
 ### toast
 
 `toast(options)` queues a visual toast and returns `{ id, dismiss }`.
 
-- `announcement` — `string`. Plain live-region text for rich `title` or `description` content.
+- `announcement` — `string`. Required plain live-region text for rich `title` or `description` content.
 - `description` — `ReactNode`.
 - `duration` — `number`. Defaults to `4000`, or `0` when an action is present.
 - `id` — `string`.
 - `priority` — `"polite" | "assertive"`. Default: `'polite'`.
-- `title` — `ReactNode`. Required.
+- `title` — Primitive text, or rich `ReactNode` when `announcement` is supplied. Required.
 - `variant` — `"default" | "success" | "danger"`. Default: `'default'`.
 
 ### ToastDescription
@@ -132,7 +133,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ol">, "children" | "className" | "style">`. The props below complete `ToasterProps`.
 
 - `aria-label` — `ToasterProps["aria-label"]`. Default: `'Notifications'`.
-- `dismissLabel` — `string`. Default: `'Dismiss notification'`.
+- `getDismissLabel` — `(toast: ToastDismissContext) => string`. Defaults to a contextual label derived from the title or announcement.
 - `limit` — `number`. Default: `3`.
 - `sx` — `stylex.StyleXStyles`.
 

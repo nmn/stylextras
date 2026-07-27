@@ -21,7 +21,8 @@ import { Switch } from './index';
 
 export default function Example() {
   return (
-    <>
+    <fieldset>
+      <legend>Profile preferences</legend>
       <Label sx={styles.option}>
         <Switch defaultChecked /> Notifications
       </Label>
@@ -31,14 +32,13 @@ export default function Example() {
       <Label sx={styles.option}>
         <Switch controlSize="sm" /> Compact mode
       </Label>
-    </>
+    </fieldset>
   );
 }
 
 const styles = stylex.create({
   option: { alignItems: 'center', display: 'flex', gap: spacing.sm },
 });
-('use client');
 ```
 
 ## Import
@@ -55,7 +55,9 @@ import { Switch } from "@stylextras/ui/switch";
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+Wrapping label text names each native switch. When several switches answer one
+question, use a `fieldset` and `legend` to expose the relationship. Native
+checked state, validation, reset, and submission remain browser-owned.
 
 ## API reference
 

@@ -60,7 +60,30 @@ export function ThemeBoundary({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The color catalog includes neutral bases, the coordinated `docs` palette used by the Stylextras documentation website, plus amber, blue, cyan, emerald, fuchsia, green, indigo, lime, orange, pink, purple, red, rose, sky, teal, violet, and yellow accents. Independent theme maps are exported for color, spacing, radius, stroke, typography, elevation, blur, and motion, and every map exposes a matching `docs` key. Each set keeps a small themeable core and same-set derived values; there is no foundation/semantic/component-token layering.
+The color catalog includes neutral bases, the coordinated `docs` palette used
+by the documentation website and component galleries, plus amber, blue, cyan,
+emerald, fuchsia, green, indigo, lime, orange, pink, purple, red, rose, sky,
+teal, violet, and yellow accents. Independent theme maps are exported for
+color, spacing, radius, stroke, typography, elevation, blur, and motion, and
+every map exposes a matching `docs` key. The documentation design system is
+available as the existing `docs` style preset:
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { stylePresetThemes } from "@stylextras/ui/style-presets";
+
+export function DocsTheme({ children }: { children: React.ReactNode }) {
+  return (
+    <section {...stylex.props(...stylePresetThemes("docs"))}>
+      {children}
+    </section>
+  );
+}
+```
+
+Components consume the low-level token axes directly, so changing those themes
+changes the package components without replacing their built-in styles. Use
+`sx` for isolated layout or product-specific exceptions.
 
 ```tsx
 import { colors } from "@stylextras/ui/tokens/color";
@@ -96,13 +119,17 @@ import {
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
+  ComboboxList,
+  ComboboxStatus,
 } from "@stylextras/ui/combobox";
 
 <Combobox name="framework" defaultValue="react">
   <ComboboxInput aria-label="Framework" />
   <ComboboxContent>
-    <ComboboxItem value="react">React</ComboboxItem>
-    <ComboboxItem value="svelte">Svelte</ComboboxItem>
+    <ComboboxList>
+      <ComboboxItem value="react">React</ComboboxItem>
+      <ComboboxItem value="svelte">Svelte</ComboboxItem>
+    </ComboboxList>
     <ComboboxEmpty>No results found.</ComboboxEmpty>
   </ComboboxContent>
 </Combobox>;
@@ -113,12 +140,25 @@ import {
 Dialog and popover relationships are explicit and remain server-renderable:
 
 ```tsx
-import { Dialog, DialogClose, DialogTrigger } from "@stylextras/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@stylextras/ui/dialog";
 
 <>
   <DialogTrigger target="rename">Rename</DialogTrigger>
-  <Dialog id="rename" aria-labelledby="rename-title">
-    <h2 id="rename-title">Rename project</h2>
+  <Dialog
+    id="rename"
+    aria-labelledby="rename-title"
+    aria-describedby="rename-description"
+  >
+    <DialogTitle id="rename-title">Rename project</DialogTitle>
+    <DialogDescription id="rename-description">
+      Enter the new project name.
+    </DialogDescription>
     <DialogClose target="rename">Done</DialogClose>
   </Dialog>
 </>;
@@ -173,7 +213,7 @@ an explicit enhanced/lazy choice rather than part of the initial field bundle.
 
 ## Catalog
 
-Stable entries include Accordion, Alert, AlertDialog, AspectRatio, Avatar, Badge, Breadcrumb, Button, ButtonGroup, Calendar, Card, Carousel, Checkbox, Collapsible, Combobox, Command, ContextMenu, DatePicker, Dialog, Direction, Drawer, DropdownMenu, Empty, Field, HoverCard, Input, InputGroup, InputOTP, Item, Kbd, Label, Menubar, NavigationMenu, Popover, Progress, RadioGroup, Resizable, ScrollArea, Select, Separator, Sheet, Sidebar, Skeleton, Slider, Spinner, Switch, Table, Tabs, Textarea, Toast, Toggle, ToggleGroup, Tooltip, and Typography.
+Stable entries include Accordion, Alert, AlertDialog, AspectRatio, Avatar, Badge, Breadcrumb, Button, ButtonGroup, Calendar, Card, Carousel, Checkbox, Collapsible, Combobox, Command, CopyToClipboardButton, ContextMenu, DatePicker, Dialog, Direction, Drawer, DropdownMenu, Empty, Field, HoverCard, Input, InputGroup, InputOTP, Item, Kbd, Label, Link, Menubar, NavigationMenu, Popover, Progress, RadioGroup, Resizable, ScrollArea, Select, Separator, Sheet, Sidebar, Skeleton, Slider, Spinner, Switch, Table, TableOfContents, Tabs, Textarea, Toast, Toggle, ToggleGroup, Tooltip, and Typography.
 
 Advanced color controls, range date/time controls, editable text, file drop zones, image cropper, tag group, and tree are available only from `@stylextras/ui/experimental/*` until they meet the stable accessibility, browser, visual, and size gates.
 
@@ -205,6 +245,81 @@ There are no compatibility aliases in 0.2.
 The old component-token export is removed. Compile the package source in the
 consumer application, switch to canonical subpaths, and apply theme objects
 directly with `stylex.props()`.
+
+### Accessibility contract changes in 0.2 beta
+
+These are intentional beta-breaking changes. They favor native relationships,
+explicit names, and composite controls with one keyboard focus owner.
+
+| Previous composition | 0.2 beta composition |
+| --- | --- |
+| Static `Alert`, `FieldError`, or `FieldErrors` announced automatically | Static by default; pass `role="status"` or `role="alert"` only for a dynamic update |
+| `Link` or `ButtonLink` without a destination | A real `href` is required |
+| Combobox options directly in `ComboboxContent` | Put only options in `ComboboxList`; keep empty/status output beside the listbox |
+| Command options were buttons in the Tab order | `CommandItem` is a non-tabbable option controlled by the focused input |
+| `TableOfContentsItem level={…}` | Nest `TableOfContentsList` inside the parent item |
+| Unnamed navigation/widget regions | `Navbar`, `Toolbar`, `TableOfContents`, `Sidebar`, and `SidebarNavigation` require `aria-label` or `aria-labelledby` |
+| `ResizableHandle label="…"` | Supply `aria-label` or `aria-labelledby` and required `aria-controls` |
+| Rich toast content inferred from rendered React nodes | Supply an explicit plain-text `announcement`; primitive `Toast` announcements default to `off` |
+
+```tsx
+'use client';
+
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxStatus,
+} from "@stylextras/ui/combobox";
+
+<Combobox name="framework" required>
+  <ComboboxInput aria-label="Framework" />
+  <ComboboxContent>
+    <ComboboxList>
+      <ComboboxItem value="react">React</ComboboxItem>
+      <ComboboxItem value="svelte">Svelte</ComboboxItem>
+    </ComboboxList>
+    <ComboboxEmpty>No matching framework.</ComboboxEmpty>
+    <ComboboxStatus>
+      {(count) => `${count} framework${count === 1 ? "" : "s"} available.`}
+    </ComboboxStatus>
+  </ComboboxContent>
+</Combobox>
+```
+
+```tsx
+import {
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  TableOfContentsList,
+  TableOfContentsTitle,
+} from "@stylextras/ui/table-of-contents";
+
+<TableOfContents aria-labelledby="outline-title">
+  <TableOfContentsTitle id="outline-title">On this page</TableOfContentsTitle>
+  <TableOfContentsList>
+    <TableOfContentsItem>
+      <TableOfContentsLink href="#overview">Overview</TableOfContentsLink>
+      <TableOfContentsList>
+        <TableOfContentsItem>
+          <TableOfContentsLink href="#examples">Examples</TableOfContentsLink>
+        </TableOfContentsItem>
+      </TableOfContentsList>
+    </TableOfContentsItem>
+  </TableOfContentsList>
+</TableOfContents>
+```
+
+Layout primitives are neutral unless semantics are requested: `Content`
+defaults to `div`, and `HeaderLayout`/`SidebarLayout` render `main`, `header`, or
+`aside` only through their explicit `*As` options. `ScrollArea` and
+`TableScrollArea` enter the Tab order only with `tabIndex={0}`, which also
+requires an accessible name. Range inputs expose `startProps` and `endProps`,
+and experimental `TagList` now requires explicit `TagItem` children.
 
 ## Verification
 

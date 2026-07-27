@@ -14,6 +14,8 @@ import Example from "@stylextras/ui/dialog/example";
 ### Example code
 
 ```tsx
+'use client';
+
 import { ButtonGroup } from '../button-group';
 import { Field, FieldLabel } from '../field';
 import { Input } from '../input';
@@ -32,10 +34,17 @@ import { DialogCommandBridge } from './client';
 
 function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
   return (
-    <Dialog id={id} size={size} aria-labelledby={`${id}-title`}>
+    <Dialog
+      id={id}
+      size={size}
+      aria-labelledby={`${id}-title`}
+      aria-describedby={`${id}-description`}
+    >
       <DialogHeader>
         <DialogTitle id={`${id}-title`}>Rename component</DialogTitle>
-        <DialogDescription>Choose a concise display name.</DialogDescription>
+        <DialogDescription id={`${id}-description`}>
+          Choose a concise display name.
+        </DialogDescription>
       </DialogHeader>
       <DialogBody>
         <Field>
@@ -80,7 +89,6 @@ export default function Example() {
     </>
   );
 }
-('use client');
 ```
 
 ## Import
@@ -106,9 +114,18 @@ import { DialogClient, DialogCommandBridge } from "@stylextras/ui/dialog/client"
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-The base entry is server-renderable and uses native `command`/`commandfor` invokers with no client JavaScript. Add `DialogCommandBridge` for older browsers; it feature-detects native support and loads the fallback only when needed. `DialogClient` includes that bridge automatically whenever the dialog has an `id`, in addition to its controlled/uncontrolled state adapter.
+The base entry is server-renderable and uses native `command`/`commandfor`
+invokers with no client JavaScript. Associate a title and any concise
+description through `aria-labelledby` and `aria-describedby`. Add
+`DialogCommandBridge` for older browsers; it feature-detects native support and
+loads the fallback only when needed. `DialogClient` includes that bridge when it
+has an `id` and also supplies cancelable backdrop-pointer `closedby="any"`
+parity in engines that do not implement it.
 
 `DialogCommandBridge` renders no DOM. Its `target` must match the dialog `id` and the associated `DialogTrigger`/`DialogClose` targets.
+
+When a `DialogClient` contains nested popovers, their open order is tracked so
+Escape closes the actual topmost child before it requests that the dialog close.
 
 ## API reference
 
@@ -116,8 +133,9 @@ The base entry is server-renderable and uses native `command`/`commandfor` invok
 
 `DialogProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "style">`. The props below complete `DialogProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "aria-label" | "aria-labelledby" | "className" | "style">` plus one required accessible name.
 
+- `aria-label` or `aria-labelledby` — Required accessible dialog name.
 - `closedBy` — `"none" | "any" | "closerequest"`. Default: `'any'`.
 - `size` — `DialogSize`. Default: `'md'`.
 - `sx` — `stylex.StyleXStyles`.
@@ -139,6 +157,7 @@ Optional client adapter for controlled or initially open dialogs. It accepts `Di
 - `defaultOpen` — `boolean`. Default: `false`.
 - `onOpenChange` — `(open: boolean) => void`.
 - `open` — `boolean`.
+- Backdrop requests are cancelable through `onCancel`; prevent the event to keep the dialog open.
 
 ### DialogCommandBridge
 

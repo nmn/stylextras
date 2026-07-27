@@ -28,7 +28,6 @@ export default function Example() {
     </>
   );
 }
-('use client');
 ```
 
 ## Import
@@ -46,7 +45,15 @@ import { Tooltip, TooltipTrigger } from "@stylextras/ui/tooltip";
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+The trigger is associated with the tooltip through `aria-describedby`. Tooltip
+content is hoverable, so a pointer can move from the trigger onto the hint
+without dismissing it, and Escape closes it. The native path uses
+`popover="hint"` and `interestfor`; a feature-detected fallback supplies the same
+focus/hover persistence when needed. Tooltip content must remain
+non-interactive—put links, buttons, and form controls in a `HoverCard`, popover,
+or dialog. Development builds warn when interactive semantics, focusability, or
+detectable activation handlers are added, including descendants inserted after
+mount.
 
 ## API reference
 
@@ -54,7 +61,7 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 `TooltipProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "style">`. The props below complete `TooltipProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "role" | "style">`. The component owns `role="tooltip"` and `popover="hint"`.
 
 - `placement` — `TooltipPlacement`. Default: `'top'`.
 - `sx` — `stylex.StyleXStyles`.

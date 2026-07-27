@@ -1,11 +1,11 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { colors } from "../tokens/color.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type FieldErrorsProps = Omit<BaseProps, "className" | "style"> & {
   sx?: StyleXStyles;
@@ -20,14 +20,14 @@ export type FieldErrorsProps = Omit<BaseProps, "className" | "style"> & {
  * - Does not automatically bind itself to an input via aria-describedby.
  * - Validation announcement behavior must be composed by the caller.
  */
-export function FieldErrors({ sx, ...props }: FieldErrorsProps) {
-  return <div {...props} role="alert" {...stylex.props(styles.base, sx)} />;
+export function FieldErrors({ ref, sx, ...props }: FieldErrorsProps) {
+  return <div ref={ref} {...props} {...stylex.props(styles.base, sx)} />;
 }
 
 const styles = stylex.create({
   base: {
     gap: spacing.xxxs,
-    color: colors.danger,
+    color: colors.dangerText,
     display: "grid",
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,

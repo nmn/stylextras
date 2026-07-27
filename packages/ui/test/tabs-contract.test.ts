@@ -16,6 +16,6 @@ describe('tabs managed attribute contract', () => {
     expectTypeOf<TabsContentProps>().not.toHaveProperty('hidden')
     expectTypeOf<TabsContentProps>().not.toHaveProperty('id')
     expectTypeOf<TabsContentProps>().not.toHaveProperty('role')
-    expectTypeOf<TabsContentProps>().not.toHaveProperty('tabIndex')
+    expectTypeOf<TabsContentProps>().toHaveProperty('tabIndex')
   })
 })

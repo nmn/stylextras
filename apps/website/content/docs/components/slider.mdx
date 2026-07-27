@@ -17,14 +17,14 @@ import Example from "@stylextras/ui/slider/example";
 'use client';
 
 import { Slider } from './index';
+import { Field, FieldLabel } from '../field';
 
 export default function Example() {
   return (
-    <>
-      <Slider aria-label="Value 25" min={0} max={100} defaultValue={25} />
-      <Slider aria-label="Value 50" min={0} max={100} defaultValue={50} />
-      <Slider aria-label="Value 75" min={0} max={100} defaultValue={75} />
-    </>
+    <Field>
+      <FieldLabel htmlFor="playback-volume">Playback volume</FieldLabel>
+      <Slider id="playback-volume" min={0} max={100} defaultValue={50} />
+    </Field>
   );
 }
 ```

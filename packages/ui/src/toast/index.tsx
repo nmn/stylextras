@@ -3,14 +3,17 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import {
+  useCallback,
   type ComponentPropsWithRef,
   type ReactNode,
   useEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
 } from 'react'
 import { Button } from '../button'
+import { composeRefs } from '../internal/refs'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -24,29 +27,54 @@ type ToastAction = {
   onClick: () => void
 }
 
-export type ToastOptions = {
+type ToastText = bigint | number | string
+
+type ToastOptionsBase = {
   action?: ToastAction
-  /** Plain text used by the queue's hidden live region for rich visual content. */
-  announcement?: string
-  description?: ReactNode
   duration?: number
   id?: string
   priority?: 'assertive' | 'polite'
-  title: ReactNode
   variant?: 'default' | 'danger' | 'success'
 }
 
-type ToastRecord = ToastOptions & {
+/** Rich visual content must provide the plain text announced by assistive technology. */
+export type ToastOptions = ToastOptionsBase &
+  (
+    | {
+        announcement?: string
+        description?: ToastText
+        title: ToastText
+      }
+    | {
+        announcement: string
+        description?: ReactNode
+        title: ReactNode
+      }
+  )
+
+type ToastRecord = ToastOptionsBase & {
+  announcement?: string
+  description?: ReactNode
   duration: number
   id: string
   priority: 'assertive' | 'polite'
+  title: ReactNode
   variant: 'default' | 'danger' | 'success'
 }
 
 type Announcement = { revision: number; text: string }
 
+export type ToastDismissContext = Readonly<{
+  announcement: string
+  id: string
+  title: ReactNode
+}>
+
 let snapshot: readonly ToastRecord[] = []
 const listeners = new Set<() => void>()
+const announcerOwners = new WeakMap<Document, symbol>()
+const announcerListeners = new WeakMap<Document, Set<() => void>>()
+const announcedRecords = new WeakMap<Document, Map<string, ToastRecord>>()
 
 function emit(next: readonly ToastRecord[]) {
   snapshot = next
@@ -60,6 +88,46 @@ function subscribe(listener: () => void) {
 
 function getSnapshot() {
   return snapshot
+}
+
+function subscribeAnnouncerOwner(ownerDocument: Document, listener: () => void) {
+  const listeners = announcerListeners.get(ownerDocument) ?? new Set<() => void>()
+  listeners.add(listener)
+  announcerListeners.set(ownerDocument, listeners)
+  return () => {
+    listeners.delete(listener)
+    if (listeners.size === 0) announcerListeners.delete(ownerDocument)
+  }
+}
+
+function getAnnouncerOwner(ownerDocument: Document) {
+  return announcerOwners.get(ownerDocument) ?? null
+}
+
+function getServerAnnouncerOwner() {
+  return null
+}
+
+function notifyAnnouncerOwner(ownerDocument: Document) {
+  for (const listener of announcerListeners.get(ownerDocument) ?? []) listener()
+}
+
+function claimAnnouncerOwner(ownerDocument: Document, owner: symbol) {
+  if (announcerOwners.has(ownerDocument)) return
+  announcerOwners.set(ownerDocument, owner)
+  notifyAnnouncerOwner(ownerDocument)
+}
+
+function releaseAnnouncerOwner(ownerDocument: Document, owner: symbol) {
+  if (announcerOwners.get(ownerDocument) !== owner) return
+  announcerOwners.delete(ownerDocument)
+  notifyAnnouncerOwner(ownerDocument)
+}
+
+function getAnnouncedRecords(ownerDocument: Document) {
+  const records = announcedRecords.get(ownerDocument) ?? new Map<string, ToastRecord>()
+  announcedRecords.set(ownerDocument, records)
+  return records
 }
 
 function textFromReactNode(node: ReactNode): string {
@@ -77,8 +145,8 @@ function getAnnouncementText(record: ToastRecord) {
     .join(' ')
 }
 
-export function toast(options: ToastOptions | ReactNode) {
-  const normalized =
+export function toast(options: ToastOptions | ToastText) {
+  const normalized: ToastOptions =
     typeof options === 'object' && options !== null && 'title' in options
       ? options
       : { title: options }
@@ -103,26 +171,30 @@ export function dismissToast(id?: string) {
 
 type SxProp = { sx?: StyleXStyles }
 
-export type ToastProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'role' | 'style'> &
-  SxProp & {
-    priority?: 'assertive' | 'off' | 'polite'
-    variant?: 'default' | 'danger' | 'success'
-  }
+type ToastBaseProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'role' | 'style'> &
+  SxProp & { variant?: 'default' | 'danger' | 'success' }
+
+export type ToastProps = ToastBaseProps &
+  (
+    | { announcement?: never; priority?: 'off' }
+    | { announcement: string; priority: 'assertive' | 'polite' }
+  )
 export type ToastTitleProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
 export type ToastDescriptionProps = Omit<ComponentPropsWithRef<'p'>, 'className' | 'style'> & SxProp
 export type ToasterProps = Omit<
   ComponentPropsWithRef<'ol'>,
-  'aria-label' | 'children' | 'className' | 'style'
+  'aria-label' | 'children' | 'className' | 'role' | 'style'
 > & {
   'aria-label'?: string
-  dismissLabel?: string
+  getDismissLabel?: (toast: ToastDismissContext) => string
   limit?: number
   sx?: StyleXStyles
 }
 
 export function Toast({
+  announcement,
   children,
-  priority = 'polite',
+  priority = 'off',
   ref,
   sx,
   variant = 'default',
@@ -130,18 +202,17 @@ export function Toast({
 }: ToastProps) {
   return (
     <li ref={ref} {...props} {...stylex.props(styles.toast, variantStyles[variant], sx)}>
-      {priority === 'off' ? (
-        children
-      ) : (
+      {children}
+      {priority !== 'off' && announcement ? (
         <div
           role={priority === 'assertive' ? 'alert' : 'status'}
           aria-atomic="true"
           aria-live={priority}
-          {...stylex.props(styles.liveRegion)}
+          {...stylex.props(styles.announcer)}
         >
-          {children}
+          {announcement}
         </div>
-      )}
+      ) : null}
     </li>
   )
 }
@@ -156,7 +227,8 @@ export function ToastDescription({ ref, sx, ...props }: ToastDescriptionProps) {
 
 export function Toaster({
   'aria-label': ariaLabel = 'Notifications',
-  dismissLabel = 'Dismiss notification',
+  getDismissLabel = (item) =>
+    `Dismiss ${textFromReactNode(item.title) || item.announcement || 'notification'}`,
   limit = 3,
   onBlur,
   onFocus,
@@ -167,24 +239,62 @@ export function Toaster({
   ...props
 }: ToasterProps) {
   const toasts = useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
+  const normalizedLimit = Number.isFinite(limit) ? Math.max(0, Math.floor(limit)) : 3
+  const visibleToasts = useMemo(
+    () => toasts.slice(0, normalizedLimit),
+    [normalizedLimit, toasts],
+  )
   const timers = useRef(new Map<string, number>())
   const timerRecords = useRef(new Map<string, ToastRecord>())
   const remaining = useRef(new Map<string, number>())
   const startedAt = useRef(new Map<string, number>())
   const pauseReasons = useRef(new Set<string>())
-  const announcedRecords = useRef(new Map<string, ToastRecord>())
   const announcementRevision = useRef(0)
+  const owner = useRef(Symbol('stylextras-toaster'))
+  const [ownerDocument, setOwnerDocument] = useState<Document | null>(null)
+  const trackOwnerDocument = useCallback((node: HTMLOListElement | null) => {
+    setOwnerDocument(node?.ownerDocument ?? null)
+  }, [])
+  const setRefs = useMemo(() => composeRefs(trackOwnerDocument, ref), [ref, trackOwnerDocument])
+  const subscribeOwner = useCallback(
+    (listener: () => void) =>
+      ownerDocument ? subscribeAnnouncerOwner(ownerDocument, listener) : () => {},
+    [ownerDocument],
+  )
+  const readOwner = useCallback(
+    () => (ownerDocument ? getAnnouncerOwner(ownerDocument) : null),
+    [ownerDocument],
+  )
+  const currentAnnouncerOwner = useSyncExternalStore(
+    subscribeOwner,
+    readOwner,
+    getServerAnnouncerOwner,
+  )
+  const ownsAnnouncer = ownerDocument !== null && currentAnnouncerOwner === owner.current
   const [paused, setPaused] = useState(false)
   const [announcements, setAnnouncements] = useState<{
     assertive?: Announcement
     polite?: Announcement
   }>({})
 
-  const setPauseReason = (reason: string, active: boolean) => {
+  const setPauseReason = useCallback((reason: string, active: boolean) => {
     if (active) pauseReasons.current.add(reason)
     else pauseReasons.current.delete(reason)
     setPaused(pauseReasons.current.size > 0)
-  }
+  }, [])
+
+  useEffect(() => {
+    if (ownerDocument && currentAnnouncerOwner === null) {
+      claimAnnouncerOwner(ownerDocument, owner.current)
+    }
+  }, [currentAnnouncerOwner, ownerDocument])
+
+  useEffect(
+    () => () => {
+      if (ownerDocument) releaseAnnouncerOwner(ownerDocument, owner.current)
+    },
+    [ownerDocument],
+  )
 
   useEffect(() => {
     const ids = new Set(toasts.map((item) => item.id))
@@ -194,7 +304,7 @@ export function Toaster({
         timerRecords.current.delete(id)
       }
     }
-    for (const item of toasts) {
+    for (const item of visibleToasts) {
       if (timerRecords.current.get(item.id) !== item) {
         timerRecords.current.set(item.id, item)
         remaining.current.set(item.id, item.duration)
@@ -217,7 +327,7 @@ export function Toaster({
       return
     }
 
-    for (const item of toasts) {
+    for (const item of visibleToasts) {
       const duration = remaining.current.get(item.id) ?? item.duration
       if (duration <= 0 || timers.current.has(item.id)) continue
       startedAt.current.set(item.id, performance.now())
@@ -231,23 +341,29 @@ export function Toaster({
     }
 
     return stopTimers
-  }, [paused, toasts])
+  }, [paused, toasts, visibleToasts])
 
   useEffect(() => {
-    const handleVisibilityChange = () => setPauseReason('document', document.hidden)
-    document.addEventListener('visibilitychange', handleVisibilityChange)
+    if (!ownerDocument) return
+    const handleVisibilityChange = () => setPauseReason('document', ownerDocument.hidden)
+    ownerDocument.addEventListener('visibilitychange', handleVisibilityChange)
     handleVisibilityChange()
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
-  }, [])
+    return () => ownerDocument.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [ownerDocument, setPauseReason])
 
   useEffect(() => {
+    if (!ownerDocument) return
+    const documentAnnouncements = getAnnouncedRecords(ownerDocument)
     const currentIds = new Set(toasts.map((item) => item.id))
-    for (const id of announcedRecords.current.keys()) {
-      if (!currentIds.has(id)) announcedRecords.current.delete(id)
+    for (const id of documentAnnouncements.keys()) {
+      if (!currentIds.has(id)) documentAnnouncements.delete(id)
     }
-    const unseen = toasts.filter((item) => announcedRecords.current.get(item.id) !== item)
+    if (!ownsAnnouncer) return
+    const unseen = visibleToasts.filter(
+      (item) => documentAnnouncements.get(item.id) !== item,
+    )
     if (unseen.length === 0) return
-    for (const item of unseen) announcedRecords.current.set(item.id, item)
+    for (const item of unseen) documentAnnouncements.set(item.id, item)
     const politeText = unseen
       .filter((item) => item.priority === 'polite')
       .map(getAnnouncementText)
@@ -270,27 +386,58 @@ export function Toaster({
       ...(assertive ? { assertive } : {}),
       ...(polite ? { polite } : {}),
     }))
-  }, [toasts])
+  }, [ownerDocument, ownsAnnouncer, toasts, visibleToasts])
+
+  useEffect(() => {
+    if (!announcements.assertive && !announcements.polite) return
+    const assertiveRevision = announcements.assertive?.revision
+    const politeRevision = announcements.polite?.revision
+    const timer = window.setTimeout(() => {
+      setAnnouncements((current) => {
+        const next: { assertive?: Announcement; polite?: Announcement } = {}
+        if (current.assertive && current.assertive.revision !== assertiveRevision) {
+          next.assertive = current.assertive
+        }
+        if (current.polite && current.polite.revision !== politeRevision) {
+          next.polite = current.polite
+        }
+        return next
+      })
+    }, 1_000)
+    return () => window.clearTimeout(timer)
+  }, [announcements.assertive, announcements.polite])
 
   return (
     <>
-      <div role="status" aria-atomic="true" aria-live="polite" {...stylex.props(styles.announcer)}>
-        {announcements.polite ? (
-          <span key={announcements.polite.revision}>{announcements.polite.text}</span>
-        ) : null}
-      </div>
-      <div
-        role="alert"
-        aria-atomic="true"
-        aria-live="assertive"
-        {...stylex.props(styles.announcer)}
-      >
-        {announcements.assertive ? (
-          <span key={announcements.assertive.revision}>{announcements.assertive.text}</span>
-        ) : null}
-      </div>
+      {ownsAnnouncer ? (
+        <>
+          <div
+            role="status"
+            aria-atomic="true"
+            aria-live="polite"
+            data-stylextras-toast-announcer="polite"
+            {...stylex.props(styles.announcer)}
+          >
+            {announcements.polite ? (
+              <span key={announcements.polite.revision}>{announcements.polite.text}</span>
+            ) : null}
+          </div>
+          <div
+            role="alert"
+            aria-atomic="true"
+            aria-live="assertive"
+            data-stylextras-toast-announcer="assertive"
+            {...stylex.props(styles.announcer)}
+          >
+            {announcements.assertive ? (
+              <span key={announcements.assertive.revision}>{announcements.assertive.text}</span>
+            ) : null}
+          </div>
+        </>
+      ) : null}
       <ol
-        ref={ref}
+        ref={setRefs}
+        role="list"
         aria-label={ariaLabel}
         onBlur={(event) => {
           onBlur?.(event)
@@ -311,34 +458,43 @@ export function Toaster({
         {...props}
         {...stylex.props(styles.toaster, sx)}
       >
-        {toasts.slice(-limit).map((item) => (
-          <Toast key={item.id} priority="off" variant={item.variant}>
-            <div {...stylex.props(styles.content)}>
-              <ToastTitle>{item.title}</ToastTitle>
-              {item.description ? <ToastDescription>{item.description}</ToastDescription> : null}
-            </div>
-            {item.action ? (
+        {visibleToasts.map((item) => {
+          const requestedDismissLabel = getDismissLabel({
+            announcement: getAnnouncementText(item),
+            id: item.id,
+            title: item.title,
+          })
+          const dismissLabel = requestedDismissLabel.trim() || 'Dismiss notification'
+
+          return (
+            <Toast key={item.id} priority="off" variant={item.variant}>
+              <div {...stylex.props(styles.content)}>
+                <ToastTitle>{item.title}</ToastTitle>
+                {item.description ? <ToastDescription>{item.description}</ToastDescription> : null}
+              </div>
+              {item.action ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    item.action?.onClick()
+                    dismissToast(item.id)
+                  }}
+                >
+                  {item.action.label}
+                </Button>
+              ) : null}
               <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  item.action?.onClick()
-                  dismissToast(item.id)
-                }}
+                size="icon-sm"
+                variant="ghost"
+                aria-label={dismissLabel}
+                onClick={() => dismissToast(item.id)}
               >
-                {item.action.label}
+                ×
               </Button>
-            ) : null}
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              aria-label={dismissLabel}
-              onClick={() => dismissToast(item.id)}
-            >
-              ×
-            </Button>
-          </Toast>
-        ))}
+            </Toast>
+          )
+        })}
       </ol>
     </>
   )
@@ -385,12 +541,6 @@ const styles = stylex.create({
     transitionProperty: 'opacity, transform',
     transitionTimingFunction: motion.easeEmphasized,
     minWidth: 0,
-    width: '100%',
-  },
-  liveRegion: {
-    gap: spacing.sm,
-    alignItems: 'center',
-    display: 'flex',
     width: '100%',
   },
   announcer: {

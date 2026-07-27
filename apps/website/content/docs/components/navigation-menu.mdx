@@ -49,7 +49,6 @@ export default function Example() {
     </NavigationMenu>
   );
 }
-('use client');
 ```
 
 ## Import
@@ -64,14 +63,17 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 - `NavigationMenuContent` — Styled `<div>`.
 - `NavigationMenuItem` — Styled `<li>`.
 - `NavigationMenuLink` — Styled `<a>`.
-- `NavigationMenuList` — Styled `<ul>`.
+- `NavigationMenuList` — Styled `<ul role="list">`.
 - `NavigationMenuTrigger` — Styled `<button>`.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component starts with semantic HTML and enhances it with newer browser APIs when they are available. Without anchor positioning support, the component remains usable with a simpler non-anchored layout.
+Name the navigation landmark and use real destinations for every
+`NavigationMenuLink`. Same-page link activation dismisses an open menu panel
+unless the consumer prevents the click. Without anchor positioning support, the
+popover remains usable with simpler placement.
 
 ## API reference
 
@@ -79,8 +81,9 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 `NavigationMenuProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "className" | "style">`. The props below complete `NavigationMenuProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "aria-label" | "aria-labelledby" | "className" | "style">` plus one required accessible name.
 
+- `aria-label` or `aria-labelledby` — Required navigation-landmark name.
 - `sx` — `stylex.StyleXStyles`.
 
 ### NavigationMenuContent
@@ -111,7 +114,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "cl
 
 `NavigationMenuListProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `NavigationMenuListProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "role" | "style">`; `role="list"` is restored explicitly.
 
 - `sx` — `stylex.StyleXStyles`.
 

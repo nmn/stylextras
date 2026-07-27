@@ -1,3 +1,5 @@
+'use client'
+
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
@@ -18,7 +20,10 @@ export type NavigationMenuProps = Omit<
 > &
   AccessibleAriaNameProps &
   SxProp
-export type NavigationMenuListProps = Omit<ComponentPropsWithRef<'ul'>, 'className' | 'style'> &
+export type NavigationMenuListProps = Omit<
+  ComponentPropsWithRef<'ul'>,
+  'className' | 'role' | 'style'
+> &
   SxProp
 export type NavigationMenuItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> &
   SxProp
@@ -42,7 +47,7 @@ export function NavigationMenu({ ref, sx, ...props }: NavigationMenuProps) {
 }
 
 export function NavigationMenuList({ ref, sx, ...props }: NavigationMenuListProps) {
-  return <ul ref={ref} {...props} {...stylex.props(styles.list, sx)} />
+  return <ul ref={ref} {...props} role="list" {...stylex.props(styles.list, sx)} />
 }
 
 export function NavigationMenuItem({ ref, sx, ...props }: NavigationMenuItemProps) {
@@ -72,8 +77,47 @@ export function NavigationMenuTrigger({
   )
 }
 
-export function NavigationMenuContent({ ref, sx, ...props }: NavigationMenuContentProps) {
-  return <div ref={ref} popover="auto" {...props} {...stylex.props(styles.content, sx)} />
+export function NavigationMenuContent({ onClick, ref, sx, ...props }: NavigationMenuContentProps) {
+  return (
+    <div
+      ref={ref}
+      popover="auto"
+      {...props}
+      onClick={(event) => {
+        onClick?.(event)
+        if (
+          event.defaultPrevented ||
+          event.button !== 0 ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.shiftKey
+        ) {
+          return
+        }
+
+        const eventTarget = event.target
+        if (!(eventTarget instanceof Element)) return
+        const link = eventTarget.closest<HTMLAnchorElement>('a[href]')
+        if (!link || !event.currentTarget.contains(link) || link.hasAttribute('download')) return
+        if (link.target && link.target.toLocaleLowerCase() !== '_self') return
+
+        const destination = new URL(link.href, document.baseURI)
+        const current = new URL(window.location.href)
+        if (
+          !destination.hash ||
+          destination.origin !== current.origin ||
+          destination.pathname !== current.pathname ||
+          destination.search !== current.search
+        ) {
+          return
+        }
+
+        event.currentTarget.hidePopover()
+      }}
+      {...stylex.props(styles.content, sx)}
+    />
+  )
 }
 
 /* eslint-disable @stylexjs/valid-styles */

@@ -31,3 +31,98 @@ Version 0.2 is intentionally breaking and ships no compatibility shims.
 - Themes are plain `stylex.createTheme()` objects. There is no theme provider or
   wrapper component.
 - Incomplete advanced controls moved under `@stylextras/ui/experimental/*`.
+
+## Accessibility contract changes
+
+- `Alert`, `FieldError`, and `FieldErrors` are static by default. Add a live
+  `role` only when content appears or changes after an interaction.
+- `Link` and `ButtonLink` require `href`.
+- `Navbar`, `Toolbar`, `TableOfContents`, `Sidebar`, and
+  `SidebarNavigation` require `aria-label` or `aria-labelledby`.
+- `Content` defaults to `div`; layout landmarks and focusable scroll areas are
+  explicit opt-ins.
+- `ResizableHandle` requires both an accessible name and `aria-controls`.
+- Primitive `Toast` announcements default to `off`. Rich queued toasts require
+  a separate plain-text `announcement`.
+
+### Combobox and Command collections
+
+Only options belong inside the listbox. Empty and status output are siblings,
+and the input remains the sole Tab stop.
+
+```tsx
+'use client';
+
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxStatus,
+} from '@stylextras/ui/combobox';
+
+export function FrameworkCombobox() {
+  return (
+    <Combobox name="framework" required>
+      <ComboboxInput aria-label="Framework" />
+      <ComboboxContent>
+        <ComboboxList>
+          <ComboboxItem value="react">React</ComboboxItem>
+          <ComboboxItem value="svelte">Svelte</ComboboxItem>
+        </ComboboxList>
+        <ComboboxEmpty>No matching framework.</ComboboxEmpty>
+        <ComboboxStatus>
+          {(count) => `${count} framework${count === 1 ? '' : 's'} available.`}
+        </ComboboxStatus>
+      </ComboboxContent>
+    </Combobox>
+  );
+}
+```
+
+`CommandItem` is now a non-tabbable `role="option"` rather than a button. Move
+`CommandEmpty` and `CommandStatus` outside `CommandList` in the same way.
+
+### Table-of-contents hierarchy
+
+Replace visual-only `level` indentation with nested ordered lists.
+
+```tsx
+import {
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  TableOfContentsList,
+  TableOfContentsTitle,
+} from '@stylextras/ui/table-of-contents';
+
+export function Outline() {
+  return (
+    <TableOfContents aria-labelledby="outline-title">
+      <TableOfContentsTitle id="outline-title">On this page</TableOfContentsTitle>
+      <TableOfContentsList>
+        <TableOfContentsItem>
+          <TableOfContentsLink href="#overview">Overview</TableOfContentsLink>
+          <TableOfContentsList>
+            <TableOfContentsItem>
+              <TableOfContentsLink href="#examples">Examples</TableOfContentsLink>
+            </TableOfContentsItem>
+          </TableOfContentsList>
+        </TableOfContentsItem>
+      </TableOfContentsList>
+    </TableOfContents>
+  );
+}
+```
+
+### Dialog bridges and relationships
+
+Associate every modal with its heading and useful concise description. The
+server-only `Dialog` path remains progressive enhancement; add
+`DialogCommandBridge` when older invoker-command support is required, or use
+`DialogClient`, which installs that bridge and `closedby="any"` parity. Lazy
+dialog, alert-dialog, drawer, and sheet entries install the command fallback
+internally. Initial focus in an alert dialog belongs on its least destructive
+action.

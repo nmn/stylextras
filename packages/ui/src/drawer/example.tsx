@@ -13,11 +13,18 @@ import {
 
 function PageSettingsDrawer({ id, side }: { id: string; side: DrawerSide }) {
   return (
-    <Drawer id={id} side={side} aria-labelledby={`${id}-title`}>
+    <Drawer
+      id={id}
+      side={side}
+      aria-labelledby={`${id}-title`}
+      aria-describedby={`${id}-description`}
+    >
       <DrawerHeader>
-        <strong id={`${id}-title`}>Page settings</strong>
+        <h2 id={`${id}-title`}>Page settings</h2>
       </DrawerHeader>
-      <DrawerBody>Nearby controls stay in the current page.</DrawerBody>
+      <DrawerBody id={`${id}-description`}>
+        Nearby controls stay in the current page.
+      </DrawerBody>
       <DrawerFooter>
         <ButtonGroup variant="actions" aria-label="Page settings actions">
           <DrawerClose target={id}>Cancel</DrawerClose>

@@ -5,7 +5,11 @@ import type { StyleXStyles } from '@stylexjs/stylex'
 import type { ComponentPropsWithRef } from 'react'
 import type { AccessibleAriaNameProps } from '../accessibility'
 import { focusgroupAttributes, focusgroupRef } from '../focusgroup'
+import { colors } from '../tokens/color.stylex'
+import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { toggleGroupMarker } from './markers.stylex'
 
 export type ToggleGroupProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'role' | 'style'> & {
   orientation?: 'horizontal' | 'vertical'
@@ -23,7 +27,12 @@ export function ToggleGroup({ orientation = 'horizontal', ref, sx, ...props }: T
       {...focusgroupAttributes(
         orientation === 'vertical' ? 'toolbar block wrap' : 'toolbar inline wrap',
       )}
-      {...stylex.props(styles.group, orientation === 'vertical' && styles.vertical, sx)}
+      {...stylex.props(
+        toggleGroupMarker,
+        styles.group,
+        orientation === 'vertical' && styles.vertical,
+        sx,
+      )}
     />
   )
 }
@@ -31,10 +40,16 @@ export function ToggleGroup({ orientation = 'horizontal', ref, sx, ...props }: T
 const styles = stylex.create({
   group: {
     alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: radius.round,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
     display: 'inline-flex',
     flexWrap: 'wrap',
-    gap: spacing.xs,
+    gap: spacing.xxxs,
     maxWidth: '100%',
+    overflow: 'hidden',
+    padding: spacing.xxxs,
   },
   vertical: {
     alignItems: 'stretch',

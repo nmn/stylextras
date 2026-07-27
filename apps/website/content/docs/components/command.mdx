@@ -44,11 +44,11 @@ export default function Example() {
           <CommandItem value="examples" keywords="gallery demos">
             Browse examples
           </CommandItem>
-          <CommandEmpty />
-          <CommandStatus>
-            {(count) => `${count} command${count === 1 ? '' : 's'} available.`}
-          </CommandStatus>
         </CommandList>
+        <CommandEmpty />
+        <CommandStatus>
+          {(count) => `${count} command${count === 1 ? '' : 's'} available.`}
+        </CommandStatus>
       </Command>
     </>
   );
@@ -66,7 +66,7 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList, CommandS
 - `Command` — Styled `<dialog>`.
 - `CommandEmpty` — Styled `<div>`.
 - `CommandInput` — Styled `<input>`.
-- `CommandItem` — Styled `<button>`.
+- `CommandItem` — Non-tabbable `<div role="option">`.
 - `CommandList` — Styled `<div>`.
 - `CommandStatus` — Visually hidden polite result announcement.
 - `CommandTrigger` — Styled `<button>`.
@@ -75,7 +75,12 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList, CommandS
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Its behavior comes from the component controller rather than a browser-feature polyfill.
+The input owns focus and controls the DOM-ordered option collection through
+`aria-activedescendant`; options do not enter the ordinary Tab order. Arrow keys,
+Home, End, and Enter operate the active option and scroll it into view. Keep only
+`CommandItem` options inside `CommandList`; render `CommandEmpty` and
+`CommandStatus` as siblings outside the listbox. Duplicate values produce a
+development warning without changing ID-based active identity.
 
 ## API reference
 
@@ -101,24 +106,26 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `CommandInputProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "aria-activedescendant" | "aria-autocomplete" | "aria-controls" | "aria-expanded" | "aria-label" | "aria-labelledby" | "className" | "role" | "style" | "value">`. `aria-label` or `aria-labelledby` is required so the combobox has an accessible name. The props below complete `CommandInputProps`.
+Complete native/inherited prop base omits the component-owned
+active-descendant, listbox, expanded state, role, value, and input type.
+`aria-label` or `aria-labelledby` is required so the combobox has an accessible
+name.
 
 - `aria-expanded` — `CommandInputProps["aria-expanded"]`. Default: `'true'`.
 - `autoComplete` — `CommandInputProps["autoComplete"]`. Default: `'off'`.
 - `sx` — `stylex.StyleXStyles`.
-- `type` — `CommandInputProps["type"]`. Default: `'search'`.
+- `type` — `'text' | 'search'`. Default: `'search'`.
 
 ### CommandItem
 
 `CommandItemProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "onSelect" | "role" | "style" | "value">`. The props below complete `CommandItemProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-disabled" | "aria-selected" | "className" | "onSelect" | "role" | "style" | "tabIndex">`. The props below complete `CommandItemProps`.
 
 - `disabled` — `CommandItemProps["disabled"]`. Default: `false`.
 - `keywords` — `string`. Default: `''`.
 - `onSelect` — `(value: string) => void`.
 - `sx` — `stylex.StyleXStyles`.
-- `type` — `CommandItemProps["type"]`. Default: `'button'`.
 - `value` — `string`. Required.
 
 ### CommandList

@@ -22,15 +22,19 @@ Every stable component has a canonical subpath and there is no package barrel.
 
 ```tsx
 import { Button } from "@stylextras/ui/button";
+import { Field, FieldLabel } from "@stylextras/ui/field";
 import { Select } from "@stylextras/ui/select";
 
 export function Example() {
   return (
     <form>
-      <Select name="priority" defaultValue="normal">
-        <option value="normal">Normal</option>
-        <option value="urgent">Urgent</option>
-      </Select>
+      <Field>
+        <FieldLabel htmlFor="priority">Priority</FieldLabel>
+        <Select id="priority" name="priority" defaultValue="normal">
+          <option value="normal">Normal</option>
+          <option value="urgent">Urgent</option>
+        </Select>
+      </Field>
       <Button type="submit">Save</Button>
     </form>
   );
@@ -44,11 +48,12 @@ element; no provider, context, or client JavaScript is involved.
 
 ```tsx
 import * as stylex from "@stylexjs/stylex";
+import type { ReactNode } from "react";
 import { colorThemes } from "@stylextras/ui/color-themes";
 import { radiusThemes } from "@stylextras/ui/radius-themes";
 import { spacingThemes } from "@stylextras/ui/spacing-themes";
 
-export function ThemeBoundary({ children }) {
+export function ThemeBoundary({ children }: { children: ReactNode }) {
   return (
     <section
       {...stylex.props(

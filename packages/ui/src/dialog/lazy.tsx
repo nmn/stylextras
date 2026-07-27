@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex'
 import {
+  Fragment,
   createContext,
   use,
   useCallback,
@@ -20,6 +21,7 @@ import {
   rememberDialogReturnFocus,
   restoreDialogReturnFocus,
 } from './restore-focus'
+import { DialogCommandBridge } from './client'
 
 export type LazyDialogContentProps = AccessibleAriaNameProps & {
   'aria-describedby'?: string
@@ -254,7 +256,10 @@ export function LazyDialog<Props extends object = Record<string, never>>({
         {status}
       </span>
       {LoadedContent ? (
-        <LoadedContent {...contentProps} {...contentAccessibilityProps} />
+        <Fragment>
+          <LoadedContent {...contentProps} {...contentAccessibilityProps} />
+          <DialogCommandBridge target={id} />
+        </Fragment>
       ) : null}
     </LazyDialogContext>
   )

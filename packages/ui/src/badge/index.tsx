@@ -98,7 +98,7 @@ const variantStyles = stylex.create({
   brand: {
     borderColor: colors.primary,
     backgroundColor: colors.primary,
-    color: `color-mix(in oklab, ${colors.primaryForeground} 94%, ${colors.primary})`,
+    color: colors.primaryForeground,
   },
   info: {
     borderColor: colors.info,

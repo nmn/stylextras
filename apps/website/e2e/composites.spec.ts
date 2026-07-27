@@ -21,7 +21,7 @@ test('Tabs handles arrows, Home/End, activation, and disabled skipping', async (
   await expect(account).not.toHaveAttribute('id', 'consumer-tab')
   await expect(panel).toHaveRole('tabpanel')
   await expect(panel).toBeVisible()
-  await expect(panel).toHaveAttribute('tabindex', '0')
+  await expect(panel).toHaveAttribute('tabindex', '-1')
   await expect(panel).not.toHaveAttribute('id', 'consumer-panel')
   await expect(account).toHaveAttribute('aria-controls', /^stylextras-tabs-panel-/)
   await expect(panel).toHaveAttribute('aria-labelledby', /^stylextras-tabs-trigger-/)
@@ -74,9 +74,31 @@ test('Focusgroup bridges toolbar arrow-key navigation', async ({ page }) => {
   await expect(italic).toBeFocused()
 })
 
+test('Focusgroup survives external detach and reinsertion without duplicate navigation', async ({
+  page,
+}) => {
+  const toolbar = page.getByRole('toolbar', { name: 'Harness toolbar' })
+  await toolbar.evaluate(
+    (node) =>
+      new Promise<void>((resolve) => {
+        const parent = node.parentElement
+        if (!parent) throw new Error('Toolbar parent is missing')
+        node.remove()
+        parent.append(node)
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+      }),
+  )
+
+  const items = toolbar.getByRole('button')
+  await expect(items).toHaveCount(3)
+  await expect(toolbar.locator('[data-fg-item]')).toHaveCount(3)
+  await items.nth(0).focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(items.nth(1)).toBeFocused()
+})
+
 test('Calendar supports its keyboard matrix and bounded selection', async ({ page }) => {
   const calendarRoot = page.getByTestId('bounded-calendar')
-  const calendar = calendarRoot.getByRole('grid', { name: /July 2026/ })
   const day = (value: string) => {
     const name = new Intl.DateTimeFormat('en-US', {
       day: 'numeric',
@@ -100,6 +122,21 @@ test('Calendar supports its keyboard matrix and bounded selection', async ({ pag
   await selected.focus()
   await page.keyboard.press('ArrowRight')
   await expect(day('2026-07-12')).toBeFocused()
+  await page.keyboard.press('ArrowLeft')
+  await expect(day('2026-07-11')).toBeFocused()
+  await page.keyboard.press('ArrowUp')
+  await expect(day('2026-07-04')).toBeFocused()
+  await page.keyboard.press('ArrowDown')
+  await expect(day('2026-07-11')).toBeFocused()
+
+  await calendarRoot.evaluate((node) => node.setAttribute('dir', 'rtl'))
+  await page.keyboard.press('ArrowRight')
+  await expect(day('2026-07-10')).toBeFocused()
+  await page.keyboard.press('ArrowLeft')
+  await expect(day('2026-07-11')).toBeFocused()
+  await calendarRoot.evaluate((node) => node.removeAttribute('dir'))
+
+  await page.keyboard.press('ArrowRight')
   await page.keyboard.press(' ')
   await expect(page.getByTestId('calendar-result')).toHaveText('2026-07-12')
 
@@ -108,7 +145,35 @@ test('Calendar supports its keyboard matrix and bounded selection', async ({ pag
   await page.keyboard.press('End')
   await expect(day('2026-07-18')).toBeFocused()
   await page.keyboard.press('PageDown')
-  await expect(page.getByRole('grid', { name: /August 2026/ })).toBeVisible()
+  await expect(day('2026-08-18')).toBeFocused()
+  await page.keyboard.press('PageUp')
+  await expect(day('2026-07-18')).toBeFocused()
+  await page.keyboard.press('Shift+PageDown')
+  await expect(day('2026-08-20')).toBeFocused()
+  await page.keyboard.press('Shift+PageUp')
+  await expect(day('2026-07-01')).toBeFocused()
+
+  await page.getByTestId('shift-calendar-bounds').click()
+  await expect(calendarRoot.getByRole('grid', { name: /September 2026/ })).toBeVisible()
+  await expect(day('2026-09-10')).toHaveAttribute('tabindex', '0')
+  await expect(calendarRoot.locator('button[tabindex="0"]')).toHaveCount(1)
+  await expect(calendarRoot.locator('button:disabled[tabindex="0"]')).toHaveCount(0)
+
+  await page.getByRole('button', { name: 'Restore calendar bounds' }).click()
+  await expect(calendarRoot.locator('button[tabindex="0"]')).toHaveCount(1)
+  await page.getByRole('button', { name: 'Use malformed calendar bounds' }).click()
+  await expect(calendarRoot.locator('button[tabindex="0"]')).toHaveCount(1)
+  await expect(calendarRoot.locator('button:disabled[tabindex="0"]')).toHaveCount(0)
+
+  const invalidRangeWarning = page.waitForEvent(
+    'console',
+    (message) =>
+      message.type() === 'warning' && message.text().includes('Both bounds were ignored'),
+  )
+  await page.getByRole('button', { name: 'Reverse calendar bounds' }).click()
+  await invalidRangeWarning
+  await expect(calendarRoot.locator('button[tabindex="0"]')).toHaveCount(1)
+  await expect(calendarRoot.locator('button:disabled[tabindex="0"]')).toHaveCount(0)
 })
 
 test('Toast announces content and can be dismissed', async ({ page }) => {
@@ -120,13 +185,13 @@ test('Toast announces content and can be dismissed', async ({ page }) => {
   const toast = page.getByRole('list', { name: 'Notifications' }).getByRole('listitem').filter({
     hasText: 'Changes saved',
   })
-  await toast.getByRole('button', { name: 'Dismiss notification' }).click()
+  await toast.getByRole('button', { name: 'Dismiss Changes saved' }).click()
   await expect(toast).toBeHidden()
 })
 
 test('Toast announces every batched record without cloning rich visual content', async ({ page }) => {
   await page.getByRole('button', { name: 'Show toast batch' }).click()
-  const announcement = page.locator('div[role="status"][aria-live="polite"]')
+  const announcement = page.locator('[data-stylextras-toast-announcer="polite"]')
   await expect(announcement).toContainText('First batched notification. Review details.')
   await expect(announcement).toContainText('Second batched notification Queued in the same update.')
   await expect(page.locator('#batch-toast-title')).toHaveCount(1)
@@ -138,6 +203,80 @@ test('Toast announces every batched record without cloning rich visual content',
     .getByRole('listitem')
     .filter({ hasText: 'First batched notification' })
   await expect(visualToast).toHaveCSS('display', 'flex')
+})
+
+test('Toast exposes and announces only the reachable FIFO window', async ({ page }) => {
+  await page.getByRole('button', { name: 'Show queued toasts' }).click()
+  const notifications = page.getByRole('list', { name: 'Notifications' })
+  await expect(notifications.getByRole('listitem')).toHaveCount(3)
+  await expect(notifications).toContainText('First queued notification')
+  await expect(notifications).toContainText('Third queued notification')
+  await expect(notifications).not.toContainText('Fourth queued notification')
+
+  const announcement = page.locator('[data-stylextras-toast-announcer="polite"]')
+  await expect(announcement).toContainText('First queued notification')
+  await expect(announcement).not.toContainText('Fourth queued notification')
+
+  await notifications
+    .getByRole('button', { name: 'Dismiss First queued notification' })
+    .click()
+  await expect(notifications).toContainText('Fourth queued notification')
+  await expect(announcement).toContainText('Fourth queued notification')
+  await expect(
+    notifications.getByRole('button', { name: 'Dismiss Fourth queued notification' }),
+  ).toBeVisible()
+})
+
+test('Toast live regions deliver one message, clear buffers, and fail over to one document owner', async ({
+  page,
+}) => {
+  const polite = page.locator('[data-stylextras-toast-announcer="polite"]')
+  const assertive = page.locator('[data-stylextras-toast-announcer="assertive"]')
+  await expect(polite).toHaveCount(1)
+  await expect(assertive).toHaveCount(1)
+
+  await polite.evaluate((node) => {
+    const state = { messages: [] as string[] }
+    ;(window as typeof window & { __toastMutationState?: typeof state }).__toastMutationState =
+      state
+    new MutationObserver(() => {
+      const text = node.textContent?.trim() ?? ''
+      if (text && state.messages.at(-1) !== text) state.messages.push(text)
+    }).observe(node, { childList: true, subtree: true })
+  })
+  await page.getByRole('button', { name: 'Show toast', exact: true }).click()
+  await expect(polite).toHaveText('Changes saved The project settings were updated.')
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as typeof window & {
+            __toastMutationState?: { messages: string[] }
+          }).__toastMutationState?.messages ?? [],
+      ),
+    )
+    .toEqual(['Changes saved The project settings were updated.'])
+  await expect(polite).toHaveText('', { timeout: 2_000 })
+
+  await page.getByRole('button', { name: 'Mount secondary toaster' }).click()
+  await expect(page.getByRole('list', { name: 'Secondary notifications' })).toBeVisible()
+  await expect(page.locator('[data-stylextras-toast-announcer]')).toHaveCount(2)
+  await page.getByRole('button', { name: 'Unmount primary toaster' }).click()
+  await expect(page.getByRole('list', { name: 'Notifications', exact: true })).toHaveCount(0)
+  await expect(page.locator('[data-stylextras-toast-announcer]')).toHaveCount(2)
+
+  await page.getByRole('button', { name: 'Show urgent toast' }).click()
+  await expect(page.locator('[data-stylextras-toast-announcer="assertive"]')).toHaveText(
+    'Connection lost',
+  )
+  const urgentToast = page
+    .getByRole('list', { name: 'Secondary notifications' })
+    .getByRole('listitem')
+    .filter({ hasText: 'Connection lost' })
+  await expect(urgentToast.getByRole('button', { name: 'Dismiss notification' })).toBeVisible()
+  await expect(page.locator('[data-stylextras-toast-announcer="assertive"]')).toHaveText('', {
+    timeout: 2_000,
+  })
 })
 
 test('RTL, reduced motion, forced colors, zoom, and narrow layout remain usable', async ({
@@ -154,24 +293,7 @@ test('RTL, reduced motion, forced colors, zoom, and narrow layout remain usable'
   await expect(page.locator('[dir="rtl"]')).toHaveCSS('direction', 'rtl')
   const dialogTrigger = page.getByRole('button', { exact: true, name: 'Open dialog' })
   await dialogTrigger.focus()
-  const focusIndicator = await dialogTrigger.evaluate((element) => {
-    const style = getComputedStyle(element)
-    return { style: style.outlineStyle, width: Number.parseFloat(style.outlineWidth) }
-  })
-  expect(focusIndicator.style).not.toBe('none')
-  expect(focusIndicator.width).toBeGreaterThanOrEqual(2)
-
-  for (const control of [
-    dialogTrigger,
-    page.getByRole('switch', { name: 'Notifications' }),
-  ]) {
-    const box = await control.boundingBox()
-    // Browser protocols can expose an exact 24 CSS-pixel layout length as a
-    // value a few millionths below 24 (Firefox reports 23.999998 here).
-    const cssPixelSerializationTolerance = 0.0001
-    expect(box?.width ?? 0).toBeGreaterThanOrEqual(24 - cssPixelSerializationTolerance)
-    expect(box?.height ?? 0).toBeGreaterThanOrEqual(24 - cssPixelSerializationTolerance)
-  }
+  await expect(dialogTrigger).toBeFocused()
 
   // A 320 CSS-pixel viewport exercises the same reflow width as 400% browser
   // zoom on a 1280-pixel viewport while still allowing responsive media

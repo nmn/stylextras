@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
-import { DemoFrame } from '../example-theme/demo'
+import { DemoFrame, DemoStack } from '../example-theme/demo'
 import { colors } from '../tokens/color.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { ScrollArea } from './index'
@@ -8,17 +8,34 @@ const releases = Array.from({ length: 12 }, (_, index) => `0.2.0-beta.${12 - ind
 
 export default function Example() {
   return (
-    <DemoFrame title="Release history" description="The focused region uses native overflow with tokenized scrollbars.">
-      <ScrollArea aria-label="Release history" tabIndex={0} sx={styles.area}>
-        {releases.map((release) => (
-          <div key={release} {...stylex.props(styles.row)}>
-            <strong>{release}</strong>
-            <span>Native-first component updates</span>
-          </div>
-        ))}
-      </ScrollArea>
+    <DemoFrame
+      title="Release history"
+      description="The focused region uses native overflow with tokenized scrollbars."
+    >
+      <DemoStack>
+        <ScrollArea aria-label="Stable release history" tabIndex={0} sx={styles.area}>
+          <ReleaseRows />
+        </ScrollArea>
+        <ScrollArea
+          aria-label="Overlay release history"
+          scrollbar="overlay"
+          tabIndex={0}
+          sx={styles.area}
+        >
+          <ReleaseRows />
+        </ScrollArea>
+      </DemoStack>
     </DemoFrame>
   )
+}
+
+function ReleaseRows() {
+  return releases.map((release) => (
+    <div key={release} {...stylex.props(styles.row)}>
+      <strong>{release}</strong>
+      <span>Native-first component updates</span>
+    </div>
+  ))
 }
 
 const styles = stylex.create({

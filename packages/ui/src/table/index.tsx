@@ -16,16 +16,23 @@ export type TableRowProps = Omit<ComponentPropsWithRef<'tr'>, 'className' | 'sty
 export type TableHeadProps = Omit<ComponentPropsWithRef<'th'>, 'className' | 'style'> & SxProp
 export type TableCellProps = Omit<ComponentPropsWithRef<'td'>, 'className' | 'style'> & SxProp
 export type TableCaptionProps = Omit<ComponentPropsWithRef<'caption'>, 'className' | 'style'> & SxProp
-export type TableScrollAreaProps = Omit<
+type TableScrollAreaBaseProps = Omit<
   ComponentPropsWithRef<'div'>,
   'aria-label' | 'aria-labelledby' | 'className' | 'style' | 'tabIndex'
 > &
-  SxProp &
-  AccessibleAriaNameProps
+  SxProp
 
-export function TableScrollArea({ ref, sx, ...props }: TableScrollAreaProps) {
+export type TableScrollAreaProps =
+  | (TableScrollAreaBaseProps & {
+      'aria-label'?: string
+      'aria-labelledby'?: string
+      tabIndex?: -1
+    })
+  | (TableScrollAreaBaseProps & AccessibleAriaNameProps & { tabIndex: 0 })
+
+export function TableScrollArea({ ref, sx, tabIndex, ...props }: TableScrollAreaProps) {
   return (
-    <div ref={ref} tabIndex={0} {...props} {...stylex.props(styles.scrollArea, sx)} />
+    <div ref={ref} tabIndex={tabIndex} {...props} {...stylex.props(styles.scrollArea, sx)} />
   )
 }
 
@@ -93,7 +100,19 @@ const styles = stylex.create({
     borderBlockEndStyle: 'solid',
     borderBlockEndWidth: stroke.thin,
   },
-  head: { color: colors.fgMuted, fontWeight: typography.weightMedium, overflowWrap: 'anywhere', padding: spacing.md, textAlign: 'start' },
-  cell: { overflowWrap: 'anywhere', padding: spacing.md, verticalAlign: 'middle' },
+  head: {
+    color: colors.fg,
+    fontWeight: typography.weightSemibold,
+    overflowWrap: 'anywhere',
+    paddingBlock: `calc((${spacing.sm} + ${spacing.md}) / 2)`,
+    paddingInline: spacing.md,
+    textAlign: 'start',
+  },
+  cell: {
+    overflowWrap: 'anywhere',
+    paddingBlock: `calc((${spacing.sm} + ${spacing.md}) / 2)`,
+    paddingInline: spacing.md,
+    verticalAlign: 'middle',
+  },
   caption: { captionSide: 'bottom', color: colors.fgMuted, paddingBlock: spacing.md, textAlign: 'start' },
 })

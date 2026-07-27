@@ -13,7 +13,7 @@ export default function Example() {
         description="Toast parts can be composed directly, while the queue announces transient app events."
       >
         <DemoStack>
-          <ol aria-label="Toast variants" {...stylex.props(styles.list)}>
+          <ol role="list" aria-label="Toast variants" {...stylex.props(styles.list)}>
             <Toast>
               <div>
                 <ToastTitle>Draft restored</ToastTitle>

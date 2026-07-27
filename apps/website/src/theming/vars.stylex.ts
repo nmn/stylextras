@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
 
 const fdFadeIn = stylex.keyframes({
   from: { opacity: 0 },
@@ -114,7 +115,10 @@ export const vars = stylex.defineVars({
   "--default-font-family": "var(--font-sans)",
   "--default-mono-font-family": "var(--font-mono)",
 
-  "--color-code-green": "light-dark(hsl(146, 55%, 31%), hsl(146, 52%, 68%))",
+  "--color-code-green": lightDark(
+    "hsl(146, 55%, 31%)",
+    "hsl(146, 52%, 68%)",
+  ),
 
   "--color-fd-background": lightDark("hsl(0, 0%, 100%)", "hsl(0, 0%, 7%)"),
   "--color-fd-foreground": lightDark("hsl(0, 0%, 3.9%)", "hsl(0, 0%, 92%)"),
@@ -193,6 +197,36 @@ export const ANIMATION_DURATIONS = stylex.defineConsts({
 export const EASINGS = stylex.defineConsts({
   dialog: "cubic-bezier(0.16, 1, 0.3, 1)",
   pulse: "cubic-bezier(0.4, 0, 0.6, 1)",
+});
+
+/**
+ * Transitional aliases for website code that has not moved to the package
+ * token names yet. Apply this on the same element as `stylePresets.docs`
+ * so the aliases resolve against that preset rather than the root defaults.
+ */
+export const websiteLegacyColorTheme = stylex.createTheme(vars, {
+  "--color-code-green": colors.code,
+  "--color-fd-background": colors.bg,
+  "--color-fd-foreground": colors.fg,
+  "--color-fd-muted": colors.surface,
+  "--color-fd-muted-foreground": colors.fgMuted,
+  "--color-fd-popover": colors.popover,
+  "--color-fd-popover-foreground": colors.popoverForeground,
+  "--color-fd-card": colors.card,
+  "--color-fd-card-foreground": colors.cardForeground,
+  "--color-fd-border": colors.border,
+  "--color-fd-primary": colors.primary,
+  "--color-fd-primary-foreground": colors.primaryForeground,
+  "--color-fd-secondary": colors.secondary,
+  "--color-fd-secondary-foreground": colors.secondaryForeground,
+  "--color-fd-accent": colors.accent,
+  "--color-fd-accent-foreground": colors.accentForeground,
+  "--color-fd-ring": colors.focusRing,
+  "--color-fd-overlay": colors.overlay,
+  "--color-fd-info": colors.info,
+  "--color-fd-warning": colors.warning,
+  "--color-fd-error": colors.danger,
+  "--color-fd-success": colors.success,
 });
 
 export const playgroundVars = stylex.defineVars({

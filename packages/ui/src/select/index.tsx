@@ -177,8 +177,8 @@ const styles = stylex.create({
     color: {
       default: colors.popoverForeground,
       ':checked': colors.primary,
-      ':focus': colors.accentForeground,
-      ':hover': colors.accentForeground,
+      ':focus': colors.accentText,
+      ':hover': colors.accentText,
       ':disabled': colors.fgDisabled,
     },
     fontFamily: typography.fontSans,

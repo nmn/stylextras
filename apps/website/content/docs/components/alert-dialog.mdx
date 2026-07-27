@@ -14,7 +14,10 @@ import Example from "@stylextras/ui/alert-dialog/example";
 ### Example code
 
 ```tsx
+'use client';
+
 import { ButtonGroup } from '../button-group';
+import { DialogCommandBridge } from '../dialog/client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,32 +35,37 @@ export default function Example() {
   return (
     <>
       <AlertDialogTrigger target={dialogId}>Delete draft</AlertDialogTrigger>
-      <AlertDialog id={dialogId} aria-labelledby={`${dialogId}-title`}>
+      <AlertDialog
+        id={dialogId}
+        aria-labelledby={`${dialogId}-title`}
+        aria-describedby={`${dialogId}-description`}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle id={`${dialogId}-title`}>
             Delete draft?
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription id={`${dialogId}-description`}>
             This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <ButtonGroup variant="actions" aria-label="Delete draft actions">
-            <AlertDialogCancel target={dialogId}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel autoFocus target={dialogId}>Cancel</AlertDialogCancel>
             <AlertDialogAction target={dialogId}>Delete</AlertDialogAction>
           </ButtonGroup>
         </AlertDialogFooter>
+        <DialogCommandBridge target={dialogId} />
       </AlertDialog>
     </>
   );
 }
-('use client');
 ```
 
 ## Import
 
 ```tsx
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@stylextras/ui/alert-dialog";
+import { DialogCommandBridge } from "@stylextras/ui/dialog/client";
 ```
 
 ## Anatomy
@@ -70,12 +78,17 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogDescripti
 - `AlertDialogHeader` — Styled `<header>`.
 - `AlertDialogTitle` — Styled `<h2>`.
 - `AlertDialogTrigger` — Styled `<button>`.
+- `DialogCommandBridge` — Optional feature-detected invoker-command fallback.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component starts with semantic HTML and native invoker commands. The example opts into `DialogCommandBridge` from `@stylextras/ui/dialog/client`; it feature-detects older engines and only then lazy-loads the narrowly scoped command fallback. Omit that bridge when native-only browser support is sufficient.
+`AlertDialog` requires both an accessible name and a programmatic description.
+Initial focus should land on the least destructive action, normally the cancel
+button. The example opts into `DialogCommandBridge`; it feature-detects native
+invoker-command support and only then loads the fallback. `LazyAlertDialog`
+installs that fallback internally.
 
 ## API reference
 
@@ -83,8 +96,10 @@ This component starts with semantic HTML and native invoker commands. The exampl
 
 `AlertDialogProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "className" | "role" | "style">`. The props below complete `AlertDialogProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">`, plus a required accessible name and `aria-describedby`.
 
+- `aria-label` or `aria-labelledby` — Required accessible name.
+- `aria-describedby` — Required description ID reference.
 - `sx` — `stylex.StyleXStyles`.
 
 ### AlertDialogAction

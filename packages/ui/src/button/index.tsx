@@ -9,6 +9,7 @@ import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
 type NativeButtonProps = ComponentPropsWithRef<'button'>
+type NativeAnchorProps = ComponentPropsWithRef<'a'>
 
 export type ButtonVariant =
   | 'primary'
@@ -21,6 +22,12 @@ export type ButtonVariant =
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon-sm' | 'icon' | 'icon-lg'
 
 type ButtonSharedProps = Omit<NativeButtonProps, 'className' | 'size' | 'style'> & {
+  sx?: StyleXStyles
+  variant?: ButtonVariant
+}
+
+type ButtonLinkSharedProps = Omit<NativeAnchorProps, 'className' | 'href' | 'style'> & {
+  href: string
   sx?: StyleXStyles
   variant?: ButtonVariant
 }
@@ -42,6 +49,17 @@ export type AccessibleButtonProps =
   | IconButtonProps
   | NamedDynamicSizeButtonProps
 export type ButtonProps = AccessibleButtonProps
+
+export type TextButtonLinkProps = ButtonLinkSharedProps & { size?: TextButtonSize }
+export type IconButtonLinkProps = ButtonLinkSharedProps &
+  AccessibleIconButtonName & { size: IconButtonSize }
+export type NamedDynamicSizeButtonLinkProps = ButtonLinkSharedProps &
+  AccessibleIconButtonName & { size: ButtonSize }
+export type AccessibleButtonLinkProps =
+  | TextButtonLinkProps
+  | IconButtonLinkProps
+  | NamedDynamicSizeButtonLinkProps
+export type ButtonLinkProps = AccessibleButtonLinkProps
 
 export type DistributiveOmit<Props, Keys extends PropertyKey> = Props extends unknown
   ? Omit<Props, Keys>
@@ -72,6 +90,26 @@ export function Button({
     <button
       ref={ref}
       type={type}
+      {...props}
+      {...stylex.props(baseStyles.base, sizeStyles[size], variantStyles[variant], sx)}
+    />
+  )
+}
+
+/**
+ * A native anchor with the same visual variants and sizes as Button.
+ * Icon-only links use an icon size and an accessible name.
+ */
+export function ButtonLink({
+  ref,
+  size = 'md',
+  sx,
+  variant = 'primary',
+  ...props
+}: AccessibleButtonLinkProps) {
+  return (
+    <a
+      ref={ref}
       {...props}
       {...stylex.props(baseStyles.base, sizeStyles[size], variantStyles[variant], sx)}
     />
@@ -255,6 +293,6 @@ const variantStyles = stylex.create({
       default: 'transparent',
       '@media (forced-colors: active)': 'CanvasText',
     },
-    color: colors.fgOnBrand,
+    color: colors.dangerForeground,
   },
 })

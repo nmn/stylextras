@@ -1,43 +1,41 @@
 ---
 title: "Themes"
-description: "Independent color and structural theme families, including a coordinated preset matching this documentation website."
+description: "Independent theme families plus the coordinated documentation preset."
 ---
 
 
 <ThemeGallery />
 
-## Documentation website theme
+## Documentation preset
 
-Every variable group exports a `docs` theme that mirrors this site’s purple
-primary and selection colors, neutral surfaces, and periwinkle-blue highlights
-for hovered or keyboard-focused options and menu items, plus its system
-typography, spacing, radii, borders, shadows, blur, and motion.
+The site shell and component galleries use `stylePresets.docs`. Its existing
+color, typography, spacing, radius, stroke, elevation, blur, and motion themes
+form the documentation design system. Package components consume those token
+sets directly.
 
 ```tsx
 import * as stylex from "@stylexjs/stylex";
-import { blurThemes } from "@stylextras/ui/blur-themes";
-import { colorThemes } from "@stylextras/ui/color-themes";
-import { elevationThemes } from "@stylextras/ui/elevation-themes";
-import { motionThemes } from "@stylextras/ui/motion-themes";
-import { radiusThemes } from "@stylextras/ui/radius-themes";
-import { spacingThemes } from "@stylextras/ui/spacing-themes";
-import { strokeThemes } from "@stylextras/ui/stroke-themes";
-import { typographyThemes } from "@stylextras/ui/typography-themes";
+import { stylePresetThemes } from "@stylextras/ui/style-presets";
 
-export function DocumentationTheme({ children }) {
+export function DocsTheme({ children }) {
   return (
-    <section
-      {...stylex.props(
-        colorThemes.docs,
-        spacingThemes.docs,
-        radiusThemes.docs,
-        strokeThemes.docs,
-        typographyThemes.docs,
-        elevationThemes.docs,
-        blurThemes.docs,
-        motionThemes.docs,
-      )}
-    >
+    <section {...stylex.props(...stylePresetThemes("docs"))}>
+      {children}
+    </section>
+  );
+}
+```
+
+Component galleries and reference fixtures are explicitly nested under the
+same preset so they remain isolated from a consuming page’s surrounding theme.
+
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { stylePresetThemes } from "@stylextras/ui/style-presets";
+
+export function ComponentGalleryTheme({ children }) {
+  return (
+    <section {...stylex.props(...stylePresetThemes("docs"))}>
       {children}
     </section>
   );
@@ -47,5 +45,6 @@ export function DocumentationTheme({ children }) {
 ## Composition
 
 Color, spacing, radius, stroke, typography, elevation, blur, and motion remain
-independent variable groups. A theme overrides core values in one group; its
-same-set derived values recompute automatically.
+independent variable groups. Components reference those variables directly, so
+a preset changes their built-in styling without broad `sx` replacement rules.
+Use `sx` only for isolated website-specific exceptions.

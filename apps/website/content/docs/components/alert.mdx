@@ -1,6 +1,6 @@
 ---
 title: "Alert"
-description: "Semantic status message."
+description: "Static callout with opt-in live announcements."
 ---
 
 import Example from "@stylextras/ui/alert/example";
@@ -34,7 +34,6 @@ export default function Example() {
     </>
   );
 }
-('use client');
 ```
 
 ## Import
@@ -51,9 +50,10 @@ import { Alert, AlertDescription, AlertTitle } from "@stylextras/ui/alert";
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
-
-This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+`Alert` is static by default, so content present at page load is not announced as
+though it just changed. Add `role="status"` for a polite update inserted after a
+user action, or `role="alert"` only for a time-sensitive assertive update. Do not
+put interactive descendants inside either live-region variant.
 
 ## API reference
 
@@ -63,7 +63,7 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AlertProps`.
 
-- `role` — `AlertProps["role"]`. Default: `'status'`.
+- `role` — Native `div` role. No default; use `status` or `alert` explicitly for dynamic updates.
 - `sx` — `stylex.StyleXStyles`.
 - `variant` — `AlertVariant`. Default: `'default'`.
 

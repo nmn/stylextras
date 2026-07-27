@@ -1,9 +1,11 @@
 import * as stylex from '@stylexjs/stylex'
 import { stroke } from '../tokens/stroke.stylex'
 
-export const baseTheme = stylex.createTheme(stroke, {})
+export type StrokeTheme = stylex.Theme<typeof stroke>
 
-export const docsTheme = stylex.createTheme(stroke, {
+export const baseTheme: StrokeTheme = stylex.createTheme(stroke, {})
+
+export const docsTheme: StrokeTheme = stylex.createTheme(stroke, {
   thin: '1px',
   hairline: '1px',
   thick: '2px',
@@ -12,33 +14,42 @@ export const docsTheme = stylex.createTheme(stroke, {
   focusRingOffset: '0px',
 })
 
-export const hairlineTheme = stylex.createTheme(stroke, {
+export const hairlineTheme: StrokeTheme = stylex.createTheme(stroke, {
   thin: '0.75px',
 })
 
-export const boldTheme = stylex.createTheme(stroke, {
+export const boldTheme: StrokeTheme = stylex.createTheme(stroke, {
   thin: '1.5px',
 })
 
-export const posterTheme = stylex.createTheme(stroke, {
+export const posterTheme: StrokeTheme = stylex.createTheme(stroke, {
   thin: '2px',
 })
 
-export const brutalTheme = stylex.createTheme(stroke, {
+export const brutalTheme: StrokeTheme = stylex.createTheme(stroke, {
   thin: '3px',
 })
 
 /** Barely visible lines for wireframe-precision, low-ink interfaces. */
-export const wireframeTheme = stylex.createTheme(stroke, {
+export const wireframeTheme: StrokeTheme = stylex.createTheme(stroke, {
   thin: '0.5px',
 })
 
 /** Extra-heavy strokes for blocky, high-contrast expressive UI. */
-export const blockTheme = stylex.createTheme(stroke, {
+export const blockTheme: StrokeTheme = stylex.createTheme(stroke, {
   thin: '4px',
 })
 
-export const strokeThemes = {
+export const strokeThemes: Readonly<{
+  base: StrokeTheme
+  docs: StrokeTheme
+  wireframe: StrokeTheme
+  hairline: StrokeTheme
+  bold: StrokeTheme
+  poster: StrokeTheme
+  brutal: StrokeTheme
+  block: StrokeTheme
+}> = {
   base: baseTheme,
   docs: docsTheme,
   wireframe: wireframeTheme,
@@ -47,6 +58,6 @@ export const strokeThemes = {
   poster: posterTheme,
   brutal: brutalTheme,
   block: blockTheme,
-} as const
+}
 
 export type StrokeThemeName = keyof typeof strokeThemes

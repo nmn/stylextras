@@ -11,7 +11,8 @@ import { useTheme } from "next-themes";
 import { useLayoutEffect, useState } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { StyleXAttributes } from "./layout/shared";
-import { vars } from "@/theming/vars.stylex";
+import { Toggle } from "@stylextras/ui/toggle";
+import { ToggleGroup } from "@stylextras/ui/toggle-group";
 
 type ThemeKey = "light" | "dark" | "system";
 
@@ -48,10 +49,11 @@ export function ThemeToggle({
     mode === "light-dark" ? items.filter((i) => i.key !== "system") : items;
 
   return (
-    <div
+    <ToggleGroup
+      aria-label="Color theme"
       data-theme-toggle=""
       {...props}
-      {...stylex.props(styles.container, xstyle)}
+      sx={[styles.container, xstyle]}
     >
       {visibleItems.map(({ key, Icon, label }) => {
         const isActive = current === key;
@@ -60,22 +62,19 @@ export function ThemeToggle({
           mode === "light-dark" && key === "system" ? "system" : key;
 
         return (
-          <button
+          <Toggle
             aria-label={label}
+            aria-pressed={isActive}
             key={key}
             onClick={() => setTheme(nextTheme)}
-            type="button"
-            {...stylex.props(
-              styles.item,
-              isActive && styles.itemActive,
-              visibleItems.length === 3 && styles.itemGrow,
-            )}
+            size="sm"
+            sx={visibleItems.length === 3 ? styles.itemGrow : undefined}
           >
             <Icon {...stylex.props(styles.icon)} />
-          </button>
+          </Toggle>
         );
       })}
-    </div>
+    </ToggleGroup>
   );
 }
 
@@ -144,48 +143,10 @@ function SparklesIcon(props: SVGProps<SVGSVGElement>) {
 const styles = stylex.create({
   container: {
     display: { default: "inline-flex", "@media (max-width: 420px)": "none" },
-    gap: 2,
-    alignItems: "center",
-    padding: 0.5 * 4,
-    overflow: "hidden",
-    borderColor: vars["--color-fd-border"],
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderRadius: 999,
-  },
-  item: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: 7 * 4,
-    minHeight: 7 * 4,
-    color: {
-      default: vars["--color-fd-muted-foreground"],
-      ":focus-visible": vars["--color-fd-foreground"],
-      ":hover": vars["--color-fd-foreground"],
-    },
-    outline: "none",
-    backgroundColor: {
-      default: "transparent",
-      ":hover": `color-mix(in oklab, ${vars["--color-fd-primary"]} 10%, ${vars["--color-fd-background"]})`,
-    },
-    borderWidth: 0,
-    borderRadius: 999,
-    boxShadow: {
-      default: "none",
-      ":focus-visible": `0 0 0 2px ${vars["--color-fd-primary"]}`,
-    },
-    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-    transitionDuration: "150ms",
-    transitionProperty: "background-color, color, box-shadow",
   },
   itemGrow: {
     flexGrow: 1,
     width: "auto",
-  },
-  itemActive: {
-    color: vars["--color-fd-primary"],
-    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-primary"]} 12%, ${vars["--color-fd-background"]})`,
   },
   icon: {
     width: 16,

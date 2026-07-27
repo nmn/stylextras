@@ -10,8 +10,9 @@ import type { SVGProps } from "react";
 import { AtSignIcon, GithubIcon, TwitterIcon } from "lucide-react";
 import Bluesky from "./icons/Bluesky";
 import MetaOpenSource from "./icons/MetaOpenSource";
-import Link from "fumadocs-core/link";
 import { vars } from "@/theming/vars.stylex";
+import { Separator } from "@stylextras/ui/separator";
+import { RouterLink } from "./router-link";
 
 function ExternalLinkIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -67,9 +68,8 @@ export default function Footer({
   noBorderTop?: boolean;
 }) {
   return (
-    <footer
-      {...stylex.props(styles.footer, noBorderTop && styles.footerNoBorder)}
-    >
+    <footer {...stylex.props(styles.footer)}>
+      {!noBorderTop && <Separator sx={styles.footerSeparator} />}
       <div {...stylex.props(styles.container)}>
         <div {...stylex.props(styles.grid)}>
           <div>
@@ -77,9 +77,9 @@ export default function Footer({
             <ul {...stylex.props(styles.list)}>
               {footerLinks.develop.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} {...stylex.props(styles.link)}>
+                  <RouterLink href={link.href} sx={styles.link}>
                     {link.label}
-                  </Link>
+                  </RouterLink>
                 </li>
               ))}
             </ul>
@@ -90,9 +90,9 @@ export default function Footer({
             <ul {...stylex.props(styles.list)}>
               {footerLinks.explore.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} {...stylex.props(styles.link)}>
+                  <RouterLink href={link.href} sx={styles.link}>
                     {link.label}
-                  </Link>
+                  </RouterLink>
                 </li>
               ))}
             </ul>
@@ -103,12 +103,10 @@ export default function Footer({
             <ul {...stylex.props(styles.list)}>
               {footerLinks.participate.map((link) => (
                 <li key={link.label}>
-                  <Link
+                  <RouterLink
+                    external={link.external}
                     href={link.href}
-                    {...stylex.props(
-                      styles.link,
-                      link.external && styles.externalLink,
-                    )}
+                    sx={[styles.link, link.external && styles.externalLink]}
                     {...(link.external
                       ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
@@ -119,7 +117,7 @@ export default function Footer({
                         {...stylex.props(styles.externalIcon)}
                       />
                     )}
-                  </Link>
+                  </RouterLink>
                 </li>
               ))}
             </ul>
@@ -130,12 +128,10 @@ export default function Footer({
             <ul {...stylex.props(styles.list)}>
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link
+                  <RouterLink
+                    external={link.external}
                     href={link.href}
-                    {...stylex.props(
-                      styles.link,
-                      link.external && styles.externalLink,
-                    )}
+                    sx={[styles.link, link.external && styles.externalLink]}
                     {...(link.external
                       ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
@@ -146,22 +142,23 @@ export default function Footer({
                         {...stylex.props(styles.externalIcon)}
                       />
                     )}
-                  </Link>
+                  </RouterLink>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        <a
+        <RouterLink
           aria-label="Meta Open Source"
+          external
           href="https://opensource.fb.com"
           rel="noopener noreferrer"
+          sx={styles.metaOpenSourceLink}
           target="_blank"
-          {...stylex.props(styles.metaOpenSourceLink)}
         >
           <MetaOpenSource xstyle={styles.metaOpenSource} />
-        </a>
+        </RouterLink>
 
         <div {...stylex.props(styles.bottom)}>
           <span {...stylex.props(styles.copyright)}>
@@ -171,42 +168,46 @@ export default function Footer({
           <div {...stylex.props(styles.bottomSpacer)} />
 
           <div {...stylex.props(styles.socialLinks)}>
-            <a
+            <RouterLink
               aria-label="Naman on GitHub"
+              external
               href="https://github.com/nmn"
               rel="noopener noreferrer"
+              sx={styles.socialLink}
               target="_blank"
-              {...stylex.props(styles.socialLink)}
             >
               <GithubIcon {...stylex.props(styles.socialIcon)} />
-            </a>
-            <a
+            </RouterLink>
+            <RouterLink
               aria-label="Naman on Twitter"
+              external
               href="https://twitter.com/naman34"
               rel="noopener noreferrer"
+              sx={styles.socialLink}
               target="_blank"
-              {...stylex.props(styles.socialLink)}
             >
               <TwitterIcon {...stylex.props(styles.socialIcon)} />
-            </a>
-            <a
+            </RouterLink>
+            <RouterLink
               aria-label="Naman on Bluesky"
+              external
               href="https://bsky.app/profile/nmn.sh"
               rel="noopener noreferrer"
+              sx={styles.socialLink}
               target="_blank"
-              {...stylex.props(styles.socialLink)}
             >
               <Bluesky xstyle={styles.socialIcon} />
-            </a>
-            <a
+            </RouterLink>
+            <RouterLink
               aria-label="Naman on Mastodon"
+              external
               href="https://indieweb.social/@nmn"
               rel="me noopener noreferrer"
+              sx={styles.socialLink}
               target="_blank"
-              {...stylex.props(styles.socialLink)}
             >
               <AtSignIcon {...stylex.props(styles.socialIcon)} />
-            </a>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -217,16 +218,14 @@ export default function Footer({
 const styles = stylex.create({
   footer: {
     backgroundColor: vars["--color-fd-background"],
-    borderTopColor: vars["--color-fd-border"],
-    borderTopStyle: "solid",
-    borderTopWidth: 1,
     transitionDuration: "300ms",
     transitionProperty: "background-color, border-color",
   },
-  footerNoBorder: {
-    borderTopColor: null,
-    borderTopStyle: null,
-    borderTopWidth: null,
+  footerSeparator: {
+    width: "100%",
+    height: 1,
+    margin: 0,
+    backgroundColor: vars["--color-fd-border"],
   },
   container: {
     display: "flex",
@@ -298,6 +297,9 @@ const styles = stylex.create({
     minWidth: 32,
   },
   metaOpenSourceLink: {
+    fontSize: "0.875rem",
+    height: 72,
+    lineHeight: "20px",
     marginTop: 16,
     opacity: {
       default: 0.5,

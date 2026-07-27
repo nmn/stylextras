@@ -16,6 +16,7 @@ type Tcolors = VarGroup<
   Readonly<{
     accent: string;
     accentForeground: string;
+    accentText: string;
     bg: string;
     bgInset: string;
     bgOverlay: string;
@@ -32,8 +33,10 @@ type Tcolors = VarGroup<
     controlHover: string;
     danger: string;
     dangerActive: string;
+    dangerForeground: string;
     dangerHover: string;
     dangerSoft: string;
+    dangerText: string;
     fg: string;
     fgDisabled: string;
     fgMuted: string;
@@ -62,6 +65,7 @@ type Tcolors = VarGroup<
     sidebarForeground: string;
     surface: string;
     surfaceForeground: string;
+    surfaceSelected: string;
     success: string;
     successActive: string;
     successHover: string;
@@ -102,6 +106,8 @@ export const colors: Tcolors = stylex.defineVars({
 
   surface: () => colors.bgSubtle,
   surfaceForeground: () => colors.fg,
+  surfaceSelected: () =>
+    lightDark(colors.bg, mix(colors.bg, colors.tone, 88)),
   card: () => colors.bgRaised,
   cardForeground: () => colors.fg,
   // Top-layer surfaces must paint an opaque canvas; translucency belongs to
@@ -144,6 +150,8 @@ export const colors: Tcolors = stylex.defineVars({
   accent: () =>
     lightDark(mix(colors.bg, colors.tone, 88), alpha(colors.tone, 0.18)),
   accentForeground: () => colors.fg,
+  accentText: () =>
+    lightDark(mix(colors.accentForeground, colors.fg, 72), colors.accentForeground),
 
   focusRing: () => alpha(colors.tone, 0.46),
   selection: () => alpha(colors.brand, 0.18),
@@ -153,6 +161,8 @@ export const colors: Tcolors = stylex.defineVars({
   warningSoft: () => alpha(colors.warning, 0.22),
   dangerSoft: () => alpha(colors.danger, 0.18),
 
+  dangerForeground: () => lightDark(colors.fg, colors.bg),
+  dangerText: () => lightDark(mix(colors.danger, colors.fg, 82), colors.danger),
   dangerHover: () => mix(colors.danger, colors.bg, 88),
   dangerActive: () => mix(colors.danger, colors.fg, 94),
   infoHover: () => mix(colors.info, colors.bg, 88),

@@ -1,22 +1,28 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import { Children, type ComponentPropsWithRef } from 'react'
+import type { ComponentPropsWithRef } from 'react'
 import { spacing } from '../tokens/spacing.stylex'
 
-export type TagListProps = Omit<ComponentPropsWithRef<'ul'>, 'className' | 'style'> & {
+export type TagListProps = Omit<ComponentPropsWithRef<'ul'>, 'className' | 'role' | 'style'> & {
   sx?: StyleXStyles
 }
 export type TagGroupProps = TagListProps
+export type TagItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> & {
+  sx?: StyleXStyles
+}
 
 /** A semantic list for static tags. Use native checkbox/radio controls for selectable tags. */
 export function TagList({ children, ref, sx, ...props }: TagListProps) {
   return (
-    <ul ref={ref} role="list" {...props} {...stylex.props(styles.list, sx)}>
-      {Children.map(children, (child) => (
-        <li {...stylex.props(styles.item)}>{child}</li>
-      ))}
+    <ul ref={ref} {...props} role="list" {...stylex.props(styles.list, sx)}>
+      {children}
     </ul>
   )
+}
+
+/** A semantic list item for one static tag. */
+export function TagItem({ ref, sx, ...props }: TagItemProps) {
+  return <li ref={ref} {...props} {...stylex.props(styles.item, sx)} />
 }
 
 /** @deprecated Static tags are a list rather than an interactive group. */

@@ -6,6 +6,7 @@
  */
 "use client";
 import * as stylex from "@stylexjs/stylex";
+import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
 import { Check, Clipboard } from "lucide-react";
 import type {
   ComponentProps,
@@ -13,7 +14,7 @@ import type {
   ReactNode,
   RefObject,
 } from "react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { preMarker, tabsMarker } from "./mdx.stylex";
 import { vars } from "@/theming/vars.stylex";
 export function Pre(props: ComponentProps<"pre">) {
@@ -93,7 +94,8 @@ export function CodeBlock({
       )}
       <div
         ref={areaRef}
-        role="region"
+        aria-label={title ? `${title} code` : undefined}
+        role={title ? "region" : undefined}
         tabIndex={0}
         {...viewportProps}
         {...stylex.props(styles.viewport, !title && styles.viewportPadded)}
@@ -108,39 +110,34 @@ interface CopyButtonProps {
   xstyle?: stylex.StyleXStyles;
 }
 function CopyButton({ containerRef, xstyle }: CopyButtonProps) {
-  const [checked, setChecked] = useState(false);
-  function handleClick() {
+  function resolveValue() {
     const pre = containerRef.current?.getElementsByTagName("pre").item(0);
-    if (!pre) return;
+    if (!pre) return "";
     const clone = pre.cloneNode(true) as HTMLElement;
     clone.querySelectorAll(".nd-copy-ignore").forEach((node) => {
       node.replaceWith("\n");
     });
-    void navigator.clipboard.writeText(clone.textContent ?? "");
-    setChecked(true);
-    setTimeout(() => setChecked(false), 2000);
+    return clone.textContent ?? "";
   }
+
   return (
-    <button
-      data-checked={checked || undefined}
-      type="button"
-      {...stylex.props(
-        styles.copyButton,
-        checked && styles.copyButtonChecked,
-        xstyle,
-      )}
-      aria-label={checked ? "Copied Text" : "Copy Text"}
-      onClick={handleClick}
-    >
-      {checked ? (
-        <Check {...stylex.props(styles.copyIcon)} />
-      ) : (
-        <Clipboard {...stylex.props(styles.copyIcon)} />
-      )}
-    </button>
+    <CopyToClipboardButton
+      copiedIcon={
+        <Check
+          {...stylex.props(styles.copyIcon, styles.copyIconChecked)}
+        />
+      }
+      copiedLabel="Copied Text"
+      feedback="none"
+      icon={<Clipboard {...stylex.props(styles.copyIcon)} />}
+      label="Copy Text"
+      resetAfterMs={2000}
+      size="icon-sm"
+      sx={xstyle}
+      value={resolveValue}
+    />
   );
 }
-const DURATION = "0.15s";
 const styles = stylex.create({
   figure: {
     position: "relative",
@@ -151,6 +148,7 @@ const styles = stylex.create({
     marginBottom: 16,
     overflow: "hidden",
     fontSize: 13,
+    lineHeight: 1.5,
     backgroundColor: vars["--color-fd-card"],
     borderColor: vars["--color-fd-border"],
     borderStyle: "solid",
@@ -199,29 +197,6 @@ const styles = stylex.create({
     margin: 0,
     backgroundColor: "transparent",
   },
-  copyButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 28,
-    height: 28,
-    padding: 0,
-    color: {
-      default: vars["--color-fd-muted-foreground"],
-      ":hover": vars["--color-fd-accent-foreground"],
-    },
-    backgroundColor: {
-      default: "transparent",
-      ":hover": vars["--color-fd-accent"],
-    },
-    borderWidth: 0,
-    borderRadius: 6,
-    transitionDuration: DURATION,
-    transitionProperty: "background-color, color",
-  },
-  copyButtonChecked: {
-    color: vars["--color-fd-accent-foreground"],
-  },
   floatingCopyButton: {
     position: "absolute",
     insetInlineEnd: 4,
@@ -233,5 +208,8 @@ const styles = stylex.create({
   copyIcon: {
     width: 14,
     height: 14,
+  },
+  copyIconChecked: {
+    color: vars["--color-fd-accent-foreground"],
   },
 });

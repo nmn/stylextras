@@ -1,14 +1,15 @@
-import * as stylex from "@stylexjs/stylex";
-import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { colors } from "../tokens/color.stylex";
-import { typography } from "../tokens/typography.stylex";
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
+import type { ComponentPropsWithRef } from 'react'
+import { colors } from '../tokens/color.stylex'
+import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<"a">;
+type BaseProps = ComponentPropsWithRef<'a'>
 
-export type LinkProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
+export type LinkProps = Omit<BaseProps, 'className' | 'href' | 'style'> & {
+  href: string
+  sx?: StyleXStyles
+}
 
 /**
  * Renders a token-styled anchor element.
@@ -19,15 +20,15 @@ export type LinkProps = Omit<BaseProps, "className" | "style"> & {
  * - Uses native anchor semantics.
  * - The caller must provide meaningful link text and destination behavior.
  */
-export function Link({ sx, ...props }: LinkProps) {
-  return <a {...props} {...stylex.props(styles.base, sx)} />;
+export function Link({ ref, sx, ...props }: LinkProps) {
+  return <a ref={ref} {...props} {...stylex.props(styles.base, sx)} />
 }
 
 const styles = stylex.create({
   base: {
-    textDecoration: "underline",
     color: colors.brand,
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
+    textDecoration: 'underline',
   },
-});
+})

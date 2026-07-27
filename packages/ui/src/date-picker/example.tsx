@@ -12,18 +12,28 @@ export default function Example() {
         <DemoGrid>
           <Field>
             <FieldLabel htmlFor="publish-date">Publish date</FieldLabel>
-            <DatePicker id="publish-date" name="publishDate" defaultValue="2026-07-12" />
-            <FieldDescription>Enter a date or use the platform date chooser.</FieldDescription>
+            <DatePicker
+              id="publish-date"
+              aria-describedby="publish-date-description"
+              name="publishDate"
+              defaultValue="2026-07-12"
+            />
+            <FieldDescription id="publish-date-description">
+              Enter a date or use the platform date chooser.
+            </FieldDescription>
           </Field>
           <Field>
             <FieldLabel htmlFor="archive-date">Archive date</FieldLabel>
             <DatePicker
               id="archive-date"
+              aria-describedby="archive-date-description"
               name="archiveDate"
               defaultValue="2026-07-20"
               min="2026-07-12"
             />
-            <FieldDescription>Dates before publishing are unavailable.</FieldDescription>
+            <FieldDescription id="archive-date-description">
+              Dates before publishing are unavailable.
+            </FieldDescription>
           </Field>
         </DemoGrid>
       </DemoFrame>

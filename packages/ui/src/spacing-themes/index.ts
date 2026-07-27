@@ -1,12 +1,14 @@
 import * as stylex from '@stylexjs/stylex'
 import { spacing } from '../tokens/spacing.stylex'
 
-export const baseTheme = stylex.createTheme(spacing, {})
+export type SpacingTheme = stylex.Theme<typeof spacing>
 
-export const docsTheme = stylex.createTheme(spacing, {
+export const baseTheme: SpacingTheme = stylex.createTheme(spacing, {})
+
+export const docsTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '4px',
   controlGap: '8px',
-  controlSm: '32px',
+  controlSm: '28px',
   controlMd: '36px',
   controlLg: '40px',
   targetMin: '24px',
@@ -23,38 +25,48 @@ export const docsTheme = stylex.createTheme(spacing, {
   xxxxl: '64px',
 })
 
-export const tightTheme = stylex.createTheme(spacing, {
+export const tightTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '3px',
 })
-export const microTheme = tightTheme
+export const microTheme: SpacingTheme = tightTheme
 
-export const compactTheme = stylex.createTheme(spacing, {
+export const compactTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '3.5px',
 })
 
-export const cozyTheme = stylex.createTheme(spacing, {
+export const cozyTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '4.5px',
 })
 
-export const roomyTheme = stylex.createTheme(spacing, {
+export const roomyTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '5px',
 })
 
-export const posterTheme = stylex.createTheme(spacing, {
+export const posterTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '6px',
 })
 
 /** Extra generous whitespace for marketing pages and hero sections. */
-export const airyTheme = stylex.createTheme(spacing, {
+export const airyTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '7px',
 })
 
 /** High-density rhythm for data tables and information-dense dashboards. */
-export const denseTheme = stylex.createTheme(spacing, {
+export const denseTheme: SpacingTheme = stylex.createTheme(spacing, {
   base: '2.5px',
 })
 
-export const spacingThemes = {
+export const spacingThemes: Readonly<{
+  base: SpacingTheme
+  docs: SpacingTheme
+  dense: SpacingTheme
+  tight: SpacingTheme
+  compact: SpacingTheme
+  cozy: SpacingTheme
+  roomy: SpacingTheme
+  poster: SpacingTheme
+  airy: SpacingTheme
+}> = {
   base: baseTheme,
   docs: docsTheme,
   dense: denseTheme,
@@ -64,6 +76,6 @@ export const spacingThemes = {
   roomy: roomyTheme,
   poster: posterTheme,
   airy: airyTheme,
-} as const
+}
 
 export type SpacingThemeName = keyof typeof spacingThemes

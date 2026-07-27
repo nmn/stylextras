@@ -54,7 +54,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: colors.accent,
     borderRadius: radius.round,
-    color: colors.accentForeground,
+    color: colors.fg,
     display: 'inline-flex',
     flexShrink: 0,
     fontFamily: typography.fontSans,

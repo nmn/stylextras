@@ -1,0 +1,114 @@
+---
+title: "TableOfContents"
+description: "Named native outline with nested-list hierarchy."
+---
+
+import Example from "@stylextras/ui/table-of-contents/example";
+
+## Examples
+
+<ComponentPreview name="TableOfContents">
+  <Example />
+</ComponentPreview>
+
+### Example code
+
+```tsx
+import {
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  TableOfContentsList,
+  TableOfContentsTitle,
+} from '@stylextras/ui/table-of-contents';
+
+export default function Example() {
+  return (
+    <TableOfContents aria-labelledby="toc-title">
+      <TableOfContentsTitle id="toc-title">On this page</TableOfContentsTitle>
+      <TableOfContentsList>
+        <TableOfContentsItem>
+          <TableOfContentsLink active href="#overview">
+            Overview
+          </TableOfContentsLink>
+        </TableOfContentsItem>
+      </TableOfContentsList>
+    </TableOfContents>
+  );
+}
+```
+
+## Usage
+
+```tsx
+import {
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  TableOfContentsList,
+  TableOfContentsTitle,
+} from "@stylextras/ui/table-of-contents";
+
+export function ArticleOutline() {
+  return (
+    <TableOfContents aria-labelledby="outline-title">
+      <TableOfContentsTitle id="outline-title">
+        On this page
+      </TableOfContentsTitle>
+      <TableOfContentsList>
+        <TableOfContentsItem>
+          <TableOfContentsLink active href="#overview">
+            Overview
+          </TableOfContentsLink>
+          <TableOfContentsList>
+            <TableOfContentsItem>
+              <TableOfContentsLink href="#examples">
+                Examples
+              </TableOfContentsLink>
+            </TableOfContentsItem>
+          </TableOfContentsList>
+        </TableOfContentsItem>
+      </TableOfContentsList>
+    </TableOfContents>
+  );
+}
+```
+
+## Import
+
+```tsx
+import {
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  TableOfContentsList,
+  TableOfContentsTitle,
+} from "@stylextras/ui/table-of-contents";
+```
+
+## Anatomy
+
+- `TableOfContents` — Styled `<nav>`.
+- `TableOfContentsTitle` — Polymorphic heading; defaults to `<h2>`.
+- `TableOfContentsList` — Styled `<ol>`.
+- `TableOfContentsItem` — Styled `<li>`.
+- `TableOfContentsLink` — Styled hash `<a>`.
+
+## Accessibility and browser behavior
+
+The root requires an accessible name. A visible title can provide it through
+`aria-labelledby`. Represent heading depth by nesting `TableOfContentsList`
+inside its parent `TableOfContentsItem`; visual indentation alone does not expose
+the document outline. Active links emit `aria-current="location"`, and the
+consumer remains responsible for calculating the active heading.
+
+## API reference
+
+### TableOfContents
+
+`TableOfContentsProps`
+
+- Every part accepts its native props, a forwarded ref, and `sx`.
+- `TableOfContents` — requires `aria-label` or `aria-labelledby`.
+- `TableOfContentsTitle.as` — `h2 | h3 | h4 | h5 | h6`. Default: `h2`.
+- `TableOfContentsLink.active` — `boolean`. Default: `false`.

@@ -29,11 +29,11 @@ export default function Example() {
           <CommandItem value="examples" keywords="gallery demos">
             Browse examples
           </CommandItem>
-          <CommandEmpty />
-          <CommandStatus>
-            {(count) => `${count} command${count === 1 ? '' : 's'} available.`}
-          </CommandStatus>
         </CommandList>
+        <CommandEmpty />
+        <CommandStatus>
+          {(count) => `${count} command${count === 1 ? '' : 's'} available.`}
+        </CommandStatus>
       </Command>
     </DemoFrame>
   )

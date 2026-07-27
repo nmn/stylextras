@@ -1,6 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { composeRefs } from '../internal/refs'
 import { Popover, type PopoverProps } from './index'
 
 export type PopoverClientProps = PopoverProps & {
@@ -25,14 +26,7 @@ export function PopoverClient({
   const popoverRef = useRef<HTMLDivElement>(null)
   const syncingRef = useRef(false)
 
-  const setRefs = useCallback(
-    (node: HTMLDivElement | null) => {
-      popoverRef.current = node
-      if (typeof ref === 'function') ref(node)
-      else if (ref) ref.current = node
-    },
-    [ref],
-  )
+  const setRefs = useMemo(() => composeRefs(popoverRef, ref), [ref])
 
   useEffect(() => {
     const popover = popoverRef.current

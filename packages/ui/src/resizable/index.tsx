@@ -13,6 +13,8 @@ import {
   useRef,
   useState,
 } from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
+import { composeRefs } from '../internal/refs'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
@@ -52,21 +54,43 @@ export type ResizableProps = Omit<
 export type ResizablePanelProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
 export type ResizableHandleProps = Omit<
   ComponentPropsWithRef<'div'>,
+  | 'aria-controls'
+  | 'aria-label'
+  | 'aria-labelledby'
   | 'aria-orientation'
   | 'aria-valuemax'
   | 'aria-valuemin'
   | 'aria-valuenow'
+  | 'aria-valuetext'
   | 'className'
   | 'role'
   | 'style'
 > &
-  SxProp & { label: string }
+  AccessibleAriaNameProps &
+  SxProp & {
+    'aria-controls': string
+    getValueText?: (value: number) => string
+  }
+
+const DEFAULT_MIN = 10
+const DEFAULT_MAX = 90
+const DEFAULT_VALUE = 50
+const PERCENT_MIN = 0
+const PERCENT_MAX = 100
+
+function finiteOr(value: number, fallback: number) {
+  return Number.isFinite(value) ? value : fallback
+}
+
+function clampPercent(value: number) {
+  return Math.min(PERCENT_MAX, Math.max(PERCENT_MIN, value))
+}
 
 export function Resizable({
-  defaultValue = 50,
+  defaultValue = DEFAULT_VALUE,
   direction = 'horizontal',
-  max = 90,
-  min = 10,
+  max = DEFAULT_MAX,
+  min = DEFAULT_MIN,
   onValueChange,
   ref,
   sx,
@@ -74,23 +98,27 @@ export function Resizable({
   ...props
 }: ResizableProps) {
   const rootRef = useRef<HTMLDivElement>(null)
-  const normalizedMin = Math.min(min, max)
-  const normalizedMax = Math.max(min, max)
+  const finiteMin = clampPercent(finiteOr(min, DEFAULT_MIN))
+  const finiteMax = clampPercent(finiteOr(max, DEFAULT_MAX))
+  const normalizedMin = Math.min(finiteMin, finiteMax)
+  const normalizedMax = Math.max(finiteMin, finiteMax)
   const controlled = value !== undefined
-  const [internalValue, setInternalValue] = useState(defaultValue)
-  const currentValue = Math.min(normalizedMax, Math.max(normalizedMin, value ?? internalValue))
-
-  const setRefs = useCallback(
-    (node: HTMLDivElement | null) => {
-      rootRef.current = node
-      if (typeof ref === 'function') ref(node)
-      else if (ref) ref.current = node
-    },
-    [ref],
+  const normalizedDefaultValue = Math.min(
+    normalizedMax,
+    Math.max(normalizedMin, finiteOr(defaultValue, DEFAULT_VALUE)),
   )
+  const [internalValue, setInternalValue] = useState(normalizedDefaultValue)
+  const requestedValue = value ?? internalValue
+  const currentValue = Math.min(
+    normalizedMax,
+    Math.max(normalizedMin, finiteOr(requestedValue, normalizedDefaultValue)),
+  )
+
+  const setRefs = useMemo(() => composeRefs(rootRef, ref), [ref])
 
   const setValue = useCallback(
     (nextValue: number) => {
+      if (!Number.isFinite(nextValue)) return
       const clamped = Math.min(normalizedMax, Math.max(normalizedMin, Math.round(nextValue)))
       if (!controlled) setInternalValue(clamped)
       onValueChange?.(clamped)
@@ -131,7 +159,10 @@ export function ResizablePanel({ ref, sx, ...props }: ResizablePanelProps) {
 }
 
 export function ResizableHandle({
-  label,
+  'aria-controls': ariaControls,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
+  getValueText = (value) => `${value}%`,
   onKeyDown,
   onPointerDown,
   onPointerMove,
@@ -181,13 +212,17 @@ export function ResizableHandle({
   return (
     <div
       ref={ref}
+      {...props}
       role="separator"
       tabIndex={tabIndex}
-      aria-label={label}
+      aria-controls={ariaControls}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
       aria-orientation={context.direction === 'horizontal' ? 'vertical' : 'horizontal'}
       aria-valuemax={context.max}
       aria-valuemin={context.min}
       aria-valuenow={context.value}
+      aria-valuetext={getValueText(context.value)}
       onKeyDown={handleKeyDown}
       onPointerDown={(event) => {
         onPointerDown?.(event)
@@ -202,7 +237,6 @@ export function ResizableHandle({
           updateFromPointer(event)
         }
       }}
-      {...props}
       {...stylex.props(
         styles.handle,
         context.direction === 'vertical' && styles.handleVertical,

@@ -24,8 +24,9 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuLink,
+  SidebarNavigation,
   SidebarTrigger,
 } from './index';
 
@@ -37,33 +38,35 @@ function WorkspaceNavigation({
   mode?: 'inline' | 'popover';
 }) {
   return (
-    <Sidebar id={id} mode={mode} aria-label="Workspace navigation">
+    <Sidebar id={id} mode={mode} aria-label="Workspace sidebar">
       <SidebarHeader>Acme workspace</SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton aria-current="page">
-                Overview
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>Projects</SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>Team</SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Manage</SidebarGroupLabel>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton>Settings</SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
+        <SidebarNavigation aria-label="Workspace">
+          <SidebarGroup>
+            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuLink aria-current="page" href="/workspace">
+                  Overview
+                </SidebarMenuLink>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuLink href="/workspace/projects">Projects</SidebarMenuLink>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuLink href="/workspace/team">Team</SidebarMenuLink>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Manage</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuLink href="/workspace/settings">Settings</SidebarMenuLink>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarNavigation>
       </SidebarContent>
       <SidebarFooter>Signed in as Ada</SidebarFooter>
     </Sidebar>
@@ -75,7 +78,12 @@ export default function Example() {
     <>
       <WorkspaceNavigation />
 
-      <SidebarTrigger target="workspace-popover-sidebar">☰</SidebarTrigger>
+      <SidebarTrigger
+        aria-label="Toggle workspace sidebar"
+        target="workspace-popover-sidebar"
+      >
+        ☰
+      </SidebarTrigger>
       <WorkspaceNavigation id="workspace-popover-sidebar" mode="popover" />
     </>
   );
@@ -85,7 +93,7 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@stylextras/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuLink, SidebarNavigation, SidebarTrigger } from "@stylextras/ui/sidebar";
 ```
 
 ## Anatomy
@@ -96,16 +104,21 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel
 - `SidebarGroup` — Styled `<div>`.
 - `SidebarGroupLabel` — Styled `<h3>`.
 - `SidebarHeader` — Styled `<div>`.
-- `SidebarMenu` — Styled `<ul>`.
+- `SidebarMenu` — Styled `<ul role="list">`.
 - `SidebarMenuButton` — Styled `<button>`.
 - `SidebarMenuItem` — Styled `<li>`.
+- `SidebarMenuLink` — Styled native `<a>` for navigation destinations.
+- `SidebarNavigation` — Named `<nav>` landmark.
 - `SidebarTrigger` — Styled `<button>`.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component starts with semantic HTML and enhances it with newer browser APIs when they are available. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+Name the sidebar region and wrap navigation links in a separately named
+`SidebarNavigation`. `SidebarMenu` explicitly preserves list semantics when its
+markers are removed. Popover mode uses the native Popover API; unsupported
+presentation features do not change the underlying links or landmark structure.
 
 ## API reference
 
@@ -113,8 +126,9 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 `SidebarProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"aside">, "className" | "popover" | "style">`. The props below complete `SidebarProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"aside">, "aria-label" | "aria-labelledby" | "className" | "popover" | "style">` plus one required accessible name.
 
+- `aria-label` or `aria-labelledby` — Required accessible region name.
 - `mode` — `"popover" | "inline"`. Default: `'inline'`.
 - `sx` — `stylex.StyleXStyles`.
 
@@ -146,8 +160,9 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `SidebarGroupLabelProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "className" | "style">`. The props below complete `SidebarGroupLabelProps`.
+Complete native/inherited prop base is the selected polymorphic heading element.
 
+- `as` — React element type. Default: `h3`; choose the heading level that fits the page outline.
 - `sx` — `stylex.StyleXStyles`.
 
 ### SidebarHeader
@@ -162,7 +177,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `SidebarMenuProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `SidebarMenuProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "role" | "style">`; `role="list"` is restored explicitly.
 
 - `sx` — `stylex.StyleXStyles`.
 
@@ -191,8 +206,12 @@ Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popov
 
 - `aria-label` — `string`. Required unless `aria-labelledby` is provided.
 - `aria-labelledby` — `string`. Required unless `aria-label` is provided.
-- `size` — `ButtonSize`. Default: `'icon'`.
 - `sx` — `stylex.StyleXStyles`.
 - `target` — `string`. Required.
 - `type` — `SidebarTriggerProps["type"]`. Default: `'button'`.
 - `variant` — `ButtonVariant`. Default: `'outline'`.
+
+### SidebarNavigation
+
+- `aria-label` or `aria-labelledby` — Required accessible navigation-landmark name.
+- `sx` — `stylex.StyleXStyles`.

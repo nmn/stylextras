@@ -82,6 +82,12 @@ Each part renders and styles the native element named above. The API reference s
 
 This component implements the tab keyboard pattern directly, including RTL horizontal arrows, without loading the focusgroup bridge. Every tablist requires an accessible name. Generated IDs, relationships, roles, orientation, selection, visibility, and tab stops are component-owned and cannot be overridden by consumer props. If the selected value points to a disabled tab, the first enabled tab becomes the roving tab stop. Use manual activation when panel content is deferred or otherwise not instantly available.
 
+Unprevented pointer activation always selects a tab, in both automatic and
+manual modes. Values must be unique across triggers and panels; duplicates
+produce a development warning. Panels default to `tabIndex={0}` so their content
+is reachable as one keyboard stop, and can opt out with `tabIndex={-1}` when
+their own contents already provide an appropriate focus target.
+
 ## API reference
 
 ### Tabs
@@ -101,9 +107,10 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `TabsContentProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-labelledby" | "className" | "hidden" | "id" | "role" | "style" | "tabIndex">`. The props below complete `TabsContentProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-labelledby" | "className" | "hidden" | "id" | "role" | "style">`. The props below complete `TabsContentProps`.
 
 - `sx` — `stylex.StyleXStyles`.
+- `tabIndex` — `0 | -1`. Default: `0`.
 - `value` — `string`. Required.
 
 ### TabsList

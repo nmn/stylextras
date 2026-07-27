@@ -7,6 +7,7 @@ import { radius } from '../tokens/radius.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
+import { toggleGroupMarker } from '../toggle-group/markers.stylex'
 
 export type ToggleSize = 'sm' | 'md' | 'lg'
 export type ToggleProps = Omit<
@@ -35,20 +36,27 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': colors.accent,
-      ':is([aria-pressed="true"], [aria-pressed="mixed"])': colors.primary,
+      ':hover': colors.selection,
+      ':is([aria-pressed="true"], [aria-pressed="mixed"])': colors.selection,
     },
     borderColor: {
       default: colors.border,
-      ':is([aria-pressed="true"], [aria-pressed="mixed"])': colors.primary,
+      [stylex.when.ancestor(':where(*)', toggleGroupMarker)]: 'transparent',
       '@media (forced-colors: active)': 'CanvasText',
     },
-    borderRadius: radius.sm,
+    borderRadius: {
+      default: radius.sm,
+      [stylex.when.ancestor(':where(*)', toggleGroupMarker)]: radius.round,
+    },
     borderStyle: 'solid',
-    borderWidth: stroke.thin,
+    borderWidth: {
+      default: stroke.thin,
+      [stylex.when.ancestor(':where(*)', toggleGroupMarker)]: 0,
+    },
+    boxSizing: 'border-box',
     color: {
       default: colors.fg,
-      ':is([aria-pressed="true"], [aria-pressed="mixed"])': colors.primaryForeground,
+      ':is([aria-pressed="true"], [aria-pressed="mixed"])': colors.fg,
     },
     cursor: { default: 'pointer', ':disabled': 'not-allowed' },
     display: 'inline-flex',
@@ -83,7 +91,7 @@ const sizeStyles = stylex.create({
       default: `max(${spacing.controlSm}, ${spacing.targetMin})`,
       '@media (pointer: coarse)': spacing.targetCoarse,
     },
-    paddingInline: spacing.sm,
+    paddingInline: spacing.xs,
   },
   md: {
     minHeight: {

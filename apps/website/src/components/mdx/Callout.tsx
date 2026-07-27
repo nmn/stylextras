@@ -4,26 +4,27 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as stylex from "@stylexjs/stylex";
-import { Info, TriangleAlert, CircleX, CircleCheck } from "lucide-react";
-import type { HTMLAttributes, ReactNode } from "react";
-import { calloutMarker } from "./mdx.stylex";
-import { vars } from "@/theming/vars.stylex";
+import * as stylex from '@stylexjs/stylex';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  type AlertVariant,
+} from '@stylextras/ui/alert';
+import { Info, TriangleAlert, CircleX, CircleCheck } from 'lucide-react';
+import type { HTMLAttributes, ReactNode } from 'react';
+import { calloutMarker } from './mdx.stylex';
+import { vars } from '@/theming/vars.stylex';
+import { spacing } from '@stylextras/ui/tokens/spacing.stylex';
 
 export type CalloutType =
-  | "info"
-  | "warn"
-  | "warning"
-  | "error"
-  | "success"
-  | "danger"
-  | "tip";
+  'info' | 'warn' | 'warning' | 'error' | 'success' | 'danger' | 'tip';
 
 function resolveType(
   type: CalloutType,
-): "info" | "warning" | "error" | "success" {
-  if (type === "warn" || type === "danger") return "warning";
-  if (type === "tip") return "info";
+): 'info' | 'warning' | 'error' | 'success' {
+  if (type === 'warn' || type === 'danger') return 'warning';
+  if (type === 'tip') return 'info';
   return type;
 }
 
@@ -34,15 +35,15 @@ export interface CalloutProps extends CalloutContainerProps {
 export function Callout({ children, title, ...props }: CalloutProps) {
   return (
     <CalloutContainer title={title} {...props}>
-      {title && <CalloutTitle>{title}</CalloutTitle>}
-      <CalloutDescription>{children}</CalloutDescription>
+      {title && <AlertTitle as="p">{title}</AlertTitle>}
+      <AlertDescription>{children}</AlertDescription>
     </CalloutContainer>
   );
 }
 
 export interface CalloutContainerProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "className" | "style" | "title"
+  'className' | 'style' | 'title'
 > {
   /**
    * @defaultValue info
@@ -57,13 +58,14 @@ export interface CalloutContainerProps extends Omit<
 }
 
 export function CalloutContainer({
-  type: inputType = "info",
+  type: inputType = 'info',
   icon,
   children,
   title,
   ...props
 }: CalloutContainerProps) {
   const type = resolveType(inputType);
+  const variant: AlertVariant = type === 'error' ? 'danger' : type;
 
   const iconStyleProps = stylex.props(
     iconStyles.base,
@@ -79,8 +81,10 @@ export function CalloutContainer({
   }[type];
 
   return (
-    <div
-      {...stylex.props(styles.container, containerStyles[type], calloutMarker)}
+    <Alert
+      role="note"
+      variant={variant}
+      sx={[styles.container, calloutMarker]}
       {...props}
     >
       <div
@@ -89,40 +93,7 @@ export function CalloutContainer({
       />
       {icon ?? defaultIcon}
       <div {...stylex.props(styles.content)}>{children}</div>
-    </div>
-  );
-}
-
-export interface CalloutTitleProps extends Omit<
-  HTMLAttributes<HTMLParagraphElement>,
-  "className" | "style"
-> {
-  children: ReactNode;
-}
-
-export function CalloutTitle({ children, ...props }: CalloutTitleProps) {
-  return (
-    <p {...stylex.props(styles.title)} {...props}>
-      {children}
-    </p>
-  );
-}
-
-export interface CalloutDescriptionProps extends Omit<
-  HTMLAttributes<HTMLDivElement>,
-  "className" | "style"
-> {
-  children: ReactNode;
-}
-
-export function CalloutDescription({
-  children,
-  ...props
-}: CalloutDescriptionProps) {
-  return (
-    <div {...stylex.props(styles.description)} {...props}>
-      {children}
-    </div>
+    </Alert>
   );
 }
 
@@ -130,80 +101,46 @@ const iconStyles = stylex.create({
   base: {
     flexShrink: 0,
     width: 20,
-    height: "calc(16px * 1.65)",
+    height: 'calc(16px * 1.65)',
     marginInlineEnd: -2,
-    color: vars["--color-fd-card"],
-    fill: vars["--color-fd-card"],
+    color: vars['--color-fd-card'],
+    fill: vars['--color-fd-card'],
   },
   withTitle: {
-    height: "calc(14px * 1.5)",
+    height: 'calc(14px * 1.5)',
   },
-  info: { fill: vars["--color-fd-info"] },
-  warning: { fill: vars["--color-fd-warning"] },
-  error: { fill: vars["--color-fd-error"] },
-  success: { fill: vars["--color-fd-success"] },
+  info: { fill: vars['--color-fd-info'] },
+  warning: { fill: vars['--color-fd-warning'] },
+  error: { fill: vars['--color-fd-error'] },
+  success: { fill: vars['--color-fd-success'] },
 });
 
 const indicatorStyles = stylex.create({
   base: {
     flexShrink: 0,
     width: 2,
-    backgroundColor: "color-mix(in srgb, currentColor 50%, transparent)",
+    backgroundColor: 'color-mix(in srgb, currentColor 50%, transparent)',
     borderRadius: 2,
   },
-  info: { color: vars["--color-fd-info"] },
-  warning: { color: vars["--color-fd-warning"] },
-  error: { color: vars["--color-fd-error"] },
-  success: { color: vars["--color-fd-success"] },
-});
-
-const containerStyles = stylex.create({
-  info: {
-    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-info"]} 10%, ${vars["--color-fd-card"]})`,
-  },
-  warning: {
-    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-warning"]} 10%, ${vars["--color-fd-card"]})`,
-  },
-  error: {
-    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-error"]} 10%, ${vars["--color-fd-card"]})`,
-  },
-  success: {
-    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-success"]} 10%, ${vars["--color-fd-card"]})`,
-  },
+  info: { color: vars['--color-fd-info'] },
+  warning: { color: vars['--color-fd-warning'] },
+  error: { color: vars['--color-fd-error'] },
+  success: { color: vars['--color-fd-success'] },
 });
 
 const styles = stylex.create({
   container: {
-    display: "flex",
-    gap: 8,
-    padding: 12,
-    paddingInlineStart: 4,
+    display: 'flex',
+    paddingInlineStart: spacing.xxs,
     marginBlock: 16,
-    fontSize: 14,
-    lineHeight: 1.5,
-    color: vars["--color-fd-card-foreground"],
-    backgroundColor: vars["--color-fd-card"],
-    borderColor: vars["--color-fd-border"],
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderRadius: 12,
-    cornerShape: "squircle",
-    boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
   },
 
   content: {
-    display: "flex",
+    display: 'flex',
     flexGrow: 1,
-    flexDirection: "column",
-    gap: 8,
+    flexDirection: 'column',
+    rowGap: 8,
+    columnGap: 8,
     minWidth: 0,
-  },
-  title: {
-    marginTop: 0,
-    marginBottom: 0,
-    fontWeight: 500,
-  },
-  description: {
-    color: vars["--color-fd-muted-foreground"],
   },
 });

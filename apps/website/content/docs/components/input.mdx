@@ -24,12 +24,13 @@ export default function Example() {
         <FieldLabel htmlFor="input-email">Work email</FieldLabel>
         <Input
           id="input-email"
+          aria-describedby="input-email-description"
           name="email"
           type="email"
           autoComplete="email"
           placeholder="you@company.com"
         />
-        <FieldDescription>
+        <FieldDescription id="input-email-description">
           Try the native email validation state.
         </FieldDescription>
       </Field>
@@ -37,18 +38,18 @@ export default function Example() {
         <FieldLabel htmlFor="input-search">Search</FieldLabel>
         <Input
           id="input-search"
+          aria-describedby="input-search-description"
           name="query"
           type="search"
           placeholder="Search components…"
         />
-        <FieldDescription>
+        <FieldDescription id="input-search-description">
           The browser owns search-input behavior.
         </FieldDescription>
       </Field>
     </>
   );
 }
-('use client');
 ```
 
 ## Import

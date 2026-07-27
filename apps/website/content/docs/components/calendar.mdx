@@ -49,6 +49,10 @@ This component uses a focused client controller for composite state and keyboard
 
 Every date button is named with its full localized date. Arrow keys respect text direction; Page Up/Down preserves the day where possible, and unavailable month buttons are disabled at `min`/`max` boundaries. Month-button navigation moves and clamps the grid's active date as well as the visible month, so exactly one enabled date remains in the roving tab sequence.
 
+Bounds are parsed once. Malformed `min` or `max` values are ignored. When both
+are valid but `min` is after `max`, both are ignored and a development warning
+is emitted, ensuring the grid always retains one usable roving tab stop.
+
 Pass `today` as an ISO `YYYY-MM-DD` value when the server already knows the user's local date. Without a selected value or `today`, the component renders its localized loading status consistently on the server and resolves the browser-local date after hydration, avoiding timezone-dependent hydration mismatches.
 
 ## API reference
@@ -59,7 +63,7 @@ Pass `today` as an ISO `YYYY-MM-DD` value when the server already knows the user
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CalendarProps`.
 
-- `defaultValue` — `string | (readonly string[] & string)`. Default: `''`.
+- `defaultValue` — ISO `YYYY-MM-DD` string. Default: `''`.
 - `loadingLabel` — `string`. Default: `'Loading calendar'`.
 - `locale` — `string`. Default: `'en-US'`.
 - `max` — `string`.

@@ -16,7 +16,7 @@ import Example from "@stylextras/ui/button/example";
 ```tsx
 'use client';
 
-import { Button } from './index';
+import { Button, ButtonLink } from './index';
 
 export function ButtonVariantsDemo() {
   return (
@@ -45,11 +45,23 @@ export function ButtonSizesDemo() {
   );
 }
 
+export function ButtonLinksDemo() {
+  return (
+    <>
+      <ButtonLink href="#primary-link">Primary link</ButtonLink>
+      <ButtonLink href="#outline-link" variant="outline">
+        Outline link
+      </ButtonLink>
+    </>
+  );
+}
+
 export default function Example() {
   return (
     <>
       <ButtonVariantsDemo />
       <ButtonSizesDemo />
+      <ButtonLinksDemo />
     </>
   );
 }
@@ -83,15 +95,29 @@ export function AddButton() {
 }
 ```
 
+### Link action
+
+`ButtonLink` keeps native anchor behavior while sharing the button variants and
+size contract.
+
+```tsx
+import { ButtonLink } from "@stylextras/ui/button";
+
+export function BrowseComponentsLink() {
+  return <ButtonLink href="/docs">Browse components</ButtonLink>;
+}
+```
+
 ## Import
 
 ```tsx
-import { Button } from "@stylextras/ui/button";
+import { Button, ButtonLink } from "@stylextras/ui/button";
 ```
 
 ## Anatomy
 
 - `Button` — Styled `<button>`.
+- `ButtonLink` — Styled `<a>` with the same variants and sizes.
 
 ## Accessibility and browser behavior
 
@@ -110,4 +136,17 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">
 - `size` — `ButtonSize`. Default: `'md'`.
 - `sx` — `stylex.StyleXStyles`.
 - `type` — `ButtonProps["type"]`. Default: `'button'`.
+- `variant` — `ButtonVariant`. Default: `'primary'`.
+
+### ButtonLink
+
+`ButtonLinkProps`
+
+Complete native/inherited prop base:
+`Omit<React.ComponentPropsWithRef<"a">, "className" | "href" | "style">`, combined as
+the size-discriminated `AccessibleButtonLinkProps` union.
+
+- `href` — `string`. Required real navigation destination.
+- `size` — `ButtonSize`. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`.
 - `variant` — `ButtonVariant`. Default: `'primary'`.

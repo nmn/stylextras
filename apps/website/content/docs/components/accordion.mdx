@@ -62,6 +62,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@s
 - `AccordionContent` — Styled `<div>`.
 - `AccordionItem` — Styled `<details>`.
 - `AccordionTrigger` — Styled `<summary>`.
+- `AccordionIndicator` — Styled default disclosure indicator.
 
 ## Accessibility and browser behavior
 
@@ -93,7 +94,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details">, "className" | "style">`. The props below complete `AccordionItemProps`.
 
-- `name` — `string`. Required. Items sharing a name are mutually exclusive through native details behavior.
+- `name` — `string`. Optional. Items sharing a name are mutually exclusive through native details behavior; omit it for independent disclosures.
 - `sx` — `stylex.StyleXStyles`.
 
 ### AccordionTrigger
@@ -102,4 +103,6 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details"
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary">, "className" | "style">`. The props below complete `AccordionTriggerProps`.
 
+- `indicator` — `React.ReactNode | false`. Defaults to `AccordionIndicator`.
+- `indicatorPosition` — `'start' | 'end'`. Default: `'end'`.
 - `sx` — `stylex.StyleXStyles`.

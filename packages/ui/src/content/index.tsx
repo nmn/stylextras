@@ -1,16 +1,17 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef, ElementType } from "react";
 import { colors } from "../tokens/color.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"article">;
-
 export type ContentElement = "article" | "div" | "main" | "section";
 
-export type ContentProps = Omit<BaseProps, "className" | "style"> & {
-  as?: ContentElement;
+export type ContentProps<T extends ContentElement = "div"> = Omit<
+  ComponentPropsWithRef<T>,
+  "className" | "style"
+> & {
+  as?: T;
   sx?: StyleXStyles;
 };
 
@@ -23,20 +24,13 @@ export type ContentProps = Omit<BaseProps, "className" | "style"> & {
  * - Provides layout only.
  * - The caller must choose the appropriate landmark or sectioning element.
  */
-export function Content({ as = "article", sx, ...props }: ContentProps) {
-  if (as === "div") {
-    return <div {...props} {...stylex.props(styles.base, sx)} />;
-  }
-
-  if (as === "main") {
-    return <main {...props} {...stylex.props(styles.base, sx)} />;
-  }
-
-  if (as === "section") {
-    return <section {...props} {...stylex.props(styles.base, sx)} />;
-  }
-
-  return <article {...props} {...stylex.props(styles.base, sx)} />;
+export function Content<T extends ContentElement = "div">({
+  as,
+  sx,
+  ...props
+}: ContentProps<T>) {
+  const Component = (as ?? "div") as ElementType;
+  return <Component {...props} {...stylex.props(styles.base, sx)} />;
 }
 
 const styles = stylex.create({

@@ -14,6 +14,8 @@ import Example from "@stylextras/ui/menubar/example";
 ### Example code
 
 ```tsx
+'use client';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,7 +36,7 @@ const menus = [
 
 export default function Example() {
   return (
-    <Menubar>
+    <Menubar aria-label="Application commands">
       {menus.map((menu) => (
         <DropdownMenu key={menu.id}>
           <DropdownMenuTrigger role="menuitem" variant="ghost" target={menu.id}>
@@ -50,7 +52,6 @@ export default function Example() {
     </Menubar>
   );
 }
-('use client');
 ```
 
 ## Import
@@ -65,9 +66,12 @@ import { Menubar } from "@stylextras/ui/menubar";
 
 ## Accessibility and browser behavior
 
-Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
-
-This component starts with semantic HTML and enhances it with newer browser APIs when they are available. When the relevant browser interaction API is unavailable, the package loads a narrowly scoped, feature-detected bridge for that behavior.
+The menubar requires an accessible name. Left/Right moves among top-level menu
+triggers with wrapping and respects RTL. When a submenu is open, that movement
+switches to the adjacent submenu. Printable keys search the top-level trigger
+labels. Pointer movement can switch an already-open menu without dispatching a
+consumer click or stealing focus. Native `focusgroup` supplies roving focus
+where supported and a feature-detected bridge fills the gap elsewhere.
 
 ## API reference
 
@@ -75,6 +79,7 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 `MenubarProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `MenubarProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">` plus one required accessible name.
 
+- `aria-label` or `aria-labelledby` — Required accessible widget name.
 - `sx` — `stylex.StyleXStyles`.

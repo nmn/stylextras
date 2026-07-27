@@ -25,11 +25,14 @@ export default function Example() {
       <FieldLabel htmlFor="summary">Summary</FieldLabel>
       <Textarea
         id="summary"
+        aria-describedby="summary-description"
         name="summary"
         rows={4}
         placeholder="Add a summary…"
       />
-      <FieldDescription>Plain native props remain available.</FieldDescription>
+      <FieldDescription id="summary-description">
+        Plain native props remain available.
+      </FieldDescription>
     </Field>
   );
 }

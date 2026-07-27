@@ -73,7 +73,7 @@ const toneStyles = stylex.create({
   info: { color: colors.info },
   success: { color: colors.success },
   warning: { color: colors.warning },
-  danger: { color: colors.danger },
+  danger: { color: colors.dangerText },
 })
 
 const scaleStyles = stylex.create({

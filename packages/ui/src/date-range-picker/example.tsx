@@ -13,6 +13,9 @@ export default function Example() {
         endDefaultValue="2026-07-18"
         startName="travelStart"
         endName="travelEnd"
+        startProps={{ required: true }}
+        endProps={{ required: true }}
+        invalidRangeMessage="Return date must be on or after departure date."
       />
     </DemoFrame>
   )

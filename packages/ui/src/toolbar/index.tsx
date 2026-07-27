@@ -1,14 +1,22 @@
+"use client";
+
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
-import { focusgroupProps } from "../focusgroup";
+import type { ComponentPropsWithRef } from "react";
+import type { AccessibleAriaNameProps } from "../accessibility";
+import { focusgroupAttributes, focusgroupRef } from "../focusgroup";
 import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
-export type ToolbarProps = Omit<BaseProps, "className" | "style"> & {
-  sx?: StyleXStyles;
-};
+export type ToolbarProps = Omit<
+  BaseProps,
+  "aria-label" | "aria-labelledby" | "aria-orientation" | "className" | "role" | "style"
+> &
+  AccessibleAriaNameProps & {
+    orientation?: "horizontal" | "vertical";
+    sx?: StyleXStyles;
+  };
 
 /**
  * Renders a token-driven toolbar container.
@@ -19,13 +27,17 @@ export type ToolbarProps = Omit<BaseProps, "className" | "style"> & {
  * - Uses toolbar semantics.
  * - Arrow-key focus movement is provided by focusgroup with a lazy polyfill.
  */
-export function Toolbar({ sx, ...props }: ToolbarProps) {
+export function Toolbar({ orientation = "horizontal", ref, sx, ...props }: ToolbarProps) {
   return (
     <div
+      ref={focusgroupRef(ref)}
       {...props}
       role="toolbar"
-      {...focusgroupProps<HTMLDivElement>("toolbar wrap")}
-      {...stylex.props(styles.base, sx)}
+      aria-orientation={orientation}
+      {...focusgroupAttributes(
+        orientation === "vertical" ? "toolbar block wrap" : "toolbar inline wrap",
+      )}
+      {...stylex.props(styles.base, orientation === "vertical" && styles.vertical, sx)}
     />
   );
 }
@@ -36,5 +48,9 @@ const styles = stylex.create({
     alignItems: "center",
     display: "flex",
     flexWrap: "wrap",
+  },
+  vertical: {
+    alignItems: "stretch",
+    flexDirection: "column",
   },
 });

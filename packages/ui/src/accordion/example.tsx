@@ -1,10 +1,5 @@
 import { DemoFrame } from '../example-theme/demo'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from './index'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './index'
 
 export default function Example() {
   return (
@@ -20,7 +15,7 @@ export default function Example() {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem name="component-docs-accordion">
-          <AccordionTrigger>Can I render rich content?</AccordionTrigger>
+          <AccordionTrigger indicatorPosition="start">Can I render rich content?</AccordionTrigger>
           <AccordionContent>
             Yes. The content part is an ordinary styled div inside the disclosure.
           </AccordionContent>
@@ -29,6 +24,14 @@ export default function Example() {
           <AccordionTrigger>Does it work without enhancement?</AccordionTrigger>
           <AccordionContent>
             It falls back to the browser&apos;s complete details and summary behavior.
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      <Accordion>
+        <AccordionItem>
+          <AccordionTrigger indicator={false}>Independent disclosure</AccordionTrigger>
+          <AccordionContent>
+            Omitting name preserves independent native details behavior.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

@@ -38,7 +38,7 @@ function DemoToggle({ defaultPressed = false, ...props }: DemoToggleProps) {
 
 export default function Example() {
   return (
-    <ToggleGroup>
+    <ToggleGroup aria-label="Design token categories">
       <DemoToggle defaultPressed>Color</DemoToggle>
       <DemoToggle defaultPressed>Spacing</DemoToggle>
       <DemoToggle>Motion</DemoToggle>
@@ -69,6 +69,8 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 `ToggleGroupProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `ToggleGroupProps`.
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">` plus one required accessible name.
 
+- `aria-label` or `aria-labelledby` — Required toolbar name.
+- `orientation` — `'horizontal' | 'vertical'`. Default: `'horizontal'`.
 - `sx` — `stylex.StyleXStyles`.

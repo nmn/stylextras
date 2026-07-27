@@ -21,8 +21,12 @@ import { ColorSwatchPicker } from './index';
 export default function Example() {
   return (
     <ColorSwatchPicker
-      colors={['#2563eb', '#0f766e', '#9333ea', '#ea580c', '#dc2626']}
-      defaultValue="#2563eb"
+      colors={[
+        { color: '#2563eb', label: 'Blue', value: 'blue' },
+        { color: '#0f766e', label: 'Teal', value: 'teal' },
+        { color: '#9333ea', label: 'Purple', value: 'purple' },
+      ]}
+      defaultValue="blue"
       legend="Accent color"
       name="accentColor"
     />
@@ -44,7 +48,11 @@ import { ColorSwatchPicker } from "@stylextras/ui/experimental/color-swatch-pick
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-Native radio inputs provide arrow-key selection, focus, validation, and form submission. The visible legend names the group, and each swatch has a text label in addition to its color.
+Native radio inputs provide arrow-key selection, focus, validation, and form
+submission. The visible legend names the group, and each swatch has a text label
+in addition to its color. Options may provide their own submitted `value`,
+visible `label`, disabled state, and per-input props. Duplicate submitted values
+are ignored with a development warning.
 
 ## API reference
 
@@ -54,9 +62,9 @@ Native radio inputs provide arrow-key selection, focus, validation, and form sub
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset">, "className" | "defaultValue" | "style">`. The props below complete `ColorSwatchPickerProps`.
 
-- `colors` — `string[]`. Default: `defaultColors`.
+- `colors` — `Array<string | ColorSwatchPickerOption>`. Default: built-in colors.
 - `defaultValue` — `string`.
-- `getColorLabel` — `(color: string) => string`.
+- `getColorLabel` — `(color: string, index: number) => ReactNode`.
 - `legend` — `ReactNode`. Required.
 - `name` — `string`. Required.
 - `required` — `boolean`. Default: `false`.

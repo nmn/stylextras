@@ -8,6 +8,7 @@ import {
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
+  ComboboxList,
   ComboboxStatus,
 } from './index'
 
@@ -27,20 +28,28 @@ export default function Example() {
       <Field>
         <FieldLabel htmlFor="reviewer">Reviewer</FieldLabel>
         <Combobox name="reviewer" required>
-          <ComboboxInput id="reviewer" placeholder="Search reviewers…" />
+          <ComboboxInput
+            id="reviewer"
+            aria-describedby="reviewer-description"
+            placeholder="Search reviewers…"
+          />
           <ComboboxContent>
-            {reviewers.map((reviewer) => (
-              <ComboboxItem key={reviewer.value} value={reviewer.value}>
-                {reviewer.label}
-              </ComboboxItem>
-            ))}
+            <ComboboxList>
+              {reviewers.map((reviewer) => (
+                <ComboboxItem key={reviewer.value} value={reviewer.value}>
+                  {reviewer.label}
+                </ComboboxItem>
+              ))}
+            </ComboboxList>
             <ComboboxEmpty />
             <ComboboxStatus>
               {(count) => `${count} reviewer${count === 1 ? '' : 's'} available.`}
             </ComboboxStatus>
           </ComboboxContent>
         </Combobox>
-        <FieldDescription>Use Arrow keys, Home, End, Enter, and Escape.</FieldDescription>
+        <FieldDescription id="reviewer-description">
+          Use Arrow keys, Home, End, Enter, and Escape.
+        </FieldDescription>
       </Field>
     </DemoFrame>
   )

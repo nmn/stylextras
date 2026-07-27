@@ -1,11 +1,11 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import type { AccessibleAriaNameProps } from "../accessibility";
 import { colors } from "../tokens/color.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
 
 export type ProgressCircleSize = "sm" | "md" | "lg";
 
@@ -38,14 +38,16 @@ const sizeMap = {
  */
 export function ProgressCircle({
   max = 100,
+  ref,
   showValue = true,
   size = "md",
   sx,
   value = 0,
   ...props
 }: ProgressCircleProps) {
-  const safeMax = max <= 0 ? 100 : max;
-  const clamped = Math.min(Math.max(value, 0), safeMax);
+  const safeMax = Number.isFinite(max) && max > 0 ? max : 100;
+  const safeValue = Number.isFinite(value) ? value : 0;
+  const clamped = Math.min(Math.max(safeValue, 0), safeMax);
   const percent = clamped / safeMax;
   const metrics = sizeMap[size];
   const radius = (metrics.box - metrics.stroke) / 2;
@@ -54,11 +56,12 @@ export function ProgressCircle({
 
   return (
     <div
+      ref={ref}
       {...props}
       role="progressbar"
       aria-valuemax={safeMax}
       aria-valuemin={0}
-      aria-valuenow={Math.round(clamped)}
+      aria-valuenow={clamped}
       {...stylex.props(baseStyles.base, sizeStyles[size], sx)}
     >
       <svg

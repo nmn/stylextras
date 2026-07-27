@@ -23,6 +23,7 @@ import {
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
+  ComboboxList,
   ComboboxStatus,
 } from './index';
 
@@ -38,20 +39,26 @@ export default function Example() {
     <Field>
       <FieldLabel htmlFor="reviewer">Reviewer</FieldLabel>
       <Combobox name="reviewer" required>
-        <ComboboxInput id="reviewer" placeholder="Search reviewers…" />
+        <ComboboxInput
+          id="reviewer"
+          aria-describedby="reviewer-description"
+          placeholder="Search reviewers…"
+        />
         <ComboboxContent>
-          {reviewers.map((reviewer) => (
-            <ComboboxItem key={reviewer.value} value={reviewer.value}>
-              {reviewer.label}
-            </ComboboxItem>
-          ))}
+          <ComboboxList>
+            {reviewers.map((reviewer) => (
+              <ComboboxItem key={reviewer.value} value={reviewer.value}>
+                {reviewer.label}
+              </ComboboxItem>
+            ))}
+          </ComboboxList>
           <ComboboxEmpty />
           <ComboboxStatus>
             {(count) => `${count} reviewer${count === 1 ? '' : 's'} available.`}
           </ComboboxStatus>
         </ComboboxContent>
       </Combobox>
-      <FieldDescription>
+      <FieldDescription id="reviewer-description">
         Use Arrow keys, Home, End, Enter, and Escape.
       </FieldDescription>
     </Field>
@@ -62,7 +69,7 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxStatus } from "@stylextras/ui/combobox";
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxStatus } from "@stylextras/ui/combobox";
 ```
 
 ## Anatomy
@@ -72,13 +79,21 @@ import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, 
 - `ComboboxEmpty` — Styled `<div>`.
 - `ComboboxInput` — Styled `<input>`.
 - `ComboboxItem` — Styled `<div>`.
+- `ComboboxList` — `<div role="listbox">` containing only options.
 - `ComboboxStatus` — Visually hidden polite result announcement.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component uses a focused client controller for composite state and keyboard interaction while retaining native elements for focus and form semantics where possible. Filter visibility and option relationships are component-owned. A consumer `onMouseDown` handler is called before the component prevents the default focus transfer, so custom observation cannot break input focus management.
+Focus remains on the text/search input while Arrow keys, Home, End, and Enter
+operate the DOM-ordered options through `aria-activedescendant`; options never
+enter the ordinary Tab order. `aria-activedescendant` is present only while the
+popover is open. Escape restores the committed label, while form submission and
+reset use the committed value. Put only `ComboboxItem` options in
+`ComboboxList`; `ComboboxEmpty` and `ComboboxStatus` must be siblings outside the
+listbox. Duplicate option values produce a development warning and option
+identity remains ID-based.
 
 ## API reference
 
@@ -119,11 +134,14 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 `ComboboxInputProps`
 
-Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "aria-activedescendant" | "aria-autocomplete" | "aria-controls" | "aria-expanded" | "className" | "name" | "role" | "style" | "value">`. The props below complete `ComboboxInputProps`.
+Complete native/inherited prop base omits the component-owned active-descendant,
+listbox, value, submission, validity, disabled, role, and input-type props.
+`Combobox` supplies `disabled`, `form`, and `required` consistently to the
+visible input and submitted control.
 
 - `autoComplete` — `ComboboxInputProps["autoComplete"]`. Default: `'off'`.
 - `sx` — `stylex.StyleXStyles`.
-- `type` — `ComboboxInputProps["type"]`. Default: `'search'`.
+- `type` — `'text' | 'search'`. Default: `'search'`.
 
 ### ComboboxItem
 
@@ -140,4 +158,10 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 ### ComboboxStatus
 
 - `children` — `ReactNode | ((count: number) => ReactNode)`. Required.
+- `delay` — Debounce delay in milliseconds. Default: `150`.
 - `sx` — `stylex.StyleXStyles`.
+
+### ComboboxList
+
+- Native `div` props, a forwarded ref, and `sx`.
+- Owns the generated listbox ID referenced by `ComboboxInput`.

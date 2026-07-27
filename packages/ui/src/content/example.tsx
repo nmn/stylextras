@@ -12,8 +12,8 @@ export default function Example() {
         title="Readable content"
         description="Content should be shown as a simple readable column, not as a feature demo."
       >
-        <Content>
-          <Typography as="h2" scale="title">
+        <Content as="article">
+          <Typography as="h3" scale="title">
             Content wrapper
           </Typography>
           <Text>

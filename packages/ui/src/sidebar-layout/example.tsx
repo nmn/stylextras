@@ -1,7 +1,7 @@
 "use client";
 
 import { Sidebar } from "../sidebar";
-import { SidebarLayout } from "./index";
+import { SidebarLayout, SidebarNavigation } from "./index";
 import { DemoFrame, DemoStack } from "../example-theme/demo";
 import { Link } from "../link";
 
@@ -15,9 +15,11 @@ export default function Example() {
         <SidebarLayout
           sidebar={
             <Sidebar aria-label="Documentation">
-              <Link href="#intro">Introduction</Link>
-              <Link href="#api">API</Link>
-              <Link href="#examples">Examples</Link>
+              <SidebarNavigation aria-label="Documentation sections">
+                <Link href="#intro">Introduction</Link>
+                <Link href="#api">API</Link>
+                <Link href="#examples">Examples</Link>
+              </SidebarNavigation>
             </Sidebar>
           }
         >

@@ -29,8 +29,9 @@ export function FieldDescription({ ref, sx, ...props }: FieldDescriptionProps) {
   return <p ref={ref} {...props} {...stylex.props(styles.description, sx)} />
 }
 
-export function FieldError({ ref, role = 'alert', sx, ...props }: FieldErrorProps) {
-  return <p ref={ref} role={role} {...props} {...stylex.props(styles.error, sx)} />
+/** Static validation copy. Opt into a live-region role only for dynamic updates. */
+export function FieldError({ ref, sx, ...props }: FieldErrorProps) {
+  return <p ref={ref} {...props} {...stylex.props(styles.error, sx)} />
 }
 
 const styles = stylex.create({
@@ -57,7 +58,7 @@ const styles = stylex.create({
     overflowWrap: 'anywhere',
   },
   error: {
-    color: colors.danger,
+    color: colors.dangerText,
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     fontWeight: typography.weightMedium,

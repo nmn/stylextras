@@ -1,13 +1,25 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type {
+  ComponentPropsWithRef,
+  HTMLAttributes,
+  ReactNode,
+  Ref,
+} from "react";
 import { spacing } from "../tokens/spacing.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"div">;
+type BaseProps = ComponentPropsWithRef<"div">;
+type LayoutSlotProps = Omit<HTMLAttributes<HTMLElement>, "children" | "className" | "style"> & {
+  ref?: Ref<HTMLElement>;
+};
 
 export type HeaderLayoutProps = Omit<BaseProps, "className" | "style"> & {
   header: ReactNode;
+  headerAs?: "div" | "header";
+  headerProps?: LayoutSlotProps;
   headerSx?: StyleXStyles;
+  mainAs?: "div" | "main";
+  mainProps?: LayoutSlotProps;
   mainSx?: StyleXStyles;
   sticky?: boolean;
   sx?: StyleXStyles;
@@ -25,24 +37,48 @@ export type HeaderLayoutProps = Omit<BaseProps, "className" | "style"> & {
 export function HeaderLayout({
   children,
   header,
+  headerAs = "div",
+  headerProps,
   headerSx,
+  mainAs = "div",
+  mainProps,
   mainSx,
+  ref,
   sticky = false,
   sx,
   ...props
 }: HeaderLayoutProps) {
   return (
-    <div {...props} {...stylex.props(rootStyles.base, sx)}>
-      <div
-        {...stylex.props(
-          headerStyles.base,
-          sticky && headerStyles.sticky,
-          headerSx,
-        )}
-      >
-        {header}
-      </div>
-      <main {...stylex.props(mainStyles.base, mainSx)}>{children}</main>
+    <div ref={ref} {...props} {...stylex.props(rootStyles.base, sx)}>
+      {headerAs === "header" ? (
+        <header
+          {...headerProps}
+          {...stylex.props(headerStyles.base, sticky && headerStyles.sticky, headerSx)}
+        >
+          {header}
+        </header>
+      ) : (
+        <div
+          {...headerProps}
+          ref={headerProps?.ref as Ref<HTMLDivElement>}
+          {...stylex.props(headerStyles.base, sticky && headerStyles.sticky, headerSx)}
+        >
+          {header}
+        </div>
+      )}
+      {mainAs === "main" ? (
+        <main {...mainProps} {...stylex.props(mainStyles.base, mainSx)}>
+          {children}
+        </main>
+      ) : (
+        <div
+          {...mainProps}
+          ref={mainProps?.ref as Ref<HTMLDivElement>}
+          {...stylex.props(mainStyles.base, mainSx)}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 }

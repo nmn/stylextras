@@ -14,38 +14,43 @@ import Example from "@stylextras/ui/table/example";
 ### Example code
 
 ```tsx
-'use client';
-
-import { Table } from './index';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableScrollArea,
+} from './index';
 
 export default function Example() {
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Usage</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>color.brand</td>
-          <td>color</td>
-          <td>Buttons, accents</td>
-        </tr>
-        <tr>
-          <td>spacing.base</td>
-          <td>length</td>
-          <td>Layout scale</td>
-        </tr>
-        <tr>
-          <td>radius.base</td>
-          <td>length</td>
-          <td>Surface shape</td>
-        </tr>
-      </tbody>
-    </Table>
+    <TableScrollArea tabIndex={0} aria-label="Design token reference">
+      <Table>
+        <TableCaption>Core design tokens and common uses.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Usage</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>color.brand</TableCell>
+            <TableCell>color</TableCell>
+            <TableCell>Buttons, accents</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>spacing.base</TableCell>
+            <TableCell>length</TableCell>
+            <TableCell>Layout scale</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableScrollArea>
   );
 }
 ```
@@ -53,7 +58,7 @@ export default function Example() {
 ## Import
 
 ```tsx
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@stylextras/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableScrollArea } from "@stylextras/ui/table";
 ```
 
 ## Anatomy
@@ -66,12 +71,22 @@ import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, Tabl
 - `TableHead` — Styled `<th>`.
 - `TableHeader` — Styled `<thead>`.
 - `TableRow` — Styled `<tr>`.
+- `TableScrollArea` — Opt-in focusable overflow wrapper.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-This component relies on the browser for its behavior, including keyboard, focus, form, and validation semantics where those apply. It does not ship a component behavior controller. If an optional presentation API is unavailable, the underlying native control and semantics continue to work with the browser’s ordinary presentation.
+Use a caption to name or describe the table and preserve native row and column
+headers. `TableScrollArea` is neutral by default. Pass `tabIndex={0}` only when
+keyboard users need to scroll the wrapper itself, and then provide
+`aria-label` or `aria-labelledby`.
+
+### TableScrollArea
+
+- `tabIndex` — `-1 | 0`. No default.
+- `aria-label` or `aria-labelledby` — Required when `tabIndex={0}`.
+- `sx` — `stylex.StyleXStyles`.
 
 ## API reference
 

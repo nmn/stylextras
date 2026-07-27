@@ -13,12 +13,19 @@ export default function Example() {
       <DemoStack>
         <Field>
           <FieldLabel htmlFor="environment">Environment</FieldLabel>
-          <Select id="environment" name="environment" defaultValue="preview">
+          <Select
+            id="environment"
+            aria-describedby="environment-description"
+            name="environment"
+            defaultValue="preview"
+          >
             <Option value="development">Development</Option>
             <Option value="preview">Preview</Option>
             <Option value="production">Production</Option>
           </Select>
-          <FieldDescription>Uses native validation, reset, and submission.</FieldDescription>
+          <FieldDescription id="environment-description">
+            Uses native validation, reset, and submission.
+          </FieldDescription>
         </Field>
         <Field>
           <FieldLabel htmlFor="component">Component</FieldLabel>

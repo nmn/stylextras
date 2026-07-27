@@ -1,14 +1,16 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import { useId } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import type { AccessibleNameProps } from "../accessibility";
+import { isAriaInvalid, mergeIdRefs } from "../internal/field-relationships";
 import { colors } from "../tokens/color.stylex";
 import { radius } from "../tokens/radius.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"input">;
+type BaseProps = ComponentPropsWithRef<"input">;
 
 export type NumberFieldSize = "sm" | "md";
 
@@ -17,9 +19,14 @@ export type NumberFieldProps = Omit<
   "aria-label" | "aria-labelledby" | "className" | "style" | "type" | "size"
 > &
   AccessibleNameProps & {
-    sx?: StyleXStyles;
+    description?: ReactNode;
+    descriptionSx?: StyleXStyles;
+    error?: ReactNode;
+    errorSx?: StyleXStyles;
     inputSx?: StyleXStyles;
+    invalid?: boolean;
     labelSx?: StyleXStyles;
+    sx?: StyleXStyles;
     size?: NumberFieldSize;
   };
 
@@ -33,24 +40,63 @@ export type NumberFieldProps = Omit<
  * - Spinbutton announcements and input behavior vary by browser.
  */
 export function NumberField({
+  "aria-describedby": ariaDescribedBy,
+  "aria-errormessage": ariaErrorMessage,
+  "aria-invalid": ariaInvalid,
+  description,
+  descriptionSx,
+  error,
+  errorSx,
+  id: idProp,
+  inputSx,
+  invalid = false,
   label,
   labelSx,
-  inputSx,
+  ref,
   size = "md",
   sx,
   ...props
 }: NumberFieldProps) {
+  const generatedId = useId();
+  const id = idProp ?? generatedId;
+  const descriptionId = description ? `${id}-description` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
+  const isInvalid = invalid || isAriaInvalid(ariaInvalid);
+
   return (
-    <label {...stylex.props(rootStyles.base, sx)}>
+    <div {...stylex.props(rootStyles.base, sx)}>
       {label ? (
-        <span {...stylex.props(labelStyles.base, labelSx)}>{label}</span>
+        <label htmlFor={id} {...stylex.props(labelStyles.base, labelSx)}>
+          {label}
+        </label>
       ) : null}
       <input
+        ref={ref}
         {...props}
+        aria-describedby={mergeIdRefs(
+          ariaDescribedBy,
+          descriptionId,
+          isInvalid ? mergeIdRefs(ariaErrorMessage, errorId) : undefined,
+        )}
+        aria-errormessage={
+          isInvalid ? mergeIdRefs(ariaErrorMessage, errorId) : undefined
+        }
+        aria-invalid={invalid ? true : ariaInvalid}
+        id={id}
         type="number"
         {...stylex.props(inputStyles.base, sizeStyles[size], inputSx)}
       />
-    </label>
+      {description ? (
+        <span id={descriptionId} {...stylex.props(descriptionStyles.base, descriptionSx)}>
+          {description}
+        </span>
+      ) : null}
+      {error ? (
+        <span id={errorId} {...stylex.props(errorStyles.base, errorSx)}>
+          {error}
+        </span>
+      ) : null}
+    </div>
   );
 }
 
@@ -60,6 +106,21 @@ const rootStyles = stylex.create({
 const labelStyles = stylex.create({
   base: {
     color: colors.fgSoft,
+    fontFamily: typography.fontSans,
+    fontSize: typography.stepMinus1,
+    fontWeight: typography.weightMedium,
+  },
+});
+const descriptionStyles = stylex.create({
+  base: {
+    color: colors.fgMuted,
+    fontFamily: typography.fontSans,
+    fontSize: typography.stepMinus1,
+  },
+});
+const errorStyles = stylex.create({
+  base: {
+    color: colors.dangerText,
     fontFamily: typography.fontSans,
     fontSize: typography.stepMinus1,
     fontWeight: typography.weightMedium,

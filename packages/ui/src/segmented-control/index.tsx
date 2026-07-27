@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import { useId, useState } from 'react'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 import type { AccessibleGroupNameProps } from '../accessibility'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
@@ -11,7 +11,7 @@ import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
-type BaseProps = ComponentPropsWithoutRef<'fieldset'>
+type BaseProps = ComponentPropsWithRef<'fieldset'>
 
 export type SegmentOption =
   | string
@@ -29,6 +29,7 @@ export type SegmentedControlProps = Omit<
     name?: string
     onValueChange?: (value: string) => void
     options?: SegmentOption[]
+    required?: boolean
     sx?: StyleXStyles
     value?: string
     defaultValue?: string
@@ -53,18 +54,21 @@ export function SegmentedControl({
   defaultValue,
   disabled,
   legend,
+  form,
   name,
   onValueChange,
   options = defaultOptions,
+  ref,
+  required = false,
   sx,
   value,
   ...props
 }: SegmentedControlProps) {
   const generatedName = useId()
   const groupName = name ?? generatedName
-  const normalizedOptions = options.map((option) =>
+  const normalizedOptions = dedupeOptions(options.map((option) =>
     typeof option === 'string' ? { label: option, value: option } : option,
-  )
+  ))
   const [internalValue, setInternalValue] = useState(
     defaultValue ?? normalizedOptions[0]?.value ?? '',
   )
@@ -78,7 +82,13 @@ export function SegmentedControl({
   }
 
   return (
-    <fieldset {...props} disabled={disabled} {...stylex.props(rootStyles.base, sx)}>
+    <fieldset
+      ref={ref}
+      {...props}
+      disabled={disabled}
+      form={form}
+      {...stylex.props(rootStyles.base, sx)}
+    >
       {legend ? <legend {...stylex.props(rootStyles.legend)}>{legend}</legend> : null}
       <div {...stylex.props(trackStyles.base)}>
         {normalizedOptions.map((option) => {
@@ -91,8 +101,10 @@ export function SegmentedControl({
             >
               <input
                 checked={checked}
+                form={form}
                 name={groupName}
                 onChange={() => handleChange(option.value)}
+                required={required}
                 type="radio"
                 value={option.value}
                 {...stylex.props(inputStyles.base)}
@@ -109,6 +121,35 @@ export function SegmentedControl({
       </div>
     </fieldset>
   )
+}
+
+const warnedDuplicateOptionSets = new Set<string>()
+
+function dedupeOptions(options: Array<Exclude<SegmentOption, string>>) {
+  const seen = new Set<string>()
+  const duplicates = new Set<string>()
+  const unique = options.filter((option) => {
+    if (seen.has(option.value)) {
+      duplicates.add(option.value)
+      return false
+    }
+    seen.add(option.value)
+    return true
+  })
+
+  if (process.env.NODE_ENV !== 'production' && duplicates.size > 0) {
+    const key = [...duplicates].sort().join('|')
+    if (!warnedDuplicateOptionSets.has(key)) {
+      warnedDuplicateOptionSets.add(key)
+      console.warn(
+        `[stylextras] SegmentedControl ignored duplicate option values: ${[
+          ...duplicates,
+        ].join(', ')}`,
+      )
+    }
+  }
+
+  return unique
 }
 
 const rootStyles = stylex.create({

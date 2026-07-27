@@ -1,11 +1,23 @@
-import { blurThemes, type BlurThemeName } from '../blur-themes'
-import { colorThemes, type ColorThemeName } from '../color-themes'
-import { elevationThemes, type ElevationThemeName } from '../elevation-themes'
-import { motionThemes, type MotionThemeName } from '../motion-themes'
-import { radiusThemes, type RadiusThemeName } from '../radius-themes'
-import { spacingThemes, type SpacingThemeName } from '../spacing-themes'
-import { strokeThemes, type StrokeThemeName } from '../stroke-themes'
-import { typographyThemes, type TypographyThemeName } from '../typography-themes'
+import { blurThemes, type BlurTheme, type BlurThemeName } from '../blur-themes'
+import { colorThemes, type ColorTheme, type ColorThemeName } from '../color-themes'
+import {
+  elevationThemes,
+  type ElevationTheme,
+  type ElevationThemeName,
+} from '../elevation-themes'
+import { motionThemes, type MotionTheme, type MotionThemeName } from '../motion-themes'
+import { radiusThemes, type RadiusTheme, type RadiusThemeName } from '../radius-themes'
+import {
+  spacingThemes,
+  type SpacingTheme,
+  type SpacingThemeName,
+} from '../spacing-themes'
+import { strokeThemes, type StrokeTheme, type StrokeThemeName } from '../stroke-themes'
+import {
+  typographyThemes,
+  type TypographyTheme,
+  type TypographyThemeName,
+} from '../typography-themes'
 
 export type StylePreset = Readonly<{
   /** Short description of the mood this grouping is meant to evoke. */
@@ -23,7 +35,7 @@ export type StylePreset = Readonly<{
 /**
  * Curated combinations of one theme per token axis that are designed to be
  * used together. Pass the result of `stylePresetThemes(name)` into
- * `stylex.props` (or spread it alongside component-level themes) to apply an
+ * `stylex.props` to apply an
  * entire look in one step, or read the individual names off `stylePresets` to
  * drive a per-axis theme picker that defaults to a cohesive combination.
  */
@@ -109,11 +121,22 @@ export const stylePresets = {
 
 export type StylePresetName = keyof typeof stylePresets
 
+export type StylePresetThemes = readonly [
+  ColorTheme,
+  SpacingTheme,
+  RadiusTheme,
+  TypographyTheme,
+  ElevationTheme,
+  StrokeTheme,
+  BlurTheme,
+  MotionTheme,
+]
+
 /**
  * Resolves a named grouping to the concrete `stylex.createTheme` result for
  * every axis, ready to spread into `stylex.props(...stylePresetThemes(name))`.
  */
-export function stylePresetThemes(name: StylePresetName) {
+export function stylePresetThemes(name: StylePresetName): StylePresetThemes {
   const preset = stylePresets[name]
   return [
     colorThemes[preset.color],

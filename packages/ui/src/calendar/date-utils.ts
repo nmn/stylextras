@@ -9,6 +9,12 @@ export type CalendarCell = CalendarDate & {
   value: string
 }
 
+export type CalendarBounds = {
+  invalidRange: boolean
+  max: string | undefined
+  min: string | undefined
+}
+
 const datePattern = /^(\d{4})-(\d{2})-(\d{2})$/
 
 export function parseDateValue(value: string): CalendarDate | null {
@@ -55,11 +61,26 @@ export function addMonthsToValue(value: string, amount: number) {
   return formatDateValue({ ...month, day: Math.min(parsed.day, lastDay) })
 }
 
+export function normalizeDateBounds(min?: string, max?: string): CalendarBounds {
+  const validMin = min && parseDateValue(min) ? min : undefined
+  const validMax = max && parseDateValue(max) ? max : undefined
+  if (validMin && validMax && validMin > validMax) {
+    return { invalidRange: true, max: undefined, min: undefined }
+  }
+  return { invalidRange: false, max: validMax, min: validMin }
+}
+
+export function clampNormalizedDateValue(
+  value: string,
+  { max, min }: Pick<CalendarBounds, 'max' | 'min'>,
+) {
+  if (min && value < min) return min
+  if (max && value > max) return max
+  return value
+}
+
 export function clampDateValue(value: string, min?: string, max?: string) {
-  let nextValue = value
-  if (min && parseDateValue(min) && nextValue < min) nextValue = min
-  if (max && parseDateValue(max) && nextValue > max) nextValue = max
-  return nextValue
+  return clampNormalizedDateValue(value, normalizeDateBounds(min, max))
 }
 
 export function monthForValue(value: string): CalendarDate | null {
@@ -136,7 +157,8 @@ export function formatDayLabel(value: string, locale: string) {
 }
 
 export function isDateDisabled(value: string, min?: string, max?: string) {
-  return Boolean((min && value < min) || (max && value > max))
+  const bounds = normalizeDateBounds(min, max)
+  return Boolean((bounds.min && value < bounds.min) || (bounds.max && value > bounds.max))
 }
 
 function toUTCDate({ day, month, year }: CalendarDate) {

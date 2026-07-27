@@ -1,5 +1,5 @@
 import { Badge } from '../badge'
-import { TagList } from './index'
+import { TagItem, TagList } from './index'
 import { DemoFrame } from '../example-theme/demo'
 
 export default function Example() {
@@ -10,9 +10,15 @@ export default function Example() {
         description="Tag Group is best shown as a compact cluster of metadata tags."
       >
         <TagList aria-label="Component metadata">
-          <Badge>Design system</Badge>
-          <Badge>Experimental</Badge>
-          <Badge>Native popup</Badge>
+          <TagItem>
+            <Badge>Design system</Badge>
+          </TagItem>
+          <TagItem>
+            <Badge>Experimental</Badge>
+          </TagItem>
+          <TagItem>
+            <Badge>Native popup</Badge>
+          </TagItem>
         </TagList>
       </DemoFrame>
     </>

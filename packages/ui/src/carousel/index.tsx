@@ -11,20 +11,26 @@ type SxProp = { sx?: StyleXStyles }
 
 export type CarouselProps = Omit<
   ComponentPropsWithRef<'div'>,
-  'aria-label' | 'aria-labelledby' | 'className' | 'style'
+  'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
 > &
   AccessibleAriaNameProps &
-  SxProp
+  SxProp & {
+    nextButtonLabel?: string
+    previousButtonLabel?: string
+    role?: 'group' | 'region'
+  }
 export type CarouselItemProps = Omit<
   ComponentPropsWithRef<'div'>,
-  'aria-label' | 'aria-labelledby' | 'className' | 'style'
+  'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
 > &
   AccessibleAriaNameProps &
-  SxProp
+  SxProp & { role?: 'group' }
 
 /** A native scroll-snap carousel progressively enhanced by scroll markers/buttons. */
 export function Carousel({
   'aria-roledescription': ariaRoleDescription = 'carousel',
+  nextButtonLabel = 'Next slide',
+  previousButtonLabel = 'Previous slide',
   ref,
   role = 'region',
   sx,
@@ -38,6 +44,8 @@ export function Carousel({
       tabIndex={tabIndex}
       aria-roledescription={ariaRoleDescription}
       {...props}
+      data-carousel-next-button-label={nextButtonLabel}
+      data-carousel-previous-button-label={previousButtonLabel}
       {...stylex.props(styles.carousel, sx)}
     />
   )
@@ -94,7 +102,10 @@ const styles = stylex.create({
       borderStyle: 'solid',
       borderWidth: stroke.thin,
       color: colors.fg,
-      content: { default: '"‹"', ':dir(rtl)': '"›"' },
+      content: {
+        default: '"‹" / attr(data-carousel-previous-button-label)',
+        ':dir(rtl)': '"›" / attr(data-carousel-previous-button-label)',
+      },
       height: {
         default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
         '@media (pointer: coarse)': spacing.targetCoarse,
@@ -111,7 +122,10 @@ const styles = stylex.create({
       borderStyle: 'solid',
       borderWidth: stroke.thin,
       color: colors.fg,
-      content: { default: '"›"', ':dir(rtl)': '"‹"' },
+      content: {
+        default: '"›" / attr(data-carousel-next-button-label)',
+        ':dir(rtl)': '"‹" / attr(data-carousel-next-button-label)',
+      },
       height: {
         default: `max(${spacing.controlMd}, ${spacing.targetMin})`,
         '@media (pointer: coarse)': spacing.targetCoarse,
@@ -134,7 +148,7 @@ const styles = stylex.create({
     '::scroll-marker': {
       backgroundColor: colors.borderStrong,
       borderRadius: radius.round,
-      content: '""',
+      content: '"" / attr(aria-label)',
       boxSizing: 'border-box',
       height: {
         default: spacing.targetMin,

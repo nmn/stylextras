@@ -7,13 +7,34 @@ import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
+export type ColorSwatchPickerInputProps = Omit<
+  ComponentPropsWithRef<'input'>,
+  | 'checked'
+  | 'className'
+  | 'defaultChecked'
+  | 'form'
+  | 'name'
+  | 'required'
+  | 'style'
+  | 'type'
+  | 'value'
+>
+
+export type ColorSwatchPickerOption = {
+  color: string
+  disabled?: boolean
+  inputProps?: ColorSwatchPickerInputProps
+  label?: ReactNode
+  value?: string
+}
+
 export type ColorSwatchPickerProps = Omit<
   ComponentPropsWithRef<'fieldset'>,
   'className' | 'defaultValue' | 'style'
 > & {
-  colors?: string[]
+  colors?: Array<string | ColorSwatchPickerOption>
   defaultValue?: string
-  getColorLabel?: (color: string) => string
+  getColorLabel?: (color: string, index: number) => ReactNode
   legend: ReactNode
   name: string
   required?: boolean
@@ -36,7 +57,17 @@ export function ColorSwatchPicker({
   sx,
   ...props
 }: ColorSwatchPickerProps) {
-  const initialValue = defaultValue ?? colors[0] ?? ''
+  const normalizedColors = dedupeOptions(
+    colors.map((option) =>
+      typeof option === 'string'
+        ? { color: option, value: option }
+        : { ...option, value: option.value ?? option.color },
+    ),
+  )
+  const initialValue =
+    defaultValue ??
+    normalizedColors.find((option) => !option.disabled && !option.inputProps?.disabled)?.value ??
+    ''
 
   return (
     <fieldset
@@ -48,20 +79,22 @@ export function ColorSwatchPicker({
     >
       <legend {...stylex.props(styles.legend)}>{legend}</legend>
       <div {...stylex.props(styles.options)}>
-        {colors.map((color, index) => {
-          const label = getColorLabel(color)
+        {normalizedColors.map((option, index) => {
+          const label = option.label ?? getColorLabel(option.color, index)
           return (
-            <label key={`${color}-${index}`} {...stylex.props(styles.option)}>
+            <label key={option.value} {...stylex.props(styles.option)}>
               <input
+                {...option.inputProps}
                 type="radio"
+                disabled={option.disabled || option.inputProps?.disabled}
                 form={form}
                 name={name}
                 required={required}
-                value={color}
-                defaultChecked={initialValue === color}
+                value={option.value}
+                defaultChecked={initialValue === option.value}
                 {...stylex.props(styles.input)}
               />
-              <ColorSwatch color={color} />
+              <ColorSwatch color={option.color} />
               <span {...stylex.props(styles.optionLabel)}>{label}</span>
             </label>
           )
@@ -69,6 +102,37 @@ export function ColorSwatchPicker({
       </div>
     </fieldset>
   )
+}
+
+const warnedDuplicateOptionSets = new Set<string>()
+
+function dedupeOptions(
+  options: Array<ColorSwatchPickerOption & { value: string }>,
+) {
+  const seen = new Set<string>()
+  const duplicates = new Set<string>()
+  const unique = options.filter((option) => {
+    if (seen.has(option.value)) {
+      duplicates.add(option.value)
+      return false
+    }
+    seen.add(option.value)
+    return true
+  })
+
+  if (process.env.NODE_ENV !== 'production' && duplicates.size > 0) {
+    const key = [...duplicates].sort().join('|')
+    if (!warnedDuplicateOptionSets.has(key)) {
+      warnedDuplicateOptionSets.add(key)
+      console.warn(
+        `[stylextras] ColorSwatchPicker ignored duplicate option values: ${[
+          ...duplicates,
+        ].join(', ')}`,
+      )
+    }
+  }
+
+  return unique
 }
 
 const styles = stylex.create({

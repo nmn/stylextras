@@ -10,11 +10,14 @@ export default function Example() {
         title="Radio options"
         description="Radio should show a simple set of single-choice options."
       >
-        <DemoStack>
-          <Radio name="publish-target" defaultChecked label="Preview only" />
-          <Radio name="publish-target" label="Staging" />
-          <Radio name="publish-target" label="Production" />
-        </DemoStack>
+        <fieldset>
+          <legend>Publish target</legend>
+          <DemoStack>
+            <Radio name="publish-target" defaultChecked label="Preview only" />
+            <Radio name="publish-target" label="Staging" />
+            <Radio name="publish-target" label="Production" />
+          </DemoStack>
+        </fieldset>
       </DemoFrame>
     </>
   );

@@ -9,6 +9,7 @@ import {
   useCallback,
   createContext,
   useContext,
+  useEffect,
   useId,
   useLayoutEffect,
   useMemo,
@@ -16,6 +17,7 @@ import {
   useState,
 } from 'react';
 import type { AccessibleAriaNameProps } from '../accessibility';
+import { composeRefs } from '../internal/refs';
 import { colors } from '../tokens/color.stylex';
 import { elevation } from '../tokens/elevation.stylex';
 import { motion } from '../tokens/motion.stylex';
@@ -29,6 +31,7 @@ type TabsContextValue = {
   claimInitialTabStop: (value: string, disabled: boolean) => boolean;
   idFor: (value: string) => string;
   orientation: 'horizontal' | 'vertical';
+  registerValue: (kind: 'panel' | 'trigger', value: string) => () => void;
   select: (value: string) => void;
   value: string;
 };
@@ -86,7 +89,6 @@ export type TabsContentProps = Omit<
   | 'id'
   | 'role'
   | 'style'
-  | 'tabIndex'
 > &
   SxProp & { value: string };
 
@@ -106,6 +108,30 @@ export function Tabs({
   const selectedValue = value ?? internalValue;
   const initialTabStopRef = useRef<string | null>(null);
   const idsRef = useRef(new Map<string, string>());
+  const registrationsRef = useRef(
+    new Map<string, { panel: number; trigger: number }>(),
+  );
+  const registerValue = useCallback(
+    (kind: 'panel' | 'trigger', nextValue: string) => {
+      const registrations = registrationsRef.current;
+      const counts = registrations.get(nextValue) ?? { panel: 0, trigger: 0 };
+      counts[kind] += 1;
+      registrations.set(nextValue, counts);
+      if (process.env.NODE_ENV !== 'production' && counts[kind] > 1) {
+        console.warn(
+          `Tabs ${kind} values must be unique. Duplicate value "${nextValue}" was registered.`,
+        );
+      }
+      return () => {
+        const current = registrations.get(nextValue);
+        if (!current) return;
+        current[kind] -= 1;
+        if (current.panel === 0 && current.trigger === 0)
+          registrations.delete(nextValue);
+      };
+    },
+    [],
+  );
   initialTabStopRef.current = null;
   const context = useMemo<TabsContextValue>(
     () => ({
@@ -124,6 +150,7 @@ export function Tabs({
         return id;
       },
       orientation,
+      registerValue,
       select: (nextValue) => {
         if (nextValue === selectedValue) return;
         if (!controlled) setInternalValue(nextValue);
@@ -137,6 +164,7 @@ export function Tabs({
       generatedId,
       onValueChange,
       orientation,
+      registerValue,
       selectedValue,
     ],
   );
@@ -150,14 +178,7 @@ export function Tabs({
 export function TabsList({ ref, sx, ...props }: TabsListProps) {
   const context = useTabs('TabsList');
   const listRef = useRef<HTMLDivElement>(null);
-  const setRefs = useCallback(
-    (node: HTMLDivElement | null) => {
-      listRef.current = node;
-      if (typeof ref === 'function') ref(node);
-      else if (ref) ref.current = node;
-    },
-    [ref],
-  );
+  const setRefs = useMemo(() => composeRefs(listRef, ref), [ref]);
 
   useLayoutEffect(() => {
     const tabs = [
@@ -206,6 +227,11 @@ export function TabsTrigger({
   const triggerId = `stylextras-tabs-trigger-${valueId}`;
   const panelId = `stylextras-tabs-panel-${valueId}`;
   const initialTabStop = context.claimInitialTabStop(value, disabled);
+
+  useEffect(
+    () => context.registerValue('trigger', value),
+    [context.registerValue, value],
+  );
 
   const handleFocus = (event: FocusEvent<HTMLButtonElement>) => {
     onFocus?.(event);
@@ -271,8 +297,7 @@ export function TabsTrigger({
       }
       onClick={(event) => {
         onClick?.(event);
-        if (!event.defaultPrevented && context.activationMode === 'manual')
-          context.select(value);
+        if (!event.defaultPrevented) context.select(value);
       }}
       onFocus={handleFocus}
       onKeyDown={handleKeyDown}
@@ -281,9 +306,13 @@ export function TabsTrigger({
   );
 }
 
-export function TabsContent({ ref, sx, value, ...props }: TabsContentProps) {
+export function TabsContent({ ref, sx, tabIndex = 0, value, ...props }: TabsContentProps) {
   const context = useTabs('TabsContent');
   const valueId = context.idFor(value);
+  useEffect(
+    () => context.registerValue('panel', value),
+    [context.registerValue, value],
+  );
   return (
     <div
       ref={ref}
@@ -292,7 +321,7 @@ export function TabsContent({ ref, sx, value, ...props }: TabsContentProps) {
       role="tabpanel"
       aria-labelledby={`stylextras-tabs-trigger-${valueId}`}
       hidden={context.value !== value}
-      tabIndex={0}
+      tabIndex={tabIndex}
       {...stylex.props(styles.content, sx)}
     />
   );
@@ -300,32 +329,38 @@ export function TabsContent({ ref, sx, value, ...props }: TabsContentProps) {
 
 const styles = stylex.create({
   root: {
-    gap: spacing.md,
-    display: 'grid',
+    columnGap: spacing.xxs,
+    display: 'flex',
+    flexDirection: 'column',
     minWidth: 0,
+    rowGap: spacing.xxs,
     width: '100%',
   },
   list: {
-    padding: spacing.xxxs,
-    borderRadius: radius.sm,
-    gap: spacing.xxxs,
     alignItems: 'center',
     backgroundColor: colors.bgInset,
-    display: 'inline-flex',
+    borderRadius: radius.sm,
+    display: 'inline-grid',
+    gap: spacing.xxxs,
+    gridAutoColumns: '1fr',
+    gridAutoFlow: 'column',
     maxWidth: '100%',
     overflowX: 'auto',
-    width: '100%',
+    padding: spacing.xxxs,
+    width: 'fit-content',
   },
   listVertical: {
     alignItems: 'stretch',
+    display: 'flex',
     flexDirection: 'column',
   },
   trigger: {
     borderColor: 'transparent',
-    borderRadius: radius.xs,
+    borderRadius: radius.md,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    paddingInline: spacing.sm,
+    paddingBlock: spacing.sm,
+    paddingInline: spacing.md,
     backgroundColor: {
       default: 'transparent',
       ':disabled': 'transparent',
@@ -339,7 +374,8 @@ const styles = stylex.create({
     cursor: { default: 'pointer', ':disabled': 'not-allowed' },
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    fontWeight: typography.weightMedium,
+    fontWeight: typography.weightSemibold,
+    lineHeight: typography.lineHeightBody,
     opacity: { default: 1, ':disabled': 0.5 },
     outlineColor: {
       default: 'transparent',
@@ -358,13 +394,15 @@ const styles = stylex.create({
     },
     transitionProperty: 'background-color, box-shadow, color',
     transitionTimingFunction: motion.easeStandard,
+    textAlign: 'center',
     minHeight: {
       default: spacing.controlSm,
       '@media (any-pointer: coarse)': spacing.targetCoarse,
     },
   },
   triggerActive: {
-    backgroundColor: colors.control,
+    backgroundColor: colors.surfaceSelected,
+    borderColor: colors.border,
     boxShadow: elevation.xs,
     color: colors.fg,
   },

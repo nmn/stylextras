@@ -1,13 +1,13 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import type { AccessibleNameProps } from "../accessibility";
 import { colors } from "../tokens/color.stylex";
 import { spacing } from "../tokens/spacing.stylex";
 import { stroke } from "../tokens/stroke.stylex";
 import { typography } from "../tokens/typography.stylex";
 
-type BaseProps = ComponentPropsWithoutRef<"input">;
+type BaseProps = ComponentPropsWithRef<"input">;
 
 export type RadioProps = Omit<
   BaseProps,
@@ -26,10 +26,10 @@ export type RadioProps = Omit<
  * - Uses native radio semantics.
  * - Standalone use is fine, but grouped radios should still share a name and visible legend supplied by the caller.
  */
-export function Radio({ label, sx, ...props }: RadioProps) {
+export function Radio({ label, ref, sx, ...props }: RadioProps) {
   return (
     <label {...stylex.props(styles.root, sx)}>
-      <input {...props} type="radio" {...stylex.props(styles.input)} />
+      <input ref={ref} {...props} type="radio" {...stylex.props(styles.input)} />
       {label ? <span {...stylex.props(styles.label)}>{label}</span> : null}
     </label>
   );

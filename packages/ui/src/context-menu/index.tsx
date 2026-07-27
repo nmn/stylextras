@@ -6,6 +6,7 @@ import {
   type ComponentPropsWithRef,
   type KeyboardEvent as ReactKeyboardEvent,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import type { AccessibleAriaNameProps } from '../accessibility'
@@ -55,6 +56,11 @@ export type ContextMenuItemProps = Omit<
   'className' | 'role' | 'style'
 > &
   SxProp
+export type ContextMenuGroupProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'aria-label' | 'aria-labelledby' | 'className' | 'role' | 'style'
+> &
+  SxProp & { 'aria-labelledby': string }
 export type ContextMenuLabelProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> &
   SxProp
 export type ContextMenuSeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'className' | 'style'> &
@@ -251,7 +257,12 @@ export function ContextMenuTrigger({
         const menu = document.getElementById(target)
         if (!(menu instanceof HTMLElement)) return
         const { clientX, clientY, currentTarget } = event
-        openContextMenu(menu, currentTarget, clientX, clientY)
+        // Opening during the contextmenu gesture can make an auto popover the
+        // gesture's light-dismiss target in some engines. Open on the next
+        // frame, after that native gesture has completed.
+        requestAnimationFrame(() => {
+          if (currentTarget.isConnected) openContextMenu(menu, currentTarget, clientX, clientY)
+        })
       }}
       onKeyDown={(event) => {
         onKeyDown?.(event)
@@ -272,7 +283,7 @@ export function ContextMenuTrigger({
 }
 
 export function ContextMenu({ onBlur, onKeyDown, onToggle, ref, sx, ...props }: ContextMenuProps) {
-  const setRef = focusgroupRef(ref)
+  const setRef = useMemo(() => focusgroupRef(ref), [ref])
   return (
     <div
       ref={setRef}
@@ -351,6 +362,11 @@ export function ContextMenuItem({
   )
 }
 
+/** Groups related menu items and names the group through a visible menu label. */
+export function ContextMenuGroup({ ref, sx, ...props }: ContextMenuGroupProps) {
+  return <div ref={ref} {...props} role="group" {...stylex.props(styles.group, sx)} />
+}
+
 export function ContextMenuLabel({ ref, sx, ...props }: ContextMenuLabelProps) {
   return <div ref={ref} {...props} {...stylex.props(styles.label, sx)} />
 }
@@ -404,6 +420,10 @@ const styles = stylex.create({
     transitionProperty: 'display, opacity, overlay',
     transitionTimingFunction: motion.easeEmphasized,
   },
+  group: {
+    gap: spacing.xxxs,
+    display: 'grid',
+  },
   item: {
     backgroundColor: {
       default: 'transparent',
@@ -416,7 +436,7 @@ const styles = stylex.create({
     borderWidth: 0,
     color: {
       default: colors.popoverForeground,
-      ':is(:hover, :focus-visible)': colors.accentForeground,
+      ':is(:hover, :focus-visible)': colors.accentText,
       '[aria-disabled="true"]': colors.fgDisabled,
     },
     cursor: { default: 'default', '[aria-disabled="true"]': 'not-allowed' },

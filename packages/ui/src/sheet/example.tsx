@@ -15,9 +15,15 @@ import {
 
 function ProjectSettingsSheet({ id, side }: { id: string; side: SheetSide }) {
   return (
-    <Sheet id={id} side={side} aria-labelledby={`${id}-title`}>
+    <Sheet
+      id={id}
+      side={side}
+      aria-labelledby={`${id}-title`}
+      aria-describedby={`${id}-description`}
+    >
       <SheetHeader>
-        <strong id={`${id}-title`}>Project settings</strong>
+        <h2 id={`${id}-title`}>Project settings</h2>
+        <p id={`${id}-description`}>Edit the project and team names, then save your changes.</p>
       </SheetHeader>
       <SheetBody>
         <DemoStack>

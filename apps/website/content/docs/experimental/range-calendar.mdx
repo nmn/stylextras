@@ -43,7 +43,11 @@ import { RangeCalendar } from "@stylextras/ui/experimental/range-calendar";
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-The paired native date controls preserve platform entry, constraints, validation, and form behavior without JavaScript. The legend names the range and each field retains its own visible label.
+The paired native date controls preserve platform entry, constraints, external
+form association, validation, reset, and submission without JavaScript. The
+legend names the range and each field retains its own visible label. Use
+`startProps` and `endProps` for field-specific descriptions, native attributes,
+event handlers, and refs while the range owns IDs, names, values, and bounds.
 
 ## API reference
 
@@ -57,5 +61,6 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset
 - `startLabel`, `endLabel` — `ReactNode`.
 - `startName`, `endName` — `string`.
 - `startDefaultValue`, `endDefaultValue` — `string`.
+- `startProps`, `endProps` — Per-field `DateField` props not owned by the range wrapper.
 - `min`, `max` — ISO date strings.
 - `sx` — `stylex.StyleXStyles`.

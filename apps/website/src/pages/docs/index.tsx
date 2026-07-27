@@ -5,7 +5,7 @@ import {
   DocsTitle,
 } from "@/components/layout/page";
 import { ReferenceGallery } from "@/components/catalog/ReferenceGallery";
-import { Link } from "fumadocs-core/framework";
+import { RouterLink } from "@/components/router-link";
 import * as stylex from "@stylexjs/stylex";
 import {
   experimentalCatalog,
@@ -60,9 +60,9 @@ export default function DocsIndexPage() {
                 package manifest.
               </p>
             </div>
-            <Link href="/docs/migration-0.2" {...stylex.props(styles.migration)}>
+            <RouterLink href="/docs/migration-0.2" sx={styles.migration}>
               0.2 migration guide
-            </Link>
+            </RouterLink>
           </header>
 
           <div {...stylex.props(styles.groups)}>
@@ -82,15 +82,15 @@ export default function DocsIndexPage() {
                   <ul {...stylex.props(styles.list)}>
                     {entries.map((entry) => (
                       <li key={entry.export}>
-                        <Link
+                        <RouterLink
                           href={`/docs/components/${entry.export}`}
-                          {...stylex.props(styles.link)}
+                          sx={styles.link}
                         >
                           <span {...stylex.props(styles.linkName)}>{entry.name}</span>
                           <span {...stylex.props(styles.fallback)}>
                             {entry.fallback}
                           </span>
-                        </Link>
+                        </RouterLink>
                       </li>
                     ))}
                   </ul>
@@ -110,13 +110,13 @@ export default function DocsIndexPage() {
           </div>
           <div {...stylex.props(styles.experimentalLinks)}>
             {experimentalCatalog.map((entry) => (
-              <Link
+              <RouterLink
                 href={`/docs/experimental/${entry.export.replace("experimental/", "")}`}
                 key={entry.export}
-                {...stylex.props(styles.experimentalLink)}
+                sx={styles.experimentalLink}
               >
                 {entry.name}
-              </Link>
+              </RouterLink>
             ))}
           </div>
         </section>

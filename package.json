@@ -13,9 +13,10 @@
     "build": "bun run build:website",
     "build:website": "bun run --filter website build",
     "lint:stylex": "eslint \"packages/ui/src/**/*.{ts,tsx}\"",
-    "test": "bun run test:ui && bun run test:website",
-    "test:ui": "vitest run packages/ui/test",
+    "test": "bun run test:ui && bun run test:website && bun run test:ui-browser",
+    "test:ui": "tsc -p packages/ui/tsconfig.test.json && vitest run packages/ui/test",
     "test:website": "bun run --filter website test",
+    "test:ui-browser": "bun run --filter website test:e2e:ui-a11y",
     "test:e2e": "bun run --filter website test:e2e",
     "format": "biome format --write ."
   },

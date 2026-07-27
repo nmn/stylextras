@@ -1,17 +1,13 @@
 'use client'
 
-import { type Ref, useCallback, useEffect, useRef } from 'react'
+import { type Ref, useEffect, useMemo, useRef } from 'react'
+import { composeRefs } from '../internal/refs'
 
 export type InterestOptions = {
   hideDelay?: number | undefined
   interactive?: boolean | undefined
   showDelay?: number | undefined
   target: string
-}
-
-function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
-  if (typeof ref === 'function') ref(value)
-  else if (ref) ref.current = value
 }
 
 /** Lazily installs the event bridge only when interest invokers are unavailable. */
@@ -21,13 +17,7 @@ export function useInterestInvoker<T extends HTMLElement>(
 ) {
   const ref = useRef<T>(null)
 
-  const setRef = useCallback(
-    (node: T | null) => {
-      ref.current = node
-      assignRef(externalRef, node)
-    },
-    [externalRef],
-  )
+  const setRef = useMemo(() => composeRefs(ref, externalRef), [externalRef])
 
   useEffect(() => {
     const trigger = ref.current

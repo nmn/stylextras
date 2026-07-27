@@ -1,16 +1,22 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import { type ComponentPropsWithRef, type ReactNode, useId } from 'react'
-import { DateField } from '../date-field'
+import { DateField, type DateFieldProps } from '../date-field'
 import { colors } from '../tokens/color.stylex'
 import { spacing } from '../tokens/spacing.stylex'
 import { typography } from '../tokens/typography.stylex'
+
+export type RangeCalendarFieldProps = Omit<
+  DateFieldProps,
+  'defaultValue' | 'form' | 'id' | 'inputId' | 'max' | 'min' | 'name' | 'value'
+>
 
 export type RangeCalendarProps = Omit<ComponentPropsWithRef<'fieldset'>, 'className' | 'style'> & {
   endDefaultValue?: string
   endId?: string
   endLabel?: ReactNode
   endName?: string
+  endProps?: RangeCalendarFieldProps
   legend: ReactNode
   max?: string
   min?: string
@@ -18,15 +24,18 @@ export type RangeCalendarProps = Omit<ComponentPropsWithRef<'fieldset'>, 'classN
   startId?: string
   startLabel?: ReactNode
   startName?: string
+  startProps?: RangeCalendarFieldProps
   sx?: StyleXStyles
 }
 
 /** A zero-JavaScript date-range fallback composed from two labeled native date inputs. */
 export function RangeCalendar({
+  children,
   endDefaultValue,
   endId,
   endLabel = 'End date',
   endName,
+  endProps,
   form,
   legend,
   max,
@@ -36,6 +45,7 @@ export function RangeCalendar({
   startId,
   startLabel = 'Start date',
   startName,
+  startProps,
   sx,
   ...props
 }: RangeCalendarProps) {
@@ -48,6 +58,7 @@ export function RangeCalendar({
       <label htmlFor={resolvedStartId} {...stylex.props(styles.field)}>
         <span>{startLabel}</span>
         <DateField
+          {...startProps}
           id={resolvedStartId}
           defaultValue={startDefaultValue}
           form={form}
@@ -59,6 +70,7 @@ export function RangeCalendar({
       <label htmlFor={resolvedEndId} {...stylex.props(styles.field)}>
         <span>{endLabel}</span>
         <DateField
+          {...endProps}
           id={resolvedEndId}
           defaultValue={endDefaultValue}
           form={form}
@@ -67,6 +79,7 @@ export function RangeCalendar({
           name={endName}
         />
       </label>
+      {children}
     </fieldset>
   )
 }

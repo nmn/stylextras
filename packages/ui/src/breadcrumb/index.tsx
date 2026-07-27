@@ -15,7 +15,10 @@ export type BreadcrumbProps = Omit<
 > &
   SxProp &
   AccessibleAriaNameProps
-export type BreadcrumbListProps = Omit<ComponentPropsWithRef<'ol'>, 'className' | 'style'> &
+export type BreadcrumbListProps = Omit<
+  ComponentPropsWithRef<'ol'>,
+  'className' | 'role' | 'style'
+> &
   SxProp
 export type BreadcrumbItemProps = Omit<ComponentPropsWithRef<'li'>, 'className' | 'style'> &
   SxProp
@@ -34,7 +37,7 @@ export function Breadcrumb({ 'aria-label': ariaLabel, ref, sx, ...props }: Bread
 }
 
 export function BreadcrumbList({ ref, sx, ...props }: BreadcrumbListProps) {
-  return <ol ref={ref} {...props} {...stylex.props(styles.list, sx)} />
+  return <ol ref={ref} role="list" {...props} {...stylex.props(styles.list, sx)} />
 }
 
 export function BreadcrumbItem({ ref, sx, ...props }: BreadcrumbItemProps) {

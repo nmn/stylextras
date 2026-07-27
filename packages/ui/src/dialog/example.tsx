@@ -17,10 +17,17 @@ import { DialogCommandBridge } from './client'
 
 function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
   return (
-    <Dialog id={id} size={size} aria-labelledby={`${id}-title`}>
+    <Dialog
+      id={id}
+      size={size}
+      aria-labelledby={`${id}-title`}
+      aria-describedby={`${id}-description`}
+    >
       <DialogHeader>
         <DialogTitle id={`${id}-title`}>Rename component</DialogTitle>
-        <DialogDescription>Choose a concise display name.</DialogDescription>
+        <DialogDescription id={`${id}-description`}>
+          Choose a concise display name.
+        </DialogDescription>
       </DialogHeader>
       <DialogBody>
         <Field>

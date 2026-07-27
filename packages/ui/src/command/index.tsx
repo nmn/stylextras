@@ -3,10 +3,9 @@
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
 import {
-  createContext,
   type ComponentPropsWithRef,
   type KeyboardEvent,
-  type ReactNode,
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -16,7 +15,13 @@ import {
   useState,
 } from 'react'
 import type { AccessibleAriaNameProps } from '../accessibility'
-import { Button, type AccessibleButtonPropsWithout } from '../button'
+import { type AccessibleButtonPropsWithout, Button } from '../button'
+import {
+  type DomOrderedCollectionRecord,
+  getAdjacentItem,
+  useDomOrderedCollection,
+} from '../internal/dom-ordered-collection'
+import { composeRefs } from '../internal/refs'
 import { colors } from '../tokens/color.stylex'
 import { elevation } from '../tokens/elevation.stylex'
 import { motion } from '../tokens/motion.stylex'
@@ -25,23 +30,22 @@ import { spacing } from '../tokens/spacing.stylex'
 import { stroke } from '../tokens/stroke.stylex'
 import { typography } from '../tokens/typography.stylex'
 
-type CommandRecord = {
+type CommandRecord = DomOrderedCollectionRecord & {
   disabled: boolean
   hidden: boolean
-  id: string
   keywords: string
-  value: string
+  onSelect: ((value: string) => void) | undefined
 }
 type CommandContextValue = {
-  activeValue: string | null
-  itemCount: number
+  activeId: string | null
+  getMatchingItems: () => CommandRecord[]
+  getNavigableItems: () => CommandRecord[]
   listId: string
   query: string
   register: (item: CommandRecord) => () => void
   run: (item: CommandRecord) => void
-  setActiveValue: (value: string | null) => void
+  setActiveId: (id: string | null) => void
   setQuery: (value: string) => void
-  visibleItems: () => CommandRecord[]
 }
 
 const CommandContext = createContext<CommandContextValue | null>(null)
@@ -60,7 +64,9 @@ export type CommandProps = Omit<
     onValueChange?: (value: string) => void
     sx?: StyleXStyles
   }
-export type CommandTriggerProps = AccessibleButtonPropsWithout<'aria-controls' | 'aria-haspopup'> & {
+export type CommandTriggerProps = AccessibleButtonPropsWithout<
+  'aria-controls' | 'aria-haspopup'
+> & {
   target: string
 }
 export type CommandInputProps = Omit<
@@ -74,32 +80,44 @@ export type CommandInputProps = Omit<
   | 'className'
   | 'role'
   | 'style'
+  | 'type'
   | 'value'
 > &
-  AccessibleAriaNameProps & { sx?: StyleXStyles }
+  AccessibleAriaNameProps & { sx?: StyleXStyles; type?: 'search' | 'text' }
 export type CommandListProps = Omit<
   ComponentPropsWithRef<'div'>,
-  'className' | 'role' | 'style'
+  'className' | 'id' | 'role' | 'style'
 > & {
   sx?: StyleXStyles
 }
 export type CommandItemProps = Omit<
-  ComponentPropsWithRef<'button'>,
-  'className' | 'onSelect' | 'role' | 'style' | 'value'
+  ComponentPropsWithRef<'div'>,
+  | 'aria-disabled'
+  | 'aria-selected'
+  | 'className'
+  | 'id'
+  | 'onSelect'
+  | 'role'
+  | 'style'
+  | 'tabIndex'
 > & {
+  disabled?: boolean
   keywords?: string
   onSelect?: (value: string) => void
   sx?: StyleXStyles
   value: string
 }
-export type CommandEmptyProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & {
+export type CommandEmptyProps = Omit<
+  ComponentPropsWithRef<'div'>,
+  'className' | 'hidden' | 'style'
+> & {
   sx?: StyleXStyles
 }
 export type CommandStatusProps = Omit<
   ComponentPropsWithRef<'div'>,
   'aria-atomic' | 'aria-live' | 'children' | 'className' | 'role' | 'style'
 > & {
-  children: ReactNode | ((count: number) => ReactNode)
+  children: string | ((count: number) => string)
   sx?: StyleXStyles
 }
 
@@ -110,20 +128,12 @@ export function Command({ children, onClose, onValueChange, ref, sx, ...props }:
   const generatedId = useId().replaceAll(':', '')
   const listId = `stylextras-command-list-${generatedId}`
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const itemsRef = useRef(new Map<string, CommandRecord>())
+  const { getItems, register, version } = useDomOrderedCollection<CommandRecord>('Command')
   const queryRef = useRef('')
   const [query, setQueryState] = useState('')
-  const [activeValue, setActiveValue] = useState<string | null>(null)
-  const [version, setVersion] = useState(0)
+  const [activeId, setActiveId] = useState<string | null>(null)
 
-  const setRefs = useCallback(
-    (node: HTMLDialogElement | null) => {
-      dialogRef.current = node
-      if (typeof ref === 'function') ref(node)
-      else if (ref) ref.current = node
-    },
-    [ref],
-  )
+  const setRefs = useMemo(() => composeRefs(dialogRef, ref), [ref])
 
   const matches = useCallback((item: CommandRecord) => {
     const normalized = queryRef.current.trim().toLocaleLowerCase()
@@ -134,32 +144,26 @@ export function Command({ children, onClose, onValueChange, ref, sx, ...props }:
     )
   }, [])
 
-  const visibleItems = useCallback(
-    () =>
-      [...itemsRef.current.values()].filter(
-        (item) => !item.disabled && !item.hidden && matches(item),
-      ),
-    [matches],
+  const getMatchingItems = useCallback(
+    () => getItems().filter((item) => !item.hidden && matches(item)),
+    [getItems, matches],
   )
 
-  const register = useCallback((item: CommandRecord) => {
-    itemsRef.current.set(item.value, item)
-    setVersion((version) => version + 1)
-    return () => {
-      itemsRef.current.delete(item.value)
-      setVersion((version) => version + 1)
-    }
-  }, [])
+  const getNavigableItems = useCallback(
+    () => getMatchingItems().filter((item) => !item.disabled),
+    [getMatchingItems],
+  )
 
   const setQuery = useCallback((value: string) => {
     queryRef.current = value
     setQueryState(value)
-    setActiveValue(null)
+    setActiveId(null)
   }, [])
 
   const run = useCallback(
     (item: CommandRecord) => {
       if (item.disabled) return
+      item.onSelect?.(item.value)
       onValueChange?.(item.value)
       dialogRef.current?.close(item.value)
       setQuery('')
@@ -167,32 +171,48 @@ export function Command({ children, onClose, onValueChange, ref, sx, ...props }:
     [onValueChange, setQuery],
   )
 
+  useEffect(() => {
+    if (activeId && !getNavigableItems().some((item) => item.id === activeId)) {
+      setActiveId(null)
+    }
+  }, [activeId, getNavigableItems, query, version])
+
   const context = useMemo<CommandContextValue>(
     () => ({
-      activeValue,
-      itemCount: itemsRef.current.size,
+      activeId,
+      getMatchingItems,
+      getNavigableItems,
       listId,
       query,
       register,
       run,
-      setActiveValue,
+      setActiveId,
       setQuery,
-      visibleItems,
     }),
-    [activeValue, listId, query, register, run, setQuery, version, visibleItems],
+    [
+      activeId,
+      getMatchingItems,
+      getNavigableItems,
+      listId,
+      query,
+      register,
+      run,
+      setQuery,
+      version,
+    ],
   )
 
   return (
     <CommandContext value={context}>
       <dialog
         ref={setRefs}
+        {...props}
         {...({ closedby: 'any' } as Record<string, string>)}
         onClose={(event) => {
           onClose?.(event)
           setQuery('')
-          setActiveValue(null)
+          setActiveId(null)
         }}
-        {...props}
         {...stylex.props(styles.command, sx)}
       >
         {children}
@@ -214,6 +234,7 @@ export function CommandTrigger({ target, type = 'button', ...props }: CommandTri
 }
 
 export function CommandInput({
+  autoComplete = 'off',
   onChange,
   onKeyDown,
   ref,
@@ -222,30 +243,31 @@ export function CommandInput({
   ...props
 }: CommandInputProps) {
   const context = useCommand('CommandInput')
-  const activeId = context.activeValue
-    ? context.visibleItems().find((item) => item.value === context.activeValue)?.id
+  const activeId = context.activeId
+    ? context.getNavigableItems().find((item) => item.id === context.activeId)?.id
     : undefined
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     onKeyDown?.(event)
     if (event.defaultPrevented) return
     if (event.nativeEvent.isComposing) return
-    const items = context.visibleItems()
-    const current = items.findIndex((item) => item.value === context.activeValue)
+    const items = context.getNavigableItems()
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault()
-      const delta = event.key === 'ArrowDown' ? 1 : -1
-      const next = items[(current + delta + items.length) % items.length]
+      const next = getAdjacentItem(items, context.activeId, event.key === 'ArrowDown' ? 1 : -1)
       if (next) {
-        context.setActiveValue(next.value)
-        document.getElementById(next.id)?.scrollIntoView({ block: 'nearest' })
+        event.preventDefault()
+        context.setActiveId(next.id)
+        next.getElement()?.scrollIntoView({ block: 'nearest' })
       }
     } else if (event.key === 'Home' || event.key === 'End') {
-      event.preventDefault()
       const next = event.key === 'Home' ? items[0] : items.at(-1)
-      if (next) context.setActiveValue(next.value)
-    } else if (event.key === 'Enter' && context.activeValue) {
-      const active = items.find((item) => item.value === context.activeValue)
+      if (next) {
+        event.preventDefault()
+        context.setActiveId(next.id)
+        next.getElement()?.scrollIntoView({ block: 'nearest' })
+      }
+    } else if (event.key === 'Enter' && context.activeId) {
+      const active = items.find((item) => item.id === context.activeId)
       if (active) {
         event.preventDefault()
         context.run(active)
@@ -256,20 +278,20 @@ export function CommandInput({
   return (
     <input
       ref={ref}
+      {...props}
       type={type}
       role="combobox"
       aria-activedescendant={activeId}
       aria-controls={context.listId}
       aria-expanded="true"
       aria-autocomplete="list"
-      autoComplete="off"
+      autoComplete={autoComplete}
       value={context.query}
       onChange={(event) => {
         onChange?.(event)
         if (!event.defaultPrevented) context.setQuery(event.currentTarget.value)
       }}
       onKeyDown={handleKeyDown}
-      {...props}
       {...stylex.props(styles.input, sx)}
     />
   )
@@ -280,9 +302,9 @@ export function CommandList({ ref, sx, ...props }: CommandListProps) {
   return (
     <div
       ref={ref}
+      {...props}
       id={context.listId}
       role="listbox"
-      {...props}
       {...stylex.props(styles.list, sx)}
     />
   )
@@ -294,6 +316,7 @@ export function CommandItem({
   hidden: hiddenProp = false,
   keywords = '',
   onClick,
+  onMouseDown,
   onPointerMove,
   onSelect,
   ref,
@@ -303,72 +326,81 @@ export function CommandItem({
 }: CommandItemProps) {
   const context = useCommand('CommandItem')
   const generatedId = useId().replaceAll(':', '')
+  const itemRef = useRef<HTMLDivElement>(null)
   const id = `${context.listId}-item-${generatedId}`
   const searchable =
     `${value} ${keywords} ${typeof children === 'string' ? children : ''}`.toLocaleLowerCase()
   const item = useMemo<CommandRecord>(
-    () => ({ disabled, hidden: hiddenProp, id, keywords: searchable, value }),
-    [disabled, hiddenProp, id, searchable, value],
+    () => ({
+      disabled,
+      getElement: () => itemRef.current,
+      hidden: hiddenProp,
+      id,
+      keywords: searchable,
+      onSelect,
+      value,
+    }),
+    [disabled, hiddenProp, id, onSelect, searchable, value],
   )
   const normalizedQuery = context.query.trim().toLocaleLowerCase()
   const filteredOut = Boolean(normalizedQuery && !item.keywords.includes(normalizedQuery))
 
   useEffect(() => context.register(item), [context.register, item])
 
+  const setRefs = useMemo(() => composeRefs(itemRef, ref), [ref])
+
   return (
-    <button
-      ref={ref}
+    <div
+      ref={setRefs}
+      {...props}
       id={id}
-      type="button"
       role="option"
-      aria-selected={context.activeValue === item.value}
-      disabled={disabled}
+      aria-disabled={disabled || undefined}
+      aria-selected={context.activeId === item.id}
+      tabIndex={undefined}
       hidden={hiddenProp || filteredOut}
       onClick={(event) => {
         onClick?.(event)
-        if (!event.defaultPrevented) {
-          onSelect?.(value)
+        if (!event.defaultPrevented && !disabled) {
           context.run(item)
         }
       }}
+      onMouseDown={(event) => {
+        onMouseDown?.(event)
+        if (!event.defaultPrevented) event.preventDefault()
+      }}
       onPointerMove={(event) => {
         onPointerMove?.(event)
-        if (!event.defaultPrevented && !disabled) context.setActiveValue(item.value)
+        if (!event.defaultPrevented && !disabled) context.setActiveId(item.id)
       }}
-      {...props}
       {...stylex.props(styles.item, sx)}
-    >
-      {children}
-    </button>
-  )
-}
-
-export function CommandEmpty({ children = 'No results.', ref, sx, ...props }: CommandEmptyProps) {
-  const context = useCommand('CommandEmpty')
-  const visibleItems = context.visibleItems()
-  return (
-    <div
-      ref={ref}
-      hidden={context.itemCount > 0 && visibleItems.length > 0}
-      {...props}
-      {...stylex.props(styles.empty, sx)}
     >
       {children}
     </div>
   )
 }
 
-/** A polite, visually hidden result-count announcement controlled by the caller's language. */
+export function CommandEmpty({ children = 'No results.', ref, sx, ...props }: CommandEmptyProps) {
+  const context = useCommand('CommandEmpty')
+  const matchingItems = context.getMatchingItems()
+  return (
+    <div ref={ref} {...props} hidden={matchingItems.length > 0} {...stylex.props(styles.empty, sx)}>
+      {children}
+    </div>
+  )
+}
+
+/** A polite, visually hidden plain-text result count controlled by the caller's language. */
 export function CommandStatus({ children, ref, sx, ...props }: CommandStatusProps) {
   const context = useCommand('CommandStatus')
-  const count = context.visibleItems().length
+  const count = context.getMatchingItems().length
   return (
     <div
       ref={ref}
+      {...props}
       role="status"
       aria-atomic="true"
       aria-live="polite"
-      {...props}
       {...stylex.props(styles.status, sx)}
     >
       {typeof children === 'function' ? children(count) : children}
@@ -442,17 +474,17 @@ const styles = stylex.create({
     paddingInline: spacing.sm,
     backgroundColor: {
       default: 'transparent',
-      ':is(:hover, [aria-selected="true"])': colors.accent,
-      ':disabled': 'transparent',
+      '[aria-disabled="true"]': 'transparent',
+      ':is(:hover, [aria-selected="true"]):not([aria-disabled="true"])': colors.accent,
     },
     color: {
       default: colors.popoverForeground,
-      ':is(:hover, [aria-selected="true"])': colors.accentForeground,
+      ':is(:hover, [aria-selected="true"]):not([aria-disabled="true"])': colors.accentText,
     },
-    cursor: { default: 'default', ':disabled': 'not-allowed' },
+    cursor: { default: 'default', '[aria-disabled="true"]': 'not-allowed' },
     fontFamily: typography.fontSans,
     fontSize: typography.step0,
-    opacity: { default: 1, ':disabled': 0.5 },
+    opacity: { default: 1, '[aria-disabled="true"]': 0.5 },
     textAlign: 'start',
     transitionDuration: {
       default: motion.durationFast,

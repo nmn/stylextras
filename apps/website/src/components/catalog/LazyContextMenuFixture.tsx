@@ -1,5 +1,6 @@
 import {
   ContextMenu,
+  ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
 } from '@stylextras/ui/context-menu'
@@ -14,9 +15,11 @@ export default function LazyContextMenuFixture(
 ) {
   return (
     <ContextMenu {...props} data-testid="lazy-context-menu">
-      <ContextMenuLabel>Deferred canvas</ContextMenuLabel>
-      <ContextMenuItem>Deferred copy</ContextMenuItem>
-      <ContextMenuItem>Deferred paste</ContextMenuItem>
+      <ContextMenuGroup aria-labelledby="lazy-context-menu-label">
+        <ContextMenuLabel id="lazy-context-menu-label">Deferred canvas</ContextMenuLabel>
+        <ContextMenuItem>Deferred copy</ContextMenuItem>
+        <ContextMenuItem>Deferred paste</ContextMenuItem>
+      </ContextMenuGroup>
       <ContextMenuItem hidden>Deferred hidden context item</ContextMenuItem>
       <div inert>
         <ContextMenuItem>Deferred inert context item</ContextMenuItem>

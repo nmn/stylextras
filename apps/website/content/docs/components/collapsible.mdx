@@ -41,6 +41,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@stylextras
 - `Collapsible` — Styled `<details>`.
 - `CollapsibleContent` — Styled `<div>`.
 - `CollapsibleTrigger` — Styled `<summary>`.
+- `CollapsibleIndicator` — Styled default disclosure indicator.
 
 ## Accessibility and browser behavior
 
@@ -72,4 +73,6 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary">, "className" | "style">`. The props below complete `CollapsibleTriggerProps`.
 
+- `indicator` — `React.ReactNode | false`. Defaults to `CollapsibleIndicator`.
+- `indicatorPosition` — `'start' | 'end'`. Default: `'end'`.
 - `sx` — `stylex.StyleXStyles`.

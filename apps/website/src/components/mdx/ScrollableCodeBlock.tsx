@@ -6,8 +6,9 @@
  */
 "use client";
 import * as stylex from "@stylexjs/stylex";
+import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
+import { ScrollArea } from "@stylextras/ui/scroll-area";
 import { Check, Clipboard } from "lucide-react";
-import { useRef, useState } from "react";
 import { vars } from "@/theming/vars.stylex";
 interface ScrollableCodeBlockProps {
   content: string;
@@ -19,42 +20,38 @@ export function ScrollableCodeBlock({
   title,
   maxHeight = 300,
 }: ScrollableCodeBlockProps) {
-  const [copied, setCopied] = useState(false);
-  const codeRef = useRef<HTMLPreElement>(null);
-  function handleCopy() {
-    void navigator.clipboard.writeText(content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
   return (
     <figure {...stylex.props(styles.figure)}>
       <div {...stylex.props(styles.header)}>
         <figcaption {...stylex.props(styles.title)}>{title}</figcaption>
-        <button
-          onClick={handleCopy}
-          type="button"
-          {...stylex.props(
-            styles.copyButton,
-            copied && styles.copyButtonChecked,
-          )}
-          aria-label={copied ? "Copied" : "Copy to clipboard"}
-        >
-          {copied ? (
-            <Check {...stylex.props(styles.copyIcon)} />
-          ) : (
-            <Clipboard {...stylex.props(styles.copyIcon)} />
-          )}
-        </button>
+        <CopyToClipboardButton
+          copiedIcon={
+            <Check
+              {...stylex.props(styles.copyIcon, styles.copyIconChecked)}
+            />
+          }
+          copiedLabel="Copied"
+          feedback="none"
+          icon={<Clipboard {...stylex.props(styles.copyIcon)} />}
+          label="Copy to clipboard"
+          resetAfterMs={2000}
+          size="icon-sm"
+          value={content}
+        />
       </div>
-      <div {...stylex.props(styles.viewport)} style={{ maxHeight }}>
-        <pre ref={codeRef} {...stylex.props(styles.pre)}>
+      <ScrollArea
+        aria-label={`${title} code`}
+        scrollbar="overlay"
+        sx={styles.viewport(maxHeight)}
+        tabIndex={0}
+      >
+        <pre {...stylex.props(styles.pre)}>
           <code {...stylex.props(styles.code)}>{content}</code>
         </pre>
-      </div>
+      </ScrollArea>
     </figure>
   );
 }
-const DURATION = "0.15s";
 const styles = stylex.create({
   figure: {
     position: "relative",
@@ -87,10 +84,11 @@ const styles = stylex.create({
     fontFamily: "monospace",
     whiteSpace: "nowrap",
   },
-  viewport: {
+  viewport: (maxHeight: number) => ({
+    maxHeight,
     paddingBlock: 8,
     overflow: "auto",
-  },
+  }),
   pre: {
     display: "flex",
     flexDirection: "column",
@@ -107,32 +105,11 @@ const styles = stylex.create({
     lineHeight: 1.5,
     whiteSpace: "pre",
   },
-  copyButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 28,
-    height: 28,
-    padding: 0,
-    color: {
-      default: vars["--color-fd-muted-foreground"],
-      ":hover": vars["--color-fd-accent-foreground"],
-    },
-    cursor: "pointer",
-    backgroundColor: {
-      default: "transparent",
-      ":hover": vars["--color-fd-accent"],
-    },
-    borderWidth: 0,
-    borderRadius: 6,
-    transitionDuration: DURATION,
-    transitionProperty: "background-color, color",
-  },
-  copyButtonChecked: {
-    color: vars["--color-fd-accent-foreground"],
-  },
   copyIcon: {
     width: 14,
     height: 14,
+  },
+  copyIconChecked: {
+    color: vars["--color-fd-accent-foreground"],
   },
 });

@@ -1,0 +1,63 @@
+---
+title: "Link"
+description: "Token-styled native anchor for text navigation."
+---
+
+import Example from "@stylextras/ui/link/example";
+
+## Examples
+
+<ComponentPreview name="Link">
+  <Example />
+</ComponentPreview>
+
+### Example code
+
+```tsx
+import { Link } from '@stylextras/ui/link';
+
+export default function Example() {
+  return <Link href="#docs">View docs</Link>;
+}
+```
+
+## Usage
+
+```tsx
+import { Link } from "@stylextras/ui/link";
+
+export function DocumentationLink() {
+  return <Link href="/docs/get-started">Get started</Link>;
+}
+```
+
+Framework routers can wrap `Link` and intercept eligible clicks while leaving
+external, modified, download, target, and hash navigation to the browser.
+
+## Import
+
+```tsx
+import { Link } from "@stylextras/ui/link";
+```
+
+## Anatomy
+
+- `Link` — Styled `<a>`.
+
+## Accessibility and browser behavior
+
+`Link` preserves native anchor semantics, accepts a forwarded ref and native
+anchor attributes, and composes `sx` last. Callers must provide a meaningful
+destination and accessible link content.
+
+## API reference
+
+### Link
+
+`LinkProps`
+
+Complete native prop base:
+`Omit<React.ComponentPropsWithRef<"a">, "className" | "href" | "style">`.
+
+- `href` — `string`. Required real navigation destination.
+- `sx` — `stylex.StyleXStyles`.

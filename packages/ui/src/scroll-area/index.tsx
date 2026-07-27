@@ -10,8 +10,11 @@ type ScrollAreaBaseProps = Omit<
   ComponentPropsWithRef<'div'>,
   'aria-label' | 'aria-labelledby' | 'className' | 'style' | 'tabIndex'
 > & {
+  scrollbar?: ScrollAreaScrollbar
   sx?: StyleXStyles
 }
+
+export type ScrollAreaScrollbar = 'stable' | 'overlay'
 
 export type ScrollAreaProps =
   | (ScrollAreaBaseProps & {
@@ -21,8 +24,15 @@ export type ScrollAreaProps =
     })
   | (ScrollAreaBaseProps & AccessibleAriaNameProps & { tabIndex: 0 })
 
-export function ScrollArea({ ref, sx, tabIndex, ...props }: ScrollAreaProps) {
-  return <div ref={ref} tabIndex={tabIndex} {...props} {...stylex.props(styles.root, sx)} />
+export function ScrollArea({ ref, scrollbar = 'stable', sx, tabIndex, ...props }: ScrollAreaProps) {
+  return (
+    <div
+      ref={ref}
+      tabIndex={tabIndex}
+      {...props}
+      {...stylex.props(styles.root, scrollbarStyles[scrollbar], sx)}
+    />
+  )
 }
 
 const styles = stylex.create({
@@ -40,8 +50,6 @@ const styles = stylex.create({
       default: `${colors.borderStrong} transparent`,
       '@media (forced-colors: active)': 'auto',
     },
-    scrollbarGutter: 'stable',
-    scrollbarWidth: 'auto',
     '::-webkit-scrollbar': {
       height: {
         default: 14,
@@ -59,6 +67,24 @@ const styles = stylex.create({
       borderRadius: radius.round,
       borderStyle: 'solid',
       borderWidth: 3,
+    },
+  },
+})
+
+const scrollbarStyles = stylex.create({
+  stable: {
+    scrollbarGutter: 'stable',
+    scrollbarWidth: 'auto',
+  },
+  overlay: {
+    scrollbarGutter: 'auto',
+    scrollbarWidth: 'thin',
+    '::-webkit-scrollbar': {
+      height: 6,
+      width: 6,
+    },
+    '::-webkit-scrollbar-thumb': {
+      borderWidth: 0,
     },
   },
 })

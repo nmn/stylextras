@@ -12,10 +12,13 @@ import { useI18n } from "fumadocs-ui/contexts/i18n";
 import { type StyleXComponentProps } from "./layout/shared";
 import * as stylex from "@stylexjs/stylex";
 import { vars } from "@/theming/vars.stylex";
+import { Button } from "@stylextras/ui/button";
+import { Kbd } from "@stylextras/ui/kbd";
 
 export function LargeSearchToggle({
   hideIfDisabled,
   xstyle,
+  onClick,
   ...props
 }: StyleXComponentProps<"button"> & {
   hideIfDisabled?: boolean;
@@ -25,64 +28,49 @@ export function LargeSearchToggle({
   if (hideIfDisabled && !enabled) return null;
 
   return (
-    <button
+    <Button
       data-search-full=""
-      type="button"
       {...props}
-      onClick={() => {
+      onClick={(event) => {
+        onClick?.(event);
+        if (event.defaultPrevented) return;
         setOpenSearch(true);
       }}
-      {...stylex.props(styles.button, xstyle)}
+      size="md"
+      sx={[styles.button, xstyle]}
+      variant="outline"
     >
       <Search {...stylex.props(styles.size4)} />
       <span {...stylex.props(styles.text)}>{text.search}</span>
       <div {...stylex.props(styles.hotkeyContainer)}>
         {hotKey.map((k, i) => (
-          <kbd key={i} {...stylex.props(styles.hotkey)}>
+          <Kbd key={i} size="sm">
             {k.display}
-          </kbd>
+          </Kbd>
         ))}
       </div>
-    </button>
+    </Button>
   );
 }
 
 const styles = stylex.create({
   button: {
     // '  text-sm text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground'
-    display: "inline-flex",
-    gap: 2 * 4,
-    alignItems: "center",
     width: "100%",
+    minHeight: 37,
     minWidth: 90,
-    padding: 1.5 * 4,
-    paddingInlineStart: 2.5 * 4,
-
-    fontSize: `${14 / 16}rem`,
     color: {
       default: vars["--color-fd-muted-foreground"],
       ":focus-visible": vars["--color-fd-foreground"],
       ":hover": vars["--color-fd-foreground"],
-    },
-    outline: "none",
-
-    backgroundColor: {
-      default: "transparent",
-      ":focus-visible": `color-mix(in oklab, ${vars["--color-fd-primary"]} 5%, transparent)`,
-      ":hover": `color-mix(in oklab, ${vars["--color-fd-primary"]} 5%, transparent)`,
     },
     borderColor: {
       default: vars["--color-fd-border"],
       ":focus-visible": vars["--color-fd-primary"],
       ":hover": vars["--color-fd-primary"],
     },
-    borderStyle: "solid",
-    borderWidth: 1,
     borderRadius: "9999px",
-    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-
-    transitionDuration: "150ms",
-    transitionProperty: "color, background-color, border-color",
+    whiteSpace: "nowrap",
   },
   text: {
     display: {
@@ -95,13 +83,5 @@ const styles = stylex.create({
     display: "inline-flex",
     gap: 0.5 * 4,
     marginInlineStart: "auto",
-  },
-  hotkey: {
-    paddingInline: 1.5 * 4,
-    backgroundColor: vars["--color-fd-background"],
-    borderColor: vars["--color-fd-border"],
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderRadius: 8,
   },
 });

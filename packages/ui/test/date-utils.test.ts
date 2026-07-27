@@ -13,6 +13,7 @@ import {
   getWeekdayLabels,
   isDateDisabled,
   monthForValue,
+  normalizeDateBounds,
   parseDateValue,
   todayValue,
 } from '../src/calendar/date-utils'
@@ -42,6 +43,7 @@ describe('calendar date utilities', () => {
     expect(clampDateValue('2026-08-31', '2026-07-01', '2026-08-20')).toBe('2026-08-20')
     expect(clampDateValue('2026-06-30', '2026-07-01', '2026-08-20')).toBe('2026-07-01')
     expect(clampDateValue('2026-07-11', 'invalid', 'also-invalid')).toBe('2026-07-11')
+    expect(clampDateValue('2026-07-11', '2026-08-01', '2026-07-01')).toBe('2026-07-11')
   })
 
   it('creates a stable six-week grid for either week convention', () => {
@@ -76,6 +78,17 @@ describe('calendar date utilities', () => {
     expect(isDateDisabled('2026-07-01', '2026-07-02')).toBe(true)
     expect(isDateDisabled('2026-08-01', undefined, '2026-07-31')).toBe(true)
     expect(isDateDisabled('2026-07-11', '2026-07-01', '2026-07-31')).toBe(false)
+    expect(isDateDisabled('2026-07-11', '2026-08-01', '2026-07-01')).toBe(false)
+    expect(normalizeDateBounds('invalid', '2026-07-31')).toEqual({
+      invalidRange: false,
+      max: '2026-07-31',
+      min: undefined,
+    })
+    expect(normalizeDateBounds('2026-08-01', '2026-07-31')).toEqual({
+      invalidRange: true,
+      max: undefined,
+      min: undefined,
+    })
     expect(todayValue(new Date(2026, 6, 11, 23, 59))).toBe('2026-07-11')
   })
 })
