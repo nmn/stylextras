@@ -7,6 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import type { AccessibleAriaNameProps } from '../accessibility'
@@ -68,6 +69,7 @@ export type ContextMenuSeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'class
 
 const MENU_ITEM_SELECTOR = '[role="menuitem"]'
 const typeaheadState = new WeakMap<HTMLElement, { query: string; updatedAt: number }>()
+const forcedFocusRestoration = new WeakSet<HTMLElement>()
 
 function isContextMenuOpen(menu: HTMLElement) {
   return menu.matches(':popover-open')
@@ -233,6 +235,9 @@ export function ContextMenuButton({
 export function ContextMenuTrigger({
   onContextMenu,
   onKeyDown,
+  onPointerCancel,
+  onPointerDown,
+  onPointerUp,
   ref,
   sx,
   tabIndex = 0,
@@ -240,6 +245,22 @@ export function ContextMenuTrigger({
   ...props
 }: ContextMenuTriggerProps) {
   const expanded = useContextMenuExpanded(target)
+  const contextPointerDownRef = useRef(false)
+  const pendingContextRef = useRef<{
+    clientX: number
+    clientY: number
+    source: HTMLElement
+  } | null>(null)
+  const clearContextPointer = () => {
+    contextPointerDownRef.current = false
+    pendingContextRef.current = null
+  }
+  const openAt = (source: HTMLElement, clientX: number, clientY: number) => {
+    const menu = document.getElementById(target)
+    if (source.isConnected && menu instanceof HTMLElement) {
+      openContextMenu(menu, source, clientX, clientY)
+    }
+  }
 
   return (
     <div
@@ -250,19 +271,40 @@ export function ContextMenuTrigger({
       aria-controls={target}
       aria-expanded={expanded}
       aria-haspopup="menu"
+      onPointerCancel={(event) => {
+        onPointerCancel?.(event)
+        clearContextPointer()
+      }}
+      onPointerDown={(event) => {
+        onPointerDown?.(event)
+        clearContextPointer()
+        if (!event.defaultPrevented) contextPointerDownRef.current = true
+      }}
+      onPointerUp={(event) => {
+        onPointerUp?.(event)
+        const pending = pendingContextRef.current
+        const shouldOpen =
+          !event.defaultPrevented && contextPointerDownRef.current && pending !== null
+        clearContextPointer()
+        if (shouldOpen) openAt(pending.source, pending.clientX, pending.clientY)
+      }}
       onContextMenu={(event) => {
         onContextMenu?.(event)
-        if (event.defaultPrevented) return
+        if (event.defaultPrevented) {
+          clearContextPointer()
+          return
+        }
         event.preventDefault()
-        const menu = document.getElementById(target)
-        if (!(menu instanceof HTMLElement)) return
         const { clientX, clientY, currentTarget } = event
-        // Opening during the contextmenu gesture can make an auto popover the
-        // gesture's light-dismiss target in some engines. Open on the next
-        // frame, after that native gesture has completed.
-        requestAnimationFrame(() => {
-          if (currentTarget.isConnected) openContextMenu(menu, currentTarget, clientX, clientY)
-        })
+        // Some engines dispatch contextmenu before pointerup. Opening at that
+        // point makes the release light-dismiss the new popover, so finish the
+        // current pointer gesture first. Keyboard and synthetic contextmenu
+        // events have no pending pointer and can open immediately.
+        if (contextPointerDownRef.current) {
+          pendingContextRef.current = { clientX, clientY, source: currentTarget }
+          return
+        }
+        openAt(currentTarget, clientX, clientY)
       }}
       onKeyDown={(event) => {
         onKeyDown?.(event)
@@ -302,7 +344,7 @@ export function ContextMenu({ onBlur, onKeyDown, onToggle, ref, sx, ...props }: 
         if (event.key === 'Escape') {
           event.preventDefault()
           event.stopPropagation()
-          event.currentTarget.dataset.restoreFocus = 'true'
+          forcedFocusRestoration.add(event.currentTarget)
           event.currentTarget.hidePopover()
           return
         }
@@ -314,8 +356,8 @@ export function ContextMenu({ onBlur, onKeyDown, onToggle, ref, sx, ...props }: 
         const expanded = isContextMenuOpen(menu)
         syncContextMenuSources(menu, expanded)
         if (!expanded) {
-          const forceRestore = menu.dataset.restoreFocus === 'true'
-          delete menu.dataset.restoreFocus
+          const forceRestore = forcedFocusRestoration.has(menu)
+          forcedFocusRestoration.delete(menu)
           restoreContextMenuFocus(menu, forceRestore)
         }
       }}
@@ -351,7 +393,7 @@ export function ContextMenuItem({
         if (!event.defaultPrevented) {
           const menu = event.currentTarget.closest<HTMLElement>('[popover]')
           if (menu) {
-            menu.dataset.restoreFocus = 'true'
+            forcedFocusRestoration.add(menu)
             menu.hidePopover()
           }
         }

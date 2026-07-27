@@ -5,6 +5,7 @@ import type { StyleXStyles } from '@stylexjs/stylex'
 import { useMemo, type ComponentPropsWithRef } from 'react'
 import type { AccessibleAriaNameProps } from '../accessibility'
 import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
+import { requestMenuFocus } from '../internal/menu-state'
 import { showPopoverWithSource } from '../platform-polyfills/popover-source'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
@@ -66,7 +67,7 @@ function switchMenubarMenu(menubar: HTMLElement, trigger: HTMLButtonElement, foc
   }
 
   if (currentMenu) currentMenu.hidePopover()
-  nextMenu.dataset.initialFocus = focusMenu ? 'first' : 'none'
+  requestMenuFocus(nextMenu, focusMenu ? 'first' : 'none')
   showPopoverWithSource(nextMenu, trigger)
 }
 

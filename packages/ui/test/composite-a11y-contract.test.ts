@@ -50,14 +50,15 @@ describe('composite accessibility contracts', () => {
     expect(command).toContain('item.onSelect?.(item.value)')
   })
 
-  it('constrains carousel roles and gives generated controls text alternatives', () => {
+  it('constrains carousel roles and renders control labels as HTML', () => {
     expectTypeOf<CarouselProps['role']>().toEqualTypeOf<'group' | 'region' | undefined>()
     expectTypeOf<CarouselItemProps['role']>().toEqualTypeOf<'group' | undefined>()
 
     const source = readFileSync(path.join(sourceRoot, 'carousel/index.tsx'), 'utf8')
-    expect(source).toContain('"‹" / attr(data-carousel-previous-button-label)')
-    expect(source).toContain('"›" / attr(data-carousel-next-button-label)')
-    expect(source).toContain('"" / attr(aria-label)')
+    expect(source).toContain('{previousButtonLabel}</span>')
+    expect(source).toContain('{nextButtonLabel}</span>')
+    expect(source).not.toContain('data-carousel-')
+    expect(source).not.toContain('content:')
   })
 
   it('requires resizable relationships and localized value text', () => {

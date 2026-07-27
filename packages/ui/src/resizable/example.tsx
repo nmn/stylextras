@@ -13,7 +13,7 @@ export default function Example() {
       description="Drag a separator or use Arrow keys, Shift+Arrow, Home, and End."
     >
       <DemoStack>
-        <Resizable data-testid="horizontal-resizable" defaultValue={38} sx={styles.root}>
+        <Resizable id="horizontal-resizable" defaultValue={38} sx={styles.root}>
           <ResizablePanel id="editor-navigation" sx={styles.panel}>
             Navigation and files
           </ResizablePanel>
@@ -28,7 +28,7 @@ export default function Example() {
         </Resizable>
 
         <Resizable
-          data-testid="rtl-resizable"
+          id="rtl-resizable"
           dir="rtl"
           defaultValue={Number.NaN}
           min={80}
@@ -48,7 +48,7 @@ export default function Example() {
         </Resizable>
 
         <Resizable
-          data-testid="vertical-resizable"
+          id="vertical-resizable"
           defaultValue={Number.NaN}
           direction="vertical"
           min={Number.NEGATIVE_INFINITY}

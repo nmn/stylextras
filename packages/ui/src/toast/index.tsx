@@ -415,7 +415,6 @@ export function Toaster({
             role="status"
             aria-atomic="true"
             aria-live="polite"
-            data-stylextras-toast-announcer="polite"
             {...stylex.props(styles.announcer)}
           >
             {announcements.polite ? (
@@ -426,7 +425,6 @@ export function Toaster({
             role="alert"
             aria-atomic="true"
             aria-live="assertive"
-            data-stylextras-toast-announcer="assertive"
             {...stylex.props(styles.announcer)}
           >
             {announcements.assertive ? (

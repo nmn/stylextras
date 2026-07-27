@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test'
 
+const politeToastAnnouncer =
+  '[role="status"][aria-live="polite"]:has(+ [role="alert"][aria-live="assertive"] + ol[role="list"])'
+const assertiveToastAnnouncer =
+  '[role="alert"][aria-live="assertive"]:has(+ ol[role="list"])'
+const toastAnnouncers = `${politeToastAnnouncer}, ${assertiveToastAnnouncer}`
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/test/ui')
   await expect(page.locator('main[data-hydrated="true"]')).toBeVisible()
@@ -60,7 +66,6 @@ test('Focusgroup bridges toolbar arrow-key navigation', async ({ page }) => {
   const toolbar = page.getByRole('toolbar', { name: 'Harness toolbar' })
   const start = toolbar.getByRole('button', { name: 'Align start' })
   const center = toolbar.getByRole('button', { name: 'Align center' })
-  await expect(start).toHaveAttribute('data-fg-ati')
   await start.focus()
   await page.keyboard.press('ArrowRight')
   await expect(center).toBeFocused()
@@ -68,7 +73,6 @@ test('Focusgroup bridges toolbar arrow-key navigation', async ({ page }) => {
   const formatting = page.getByRole('toolbar', { name: 'Harness formatting' })
   const bold = formatting.getByRole('button', { name: 'Bold' })
   const italic = formatting.getByRole('button', { name: 'Italic' })
-  await expect(bold).toHaveAttribute('data-fg-ati')
   await bold.focus()
   await page.keyboard.press('ArrowRight')
   await expect(italic).toBeFocused()
@@ -91,7 +95,6 @@ test('Focusgroup survives external detach and reinsertion without duplicate navi
 
   const items = toolbar.getByRole('button')
   await expect(items).toHaveCount(3)
-  await expect(toolbar.locator('[data-fg-item]')).toHaveCount(3)
   await items.nth(0).focus()
   await page.keyboard.press('ArrowRight')
   await expect(items.nth(1)).toBeFocused()
@@ -191,7 +194,7 @@ test('Toast announces content and can be dismissed', async ({ page }) => {
 
 test('Toast announces every batched record without cloning rich visual content', async ({ page }) => {
   await page.getByRole('button', { name: 'Show toast batch' }).click()
-  const announcement = page.locator('[data-stylextras-toast-announcer="polite"]')
+  const announcement = page.locator(politeToastAnnouncer)
   await expect(announcement).toContainText('First batched notification. Review details.')
   await expect(announcement).toContainText('Second batched notification Queued in the same update.')
   await expect(page.locator('#batch-toast-title')).toHaveCount(1)
@@ -213,7 +216,7 @@ test('Toast exposes and announces only the reachable FIFO window', async ({ page
   await expect(notifications).toContainText('Third queued notification')
   await expect(notifications).not.toContainText('Fourth queued notification')
 
-  const announcement = page.locator('[data-stylextras-toast-announcer="polite"]')
+  const announcement = page.locator(politeToastAnnouncer)
   await expect(announcement).toContainText('First queued notification')
   await expect(announcement).not.toContainText('Fourth queued notification')
 
@@ -230,8 +233,8 @@ test('Toast exposes and announces only the reachable FIFO window', async ({ page
 test('Toast live regions deliver one message, clear buffers, and fail over to one document owner', async ({
   page,
 }) => {
-  const polite = page.locator('[data-stylextras-toast-announcer="polite"]')
-  const assertive = page.locator('[data-stylextras-toast-announcer="assertive"]')
+  const polite = page.locator(politeToastAnnouncer)
+  const assertive = page.locator(assertiveToastAnnouncer)
   await expect(polite).toHaveCount(1)
   await expect(assertive).toHaveCount(1)
 
@@ -260,21 +263,19 @@ test('Toast live regions deliver one message, clear buffers, and fail over to on
 
   await page.getByRole('button', { name: 'Mount secondary toaster' }).click()
   await expect(page.getByRole('list', { name: 'Secondary notifications' })).toBeVisible()
-  await expect(page.locator('[data-stylextras-toast-announcer]')).toHaveCount(2)
+  await expect(page.locator(toastAnnouncers)).toHaveCount(2)
   await page.getByRole('button', { name: 'Unmount primary toaster' }).click()
   await expect(page.getByRole('list', { name: 'Notifications', exact: true })).toHaveCount(0)
-  await expect(page.locator('[data-stylextras-toast-announcer]')).toHaveCount(2)
+  await expect(page.locator(toastAnnouncers)).toHaveCount(2)
 
   await page.getByRole('button', { name: 'Show urgent toast' }).click()
-  await expect(page.locator('[data-stylextras-toast-announcer="assertive"]')).toHaveText(
-    'Connection lost',
-  )
+  await expect(page.locator(assertiveToastAnnouncer)).toHaveText('Connection lost')
   const urgentToast = page
     .getByRole('list', { name: 'Secondary notifications' })
     .getByRole('listitem')
     .filter({ hasText: 'Connection lost' })
   await expect(urgentToast.getByRole('button', { name: 'Dismiss notification' })).toBeVisible()
-  await expect(page.locator('[data-stylextras-toast-announcer="assertive"]')).toHaveText('', {
+  await expect(page.locator(assertiveToastAnnouncer)).toHaveText('', {
     timeout: 2_000,
   })
 })

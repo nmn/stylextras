@@ -69,12 +69,10 @@ function useDestinationInvariant(
 
     const validate = () => {
       const matchingLinks = Array.from(
-        pagination.querySelectorAll<HTMLAnchorElement>(
-          'a[data-stylextras-pagination-link]',
-        ),
+        pagination.querySelectorAll<HTMLAnchorElement>('a[href]'),
       ).filter(
         (link) =>
-          link.closest('[data-stylextras-pagination-root]') === pagination &&
+          link.closest('nav') === pagination &&
           link.getAttribute('href') === currentHref,
       )
 
@@ -120,7 +118,6 @@ export function Pagination({ currentHref, ref, sx, ...props }: PaginationProps) 
       <nav
         ref={setRef}
         {...props}
-        data-stylextras-pagination-root=""
         {...stylex.props(navStyles.base, sx)}
       />
     </PaginationContext>
@@ -148,7 +145,6 @@ export function PaginationLink({
       {...props}
       href={href}
       aria-current={current ? 'page' : undefined}
-      data-stylextras-pagination-link=""
       {...stylex.props(
         linkStyles.base,
         current ? linkStateStyles.active : linkStateStyles.inactive,

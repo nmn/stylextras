@@ -7,7 +7,7 @@ import { Carousel, CarouselItem } from './index'
 
 const slides = [
   ['Native controls', 'Scroll snapping supplies the core interaction.'],
-  ['Progressive markers', 'Supporting browsers add scroll markers and buttons.'],
+  ['HTML controls', 'Previous and next actions use native buttons with real text labels.'],
   ['Reduced motion', 'Smooth scrolling yields to the user motion preference.'],
   ['Anchor positioning', 'Layered controls stay attached without measurement code.'],
   ['Popover API', 'Light dismiss and top-layer rendering come from the platform.'],

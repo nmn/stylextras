@@ -452,7 +452,15 @@ test("ContextMenu tracks expanded state and opens from button, pointer, Ctrl-cli
   await expect(target).toHaveAttribute("aria-expanded", "false");
   await expect(button).toBeFocused();
 
-  // A canonical pointer contextmenu event must not depend on a later auxclick.
+  // The complete secondary-button gesture must stay open after pointerup.
+  await target.click({ button: "right", position: { x: 20, y: 20 } });
+  await expect(menu).toBeVisible();
+  await page.waitForTimeout(50);
+  await expect(menu).toBeVisible();
+  await menu.getByRole("menuitem", { name: "Copy" }).click();
+  await expect(menu).toBeHidden();
+
+  // A synthetic contextmenu event must not depend on a later auxclick.
   await target.dispatchEvent("contextmenu", {
     button: 2,
     buttons: 2,

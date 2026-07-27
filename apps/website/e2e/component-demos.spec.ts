@@ -196,8 +196,7 @@ test('Accordion keeps a stable width as native details items toggle', async ({ p
   expect(after.iconRotations[1]).not.toBe(before.iconRotations[1])
 })
 
-test('Carousel uses native scroll snap across an extended example', async ({
-  browserName,
+test('Carousel uses real controls and native scroll snap across an extended example', async ({
   page,
 }) => {
   await page.goto('/docs/components/carousel')
@@ -205,38 +204,26 @@ test('Carousel uses native scroll snap across an extended example', async ({
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   const carousel = preview.getByRole('region', { name: 'Browser API highlights' })
   const items = carousel.locator('[role="group"][aria-roledescription="slide"]')
+  const previous = preview.getByRole('button', { name: 'Previous slide' })
+  const next = preview.getByRole('button', { name: 'Next slide' })
   await expect(items).toHaveCount(10)
-  await expect(carousel).toHaveAttribute('data-carousel-previous-button-label', 'Previous slide')
-  await expect(carousel).toHaveAttribute('data-carousel-next-button-label', 'Next slide')
+  const carouselId = await carousel.getAttribute('id')
+  expect(carouselId).toBeTruthy()
+  await expect(previous).toHaveAttribute('aria-controls', carouselId!)
+  await expect(next).toHaveAttribute('aria-controls', carouselId!)
+  await expect(previous).toBeDisabled()
+  await expect(next).toBeEnabled()
   await expect(items.first()).toHaveAccessibleName('1 of 10: Native controls')
   await expect(items.last()).toHaveAccessibleName('10 of 10: StyleX themes')
   await expect(carousel).toHaveCSS('scroll-snap-type', /mandatory/)
   await expect(items.first()).toHaveCSS('scroll-snap-align', /start/)
 
-  await carousel.focus()
   const initialScroll = await carousel.evaluate((element) => element.scrollLeft)
-  await page.keyboard.press('ArrowRight')
+  await next.click()
   await expect
     .poll(() => carousel.evaluate((element) => element.scrollLeft))
     .not.toBe(initialScroll)
-
-  if (browserName === 'chromium') {
-    // Chromium exposes generated scroll controls in its AX tree even though
-    // CSSOM currently returns the same pseudo style for both scroll buttons.
-    const session = await page.context().newCDPSession(page)
-    const { nodes } = await session.send('Accessibility.getFullAXTree')
-    await session.detach()
-    const generatedControlNames = nodes
-      .filter(
-        (node) => !node.ignored && (node.role?.value === 'button' || node.role?.value === 'tab'),
-      )
-      .map((node) => node.name?.value)
-    expect(generatedControlNames).toContain('Previous slide')
-    expect(generatedControlNames).toContain('Next slide')
-    for (const item of await items.all()) {
-      expect(generatedControlNames).toContain(await item.getAttribute('aria-label'))
-    }
-  }
+  await expect(previous).toBeEnabled()
 })
 
 test('ButtonGroup action choices are equal-width inline-grid tracks', async ({ page }) => {
@@ -601,7 +588,7 @@ test('Resizable exposes separator relationships and supports every input axis', 
   const preview = page.locator('[data-component-demo="Resizable"]')
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
 
-  const horizontalRoot = preview.getByTestId('horizontal-resizable')
+  const horizontalRoot = preview.locator('#horizontal-resizable')
   const horizontalHandle = horizontalRoot.getByRole('separator', {
     name: 'Resize editor panels',
   })
@@ -655,7 +642,7 @@ test('Resizable exposes separator relationships and supports every input axis', 
   await expect(horizontalHandle).toHaveAttribute('aria-valuenow', '64')
   await expect(horizontalHandle).toHaveAttribute('aria-valuetext', 'Navigation panel 64%')
 
-  const rtlRoot = preview.getByTestId('rtl-resizable')
+  const rtlRoot = preview.locator('#rtl-resizable')
   const rtlHandle = rtlRoot.getByRole('separator', { name: 'Resize RTL panels' })
   await expect(rtlHandle).toHaveAttribute('aria-orientation', 'vertical')
   await expect(rtlHandle).toHaveAttribute('aria-valuemin', '20')
@@ -671,7 +658,7 @@ test('Resizable exposes separator relationships and supports every input axis', 
   await dragTo(rtlHandle, rtlRoot, 0.25, 'horizontal')
   await expect(rtlHandle).toHaveAttribute('aria-valuenow', '75')
 
-  const verticalRoot = preview.getByTestId('vertical-resizable')
+  const verticalRoot = preview.locator('#vertical-resizable')
   const verticalHandle = verticalRoot.getByRole('separator', {
     name: 'Resize stacked panels',
   })

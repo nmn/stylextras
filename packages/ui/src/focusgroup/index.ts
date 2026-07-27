@@ -10,35 +10,41 @@ export type FocusgroupValue =
   | "tree"
   | `${"menu" | "menubar" | "radiogroup" | "tablist" | "toolbar" | "tree"} ${string}`;
 
-type FocusgroupPolyfillModule =
-  typeof import("@microsoft/focusgroup-polyfill/shadowless");
-
-let polyfillPromise: Promise<FocusgroupPolyfillModule> | null = null;
-const nodePolyfillPromises = new WeakMap<
-  HTMLElement,
-  { generation: number; promise: Promise<void> }
->();
-const polyfilledNodes = new WeakSet<HTMLElement>();
-const nodeGenerations = new WeakMap<HTMLElement, number>();
-const lifecycleNodes = new Set<HTMLElement>();
-const reinsertToggleListeners = new WeakMap<HTMLElement, () => void>();
-let lifecycleObserver: MutationObserver | null = null;
-
 type FocusgroupAttributes = {
   focusgroup: string;
 };
 
-export function focusgroupAttributes(
-  value: FocusgroupValue,
-): FocusgroupAttributes {
+type FocusgroupController = {
+  destroy: () => void;
+  refresh: () => void;
+};
+
+const focusgroupControllers = new WeakMap<HTMLElement, FocusgroupController>();
+const itemSelector = [
+  "a[href]",
+  "button",
+  "input",
+  "select",
+  "summary",
+  "textarea",
+  '[contenteditable="true"]',
+  "[tabindex]",
+  '[role="menuitem"]',
+  '[role="menuitemcheckbox"]',
+  '[role="menuitemradio"]',
+  '[role="option"]',
+  '[role="radio"]',
+  '[role="tab"]',
+  '[role="treeitem"]',
+].join(", ");
+
+export function focusgroupAttributes(value: FocusgroupValue): FocusgroupAttributes {
   return {
     focusgroup: value,
   };
 }
 
-export function focusgroupProps<T extends HTMLElement = HTMLElement>(
-  value: FocusgroupValue,
-) {
+export function focusgroupProps<T extends HTMLElement = HTMLElement>(value: FocusgroupValue) {
   return {
     focusgroup: value,
     ref: attachFocusgroupPolyfill,
@@ -55,10 +61,10 @@ export function focusgroupStartProps(isStart: boolean) {
 export function focusgroupRef<T extends HTMLElement>(ref: Ref<T> | undefined) {
   return function setFocusgroupRef(node: T | null) {
     const cleanupRef = assignRef(ref, node);
-    const detachPolyfill = attachFocusgroupPolyfill(node);
+    const detachFallback = attachFocusgroupPolyfill(node);
 
     return () => {
-      detachPolyfill?.();
+      detachFallback?.();
       cleanupRef?.();
     };
   };
@@ -67,200 +73,191 @@ export function focusgroupRef<T extends HTMLElement>(ref: Ref<T> | undefined) {
 export function attachFocusgroupPolyfill(
   node: HTMLElement | null,
 ): (() => void) | undefined {
-  if (!node || supportsFocusgroup()) {
-    return;
-  }
+  if (!node || supportsFocusgroup()) return;
 
-  const generation = (nodeGenerations.get(node) ?? 0) + 1;
-  nodeGenerations.set(node, generation);
-  polyfilledNodes.delete(node);
-  const previousRequest = nodePolyfillPromises.get(node);
-  if (previousRequest && previousRequest.generation !== generation) {
-    nodePolyfillPromises.delete(node);
-  }
-
-  let removeToggleListener: (() => void) | undefined;
-  const stopTrackingLifecycle = trackFocusgroupLifecycle(node);
-
-  const apply = () => {
-    void ensureFocusgroupPolyfillForGeneration(node, generation)?.catch(() => {
-      // The native tab order remains usable if the optional bridge cannot load.
-    });
-  };
-
-  if (
-    "showPopover" in HTMLElement.prototype &&
-    node.hasAttribute("popover") &&
-    !node.matches(":popover-open")
-  ) {
-    const handleToggle = () => {
-      if (!node.matches(":popover-open")) return;
-      node.removeEventListener("toggle", handleToggle);
-      removeToggleListener = undefined;
-      apply();
-    };
-    node.addEventListener("toggle", handleToggle);
-    removeToggleListener = () => node.removeEventListener("toggle", handleToggle);
-  } else {
-    apply();
-  }
+  const existing = focusgroupControllers.get(node);
+  const controller = existing ?? createFocusgroupController(node);
+  if (!existing) focusgroupControllers.set(node, controller);
+  controller.refresh();
 
   return () => {
-    stopTrackingLifecycle();
-    removeToggleListener?.();
-    if (nodeGenerations.get(node) !== generation) return;
-    nodeGenerations.set(node, generation + 1);
-    polyfilledNodes.delete(node);
-    const request = nodePolyfillPromises.get(node);
-    if (request?.generation === generation) nodePolyfillPromises.delete(node);
+    if (focusgroupControllers.get(node) !== controller) return;
+    controller.destroy();
+    focusgroupControllers.delete(node);
   };
 }
 
-function trackFocusgroupLifecycle(node: HTMLElement) {
-  lifecycleNodes.add(node);
-  if (
-    !lifecycleObserver &&
-    typeof MutationObserver !== "undefined" &&
-    typeof document !== "undefined" &&
-    document.body
-  ) {
-    lifecycleObserver = new MutationObserver((records) => {
-      for (const record of records) {
-        for (const removedNode of record.removedNodes) {
-          for (const focusgroup of lifecycleNodes) {
-            if (removedNode !== focusgroup && !removedNode.contains(focusgroup)) continue;
-            nodeGenerations.set(
-              focusgroup,
-              (nodeGenerations.get(focusgroup) ?? 0) + 1,
-            );
-            polyfilledNodes.delete(focusgroup);
-            nodePolyfillPromises.delete(focusgroup);
-          }
-        }
-        for (const addedNode of record.addedNodes) {
-          for (const focusgroup of lifecycleNodes) {
-            if (
-              (addedNode !== focusgroup && !addedNode.contains(focusgroup)) ||
-              !focusgroup.isConnected
-            ) {
-              continue;
-            }
-            queueMicrotask(() => {
-              if (!focusgroup.isConnected) return;
-              resetFocusgroupDecorations(focusgroup);
-              applyReinsertedFocusgroup(focusgroup);
-            });
-          }
-        }
-      }
-    });
-    lifecycleObserver.observe(document.body, { childList: true, subtree: true });
-  }
-
-  return () => {
-    lifecycleNodes.delete(node);
-    reinsertToggleListeners.get(node)?.();
-    reinsertToggleListeners.delete(node);
-    if (lifecycleNodes.size !== 0) return;
-    lifecycleObserver?.disconnect();
-    lifecycleObserver = null;
-  };
-}
-
-function applyReinsertedFocusgroup(focusgroup: HTMLElement) {
-  const apply = () => {
-    void ensureFocusgroupPolyfill(focusgroup)?.catch(() => {
-      // Reinserted groups retain their native tab order if loading fails.
-    });
-  };
-
-  if (
-    "showPopover" in HTMLElement.prototype &&
-    focusgroup.hasAttribute("popover") &&
-    !focusgroup.matches(":popover-open")
-  ) {
-    reinsertToggleListeners.get(focusgroup)?.();
-    const handleToggle = () => {
-      if (!focusgroup.matches(":popover-open")) return;
-      focusgroup.removeEventListener("toggle", handleToggle);
-      reinsertToggleListeners.delete(focusgroup);
-      apply();
-    };
-    focusgroup.addEventListener("toggle", handleToggle);
-    reinsertToggleListeners.set(focusgroup, () =>
-      focusgroup.removeEventListener("toggle", handleToggle),
-    );
-    return;
-  }
-
-  apply();
-}
-
-function resetFocusgroupDecorations(focusgroup: HTMLElement) {
-  const decoratedNodes = [
-    focusgroup,
-    ...focusgroup.querySelectorAll<HTMLElement>(
-      "[data-fg-ati], [data-fg-ir], [data-fg-item], [data-fg-seg], [data-fg-segs]",
-    ),
-  ];
-  for (const item of decoratedNodes) {
-    const authorTabIndex = item.getAttribute("data-fg-ati");
-    if (authorTabIndex === "none") item.removeAttribute("tabindex");
-    else if (authorTabIndex !== null) item.setAttribute("tabindex", authorTabIndex);
-    if (item.hasAttribute("data-fg-ir")) item.removeAttribute("role");
-    item.removeAttribute("data-fg-ati");
-    item.removeAttribute("data-fg-ir");
-    item.removeAttribute("data-fg-item");
-    item.removeAttribute("data-fg-seg");
-    item.removeAttribute("data-fg-segs");
-  }
-}
-
-/** Resolves when the fallback has been applied; native focusgroup needs no wait. */
-export function ensureFocusgroupPolyfill(
-  node: HTMLElement,
-): Promise<void> | undefined {
-  return ensureFocusgroupPolyfillForGeneration(
-    node,
-    nodeGenerations.get(node) ?? 0,
-  );
-}
-
-function ensureFocusgroupPolyfillForGeneration(
-  node: HTMLElement,
-  generation: number,
-): Promise<void> | undefined {
+/** Resolves when the fallback has installed its roving-tabindex behavior. */
+export function ensureFocusgroupPolyfill(node: HTMLElement): Promise<void> | undefined {
   if (supportsFocusgroup()) return undefined;
-  if (polyfilledNodes.has(node)) return Promise.resolve();
-
-  const existingRequest = nodePolyfillPromises.get(node);
-  if (existingRequest?.generation === generation) return existingRequest.promise;
-
-  polyfillPromise ??= import("@microsoft/focusgroup-polyfill/shadowless");
-  const nodePromise = polyfillPromise.then(
-    async ({ polyfill }) => {
-      if (!isCurrentConnectedNode(node, generation)) return;
-      polyfill(node);
-      // The polyfill discovers and decorates a newly requested focusgroup in
-      // requestAnimationFrame. Resolve only after that callback has installed
-      // its keyboard handlers so callers can safely move focus immediately.
-      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-      if (!isCurrentConnectedNode(node, generation)) return;
-      polyfilledNodes.add(node);
-    },
-    (error: unknown) => Promise.reject(error),
-  );
-  nodePolyfillPromises.set(node, { generation, promise: nodePromise });
-  const clearRequest = () => {
-    const request = nodePolyfillPromises.get(node);
-    if (request?.generation === generation) nodePolyfillPromises.delete(node);
-  };
-  void nodePromise.then(clearRequest, clearRequest);
-  return nodePromise;
+  let controller = focusgroupControllers.get(node);
+  if (!controller) {
+    controller = createFocusgroupController(node);
+    focusgroupControllers.set(node, controller);
+  }
+  controller.refresh();
+  return Promise.resolve();
 }
 
-function isCurrentConnectedNode(node: HTMLElement, generation: number) {
-  return node.isConnected && (nodeGenerations.get(node) ?? 0) === generation;
+function createFocusgroupController(group: HTMLElement): FocusgroupController {
+  const originalTabIndexes = new Map<HTMLElement, string | null>();
+  const managedItems = new Set<HTMLElement>();
+  let activeItem: HTMLElement | null = null;
+
+  const restoreItem = (item: HTMLElement) => {
+    const original = originalTabIndexes.get(item);
+    if (original === undefined) return;
+    if (original === null) item.removeAttribute("tabindex");
+    else item.setAttribute("tabindex", original);
+    originalTabIndexes.delete(item);
+    managedItems.delete(item);
+  };
+
+  const getItems = () =>
+    Array.from(group.querySelectorAll<HTMLElement>(itemSelector)).filter(
+      (item) => item.closest("[focusgroup]") === group && isAvailableItem(item),
+    );
+
+  const setActiveItem = (next: HTMLElement, items: HTMLElement[]) => {
+    activeItem = next;
+    for (const item of items) {
+      if (!originalTabIndexes.has(item)) {
+        originalTabIndexes.set(item, item.getAttribute("tabindex"));
+      }
+      managedItems.add(item);
+      item.tabIndex = item === next ? 0 : -1;
+    }
+  };
+
+  const refresh = () => {
+    const items = getItems();
+    for (const item of managedItems) {
+      if (!items.includes(item)) restoreItem(item);
+    }
+    if (items.length === 0) {
+      activeItem = null;
+      return;
+    }
+
+    const focused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const focusedItem = focused ? closestManagedItem(focused, group, items) : null;
+    const startItem = items.find((item) => item.hasAttribute("focusgroupstart"));
+    const authorTabStop = items.find(
+      (item) => !managedItems.has(item) && item.getAttribute("tabindex") === "0",
+    );
+    const next =
+      focusedItem ??
+      (activeItem && items.includes(activeItem) ? activeItem : null) ??
+      startItem ??
+      authorTabStop ??
+      items[0];
+    if (next) setActiveItem(next, items);
+  };
+
+  const handleFocusIn = (event: FocusEvent) => {
+    if (!(event.target instanceof HTMLElement)) return;
+    const items = getItems();
+    const item = closestManagedItem(event.target, group, items);
+    if (item) setActiveItem(item, items);
+  };
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (
+      event.defaultPrevented ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      !(event.target instanceof HTMLElement)
+    ) {
+      return;
+    }
+    if (!group.contains(event.target) || event.target.closest("[focusgroup]") !== group) return;
+
+    const items = getItems();
+    if (items.length === 0) return;
+    const current = closestManagedItem(event.target, group, items) ?? activeItem ?? items[0];
+    if (!current || shouldPreserveInputKey(current, event.key)) return;
+    const currentIndex = items.indexOf(current);
+    if (currentIndex < 0) return;
+
+    const behavior = getFocusgroupBehavior(group);
+    let nextIndex: number | undefined;
+    if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = items.length - 1;
+    else if (behavior.inline && event.key === "ArrowRight") {
+      nextIndex = currentIndex + (behavior.rtl ? -1 : 1);
+    } else if (behavior.inline && event.key === "ArrowLeft") {
+      nextIndex = currentIndex + (behavior.rtl ? 1 : -1);
+    } else if (behavior.block && event.key === "ArrowDown") nextIndex = currentIndex + 1;
+    else if (behavior.block && event.key === "ArrowUp") nextIndex = currentIndex - 1;
+    else return;
+
+    if (behavior.wrap) nextIndex = (nextIndex + items.length) % items.length;
+    else nextIndex = Math.max(0, Math.min(items.length - 1, nextIndex));
+    const next = items[nextIndex];
+    if (!next || next === current) return;
+    event.preventDefault();
+    setActiveItem(next, items);
+    next.focus();
+  };
+
+  const observer = new MutationObserver(refresh);
+  observer.observe(group, {
+    attributeFilter: ["aria-hidden", "disabled", "hidden", "inert"],
+    attributes: true,
+    childList: true,
+    subtree: true,
+  });
+  group.addEventListener("focusin", handleFocusIn);
+  group.ownerDocument.addEventListener("keydown", handleKeyDown);
+
+  return {
+    refresh,
+    destroy() {
+      observer.disconnect();
+      group.removeEventListener("focusin", handleFocusIn);
+      group.ownerDocument.removeEventListener("keydown", handleKeyDown);
+      for (const item of [...managedItems]) restoreItem(item);
+      activeItem = null;
+    },
+  };
+}
+
+function closestManagedItem(target: HTMLElement, group: HTMLElement, items: HTMLElement[]) {
+  const item = target.closest<HTMLElement>(itemSelector);
+  return item && item.closest("[focusgroup]") === group && items.includes(item) ? item : null;
+}
+
+function isAvailableItem(item: HTMLElement) {
+  return (
+    !item.matches(":disabled") &&
+    !item.closest('[hidden], [inert], [aria-hidden="true"]')
+  );
+}
+
+function shouldPreserveInputKey(item: HTMLElement, key: string) {
+  if (!key.startsWith("Arrow")) return false;
+  return item.matches(
+    'input, select, textarea, [contenteditable="true"], [role="slider"], [role="spinbutton"]',
+  );
+}
+
+function getFocusgroupBehavior(group: HTMLElement) {
+  const tokens = new Set((group.getAttribute("focusgroup") ?? "").split(/\s+/).filter(Boolean));
+  const role = tokens.values().next().value as string | undefined;
+  const orientation = group.getAttribute("aria-orientation");
+  const explicitlyInline = tokens.has("inline") || orientation === "horizontal";
+  const explicitlyBlock = tokens.has("block") || orientation === "vertical";
+  const inline =
+    explicitlyInline ||
+    (!explicitlyBlock && (role === "menubar" || role === "radiogroup" || role === "tablist"));
+  const block = explicitlyBlock || (!inline && role !== "menubar");
+  return {
+    block,
+    inline,
+    rtl: group.matches(":dir(rtl)"),
+    wrap: tokens.has("wrap") || role === "menu" || role === "menubar",
+  };
 }
 
 export function assignRef<T>(ref: Ref<T> | undefined, node: T | null) {
@@ -270,7 +267,6 @@ export function assignRef<T>(ref: Ref<T> | undefined, node: T | null) {
 function supportsFocusgroup() {
   return (
     typeof HTMLElement !== "undefined" &&
-    ("focusgroup" in HTMLElement.prototype ||
-      "focusGroup" in HTMLElement.prototype)
+    ("focusgroup" in HTMLElement.prototype || "focusGroup" in HTMLElement.prototype)
   );
 }

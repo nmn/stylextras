@@ -124,7 +124,7 @@ export function LazyPopover<Props extends object = Record<string, never>>({
       if (focus === 'none') return
       const items = Array.from(
         popover.querySelectorAll<HTMLElement>(
-          '[role="menuitem"], [role="option"], [data-autofocus]',
+          '[role="menuitem"], [role="option"], [autofocus]',
         ),
       ).filter(isInitialFocusCandidate)
       const item = focus === 'last' ? items.at(-1) : items[0]

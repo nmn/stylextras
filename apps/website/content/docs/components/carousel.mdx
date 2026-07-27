@@ -29,8 +29,8 @@ import { Carousel, CarouselItem } from './index';
 const slides = [
   ['Native controls', 'Scroll snapping supplies the core interaction.'],
   [
-    'Progressive markers',
-    'Supporting browsers add scroll markers and buttons.',
+    'HTML controls',
+    'Previous and next actions use native buttons with real text labels.',
   ],
   ['Reduced motion', 'Smooth scrolling yields to the user motion preference.'],
   [
@@ -124,18 +124,19 @@ import { Carousel, CarouselItem } from "@stylextras/ui/carousel";
 
 ## Anatomy
 
-- `Carousel` — Styled `<div>`.
+- `Carousel` — Named scrollable `<div>` with native previous and next `<button>` controls.
 - `CarouselItem` — Named `<div role="group" aria-roledescription="slide">`.
 
 ## Accessibility and browser behavior
 
 Each part renders and styles the native element named above. The API reference states the exact React or inherited prop base, including whether `ref` is accepted, every omitted native prop, and every component-applied default. Any native prop not named in `Omit` remains accepted, including standard ARIA/data attributes and event handlers. `sx` is composed last.
 
-The root and every slide require accessible names. Current Chromium can expose
-CSS scroll buttons and markers; their localized names come from generated
-content alternative text. Other engines retain a keyboard-focusable native
-scroll region with scroll snapping. Root roles are restricted to `region` or
-`group`, and slide roles to `group`.
+The root and every slide require accessible names. Previous and next actions
+are real `<button>` elements associated with the scroll region through
+`aria-controls`; each localized label is rendered as text in a visually hidden
+`<span>`. Without client enhancement, the focusable native scroll region still
+supports scrolling and scroll snapping. Root roles are restricted to `region`
+or `group`, and slide roles to `group`.
 
 ## API reference
 

@@ -51,11 +51,12 @@ describe('layer accessibility contracts', () => {
     expect(sidebar).toMatch(/<ul ref=\{ref\}[^>]*role="list"/)
   })
 
-  it('invalidates focusgroup state across detach and reinsertion', () => {
+  it('keeps focusgroup lifecycle state outside the DOM', () => {
     const focusgroup = source('focusgroup/index.ts')
-    expect(focusgroup).toContain('nodeGenerations')
-    expect(focusgroup).toContain('nodeGenerations.set(node, generation + 1)')
-    expect(focusgroup).toContain('(nodeGenerations.get(focusgroup) ?? 0) + 1')
-    expect(focusgroup).toContain('polyfill(node);')
+    expect(focusgroup).toContain('focusgroupControllers = new WeakMap')
+    expect(focusgroup).toContain('group.ownerDocument.addEventListener("keydown", handleKeyDown)')
+    expect(focusgroup).toContain('const observer = new MutationObserver(refresh)')
+    expect(focusgroup).not.toContain('data-fg-')
+    expect(focusgroup).not.toContain('@microsoft/focusgroup-polyfill')
   })
 })

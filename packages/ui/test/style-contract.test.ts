@@ -15,6 +15,15 @@ function sourceFiles(directory: string): string[] {
 }
 
 describe('component StyleX contract', () => {
+  it('keeps component state and labels out of data attributes', () => {
+    for (const file of sourceFiles(sourceRoot)) {
+      const source = readFileSync(file, 'utf8')
+      expect(source, path.relative(sourceRoot, file)).not.toMatch(/\bdata-[\w-]+\s*=/)
+      expect(source, path.relative(sourceRoot, file)).not.toMatch(/\bdataset\./)
+      expect(source, path.relative(sourceRoot, file)).not.toMatch(/\[data-[\w-]+/)
+    }
+  })
+
   it('keeps stylex.create maps private to their defining file', () => {
     for (const file of sourceFiles(sourceRoot)) {
       const source = readFileSync(file, 'utf8')
@@ -27,10 +36,10 @@ describe('component StyleX contract', () => {
     }
   })
 
-  it('orders Carousel scroll-marker state after the pseudo-element', () => {
+  it('does not synthesize Carousel controls through pseudo-elements', () => {
     const source = readFileSync(path.join(sourceRoot, 'carousel/index.tsx'), 'utf8')
-    expect(source).toContain("'::scroll-marker:target-current'")
-    expect(source).not.toContain("':target-current::scroll-marker'")
+    expect(source).not.toContain('::scroll-marker')
+    expect(source).not.toContain('::scroll-button')
   })
 
   it('exports source and leaves compilation to consumers', () => {

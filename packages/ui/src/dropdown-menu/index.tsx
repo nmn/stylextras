@@ -9,6 +9,7 @@ import type {
 import { createContext, useContext, useMemo, useState } from 'react'
 import { Button, type AccessibleButtonPropsWithout } from '../button'
 import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
+import { requestMenuFocus, takeRequestedMenuFocus } from '../internal/menu-state'
 import { getPopoverSource, showPopoverWithSource } from '../platform-polyfills/popover-source'
 import { usePopoverPointerToggleGuard } from '../popover/pointer-toggle'
 import { colors } from '../tokens/color.stylex'
@@ -141,7 +142,7 @@ function openMenu(menu: HTMLElement, target: InitialMenuFocus, source?: HTMLElem
     return
   }
 
-  menu.dataset.initialFocus = target
+  requestMenuFocus(menu, target)
   const popoverSource = source ?? getMenuTriggers(menu)[0]
   if (popoverSource) {
     showPopoverWithSource(menu, popoverSource)
@@ -317,8 +318,7 @@ export function DropdownMenuContent({
         menuContext?.setExpanded(expanded)
         if (!expanded) return
 
-        const requestedFocus = menu.dataset.initialFocus
-        delete menu.dataset.initialFocus
+        const requestedFocus = takeRequestedMenuFocus(menu)
         if (requestedFocus === 'none') return
         if (menu.contains(document.activeElement)) return
         const target = requestedFocus === 'last' ? 'last' : 'first'
