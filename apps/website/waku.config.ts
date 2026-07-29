@@ -45,6 +45,47 @@ const fumadocs = async (): Promise<Plugin> => {
   }
 }
 
+const playgroundSsrStubId = '\0stylextras:playground-ssr'
+const playgroundSsrPlugin: Plugin = {
+  name: 'stylextras:playground-ssr',
+  enforce: 'pre',
+  resolveId(id, importer, options) {
+    if (
+      options.ssr &&
+      id === './index' &&
+      importer?.endsWith('/components/Playground/DynamicPlayground.tsx')
+    ) {
+      return playgroundSsrStubId
+    }
+    return null
+  },
+  load(id) {
+    if (id === playgroundSsrStubId) {
+      return 'export default function Playground() { return null; }'
+    }
+    return null
+  },
+}
+
+const playgroundClientChunk = (id: string) => {
+  const normalizedId = id.replaceAll('\\', '/')
+
+  if (normalizedId.includes('/node_modules/@babel/standalone/')) {
+    return 'playground-babel'
+  }
+  if (normalizedId.includes('/node_modules/prettier/')) {
+    return 'playground-prettier'
+  }
+  if (
+    normalizedId.includes('/node_modules/@codesandbox/') ||
+    normalizedId.includes('/node_modules/static-browser-server/') ||
+    normalizedId.includes('/node_modules/@webcontainer/')
+  ) {
+    return 'playground-sandpack'
+  }
+  return undefined
+}
+
 const playgroundUiPackage = (): Plugin => {
   const publicId = 'virtual:playground-ui-package'
   const resolvedId = `\0${publicId}`
@@ -113,6 +154,22 @@ const playgroundUiPackage = (): Plugin => {
 export default defineConfig({
   unstable_adapter: 'waku/adapters/cloudflare',
   vite: {
+    environments: {
+      client: {
+        build: {
+          // Babel Standalone is a single, indivisible browser-compiler module.
+          // Keep a tight budget just above its measured production size; the
+          // other heavy playground vendors are split into cached chunks.
+          chunkSizeWarningLimit: 6250,
+          rollupOptions: {
+            output: {
+              manualChunks: playgroundClientChunk,
+              onlyExplicitManualChunks: true,
+            },
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         '@playground-ui-source': uiSourceDir,
@@ -145,6 +202,7 @@ export default defineConfig({
       },
     },
     plugins: [
+      playgroundSsrPlugin,
       playgroundUiPackage(),
       // @ts-ignore
       stylex.vite({

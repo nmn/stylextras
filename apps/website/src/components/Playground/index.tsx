@@ -11,7 +11,6 @@ import type { ReactNode } from 'react'
 import * as stylex from '@stylexjs/stylex'
 // @ts-ignore - CJS module
 import { transform } from '@babel/standalone'
-import { loadSandpackClient } from '@codesandbox/sandpack-client'
 import Editor, { useMonaco } from '@monaco-editor/react'
 // @ts-ignore - CJS module
 import path from 'path-browserify'
@@ -24,9 +23,6 @@ import {
   // @ts-ignore
 } from 'use-query-params'
 import { Tabs } from './Tabs'
-import prettier from 'prettier/standalone'
-import * as babelPlugin from 'prettier/plugins/babel.js'
-import * as estreePlugin from 'prettier/plugins/estree.js'
 import {
   INITIAL_INPUT_FILES,
   INITIAL_BUNDLER_FILES,
@@ -531,23 +527,25 @@ export const vars = stylex.defineVars({
     const { transformedFiles, generatedCSS } = transformSourceFiles(inputFiles, UI_SOURCE_FILES)
     setTransformedFiles(transformedFiles)
     setCssOutput(generatedCSS)
-    loadSandpackClient(
-      iframeRef.current!,
-      {
-        files: {
-          ...INITIAL_BUNDLER_FILES,
-          ...uiPackage.files,
-          ...toBundlerFiles(transformedFiles),
-          '/styles.css': {
-            code: CSS_PRELUDE + uiPackage.generatedCSS + generatedCSS,
+    const initializeSandpack = async () => {
+      const { loadSandpackClient } = await import('@codesandbox/sandpack-client')
+      const sandpackClient = await loadSandpackClient(
+        iframeRef.current!,
+        {
+          files: {
+            ...INITIAL_BUNDLER_FILES,
+            ...uiPackage.files,
+            ...toBundlerFiles(transformedFiles),
+            '/styles.css': {
+              code: CSS_PRELUDE + uiPackage.generatedCSS + generatedCSS,
+            },
           },
+          template: 'react' as any,
         },
-        template: 'react' as any,
-      },
-      {
-        showOpenInCodeSandbox: false,
-      },
-    ).then((sandpackClient: any) => {
+        {
+          showOpenInCodeSandbox: false,
+        },
+      )
       if (!mounted) {
         sandpackClient.destroy()
         return
@@ -559,7 +557,8 @@ export const vars = stylex.defineVars({
           unsubscribe()
         }
       })
-    })
+    }
+    void initializeSandpack()
     return () => {
       mounted = false
       if (sandpackClientRef.current) {
@@ -576,9 +575,14 @@ export const vars = stylex.defineVars({
     if (!editorRef.current) return
     const model = editorRef.current.getModel()
     if (!model) return
+    const [prettier, babelPlugin, estreePlugin] = await Promise.all([
+      import('prettier/standalone'),
+      import('prettier/plugins/babel.js'),
+      import('prettier/plugins/estree.js'),
+    ])
     const formatted = await prettier.format(model.getValue(), {
       parser: 'babel',
-      plugins: [estreePlugin as any, babelPlugin],
+      plugins: [estreePlugin.default as any, babelPlugin.default],
     })
     editorRef.current.executeEdits('format', [
       {
