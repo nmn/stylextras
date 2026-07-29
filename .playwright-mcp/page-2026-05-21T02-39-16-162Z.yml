@@ -22,7 +22,7 @@
       - list [ref=e23]:
         - listitem [ref=e24]:
           - link "GitHub" [ref=e25] [cursor=pointer]:
-            - /url: https://github.com/facebook/stylex
+            - /url: https://github.com/nmn/stylextras
             - img [ref=e26]
       - button "Search ⌘ K" [ref=e30]:
         - img [ref=e31]
@@ -434,7 +434,7 @@
           - list [ref=e439]:
             - listitem [ref=e440]:
               - link "GitHub" [ref=e441] [cursor=pointer]:
-                - /url: https://github.com/facebook/stylex
+                - /url: https://github.com/nmn/stylextras
                 - text: GitHub
                 - img [ref=e442]
             - listitem [ref=e446]:
@@ -460,7 +460,7 @@
         - generic [ref=e497]: Copyright © 2025 Meta Platforms, Inc.
         - generic [ref=e498]:
           - link [ref=e499] [cursor=pointer]:
-            - /url: https://github.com/facebook/stylex
+            - /url: https://github.com/nmn/stylextras
             - img [ref=e500]
           - link [ref=e503] [cursor=pointer]:
             - /url: https://x.com/stylexjs

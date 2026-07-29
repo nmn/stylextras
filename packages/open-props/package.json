@@ -25,7 +25,7 @@
     "./lib/svg.stylex": "./lib/svg.stylex.js",
     "./lib/zIndex.stylex": "./lib/zIndex.stylex.js"
   },
-  "repository": "https://www.github.com/facebook/stylex",
+  "repository": "https://github.com/nmn/stylextras",
   "license": "MIT",
   "scripts": {
     "test": "jest",

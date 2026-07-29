@@ -308,4 +308,4 @@ When adding StyleX to an app with existing CSS, use the `useCSSLayers` config to
 ## More resources
 
 - Official documentation: https://stylexjs.com
-- Example projects: https://github.com/facebook/stylex/tree/main/examples
+- Project repository: https://github.com/nmn/stylextras

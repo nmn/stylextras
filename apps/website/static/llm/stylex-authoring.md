@@ -561,4 +561,4 @@ const styles = stylex.create({
 
 - Official documentation: https://stylexjs.com
 - API reference: https://stylexjs.com/docs/api
-- GitHub repository: https://github.com/facebook/stylex
+- GitHub repository: https://github.com/nmn/stylextras
