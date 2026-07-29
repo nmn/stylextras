@@ -1,4 +1,5 @@
 import { type Page, expect, test } from '@playwright/test'
+import { initAdvancedSearch } from 'fumadocs-core/search/server'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -61,81 +62,56 @@ async function settleVisualPage(page: Page) {
 }
 
 async function mockSearchResults(page: Page) {
-  await page.route('**/*', async (route) => {
-    const hostname = new URL(route.request().url()).hostname
-    if (!hostname.endsWith('algolia.net')) {
-      await route.continue()
-      return
-    }
+  const index = await initAdvancedSearch({
+    indexes: [
+      {
+        breadcrumbs: ['Components'],
+        id: '/docs/components/button',
+        structuredData: {
+          contents: [
+            {
+              content:
+                'Compose native anchor behavior with the same visual variants and sizes as Button.',
+              heading: 'variants',
+            },
+          ],
+          headings: [
+            {
+              content: 'Accessible icon-only links button',
+              id: 'accessibility',
+            },
+          ],
+        },
+        title: 'Button and ButtonLink button',
+        url: '/docs/components/button',
+      },
+    ],
+  }).export()
 
+  const documents = (
+    index as typeof index & {
+      docs: {
+        docs: Record<
+          string,
+          { breadcrumbs?: string[]; content: string; type: 'heading' | 'page' | 'text' }
+        >
+      }
+    }
+  ).docs.docs
+  for (const document of Object.values(documents)) {
+    if (document.type === 'page') {
+      document.content = 'Button and ButtonLink'
+    } else if (document.type === 'heading') {
+      document.breadcrumbs = ['Components', 'Button and ButtonLink']
+      document.content = 'Accessible icon-only links'
+    } else {
+      document.breadcrumbs = ['Components', 'Button and ButtonLink', 'Variants and sizes']
+    }
+  }
+
+  await page.route('**/api/search', async (route) => {
     await route.fulfill({
-      body: JSON.stringify({
-        results: [
-          {
-            hits: [
-              {
-                anchor: null,
-                content: null,
-                hierarchy: {
-                  lvl0: 'Components',
-                  lvl1: 'Button and ButtonLink',
-                  lvl2: null,
-                  lvl3: null,
-                  lvl4: null,
-                  lvl5: null,
-                  lvl6: null,
-                },
-                objectID: 'visual-button',
-                type: 'lvl1',
-                url: 'https://stylexjs.com/docs/components/button',
-                url_without_anchor: 'https://stylexjs.com/docs/components/button',
-              },
-              {
-                anchor: 'accessibility',
-                content: null,
-                hierarchy: {
-                  lvl0: 'Components',
-                  lvl1: 'Button and ButtonLink',
-                  lvl2: 'Accessible icon-only links',
-                  lvl3: null,
-                  lvl4: null,
-                  lvl5: null,
-                  lvl6: null,
-                },
-                objectID: 'visual-accessibility',
-                type: 'lvl2',
-                url: 'https://stylexjs.com/docs/components/button#accessibility',
-                url_without_anchor: 'https://stylexjs.com/docs/components/button',
-              },
-              {
-                anchor: 'variants',
-                content:
-                  'Compose native anchor behavior with the same visual variants and sizes as Button.',
-                hierarchy: {
-                  lvl0: 'Components',
-                  lvl1: 'Button and ButtonLink',
-                  lvl2: 'Variants and sizes',
-                  lvl3: null,
-                  lvl4: null,
-                  lvl5: null,
-                  lvl6: null,
-                },
-                objectID: 'visual-variants',
-                type: 'content',
-                url: 'https://stylexjs.com/docs/components/button#variants',
-                url_without_anchor: 'https://stylexjs.com/docs/components/button',
-              },
-            ],
-            hitsPerPage: 20,
-            nbHits: 3,
-            nbPages: 1,
-            page: 0,
-            params: '',
-            processingTimeMS: 1,
-            query: 'button',
-          },
-        ],
-      }),
+      body: JSON.stringify(index),
       contentType: 'application/json',
       status: 200,
     })

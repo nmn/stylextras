@@ -9,9 +9,9 @@ import { Fragment, type ReactNode, useEffect, useEffectEvent, useRef, useState }
 import * as stylex from '@stylexjs/stylex'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { ChevronRight, Hash, Search } from 'lucide-react'
-import { liteClient, type SearchForHitsOptions } from 'algoliasearch/lite'
 import { useRouter } from 'fumadocs-core/framework'
-import type { HighlightedText, ReactSortedResult, SortedResult } from 'fumadocs-core/search'
+import type { HighlightedText, ReactSortedResult } from 'fumadocs-core/search'
+import { useDocsSearch } from 'fumadocs-core/search/client'
 import { I18nLabel, useI18n } from 'fumadocs-ui/contexts/i18n'
 import type { SearchLink, SharedProps, TagItem } from 'fumadocs-ui/contexts/search'
 import { EASINGS, vars } from '@/theming/vars.stylex'
@@ -32,143 +32,6 @@ type SearchItem =
       node: ReactNode
       onSelect: () => void
     }
-// eslint-disable-next-line no-useless-concat
-const appId = '94L' + 'A' + 'F81A4P'
-// Public API key it is safe to commit it
-const apiKey = 'd7b1348f1d8a68c1c5a868c54536759c'
-const indexName = 'stylexjs'
-const client = liteClient(appId, apiKey)
-// DocSearch hit structure from Algolia
-type DocSearchHit = {
-  objectID: string
-  url: string
-  url_without_anchor?: string
-  anchor?: string
-  content: string | null
-  type: 'lvl0' | 'lvl1' | 'lvl2' | 'lvl3' | 'lvl4' | 'lvl5' | 'lvl6' | 'content'
-  hierarchy: {
-    lvl0: string | null
-    lvl1: string | null
-    lvl2: string | null
-    lvl3: string | null
-    lvl4: string | null
-    lvl5: string | null
-    lvl6: string | null
-  }
-}
-// Convert absolute URLs to relative paths and normalize
-function toRelativeUrl(url: string): string {
-  try {
-    const parsed = new URL(url)
-    // Normalize: remove trailing slash from pathname (but keep root /)
-    let pathname = parsed.pathname
-    if (pathname.length > 1 && pathname.endsWith('/')) {
-      pathname = pathname.slice(0, -1)
-    }
-    return pathname + parsed.hash
-  } catch {
-    // If it's already a relative URL, normalize it
-    let path = url
-    // Split path and hash
-    const hashIndex = path.indexOf('#')
-    let hash = ''
-    if (hashIndex !== -1) {
-      hash = path.slice(hashIndex)
-      path = path.slice(0, hashIndex)
-    }
-    // Remove trailing slash
-    if (path.length > 1 && path.endsWith('/')) {
-      path = path.slice(0, -1)
-    }
-    return path + hash
-  }
-}
-// Transform DocSearch results to fumadocs format
-function transformDocSearchResults(hits: DocSearchHit[]): SortedResult[] {
-  const results: SortedResult[] = []
-  // Track seen URLs to prevent duplicates (normalized full URL with anchor)
-  const seenUrls = new Set<string>()
-  // Track seen page URLs (without anchor) for page-level deduplication
-  const seenPageUrls = new Set<string>()
-  for (const hit of hits) {
-    const fullUrl = toRelativeUrl(hit.url)
-    const baseUrl = toRelativeUrl(hit.url_without_anchor || hit.url)
-    // Skip if we've already seen this exact URL
-    if (seenUrls.has(fullUrl)) {
-      continue
-    }
-    // Build breadcrumbs from hierarchy (all non-null levels)
-    const breadcrumbs = [
-      hit.hierarchy.lvl0,
-      hit.hierarchy.lvl1,
-      hit.hierarchy.lvl2,
-      hit.hierarchy.lvl3,
-      hit.hierarchy.lvl4,
-      hit.hierarchy.lvl5,
-      hit.hierarchy.lvl6,
-    ].filter((level): level is string => level != null)
-    // Get the page title (usually lvl1, fallback to lvl0)
-    const pageTitle = hit.hierarchy.lvl1 || hit.hierarchy.lvl0 || 'Untitled'
-    // If this is a page-level hit (lvl0 or lvl1) and we haven't seen this page yet
-    if ((hit.type === 'lvl0' || hit.type === 'lvl1') && !seenPageUrls.has(baseUrl)) {
-      seenPageUrls.add(baseUrl)
-      seenUrls.add(fullUrl)
-      results.push({
-        type: 'page',
-        id: hit.objectID,
-        url: baseUrl,
-        content: pageTitle,
-        // For pages, breadcrumbs are just lvl0 (the section/category)
-        breadcrumbs: hit.hierarchy.lvl0 ? [hit.hierarchy.lvl0] : [],
-      })
-    } else if (hit.type === 'content' && hit.content) {
-      // Content-level hit - show with page context
-      seenUrls.add(fullUrl)
-      results.push({
-        type: 'text',
-        id: hit.objectID,
-        url: fullUrl,
-        content: hit.content,
-        // Include full breadcrumb trail for context
-        breadcrumbs,
-      })
-    } else if (hit.type.startsWith('lvl') && hit.type !== 'lvl0' && hit.type !== 'lvl1') {
-      // Heading-level hit (lvl2, lvl3, lvl4, etc.)
-      seenUrls.add(fullUrl)
-      const headingText = hit.hierarchy[hit.type as keyof typeof hit.hierarchy] ?? pageTitle
-      results.push({
-        type: 'heading',
-        id: hit.objectID,
-        url: fullUrl,
-        content: headingText,
-        // Include breadcrumbs up to (but not including) the current heading level
-        breadcrumbs: breadcrumbs.slice(0, -1),
-      })
-    }
-  }
-  return results
-}
-// Custom search function for DocSearch-formatted Algolia index
-async function searchAlgoliaDocSearch(query: string): Promise<SortedResult[] | 'empty'> {
-  if (query.trim().length === 0) {
-    return 'empty'
-  }
-  const result = await client.searchForHits({
-    requests: [
-      {
-        indexName,
-        query,
-        distinct: 5,
-        hitsPerPage: 20,
-      } as SearchForHitsOptions,
-    ],
-  })
-  const hits = result.results[0]?.hits as unknown as DocSearchHit[]
-  if (!hits || hits.length === 0) {
-    return []
-  }
-  return transformDocSearchResults(hits)
-}
 export type SearchDialogProps = SharedProps & {
   links?: SearchLink[]
   type?: 'fetch' | 'static'
@@ -182,42 +45,23 @@ export type SearchDialogProps = SharedProps & {
 export function SearchDialog({
   open,
   onOpenChange,
-  // type = 'fetch',
+  type = 'static',
   defaultTag,
   tags = [],
-  // api = '/api/search',
-  // delayMs,
+  api = '/api/search',
+  delayMs,
   allowClear = false,
   links = [],
   footer,
 }: SearchDialogProps) {
-  const { text } = useI18n()
+  const { locale, text } = useI18n()
   const router = useRouter()
   const [tag, setTag] = useState(defaultTag)
-  // Custom search state management for DocSearch-formatted Algolia index
-  const [search, setSearch] = useState('')
-  const [query, setQuery] = useState<{
-    isLoading: boolean
-    data?: SortedResult[] | 'empty'
-    error?: Error
-  }>({ isLoading: false, data: 'empty' })
-  // Debounced search effect
-  useEffect(() => {
-    if (search.trim().length === 0) {
-      setQuery({ isLoading: false, data: 'empty' })
-      return
-    }
-    setQuery((prev) => ({ ...prev, isLoading: true }))
-    const timeoutId = setTimeout(async () => {
-      try {
-        const results = await searchAlgoliaDocSearch(search)
-        setQuery({ isLoading: false, data: results })
-      } catch (error) {
-        setQuery({ isLoading: false, error: error as Error })
-      }
-    }, 100)
-    return () => clearTimeout(timeoutId)
-  }, [search])
+  const { search, setSearch, query } = useDocsSearch(
+    type === 'fetch'
+      ? { api, delayMs, locale, tag, type: 'fetch' }
+      : { delayMs, from: api, locale, tag, type: 'static' },
+  )
   useEffect(() => {
     setTag(defaultTag)
   }, [defaultTag])

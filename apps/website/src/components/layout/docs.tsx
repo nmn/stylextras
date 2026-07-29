@@ -6,26 +6,20 @@
  */
 'use client'
 
-import type * as PageTree from 'fumadocs-core/page-tree'
-import { type ReactNode, use, useEffect, useRef } from 'react'
-import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree'
-import { usePathname } from 'fumadocs-core/framework'
-import * as stylex from '@stylexjs/stylex'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@stylextras/ui/collapsible'
-import { ScrollArea } from '@stylextras/ui/scroll-area'
-import {
-  Sidebar as UISidebar,
-  SidebarContent,
-  SidebarGroupLabel,
-  SidebarNavigation,
-} from '@stylextras/ui/sidebar'
-import { BaseLayoutProps } from './shared'
-import { activeLinkMarker, vars } from '../../theming/vars.stylex'
-import { Header } from './home'
-import { ChevronDown } from 'lucide-react'
-import { SidebarContext } from '@/contexts/SidebarContext'
 import Footer from '@/components/Footer'
 import { RouterLink } from '@/components/router-link'
+import { SidebarContext } from '@/contexts/SidebarContext'
+import * as stylex from '@stylexjs/stylex'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@stylextras/ui/collapsible'
+import { SidebarGroupLabel, SidebarNavigation, Sidebar as UISidebar } from '@stylextras/ui/sidebar'
+import { usePathname } from 'fumadocs-core/framework'
+import type * as PageTree from 'fumadocs-core/page-tree'
+import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree'
+import { ChevronDown } from 'lucide-react'
+import { type ReactNode, use, useEffect, useRef } from 'react'
+import { activeLinkMarker, vars } from '../../theming/vars.stylex'
+import { Header } from './home'
+import { BaseLayoutProps } from './shared'
 
 export interface DocsLayoutProps extends BaseLayoutProps {
   tree: PageTree.Root
@@ -102,19 +96,16 @@ function Sidebar() {
         <div {...stylex.props(sidebarStyles.blur)} />
       </div>
 
-      <UISidebar aria-label="Documentation" mode="inline" ref={sidebarRef} sx={sidebarStyles.base}>
-        <SidebarContent>
-          <ScrollArea
-            aria-label="Documentation pages"
-            scrollbar="overlay"
-            sx={sidebarStyles.scrollArea}
-            tabIndex={0}
-          >
-            <SidebarNavigation aria-label="Documentation pages">
-              <SidebarTreeItems items={root.children} />
-            </SidebarNavigation>
-          </ScrollArea>
-        </SidebarContent>
+      <UISidebar
+        aria-label="Documentation"
+        mode="inline"
+        ref={sidebarRef}
+        sx={sidebarStyles.base}
+        tabIndex={0}
+      >
+        <SidebarNavigation aria-label="Documentation pages" sx={sidebarStyles.navigation}>
+          <SidebarTreeItems items={root.children} />
+        </SidebarNavigation>
       </UISidebar>
 
       <div {...stylex.props(sidebarStyles.overlayBlur)} />
@@ -206,17 +197,17 @@ const sidebarStyles = stylex.create({
     gap: 2,
     height: '100%',
     fontSize: '1rem',
-    overflow: 'hidden',
+    overflowY: 'auto',
+    overscrollBehaviorY: 'contain',
+    padding: 6 * 4,
     width: 280,
   },
-  scrollArea: {
+  navigation: {
     display: 'flex',
     flexDirection: 'column',
+    flexShrink: 0,
     gap: 2,
     width: '100%',
-    height: '100%',
-    padding: 4 * 4,
-    fontSize: '1rem',
   },
 })
 

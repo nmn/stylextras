@@ -284,86 +284,12 @@ test('opens the native search dialog and restores trigger focus', async ({ page 
   await expect(trigger).toBeFocused()
 })
 
-test('debounces search results and wraps the active option', async ({ page }) => {
+test('loads the static site index and wraps the active option', async ({ page }) => {
   let requestCount = 0
-  await page.route('**/*', async (route) => {
-    const hostname = new URL(route.request().url()).hostname
-    if (!hostname.endsWith('algolia.net')) {
-      await route.continue()
-      return
-    }
-
+  await page.route('**/api/search', async (route) => {
     requestCount += 1
     await new Promise((resolve) => setTimeout(resolve, 150))
-    await route.fulfill({
-      contentType: 'application/json',
-      body: JSON.stringify({
-        results: [
-          {
-            hits: [
-              {
-                objectID: 'first',
-                url: 'https://stylexjs.com/docs/get-started',
-                url_without_anchor: 'https://stylexjs.com/docs/get-started',
-                anchor: null,
-                content: null,
-                type: 'lvl1',
-                hierarchy: {
-                  lvl0: 'Docs',
-                  lvl1: 'First result',
-                  lvl2: null,
-                  lvl3: null,
-                  lvl4: null,
-                  lvl5: null,
-                  lvl6: null,
-                },
-              },
-              {
-                objectID: 'second',
-                url: 'https://stylexjs.com/docs/get-started#apply-themes-directly',
-                url_without_anchor: 'https://stylexjs.com/docs/get-started',
-                anchor: 'second',
-                content: null,
-                type: 'lvl2',
-                hierarchy: {
-                  lvl0: 'Docs',
-                  lvl1: 'First result',
-                  lvl2: 'Second result',
-                  lvl3: null,
-                  lvl4: null,
-                  lvl5: null,
-                  lvl6: null,
-                },
-              },
-              {
-                objectID: 'third',
-                url: 'https://stylexjs.com/docs/get-started#component-themes',
-                url_without_anchor: 'https://stylexjs.com/docs/get-started',
-                anchor: 'third',
-                content: 'Third result',
-                type: 'content',
-                hierarchy: {
-                  lvl0: 'Docs',
-                  lvl1: 'First result',
-                  lvl2: 'Third heading',
-                  lvl3: null,
-                  lvl4: null,
-                  lvl5: null,
-                  lvl6: null,
-                },
-              },
-            ],
-            nbHits: 3,
-            page: 0,
-            nbPages: 1,
-            hitsPerPage: 20,
-            processingTimeMS: 1,
-            query: 'button',
-            params: '',
-          },
-        ],
-      }),
-    })
+    await route.continue()
   })
 
   const trigger = page.locator('[data-search-full]')
@@ -371,22 +297,24 @@ test('debounces search results and wraps the active option', async ({ page }) =>
   await page.keyboard.press('Enter')
   const dialog = page.getByRole('dialog', { name: 'Search' })
   const input = dialog.getByRole('textbox', { name: 'Search' })
-  await input.fill('button')
+  await input.fill('clipboard')
   await expect(dialog.getByRole('progressbar', { name: 'Loading search results' })).toBeVisible()
 
   const options = dialog.getByRole('option')
-  await expect(options).toHaveCount(3)
+  await expect(options.first()).toContainText('CopyToClipboardButton')
+  const optionCount = await options.count()
+  expect(optionCount).toBeGreaterThan(1)
   expect(requestCount).toBe(1)
   await expect(options.nth(0)).toHaveAttribute('aria-selected', 'true')
 
   await input.press('ArrowUp')
-  await expect(options.nth(2)).toHaveAttribute('aria-selected', 'true')
+  await expect(options.nth(optionCount - 1)).toHaveAttribute('aria-selected', 'true')
   await input.press('ArrowDown')
   await expect(options.nth(0)).toHaveAttribute('aria-selected', 'true')
   await expect(input).toBeFocused()
 
   await input.press('Enter')
-  await expect(page).toHaveURL(/\/docs\/get-started$/)
+  await expect(page).toHaveURL(/\/docs\/components\/copy-to-clipboard-button$/)
   await expect(dialog).toBeHidden()
 })
 
