@@ -53,14 +53,17 @@ test('every component page renders its live demo', async ({ browserName, page })
       `${entry.export} demo content`,
     ).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Examples', exact: true })).toBeVisible()
-    const exampleCodeHeading = page.getByRole('heading', {
-      name: 'Example code',
-      exact: true,
-    })
-    await expect(exampleCodeHeading).toBeVisible()
-    const exampleCode = exampleCodeHeading.locator('xpath=following-sibling::figure[1]')
+    const exampleCode = page
+      .getByRole('figure')
+      .filter({ hasText: `${entry.name} example.tsx` })
+      .first()
+    await expect(exampleCode).toBeVisible()
     await expect(exampleCode.locator('pre')).toBeVisible()
     await expect(exampleCode).toContainText('export default function Example')
+    await expect(exampleCode.locator('code > .line > span').first()).toHaveAttribute(
+      'style',
+      /--shiki-light:.+--shiki-dark:/,
+    )
     await expect(page.getByRole('heading', { name: 'Anatomy', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'API reference', exact: true })).toBeVisible()
     await expect(page.getByText(`${entry.name}Props`, { exact: true }).first()).toBeVisible()
@@ -848,19 +851,21 @@ test('preview controls theme each variable group independently', async ({ browse
     .first()
   await expect(button).toBeVisible()
 
-  await preview.getByLabel('Style preset').selectOption('rhea')
+  await preview.getByLabel('Style preset').selectOption('brutalist')
+  await expect(preview).toHaveAttribute('data-preview-style', 'brutalist')
   for (const [label, value] of [
     ['Spacing theme', 'poster'],
-    ['Radius theme', 'pill'],
+    ['Radius theme', 'sharp'],
     ['Typography theme', 'industrial'],
-    ['Stroke theme', 'poster'],
+    ['Stroke theme', 'block'],
     ['Elevation theme', 'poster'],
-    ['Blur theme', 'hazy'],
-    ['Motion theme', 'expressive'],
+    ['Blur theme', 'crisp'],
+    ['Motion theme', 'instant'],
   ] as const) {
     await expect(preview.getByLabel(label)).toHaveValue(value)
   }
-  await preview.getByLabel('Style preset').selectOption('vega')
+  await preview.getByLabel('Style preset').selectOption('docs')
+  await expect(preview).toHaveAttribute('data-preview-style', 'docs')
 
   const read = () =>
     button.evaluate((element) => {
@@ -877,23 +882,28 @@ test('preview controls theme each variable group independently', async ({ browse
 
   const initial = await read()
   await preview.getByLabel('Color theme').selectOption('violet')
-  expect((await read()).backgroundColor).not.toBe(initial.backgroundColor)
+  await expect(preview).toHaveAttribute('data-preview-color', 'violet')
+  await expect
+    .poll(() => read().then((value) => value.backgroundColor))
+    .not.toBe(initial.backgroundColor)
   await preview.getByLabel('Spacing theme').selectOption('poster')
-  expect((await read()).height).not.toBe(initial.height)
+  await expect.poll(() => read().then((value) => value.height)).not.toBe(initial.height)
   await preview.getByLabel('Radius theme').selectOption('sharp')
-  expect((await read()).borderRadius).not.toBe(initial.borderRadius)
+  await expect.poll(() => read().then((value) => value.borderRadius)).not.toBe(initial.borderRadius)
   await preview.getByLabel('Typography theme').selectOption('mono')
-  expect((await read()).fontFamily).not.toBe(initial.fontFamily)
+  await expect.poll(() => read().then((value) => value.fontFamily)).not.toBe(initial.fontFamily)
   await preview.getByLabel('Stroke theme').selectOption('brutal')
-  expect((await read()).borderWidth).not.toBe(initial.borderWidth)
+  await expect.poll(() => read().then((value) => value.borderWidth)).not.toBe(initial.borderWidth)
   await preview.getByLabel('Motion theme').selectOption('instant')
-  expect((await read()).transitionDuration).not.toBe(initial.transitionDuration)
+  await expect
+    .poll(() => read().then((value) => value.transitionDuration))
+    .not.toBe(initial.transitionDuration)
 
   const initialShadow = await preview.evaluate((element) => getComputedStyle(element).boxShadow)
   await preview.getByLabel('Elevation theme').selectOption('poster')
-  expect(await preview.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe(
-    initialShadow,
-  )
+  await expect
+    .poll(() => preview.evaluate((element) => getComputedStyle(element).boxShadow))
+    .not.toBe(initialShadow)
 
   await page.goto('/docs/components/dialog')
   const dialogPreview = page.locator('[data-component-demo="Dialog"]')
@@ -903,9 +913,11 @@ test('preview controls theme each variable group independently', async ({ browse
     (element) => getComputedStyle(element, '::backdrop').backdropFilter,
   )
   await dialogPreview.getByLabel('Blur theme').selectOption('hazy')
-  expect(
-    await dialog.evaluate((element) => getComputedStyle(element, '::backdrop').backdropFilter),
-  ).not.toBe(initialBlur)
+  await expect
+    .poll(() =>
+      dialog.evaluate((element) => getComputedStyle(element, '::backdrop').backdropFilter),
+    )
+    .not.toBe(initialBlur)
 })
 
 test('selected tabs use the active elevation theme', async ({ browserName, page }) => {
@@ -978,12 +990,12 @@ test('docs Option states use blue highlights without tinting the picker surface'
           option.closest('select')!,
           '::picker(select)',
         ).backgroundColor
-        const controlHover = serializeColor('var(--color-fd-muted)')
+        const picker = resolveColor(pickerBackground)
         probe.remove()
 
         return {
-          controlHover,
           palette,
+          picker,
           pickerBackground,
           hasChecked: cssText.some((rule) =>
             classNames.some((name) => rule.includes(`.${name}:checked`)),
@@ -1023,8 +1035,11 @@ test('docs Option states use blue highlights without tinting the picker surface'
     expect(distance(result.palette.brand, result.palette.accent)).toBeGreaterThan(45)
     expect(result.palette.selection[0]).toBeGreaterThan(result.palette.selection[1]! + 35)
     expect(result.palette.selection[2]).toBeGreaterThan(result.palette.selection[1]! + 35)
-    expect(result.pickerBackground).toBe(result.controlHover)
+    expect(result.pickerBackground).not.toBe('rgba(0, 0, 0, 0)')
+    expect(result.picker[3]).toBe(255)
+    expect(chroma(result.picker)).toBeLessThanOrEqual(2)
   }
+  expect(light.picker).not.toEqual(dark.picker)
 })
 
 test('DropdownMenu follows the menu button keyboard contract', async ({ browserName, page }) => {

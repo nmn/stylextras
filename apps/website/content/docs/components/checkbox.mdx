@@ -4,45 +4,17 @@ description: "Styled native checkbox."
 ---
 
 import Example from "@stylextras/ui/checkbox/example";
+import exampleCode from "@stylextras/ui/checkbox/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Checkbox">
+<ComponentPreview code={exampleCode} name="Checkbox">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
-import { Label } from '../label';
-import { spacing } from '../tokens/spacing.stylex';
-import { Checkbox } from './index';
-
-export default function Example() {
-  return (
-    <fieldset>
-      <legend>Notification preferences</legend>
-      <Label sx={styles.option}>
-        <Checkbox defaultChecked name="updates" /> Product updates
-      </Label>
-      <Label sx={styles.option}>
-        <Checkbox name="analytics" /> Usage analytics
-      </Label>
-      <Label sx={styles.option}>
-        <Checkbox disabled /> Unavailable option
-      </Label>
-      <Label sx={styles.option}>
-        <Checkbox controlSize="sm" /> Compact option
-      </Label>
-    </fieldset>
-  );
-}
-
-const styles = stylex.create({
-  option: { alignItems: 'center', display: 'flex', gap: spacing.sm },
-});
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -71,5 +43,5 @@ unchanged.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `CheckboxProps`.
 
-- `controlSize` — `"sm" | "md"`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
+- `controlSize` — `"sm" | "md"`. Controls the native control dimensions and touch target. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

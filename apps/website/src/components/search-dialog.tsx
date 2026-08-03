@@ -5,23 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 'use client'
-import { Fragment, type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react'
-import * as stylex from '@stylexjs/stylex'
-import scrollIntoView from 'scroll-into-view-if-needed'
-import { ChevronRight, Hash, Search } from 'lucide-react'
-import { useRouter } from 'fumadocs-core/framework'
-import type { HighlightedText, ReactSortedResult } from 'fumadocs-core/search'
-import { useDocsSearch } from 'fumadocs-core/search/client'
-import { I18nLabel, useI18n } from 'fumadocs-ui/contexts/i18n'
-import type { SearchLink, SharedProps, TagItem } from 'fumadocs-ui/contexts/search'
 import { EASINGS, vars } from '@/theming/vars.stylex'
+import * as stylex from '@stylexjs/stylex'
 import { Button } from '@stylextras/ui/button'
 import { DialogTitle } from '@stylextras/ui/dialog'
 import { DialogClient } from '@stylextras/ui/dialog/client'
 import { Input } from '@stylextras/ui/input'
 import { Kbd } from '@stylextras/ui/kbd'
 import { ScrollArea } from '@stylextras/ui/scroll-area'
-import { Spinner } from '@stylextras/ui/spinner'
+import { useRouter } from 'fumadocs-core/framework'
+import type { HighlightedText, ReactSortedResult } from 'fumadocs-core/search'
+import { useDocsSearch } from 'fumadocs-core/search/client'
+import { I18nLabel, useI18n } from 'fumadocs-ui/contexts/i18n'
+import type { SearchLink, SharedProps, TagItem } from 'fumadocs-ui/contexts/search'
+import { ChevronRight, Hash, Search } from 'lucide-react'
+import { Fragment, type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react'
+import scrollIntoView from 'scroll-into-view-if-needed'
 type SearchItem =
   | (ReactSortedResult & {
       external?: boolean
@@ -183,11 +182,7 @@ export function SearchDialog({
         {text.search}
       </DialogTitle>
       <div {...stylex.props(styles.header)}>
-        {query.isLoading ? (
-          <Spinner aria-label="Loading search results" sx={styles.searchSpinner} />
-        ) : (
-          <Search aria-hidden {...stylex.props(styles.searchIcon)} />
-        )}
+        <Search aria-hidden {...stylex.props(styles.searchIcon)} />
         <Input
           autoFocus
           onChange={(event) => setSearch(event.target.value)}
@@ -404,11 +399,6 @@ const styles = stylex.create({
     width: 20,
     height: 20,
     color: vars['--color-fd-muted-foreground'],
-  },
-  searchSpinner: {
-    flexShrink: 0,
-    width: 20,
-    height: 20,
   },
   inputLayout: {
     backgroundColor: 'transparent',

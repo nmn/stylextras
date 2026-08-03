@@ -4,59 +4,17 @@ description: "Declarative Popover API composition."
 ---
 
 import Example from "@stylextras/ui/popover/example";
+import exampleCode from "@stylextras/ui/popover/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Popover">
+<ComponentPreview code={exampleCode} name="Popover">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Popover, PopoverClose, PopoverTrigger } from './index';
-
-const compactId = 'compact-details-popover';
-const standardId = 'standard-details-popover';
-const wideId = 'wide-details-popover';
-
-export default function Example() {
-  return (
-    <>
-      <PopoverTrigger target={compactId}>Quick details</PopoverTrigger>
-      <Popover id={compactId} size="sm">
-        <strong>Quick details</strong>
-        <span>Short supporting content belongs here.</span>
-        <PopoverClose target={compactId} size="sm">
-          Close
-        </PopoverClose>
-      </Popover>
-
-      <PopoverTrigger target={standardId}>View activity</PopoverTrigger>
-      <Popover id={standardId} placement="end">
-        <strong>Recent activity</strong>
-        <span>Three component examples were updated today.</span>
-        <PopoverClose target={standardId} size="sm">
-          Close
-        </PopoverClose>
-      </Popover>
-
-      <PopoverTrigger target={wideId}>Review changes</PopoverTrigger>
-      <Popover id={wideId} placement="top" size="lg">
-        <strong>Ready to publish</strong>
-        <span>
-          Tokens, examples, accessibility notes, and browser fallbacks are
-          included.
-        </span>
-        <PopoverClose target={wideId} size="sm">
-          Dismiss
-        </PopoverClose>
-      </Popover>
-    </>
-  );
-}
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -84,10 +42,10 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "style">`. The props below complete `PopoverProps`.
 
-- `behavior` — `"auto" | "manual" | "hint"`. Default: `'auto'`.
-- `placement` — `PopoverPlacement`. Default: `'bottom'`.
-- `size` — `PopoverSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
+- `behavior` — `"auto" | "manual" | "hint"`. Selects native Popover light-dismiss and stacking behavior. Default: `'auto'`.
+- `placement` — `PopoverPlacement`. Sets the preferred anchored edge; the browser may flip it to remain visible. Default: `'bottom'`.
+- `size` — `PopoverSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### PopoverClose
 
@@ -95,11 +53,11 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<PopoverTriggerProps, "action">`. The props below complete `PopoverCloseProps`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `PopoverCloseProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `PopoverCloseProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.
 
 ### PopoverTrigger
 
@@ -107,9 +65,9 @@ Complete native/inherited prop base: `Omit<PopoverTriggerProps, "action">`. The 
 
 Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popoverTargetAction">`. The props below complete `PopoverTriggerProps`.
 
-- `action` — `"show" | "hide" | "toggle"`. Default: `'toggle'`.
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `PopoverTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `action` — `"show" | "hide" | "toggle"`. Native action the invoker performs on its popover target. Default: `'toggle'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `PopoverTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.

@@ -31,15 +31,15 @@ const websitePalette = {
     '--color-fd-accent-foreground': 'hsl(222, 87%, 78%)',
     '--color-fd-background': 'hsl(0, 0%, 7%)',
     '--color-fd-border': 'hsla(0, 0%, 30%, 25%)',
-    '--color-fd-card': 'hsl(0, 0%, 8.5%)',
+    '--color-fd-card': 'hsl(0, 0%, 13%)',
     '--color-fd-card-foreground': 'hsl(0, 0%, 98%)',
     '--color-fd-error': 'oklch(63.7% 0.237 25.331)',
     '--color-fd-foreground': 'hsl(0, 0%, 92%)',
     '--color-fd-info': 'oklch(62.3% 0.214 259.815)',
-    '--color-fd-muted': 'hsl(0, 0%, 12.9%)',
+    '--color-fd-muted': 'hsl(0, 0%, 10%)',
     '--color-fd-muted-foreground': 'hsla(0, 0%, 70%, 0.8)',
     '--color-fd-overlay': 'hsla(0, 0%, 0%, 0.2)',
-    '--color-fd-popover': 'hsl(0, 0%, 11.6%)',
+    '--color-fd-popover': 'hsl(0, 0%, 16%)',
     '--color-fd-popover-foreground': 'hsl(0, 0%, 86.9%)',
     '--color-fd-primary': 'hsl(270, 72%, 77%)',
     '--color-fd-primary-foreground': 'hsl(240, 23%, 9%)',
@@ -52,9 +52,7 @@ const websitePalette = {
 } as const
 
 for (const appearance of ['light', 'dark'] as const) {
-  test(`website ${appearance} preset preserves the legacy color bridge`, async ({
-    page,
-  }) => {
+  test(`website ${appearance} preset preserves the legacy color bridge`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: appearance })
     await page.addInitScript((theme) => {
       localStorage.setItem('theme', theme)
@@ -63,63 +61,47 @@ for (const appearance of ['light', 'dark'] as const) {
 
     await expect(page.locator('html')).toHaveCSS('color-scheme', appearance)
     await expect
-      .poll(() =>
-        page.locator('body').evaluate((body, expected) => {
-          const probe = document.createElement('span')
-          body.append(probe)
-          probe.style.color = 'var(--color-code-green)'
-          const actual = getComputedStyle(probe).color
-          probe.style.color = expected
-          const target = getComputedStyle(probe).color
-          probe.remove()
-          return actual === target
-        }, websitePalette[appearance]['--color-code-green']),
+      .poll(
+        () =>
+          page.locator('body').evaluate((body, palette) => {
+            const probe = document.createElement('span')
+            probe.hidden = true
+            body.append(probe)
+            const canvas = document.createElement('canvas')
+            canvas.width = 1
+            canvas.height = 1
+            const context = canvas.getContext('2d', { willReadFrequently: true })
+            if (!context) throw new Error('Canvas 2D context is unavailable')
+
+            const resolve = (value: string) => {
+              probe.style.color = value
+              const css = getComputedStyle(probe).color
+              context.clearRect(0, 0, 1, 1)
+              context.fillStyle = css
+              context.fillRect(0, 0, 1, 1)
+              return {
+                css,
+                pixel: Array.from(context.getImageData(0, 0, 1, 1).data),
+              }
+            }
+
+            const failures: string[] = []
+            for (const [name, expected] of Object.entries(palette)) {
+              const actualColor = resolve(`var(${name})`)
+              const expectedColor = resolve(expected)
+              if (actualColor.css === expectedColor.css) continue
+              for (const [index, channel] of actualColor.pixel.entries()) {
+                if (Math.abs(channel! - expectedColor.pixel[index]!) > 1) {
+                  failures.push(`${name}[${index}]: ${actualColor.css} != ${expectedColor.css}`)
+                }
+              }
+            }
+            probe.remove()
+            return failures
+          }, websitePalette[appearance]),
+        { message: `${appearance} website palette has loaded` },
       )
-      .toBe(true)
-
-    const resolved = await page.locator('body').evaluate((body, palette) => {
-      const probe = document.createElement('span')
-      probe.hidden = true
-      body.append(probe)
-      const canvas = document.createElement('canvas')
-      canvas.width = 1
-      canvas.height = 1
-      const context = canvas.getContext('2d', { willReadFrequently: true })
-      if (!context) throw new Error('Canvas 2D context is unavailable')
-
-      const resolve = (value: string) => {
-        probe.style.color = value
-        const css = getComputedStyle(probe).color
-        context.clearRect(0, 0, 1, 1)
-        context.fillStyle = css
-        context.fillRect(0, 0, 1, 1)
-        return {
-          css,
-          pixel: Array.from(context.getImageData(0, 0, 1, 1).data),
-        }
-      }
-
-      const result = Object.fromEntries(
-        Object.entries(palette).map(([name, expected]) => [
-          name,
-          {
-            actual: resolve(`var(${name})`),
-            expected: resolve(expected),
-          },
-        ]),
-      )
-      probe.remove()
-      return result
-    }, websitePalette[appearance])
-
-    for (const [name, value] of Object.entries(resolved)) {
-      if (value.actual.css === value.expected.css) continue
-      for (const [index, channel] of value.actual.pixel.entries()) {
-        expect(Math.abs(channel! - value.expected.pixel[index]!), `${name}[${index}]`).toBeLessThanOrEqual(
-          1,
-        )
-      }
-    }
+      .toEqual([])
   })
 }
 
@@ -215,7 +197,7 @@ async function effectiveBackgroundLuminance(locator: Locator, rootSelector: stri
   }, rootSelector)
 }
 
-async function backgroundAlpha(locator: Locator, pseudoElement?: string) {
+async function backgroundPixel(locator: Locator, pseudoElement?: string) {
   return locator.evaluate((element, pseudo) => {
     const canvas = document.createElement('canvas')
     canvas.width = 1
@@ -224,8 +206,21 @@ async function backgroundAlpha(locator: Locator, pseudoElement?: string) {
     if (!context) throw new Error('Canvas 2D context is unavailable')
     context.fillStyle = getComputedStyle(element, pseudo).backgroundColor
     context.fillRect(0, 0, 1, 1)
-    return context.getImageData(0, 0, 1, 1).data[3]!
+    return Array.from(context.getImageData(0, 0, 1, 1).data)
   }, pseudoElement ?? null)
+}
+
+async function backgroundAlpha(locator: Locator, pseudoElement?: string) {
+  return (await backgroundPixel(locator, pseudoElement))[3]!
+}
+
+async function backgroundChroma(locator: Locator) {
+  const [red, green, blue] = await backgroundPixel(locator)
+  return Math.max(red!, green!, blue!) - Math.min(red!, green!, blue!)
+}
+
+async function expectPaintedBackground(locator: Locator, message: string) {
+  await expect.poll(() => backgroundAlpha(locator), { message }).toBeGreaterThan(0)
 }
 
 async function textChromas(locator: Locator, start = 0) {
@@ -277,6 +272,9 @@ test('accent themes tint their surfaces subtly in both appearances', async ({
   await page.goto('/docs/themes')
   const gallery = page.getByTestId('theme-gallery')
   await expect(gallery).toBeVisible()
+  await expect
+    .poll(() => backgroundChroma(gallery.getByLabel('Amber light theme')))
+    .toBeGreaterThan(1)
   const amberDark = gallery.getByLabel('Amber dark theme')
   await expect(amberDark).toHaveCSS('color-scheme', 'dark')
   if (browserName !== 'webkit') {
@@ -415,7 +413,7 @@ test('top-layer component surfaces stay opaque in dark accent themes', async ({ 
     ['dialog', 'dialog'],
     ['context-menu', '[popover]'],
     ['command', 'dialog'],
-    ['combobox', '[role="listbox"]'],
+    ['combobox', '[popover]'],
   ] as const
 
   for (const [slug, selector] of cases) {
@@ -436,36 +434,61 @@ test('dark checkbox indicator follows its foreground token', async ({ page }) =>
   const preview = page.locator('[data-component-demo="Checkbox"]')
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await preview.getByLabel('Color theme').selectOption('neutral')
+  await expect(preview).toHaveAttribute('data-preview-color', 'neutral')
   await preview.getByLabel('Appearance').selectOption('dark')
+  await expect(preview).toHaveAttribute('data-preview-appearance', 'dark')
+  await expect(preview).toHaveCSS('color-scheme', 'dark')
   const checkbox = preview.locator('input[type="checkbox"]:checked').first()
   await expect(checkbox).toBeVisible()
-  const indicator = await checkbox.evaluate((element) => ({
-    color: getComputedStyle(element).color,
-    indicator: getComputedStyle(element, '::after').backgroundColor,
-    opacity: getComputedStyle(element, '::after').opacity,
-  }))
-  expect(indicator.indicator).toBe(indicator.color)
-  expect(indicator.opacity).toBe('1')
+  await expect
+    .poll(() =>
+      checkbox.evaluate((element) => {
+        const indicator = getComputedStyle(element, '::after')
+        return (
+          indicator.backgroundColor === getComputedStyle(element).color && indicator.opacity === '1'
+        )
+      }),
+    )
+    .toBe(true)
 })
 
-test('dark surface, card, and selected-tab depth is monotonically lighter', async ({ page }) => {
+test('every theme keeps nested cards and overlays lighter than their containers', async ({
+  page,
+}) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/themes')
-  const theme = page.getByLabel('Blue dark theme')
-  const surface = theme.locator('[data-surface-depth="blue"]')
-  const raised = surface.locator(':scope > div')
-  const overlay = raised.locator(':scope > span').last()
-  const themeRoot = '[aria-label="Blue dark theme"]'
-  const [themeBaseLuminance, surfaceLuminance, raisedLuminance, overlayLuminance] =
+  const labels = await page
+    .locator('[aria-label$=" theme"]:has([data-surface-depth])')
+    .evaluateAll((themes) =>
+      themes.map((theme) => theme.getAttribute('aria-label')).filter(Boolean),
+    )
+
+  for (const label of labels) {
+    const theme = page.getByLabel(label!, { exact: true })
+    const surface = theme.locator('[data-surface-depth]')
+    const raised = surface.locator(':scope > div')
+    const overlay = raised.locator(':scope > span').last()
+    const themeRoot = `[aria-label="${label}"]`
+    await expect(theme).toHaveCSS('color-scheme', label!.endsWith(' dark theme') ? 'dark' : 'light')
     await Promise.all([
-      effectiveBackgroundLuminance(theme, themeRoot),
-      effectiveBackgroundLuminance(surface, themeRoot),
-      effectiveBackgroundLuminance(raised, themeRoot),
-      effectiveBackgroundLuminance(overlay, themeRoot),
+      expectPaintedBackground(theme, `${label} base has loaded`),
+      expectPaintedBackground(surface, `${label} surface has loaded`),
+      expectPaintedBackground(raised, `${label} card has loaded`),
+      expectPaintedBackground(overlay, `${label} popover has loaded`),
     ])
-  expect(surfaceLuminance).toBeGreaterThan(themeBaseLuminance)
-  expect(raisedLuminance).toBeGreaterThan(surfaceLuminance)
-  expect(overlayLuminance).toBeGreaterThan(raisedLuminance)
+    const [themeBaseLuminance, surfaceLuminance, raisedLuminance, overlayLuminance] =
+      await Promise.all([
+        effectiveBackgroundLuminance(theme, themeRoot),
+        effectiveBackgroundLuminance(surface, themeRoot),
+        effectiveBackgroundLuminance(raised, themeRoot),
+        effectiveBackgroundLuminance(overlay, themeRoot),
+      ])
+    if (label!.endsWith(' dark theme')) {
+      expect(surfaceLuminance, `${label} surface`).toBeGreaterThan(themeBaseLuminance)
+    }
+    expect(raisedLuminance, `${label} card`).toBeGreaterThan(surfaceLuminance)
+    expect(overlayLuminance, `${label} popover`).toBeGreaterThan(raisedLuminance)
+  }
 
   await page.goto('/docs/components/card')
   const cardPreview = page.locator('[data-component-demo="Card"]')
@@ -499,6 +522,11 @@ test('dark surface, card, and selected-tab depth is monotonically lighter', asyn
   const tabList = tabsPreview.getByRole('tablist').first()
   const tabsCanvas = tabsPreview.locator('[data-component-demo-canvas]')
   const tabsCanvasRoot = '[data-component-demo-canvas]'
+  await Promise.all([
+    expectPaintedBackground(tabsCanvas, 'Tabs canvas has loaded'),
+    expectPaintedBackground(tabList, 'Tabs list has loaded'),
+    expectPaintedBackground(selectedTab, 'Selected tab has loaded'),
+  ])
   const [tabsCanvasLuminance, tabListLuminance, selectedTabLuminance] = await Promise.all([
     effectiveBackgroundLuminance(tabsCanvas, tabsCanvasRoot),
     effectiveBackgroundLuminance(tabList, tabsCanvasRoot),
@@ -510,21 +538,38 @@ test('dark surface, card, and selected-tab depth is monotonically lighter', asyn
   expect(selectedTabLuminance - tabListLuminance).toBeLessThan(0.04)
 })
 
-test('light tabs clearly distinguish the active surface', async ({ page }) => {
+test('light tabs clearly distinguish the active surface', async ({ browserName, page }) => {
   await page.goto('/docs/components/tabs')
   const preview = page.locator('[data-component-demo="Tabs"]')
   await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await preview.getByLabel('Color theme').selectOption('neutral')
+  await expect(preview).toHaveAttribute('data-preview-color', 'neutral')
   await preview.getByLabel('Appearance').selectOption('light')
+  await expect(preview).toHaveAttribute('data-preview-appearance', 'light')
+  await expect(preview).toHaveCSS('color-scheme', 'light')
   const canvasRoot = '[data-component-demo-canvas]'
   const tabList = preview.getByRole('tablist').first()
   const selectedTab = preview.getByRole('tab', { selected: true }).first()
+  await Promise.all([
+    expectPaintedBackground(preview.locator(canvasRoot), 'Tabs canvas has loaded'),
+    expectPaintedBackground(tabList, 'Tabs list has loaded'),
+    expectPaintedBackground(selectedTab, 'Selected tab has loaded'),
+  ])
   const [canvasLuminance, tabListLuminance, selectedTabLuminance] = await Promise.all([
     effectiveBackgroundLuminance(preview.locator(canvasRoot), canvasRoot),
     effectiveBackgroundLuminance(tabList, canvasRoot),
     effectiveBackgroundLuminance(selectedTab, canvasRoot),
   ])
+  const selectedTreatment = await selectedTab.evaluate((element) => {
+    const style = getComputedStyle(element)
+    return { borderColor: style.borderColor }
+  })
 
   expect(canvasLuminance - tabListLuminance).toBeGreaterThan(0.04)
-  expect(selectedTabLuminance - tabListLuminance).toBeGreaterThan(0.04)
+  // WebKit quantizes the OKLab canvas probe more aggressively. The selected
+  // tab also has an explicit border, so luminance is not its only cue.
+  expect(selectedTabLuminance - tabListLuminance).toBeGreaterThan(
+    browserName === 'webkit' ? 0.02 : 0.04,
+  )
+  expect(selectedTreatment.borderColor).not.toBe('rgba(0, 0, 0, 0)')
 })

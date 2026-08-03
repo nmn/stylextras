@@ -2,10 +2,11 @@
 
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import { useMemo, type ComponentPropsWithRef } from 'react'
+import { type ComponentPropsWithRef, useMemo } from 'react'
 import type { AccessibleAriaNameProps } from '../accessibility'
 import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
 import { requestMenuFocus } from '../internal/menu-state'
+import { getTypeaheadMatch, isTypeaheadKey } from '../internal/typeahead'
 import { showPopoverWithSource } from '../platform-polyfills/popover-source'
 import { colors } from '../tokens/color.stylex'
 import { radius } from '../tokens/radius.stylex'
@@ -20,7 +21,6 @@ export type MenubarProps = Omit<
 
 const MENUBAR_TRIGGER_SELECTOR = 'button[aria-haspopup="menu"][popovertarget]'
 const MENU_ITEM_SELECTOR = '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]'
-const typeaheadState = new WeakMap<HTMLElement, { query: string; updatedAt: number }>()
 
 function getMenubarTriggers(menubar: HTMLElement) {
   return Array.from(menubar.querySelectorAll<HTMLButtonElement>(MENUBAR_TRIGGER_SELECTOR)).filter(
@@ -71,29 +71,9 @@ function switchMenubarMenu(menubar: HTMLElement, trigger: HTMLButtonElement, foc
   showPopoverWithSource(nextMenu, trigger)
 }
 
-function getTypeaheadMatch(menubar: HTMLElement, key: string) {
-  const now = Date.now()
-  const normalizedKey = key.toLocaleLowerCase()
-  const previous = typeaheadState.get(menubar)
-  const combined =
-    previous && now - previous.updatedAt < 500 ? previous.query + normalizedKey : normalizedKey
-  const query = Array.from(combined).every((character) => character === normalizedKey)
-    ? normalizedKey
-    : combined
-  typeaheadState.set(menubar, { query, updatedAt: now })
-
+function getMenubarTypeaheadMatch(menubar: HTMLElement, key: string) {
   const triggers = getMenubarTriggers(menubar)
-  const activeTrigger = (document.activeElement as Element | null)?.closest<HTMLButtonElement>(
-    MENUBAR_TRIGGER_SELECTOR,
-  )
-  const activeIndex = activeTrigger ? triggers.indexOf(activeTrigger) : -1
-  const orderedTriggers = [
-    ...triggers.slice(activeIndex + 1),
-    ...triggers.slice(0, activeIndex + 1),
-  ]
-  return orderedTriggers.find((trigger) =>
-    trigger.textContent?.trim().toLocaleLowerCase().startsWith(query),
-  )
+  return getTypeaheadMatch(menubar, triggers, key) as HTMLButtonElement | undefined
 }
 
 /** A focusgroup-enhanced menubar. Menus remain explicit DropdownMenu siblings. */
@@ -140,15 +120,8 @@ export function Menubar({ onKeyDownCapture, onPointerMove, ref, sx, ...props }: 
           return
         }
 
-        if (
-          trigger &&
-          event.key.length === 1 &&
-          event.key !== ' ' &&
-          !event.altKey &&
-          !event.ctrlKey &&
-          !event.metaKey
-        ) {
-          const match = getTypeaheadMatch(event.currentTarget, event.key)
+        if (trigger && isTypeaheadKey(event)) {
+          const match = getMenubarTypeaheadMatch(event.currentTarget, event.key)
           if (!match) return
           event.preventDefault()
           match.focus({ preventScroll: true })

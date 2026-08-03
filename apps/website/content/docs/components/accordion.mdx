@@ -4,51 +4,17 @@ description: "Exclusive disclosure built on details[name]."
 ---
 
 import Example from "@stylextras/ui/accordion/example";
+import exampleCode from "@stylextras/ui/accordion/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Accordion">
+<ComponentPreview code={exampleCode} name="Accordion">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from './index';
-
-export default function Example() {
-  return (
-    <Accordion>
-      <AccordionItem name="component-docs-accordion" open>
-        <AccordionTrigger>Is JavaScript required?</AccordionTrigger>
-        <AccordionContent>
-          No. Opening, closing, keyboard activation, and exclusivity come from
-          native details.
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem name="component-docs-accordion">
-        <AccordionTrigger>Can I render rich content?</AccordionTrigger>
-        <AccordionContent>
-          Yes. The content part is an ordinary styled div inside the disclosure.
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem name="component-docs-accordion">
-        <AccordionTrigger>Does it work without enhancement?</AccordionTrigger>
-        <AccordionContent>
-          It falls back to the browser&apos;s complete details and summary
-          behavior.
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-}
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -78,7 +44,7 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AccordionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### AccordionContent
 
@@ -86,7 +52,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AccordionContentProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### AccordionItem
 
@@ -95,7 +61,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details">, "className" | "style">`. The props below complete `AccordionItemProps`.
 
 - `name` — `string`. Optional. Items sharing a name are mutually exclusive through native details behavior; omit it for independent disclosures.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### AccordionTrigger
 
@@ -103,6 +69,14 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details"
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary">, "className" | "style">`. The props below complete `AccordionTriggerProps`.
 
-- `indicator` — `React.ReactNode | false`. Defaults to `AccordionIndicator`.
-- `indicatorPosition` — `'start' | 'end'`. Default: `'end'`.
-- `sx` — `stylex.StyleXStyles`.
+- `indicator` — `React.ReactNode | false`. Decorative marker rendered beside the label; pass `false` to hide it. Defaults to `AccordionIndicator`.
+- `indicatorPosition` — `'start' | 'end'`. Places the indicator before or after the trigger label. Default: `'end'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+
+### AccordionIndicator
+
+`AccordionIndicatorProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "children" | "className" | "style">`.
+
+- `sx` — `stylex.StyleXStyles`. Overrides the indicator frame; the chevron remains decorative and receives `aria-hidden="true"`.

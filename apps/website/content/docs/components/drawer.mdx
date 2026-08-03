@@ -4,73 +4,17 @@ description: "Edge-aligned native dialog."
 ---
 
 import Example from "@stylextras/ui/drawer/example";
+import exampleCode from "@stylextras/ui/drawer/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Drawer">
+<ComponentPreview code={exampleCode} name="Drawer">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { ButtonGroup } from '../button-group';
-import { DialogCommandBridge } from '../dialog/client';
-import {
-  Drawer,
-  DrawerBody,
-  DrawerClose,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTrigger,
-  type DrawerSide,
-} from './index';
-
-function PageSettingsDrawer({ id, side }: { id: string; side: DrawerSide }) {
-  return (
-    <Drawer
-      id={id}
-      side={side}
-      aria-labelledby={`${id}-title`}
-      aria-describedby={`${id}-description`}
-    >
-      <DrawerHeader>
-        <h2 id={`${id}-title`}>Page settings</h2>
-      </DrawerHeader>
-      <DrawerBody>
-        <p id={`${id}-description`}>
-          Change the settings for this page.
-        </p>
-      </DrawerBody>
-      <DrawerFooter>
-        <ButtonGroup variant="actions" aria-label="Page settings actions">
-          <DrawerClose target={id}>Cancel</DrawerClose>
-          <DrawerClose target={id} variant="primary">
-            Done
-          </DrawerClose>
-        </ButtonGroup>
-      </DrawerFooter>
-      <DialogCommandBridge target={id} />
-    </Drawer>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <DrawerTrigger target="bottom-page-drawer">
-        Open bottom drawer
-      </DrawerTrigger>
-      <PageSettingsDrawer id="bottom-page-drawer" side="bottom" />
-
-      <DrawerTrigger target="top-page-drawer">Open top drawer</DrawerTrigger>
-      <PageSettingsDrawer id="top-page-drawer" side="top" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -107,8 +51,8 @@ loading its fallback. `LazyDrawer` installs the same fallback internally.
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "aria-label" | "aria-labelledby" | "className" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required accessible dialog name.
-- `side` — `DrawerSide`. Default: `'bottom'`.
-- `sx` — `stylex.StyleXStyles`.
+- `side` — `DrawerSide`. Selects the edge from which the surface is positioned. Default: `'bottom'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DrawerBody
 
@@ -116,7 +60,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DrawerBodyProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DrawerClose
 
@@ -124,11 +68,11 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `DrawerTriggerProps`. The props below complete `DrawerCloseProps`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `DrawerCloseProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `DrawerCloseProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.
 
 ### DrawerFooter
 
@@ -136,7 +80,7 @@ Complete native/inherited prop base: `DrawerTriggerProps`. The props below compl
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DrawerFooterProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DrawerHeader
 
@@ -144,7 +88,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DrawerHeaderProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DrawerTrigger
 
@@ -152,8 +96,8 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `ButtonProps`. The props below complete `DrawerTriggerProps`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `DrawerTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'primary'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `DrawerTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'primary'`.

@@ -38,9 +38,9 @@ type CommandRecord = DomOrderedCollectionRecord & {
 }
 type CommandContextValue = {
   activeId: string | null
-  getMatchingItems: () => CommandRecord[]
   getNavigableItems: () => CommandRecord[]
   listId: string
+  matchingCount: number
   query: string
   register: (item: CommandRecord) => () => void
   run: (item: CommandRecord) => void
@@ -128,36 +128,36 @@ export function Command({ children, onClose, onValueChange, ref, sx, ...props }:
   const generatedId = useId().replaceAll(':', '')
   const listId = `stylextras-command-list-${generatedId}`
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const { getItems, register, version } = useDomOrderedCollection<CommandRecord>('Command')
-  const queryRef = useRef('')
-  const [query, setQueryState] = useState('')
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const { getItems, items, register } = useDomOrderedCollection<CommandRecord>('Command')
+  const [query, setQuery] = useState('')
+  const [activeOptionId, setActiveOptionId] = useState<string | null>(null)
 
   const setRefs = useMemo(() => composeRefs(dialogRef, ref), [ref])
+  const normalizedQuery = query.trim().toLocaleLowerCase()
 
-  const matches = useCallback((item: CommandRecord) => {
-    const normalized = queryRef.current.trim().toLocaleLowerCase()
-    return (
-      !normalized ||
-      item.keywords.includes(normalized) ||
-      item.value.toLocaleLowerCase().includes(normalized)
-    )
-  }, [])
-
-  const getMatchingItems = useCallback(
-    () => getItems().filter((item) => !item.hidden && matches(item)),
-    [getItems, matches],
+  const matches = useCallback(
+    (item: CommandRecord) =>
+      !normalizedQuery ||
+      item.keywords.includes(normalizedQuery) ||
+      item.value.toLocaleLowerCase().includes(normalizedQuery),
+    [normalizedQuery],
   )
+
+  const matchingItems = items.filter((item) => !item.hidden && matches(item))
 
   const getNavigableItems = useCallback(
-    () => getMatchingItems().filter((item) => !item.disabled),
-    [getMatchingItems],
+    () => getItems().filter((item) => !item.hidden && !item.disabled && matches(item)),
+    [getItems, matches],
   )
+  const activeId =
+    activeOptionId && matchingItems.some((item) => item.id === activeOptionId && !item.disabled)
+      ? activeOptionId
+      : null
+  const matchingCount = matchingItems.length
 
-  const setQuery = useCallback((value: string) => {
-    queryRef.current = value
-    setQueryState(value)
-    setActiveId(null)
+  const updateQuery = useCallback((value: string) => {
+    setQuery(value)
+    setActiveOptionId(null)
   }, [])
 
   const run = useCallback(
@@ -166,40 +166,24 @@ export function Command({ children, onClose, onValueChange, ref, sx, ...props }:
       item.onSelect?.(item.value)
       onValueChange?.(item.value)
       dialogRef.current?.close(item.value)
-      setQuery('')
+      updateQuery('')
     },
-    [onValueChange, setQuery],
+    [onValueChange, updateQuery],
   )
-
-  useEffect(() => {
-    if (activeId && !getNavigableItems().some((item) => item.id === activeId)) {
-      setActiveId(null)
-    }
-  }, [activeId, getNavigableItems, query, version])
 
   const context = useMemo<CommandContextValue>(
     () => ({
       activeId,
-      getMatchingItems,
       getNavigableItems,
       listId,
+      matchingCount,
       query,
       register,
       run,
-      setActiveId,
-      setQuery,
+      setActiveId: setActiveOptionId,
+      setQuery: updateQuery,
     }),
-    [
-      activeId,
-      getMatchingItems,
-      getNavigableItems,
-      listId,
-      query,
-      register,
-      run,
-      setQuery,
-      version,
-    ],
+    [activeId, getNavigableItems, listId, matchingCount, query, register, run, updateQuery],
   )
 
   return (
@@ -210,8 +194,7 @@ export function Command({ children, onClose, onValueChange, ref, sx, ...props }:
         {...({ closedby: 'any' } as Record<string, string>)}
         onClose={(event) => {
           onClose?.(event)
-          setQuery('')
-          setActiveId(null)
+          updateQuery('')
         }}
         {...stylex.props(styles.command, sx)}
       >
@@ -243,9 +226,6 @@ export function CommandInput({
   ...props
 }: CommandInputProps) {
   const context = useCommand('CommandInput')
-  const activeId = context.activeId
-    ? context.getNavigableItems().find((item) => item.id === context.activeId)?.id
-    : undefined
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     onKeyDown?.(event)
@@ -281,7 +261,7 @@ export function CommandInput({
       {...props}
       type={type}
       role="combobox"
-      aria-activedescendant={activeId}
+      aria-activedescendant={context.activeId ?? undefined}
       aria-controls={context.listId}
       aria-expanded="true"
       aria-autocomplete="list"
@@ -382,9 +362,13 @@ export function CommandItem({
 
 export function CommandEmpty({ children = 'No results.', ref, sx, ...props }: CommandEmptyProps) {
   const context = useCommand('CommandEmpty')
-  const matchingItems = context.getMatchingItems()
   return (
-    <div ref={ref} {...props} hidden={matchingItems.length > 0} {...stylex.props(styles.empty, sx)}>
+    <div
+      ref={ref}
+      {...props}
+      hidden={context.matchingCount > 0}
+      {...stylex.props(styles.empty, sx)}
+    >
       {children}
     </div>
   )
@@ -393,7 +377,6 @@ export function CommandEmpty({ children = 'No results.', ref, sx, ...props }: Co
 /** A polite, visually hidden plain-text result count controlled by the caller's language. */
 export function CommandStatus({ children, ref, sx, ...props }: CommandStatusProps) {
   const context = useCommand('CommandStatus')
-  const count = context.getMatchingItems().length
   return (
     <div
       ref={ref}
@@ -403,7 +386,7 @@ export function CommandStatus({ children, ref, sx, ...props }: CommandStatusProp
       aria-live="polite"
       {...stylex.props(styles.status, sx)}
     >
-      {typeof children === 'function' ? children(count) : children}
+      {typeof children === 'function' ? children(context.matchingCount) : children}
     </div>
   )
 }

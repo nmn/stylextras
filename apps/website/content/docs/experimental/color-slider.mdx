@@ -4,29 +4,19 @@ description: "Color-channel slider."
 ---
 
 import Example from "@stylextras/ui/experimental/color-slider/example";
+import exampleCode from "@stylextras/ui/experimental/color-slider/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="ColorSlider">
+<ComponentPreview code={exampleCode} name="ColorSlider">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { ColorSlider } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <ColorSlider aria-label="Tint" min={0} max={100} defaultValue={24} />
-      <ColorSlider aria-label="Glow" min={0} max={100} defaultValue={68} />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -52,7 +42,7 @@ The component adds a visible focus outline and minimum pointer target. Any nativ
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `ColorSliderProps`.
 
-- `max` — `ColorSliderProps["max"]`. Default: `360`.
-- `min` — `ColorSliderProps["min"]`. Default: `0`.
-- `step` — `ColorSliderProps["step"]`. Default: `1`.
-- `sx` — `stylex.StyleXStyles`.
+- `max` — `ColorSliderProps["max"]`. Inclusive upper bound for the native color range. Default: `360`.
+- `min` — `ColorSliderProps["min"]`. Inclusive lower bound for the native color range. Default: `0`.
+- `step` — `ColorSliderProps["step"]`. Sets the permitted increment between numeric values. Default: `1`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

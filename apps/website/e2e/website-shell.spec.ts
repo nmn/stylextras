@@ -19,6 +19,11 @@ test('preserves the shell geometry and responsive visibility boundaries', async 
   await expect
     .poll(() => page.locator('[data-search-full]').boundingBox())
     .toMatchObject({ height: 37, width: 240 })
+  const searchShortcut = page.locator('[data-search-full] kbd')
+  await expect(searchShortcut).toHaveCount(1)
+  await expect(searchShortcut.locator('span')).toHaveCount(2)
+  await expect(searchShortcut).toHaveText(/K/)
+  await expect(searchShortcut).toHaveAttribute('aria-hidden', 'true')
   await expect
     .poll(() => page.locator('[data-theme-toggle]').boundingBox())
     .toMatchObject({ height: 34, width: 94 })
@@ -62,6 +67,29 @@ test('preserves docs and search geometry at their exact responsive boundaries', 
   const sidebar = page.locator('aside[aria-label="Documentation"]')
   const sidebarFrame = sidebar.locator('..')
   const toc = page.getByRole('navigation', { name: 'On this page' })
+  const headerToggle = page.getByRole('button', { name: 'Toggle documentation sidebar' })
+  const homeLink = page.getByRole('link', { name: 'StyleXtras home' })
+
+  const [navBox, toggleBox, homeLinkBox] = await Promise.all([
+    page.locator('#nd-nav nav').boundingBox(),
+    headerToggle.boundingBox(),
+    homeLink.boundingBox(),
+  ])
+  expect(navBox).not.toBeNull()
+  expect(toggleBox).not.toBeNull()
+  expect(homeLinkBox).not.toBeNull()
+  expect(toggleBox!.x - navBox!.x).toBeGreaterThanOrEqual(4)
+  expect(homeLinkBox!.x - (toggleBox!.x + toggleBox!.width)).toBeGreaterThanOrEqual(4)
+
+  const restingToggleStyles = await headerToggle.evaluate((element) => {
+    const style = getComputedStyle(element)
+    return { backgroundColor: style.backgroundColor, color: style.color }
+  })
+  await headerToggle.hover()
+  await expect(headerToggle).toHaveCSS('background-color', restingToggleStyles.backgroundColor)
+  await expect
+    .poll(() => headerToggle.evaluate((element) => getComputedStyle(element).color))
+    .not.toBe(restingToggleStyles.color)
 
   await page.setViewportSize({ height: 900, width: 768 })
   await expect(sidebarFrame).toHaveCSS('visibility', 'visible')
@@ -298,7 +326,7 @@ test('loads the static site index and wraps the active option', async ({ page })
   const dialog = page.getByRole('dialog', { name: 'Search' })
   const input = dialog.getByRole('textbox', { name: 'Search' })
   await input.fill('clipboard')
-  await expect(dialog.getByRole('progressbar', { name: 'Loading search results' })).toBeVisible()
+  await expect(dialog.getByRole('progressbar')).toHaveCount(0)
 
   const options = dialog.getByRole('option')
   await expect(options.first()).toContainText('CopyToClipboardButton')

@@ -4,37 +4,17 @@ description: "Static callout with opt-in live announcements."
 ---
 
 import Example from "@stylextras/ui/alert/example";
+import exampleCode from "@stylextras/ui/alert/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Alert">
+<ComponentPreview code={exampleCode} name="Alert">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Alert, AlertDescription, AlertTitle } from './index';
-
-export default function Example() {
-  return (
-    <>
-      {(['default', 'info', 'success', 'warning', 'danger'] as const).map(
-        (variant) => (
-          <Alert key={variant} variant={variant}>
-            <AlertTitle>
-              {variant === 'default' ? 'Update available' : variant}
-            </AlertTitle>
-            <AlertDescription>
-              A concise message with semantic status treatment.
-            </AlertDescription>
-          </Alert>
-        ),
-      )}
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -64,8 +44,8 @@ put interactive descendants inside either live-region variant.
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AlertProps`.
 
 - `role` — Native `div` role. No default; use `status` or `alert` explicitly for dynamic updates.
-- `sx` — `stylex.StyleXStyles`.
-- `variant` — `AlertVariant`. Default: `'default'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `variant` — `AlertVariant`. Selects the built-in visual treatment. Default: `'default'`.
 
 ### AlertDescription
 
@@ -73,7 +53,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AlertDescriptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### AlertTitle
 
@@ -82,4 +62,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<T>, "className" | "style">`. The props below complete `AlertTitleProps`.
 
 - `as` — Heading element type. Default: `'h3'`.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

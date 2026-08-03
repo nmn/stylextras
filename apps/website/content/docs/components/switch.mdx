@@ -4,42 +4,17 @@ description: "Styled native checkbox switch."
 ---
 
 import Example from "@stylextras/ui/switch/example";
+import exampleCode from "@stylextras/ui/switch/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Switch">
+<ComponentPreview code={exampleCode} name="Switch">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
-import { Label } from '../label';
-import { spacing } from '../tokens/spacing.stylex';
-import { Switch } from './index';
-
-export default function Example() {
-  return (
-    <fieldset>
-      <legend>Profile preferences</legend>
-      <Label sx={styles.option}>
-        <Switch defaultChecked /> Notifications
-      </Label>
-      <Label sx={styles.option}>
-        <Switch /> Public profile
-      </Label>
-      <Label sx={styles.option}>
-        <Switch controlSize="sm" /> Compact mode
-      </Label>
-    </fieldset>
-  );
-}
-
-const styles = stylex.create({
-  option: { alignItems: 'center', display: 'flex', gap: spacing.sm },
-});
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -67,5 +42,5 @@ checked state, validation, reset, and submission remain browser-owned.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "role" | "style" | "type">`. The props below complete `SwitchProps`.
 
-- `controlSize` — `"sm" | "md"`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
+- `controlSize` — `"sm" | "md"`. Controls the native control dimensions and touch target. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

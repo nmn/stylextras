@@ -4,60 +4,17 @@ description: "Native select with customizable-select CSS."
 ---
 
 import Example from "@stylextras/ui/select/example";
+import exampleCode from "@stylextras/ui/select/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Select">
+<ComponentPreview code={exampleCode} name="Select">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Field, FieldDescription, FieldLabel } from '../field';
-import { Option, Select } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Field>
-        <FieldLabel htmlFor="environment">Environment</FieldLabel>
-        <Select
-          id="environment"
-          aria-describedby="environment-description"
-          name="environment"
-          defaultValue="preview"
-        >
-          <Option value="development">Development</Option>
-          <Option value="preview">Preview</Option>
-          <Option value="production">Production</Option>
-        </Select>
-        <FieldDescription id="environment-description">
-          Uses native validation, reset, and submission.
-        </FieldDescription>
-      </Field>
-      <Field>
-        <FieldLabel htmlFor="component">Component</FieldLabel>
-        <Select id="component" name="component" defaultValue="">
-          <Option value="" disabled>
-            Select a component
-          </Option>
-          <optgroup label="Forms">
-            <Option value="input">Input</Option>
-            <Option value="select">Select</Option>
-          </optgroup>
-          <optgroup label="Overlays">
-            <Option value="dialog">Dialog</Option>
-            <Option value="popover">Popover</Option>
-          </optgroup>
-        </Select>
-      </Field>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -84,7 +41,7 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"select">, "className" | "style">`. The props below complete `SelectProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### Option
 
@@ -92,4 +49,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"select">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"option">, "className" | "style">`. The props below complete `OptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

@@ -4,48 +4,19 @@ description: "Fixed-ratio image crop preview."
 ---
 
 import Example from "@stylextras/ui/experimental/image-cropper/example";
+import exampleCode from "@stylextras/ui/experimental/image-cropper/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="ImageCropper">
+<ComponentPreview code={exampleCode} name="ImageCropper">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { ImageCropPreview } from './index';
-
-const image =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ccircle cx='250' cy='240' r='120' fill='rgba(255,255,255,0.28)'/%3E%3Ccircle cx='520' cy='320' r='160' fill='rgba(255,255,255,0.2)'/%3E%3C/svg%3E";
-
-export default function Example() {
-  return (
-    <>
-      <ImageCropPreview
-        src={image}
-        alt="Blue-to-pink gradient with translucent circles"
-        ratio="square"
-        position="center"
-      />
-      <ImageCropPreview
-        src={image}
-        alt="Blue-to-pink gradient with translucent circles"
-        ratio="landscape"
-        position="top"
-      />
-      <ImageCropPreview
-        src={image}
-        alt="Blue-to-pink gradient with translucent circles"
-        ratio="portrait"
-        position="end"
-      />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -71,11 +42,11 @@ Native image props not named in `Omit` remain accepted. `frameSx` styles the con
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithoutRef<"img">, "alt" | "className" | "style">`. The props below complete `ImageCropPreviewProps`.
 
-- `alt` — `string`. Required.
-- `frameSx` — `stylex.StyleXStyles`.
-- `position` — `ImageCropperPosition`. Default: `'center'`.
-- `ratio` — `ImageCropperRatio`. Default: `'square'`.
-- `sx` — `stylex.StyleXStyles`.
+- `alt` — `string`. Accessible text alternative for the rendered image. Required.
+- `frameSx` — `stylex.StyleXStyles`. Theme-aware overrides for the crop frame, composed after its built-in styles.
+- `position` — `ImageCropperPosition`. Selects the image focal point within the cropped frame. Default: `'center'`.
+- `ratio` — `ImageCropperRatio`. Controls the rendered width-to-height proportion. Default: `'square'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ImageCropper (deprecated alias)
 

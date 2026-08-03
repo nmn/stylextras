@@ -4,75 +4,17 @@ description: "Announced transient notification queue."
 ---
 
 import Example from "@stylextras/ui/toast/example";
+import exampleCode from "@stylextras/ui/toast/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Toast">
+<ComponentPreview code={exampleCode} name="Toast">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import * as stylex from '@stylexjs/stylex';
-import { Button } from '../button';
-import { Toast, Toaster, ToastDescription, ToastTitle, toast } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <ol role="list" aria-label="Toast variants" {...stylex.props(styles.list)}>
-        <Toast>
-          <div>
-            <ToastTitle>Draft restored</ToastTitle>
-            <ToastDescription>
-              Your local changes are available again.
-            </ToastDescription>
-          </div>
-        </Toast>
-        <Toast variant="success">
-          <div>
-            <ToastTitle>Theme saved</ToastTitle>
-            <ToastDescription>The Zinc preset is now active.</ToastDescription>
-          </div>
-        </Toast>
-        <Toast variant="danger">
-          <div>
-            <ToastTitle>Publish failed</ToastTitle>
-            <ToastDescription>
-              Check the connection and try again.
-            </ToastDescription>
-          </div>
-        </Toast>
-      </ol>
-      <Button
-        onClick={() =>
-          toast({
-            title: 'Export complete',
-            description: 'stylextras-ui-0.2.0-beta.tgz is ready.',
-            duration: 8_000,
-            variant: 'success',
-          })
-        }
-      >
-        Queue a toast
-      </Button>
-
-      <Toaster />
-    </>
-  );
-}
-
-const styles = stylex.create({
-  list: {
-    listStyle: 'none',
-    margin: 0,
-    padding: 0,
-  },
-});
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -101,22 +43,22 @@ The queue uses one polite and one assertive text-only announcer owner, keeping i
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "role" | "style">`. The props below complete `ToastProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 - `announcement` — Plain text required when `priority` is `"polite"` or `"assertive"`.
-- `priority` — `"polite" | "assertive" | "off"`. Default: `'off'`.
-- `variant` — `"default" | "success" | "danger"`. Default: `'default'`.
+- `priority` — `"polite" | "assertive" | "off"`. Controls whether and how this static toast content is announced. Default: `'off'`.
+- `variant` — `"default" | "success" | "danger"`. Selects the built-in visual treatment. Default: `'default'`.
 
 ### toast
 
 `toast(options)` queues a visual toast and returns `{ id, dismiss }`.
 
 - `announcement` — `string`. Required plain live-region text for rich `title` or `description` content.
-- `description` — `ReactNode`.
+- `description` — `ReactNode`. Secondary toast content rendered beneath the title.
 - `duration` — `number`. Defaults to `4000`, or `0` when an action is present.
-- `id` — `string`.
-- `priority` — `"polite" | "assertive"`. Default: `'polite'`.
+- `id` — `string`. Stable DOM identifier used by related controls and ARIA references.
+- `priority` — `"polite" | "assertive"`. Selects the live-region urgency for an enqueued toast. Default: `'polite'`.
 - `title` — Primitive text, or rich `ReactNode` when `announcement` is supplied. Required.
-- `variant` — `"default" | "success" | "danger"`. Default: `'default'`.
+- `variant` — `"default" | "success" | "danger"`. Selects the built-in visual treatment. Default: `'default'`.
 
 ### ToastDescription
 
@@ -124,7 +66,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `ToastDescriptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### Toaster
 
@@ -132,10 +74,10 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ol">, "children" | "className" | "style">`. The props below complete `ToasterProps`.
 
-- `aria-label` — `ToasterProps["aria-label"]`. Default: `'Notifications'`.
+- `aria-label` — `ToasterProps["aria-label"]`. Accessible name for the ordered notification region. Default: `'Notifications'`.
 - `getDismissLabel` — `(toast: ToastDismissContext) => string`. Defaults to a contextual label derived from the title or announcement.
-- `limit` — `number`. Default: `3`.
-- `sx` — `stylex.StyleXStyles`.
+- `limit` — `number`. Maximum number of simultaneously reachable toast records. Default: `3`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ToastTitle
 
@@ -143,4 +85,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ol">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ToastTitleProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

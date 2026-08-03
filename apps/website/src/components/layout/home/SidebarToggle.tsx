@@ -4,17 +4,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-"use client";
+'use client'
 
-import { SidebarContext } from "@/contexts/SidebarContext";
-import { vars } from "@/theming/vars.stylex";
-import { SidebarIcon } from "lucide-react";
-import * as stylex from "@stylexjs/stylex";
-import { use } from "react";
-import { Button } from "@stylextras/ui/button";
+import { SidebarContext } from '@/contexts/SidebarContext'
+import { vars } from '@/theming/vars.stylex'
+import * as stylex from '@stylexjs/stylex'
+import { Button } from '@stylextras/ui/button'
+import { SidebarIcon } from 'lucide-react'
+import { use } from 'react'
 
 export default function SidebarToggle() {
-  const [_open, setOpen] = use(SidebarContext);
+  const [_open, setOpen] = use(SidebarContext)
 
   return (
     <Button
@@ -22,10 +22,10 @@ export default function SidebarToggle() {
       onClick={() => {
         setOpen((old) => {
           if (old === null) {
-            return window.matchMedia("(max-width: 767.9px)").matches;
+            return window.matchMedia('(max-width: 767.9px)').matches
           }
-          return !old;
-        });
+          return !old
+        })
       }}
       size="icon-lg"
       sx={styles.button}
@@ -33,23 +33,29 @@ export default function SidebarToggle() {
     >
       <SidebarIcon size={20} />
     </Button>
-  );
+  )
 }
 
 const styles = stylex.create({
   button: {
-    marginInline: (20 - 56) / 2,
+    marginInline: (20 - 40) / 2,
+    backgroundColor: {
+      default: 'transparent',
+      ':active': 'transparent',
+      ':focus-visible': 'transparent',
+      ':hover': 'transparent',
+    },
     color: {
-      default: vars["--color-fd-foreground"],
-      ":focus-visible": vars["--color-fd-primary"],
-      ":hover": vars["--color-fd-primary"],
+      default: vars['--color-fd-foreground'],
+      ':focus-visible': vars['--color-fd-primary'],
+      ':hover': vars['--color-fd-primary'],
     },
     scale: {
       default: null,
-      ":active": 0.95,
+      ':active': 0.95,
     },
-    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-    transitionDuration: "0.3s",
-    transitionProperty: "color, scale",
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '0.3s',
+    transitionProperty: 'color, scale',
   },
-});
+})

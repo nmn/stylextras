@@ -4,29 +4,19 @@ description: "Compatibility name for the native date input."
 ---
 
 import Example from "@stylextras/ui/experimental/date-field/example";
+import exampleCode from "@stylextras/ui/experimental/date-field/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="DateField">
+<ComponentPreview code={exampleCode} name="DateField">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { DateField } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <DateField aria-label="Start date" defaultValue="2026-04-10" />
-      <DateField aria-label="End date" defaultValue="2026-04-18" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -52,4 +42,4 @@ Give the input a visible label. Any native input prop not named in `Omit` remain
 
 Complete native/inherited prop base: `DatePickerProps`, which is `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">` plus the deprecated `inputId` alias and `sx`. The props below complete `DateFieldProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

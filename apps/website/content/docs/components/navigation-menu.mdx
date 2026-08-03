@@ -4,52 +4,17 @@ description: "Navigation with optional popover panels."
 ---
 
 import Example from "@stylextras/ui/navigation-menu/example";
+import exampleCode from "@stylextras/ui/navigation-menu/example?raw";
 
 ## Examples
 
-<ComponentPreview name="NavigationMenu">
+<ComponentPreview code={exampleCode} name="NavigationMenu">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from './index';
-
-const contentId = 'documentation-navigation-menu';
-
-export default function Example() {
-  return (
-    <NavigationMenu aria-label="Component documentation">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuLink href="#overview">Overview</NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger target={contentId}>
-            Components
-          </NavigationMenuTrigger>
-          <NavigationMenuContent id={contentId}>
-            <NavigationMenuLink href="#forms">Form controls</NavigationMenuLink>
-            <NavigationMenuLink href="#overlays">Overlays</NavigationMenuLink>
-            <NavigationMenuLink href="#layout">Layout</NavigationMenuLink>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink href="#themes">Themes</NavigationMenuLink>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -84,7 +49,7 @@ popover remains usable with simpler placement.
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "aria-label" | "aria-labelledby" | "className" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required navigation-landmark name.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### NavigationMenuContent
 
@@ -92,7 +57,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "style">`. The props below complete `NavigationMenuContentProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### NavigationMenuItem
 
@@ -100,7 +65,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "style">`. The props below complete `NavigationMenuItemProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### NavigationMenuLink
 
@@ -108,7 +73,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "className" | "style">`. The props below complete `NavigationMenuLinkProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### NavigationMenuList
 
@@ -116,7 +81,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "cl
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "role" | "style">`; `role="list"` is restored explicitly.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### NavigationMenuTrigger
 
@@ -124,6 +89,6 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "style">`. The props below complete `NavigationMenuTriggerProps`.
 
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `NavigationMenuTriggerProps["type"]`. Default: `'button'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `NavigationMenuTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.

@@ -4,56 +4,17 @@ description: "Styled semantic table parts."
 ---
 
 import Example from "@stylextras/ui/table/example";
+import exampleCode from "@stylextras/ui/table/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Table">
+<ComponentPreview code={exampleCode} name="Table">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableScrollArea,
-} from './index';
-
-export default function Example() {
-  return (
-    <TableScrollArea tabIndex={0} aria-label="Design token reference">
-      <Table>
-        <TableCaption>Core design tokens and common uses.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Usage</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell>color.brand</TableCell>
-            <TableCell>color</TableCell>
-            <TableCell>Buttons, accents</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>spacing.base</TableCell>
-            <TableCell>length</TableCell>
-            <TableCell>Layout scale</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableScrollArea>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -86,9 +47,20 @@ keyboard users need to scroll the wrapper itself, and then provide
 
 - `tabIndex` — `-1 | 0`. No default.
 - `aria-label` or `aria-labelledby` — Required when `tabIndex={0}`.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ## API reference
+
+### TableScrollArea
+
+`TableScrollAreaProps`
+
+Complete native/inherited prop base is native `div` props with component-owned styling and tab-stop rules.
+
+- `aria-label` — Direct name required when `tabIndex={0}` unless `aria-labelledby` is supplied; optional when the region is not tabbable.
+- `aria-labelledby` — ID reference required when `tabIndex={0}` unless `aria-label` is supplied; optional when the region is not tabbable.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `tabIndex` — `0 | -1`. A tabbable scroll area (`0`) requires an accessible name; omit it or use `-1` when keyboard focus is unnecessary.
 
 ### Table
 
@@ -96,7 +68,7 @@ keyboard users need to scroll the wrapper itself, and then provide
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"table">, "className" | "style">`. The props below complete `TableProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TableBody
 
@@ -104,7 +76,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"table">,
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tbody">, "className" | "style">`. The props below complete `TableBodyProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TableCaption
 
@@ -112,7 +84,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tbody">,
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"caption">, "className" | "style">`. The props below complete `TableCaptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TableCell
 
@@ -120,7 +92,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"caption"
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"td">, "className" | "style">`. The props below complete `TableCellProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TableFooter
 
@@ -128,7 +100,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"td">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tfoot">, "className" | "style">`. The props below complete `TableFooterProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TableHead
 
@@ -136,8 +108,8 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tfoot">,
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"th">, "className" | "style">`. The props below complete `TableHeadProps`.
 
-- `scope` — `TableHeadProps["scope"]`. Default: `'col'`.
-- `sx` — `stylex.StyleXStyles`.
+- `scope` — `TableHeadProps["scope"]`. Associates the header cell with its column or row of data cells. Default: `'col'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TableHeader
 
@@ -145,7 +117,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"th">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"thead">, "className" | "style">`. The props below complete `TableHeaderProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TableRow
 
@@ -153,4 +125,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"thead">,
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"tr">, "className" | "style">`. The props below complete `TableRowProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

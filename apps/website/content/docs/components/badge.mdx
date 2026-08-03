@@ -4,51 +4,17 @@ description: "Compact status label."
 ---
 
 import Example from "@stylextras/ui/badge/example";
+import exampleCode from "@stylextras/ui/badge/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Badge">
+<ComponentPreview code={exampleCode} name="Badge">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Badge } from './index';
-
-export function BadgeVariantsDemo() {
-  return (
-    <>
-      <Badge variant="neutral">Neutral</Badge>
-      <Badge variant="brand">Brand</Badge>
-      <Badge variant="info">Info</Badge>
-      <Badge variant="success">Success</Badge>
-      <Badge variant="warning">Warning</Badge>
-      <Badge variant="danger">Danger</Badge>
-    </>
-  );
-}
-
-export function BadgeSizesDemo() {
-  return (
-    <>
-      <Badge size="sm">Small</Badge>
-      <Badge size="md">Medium</Badge>
-    </>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <BadgeVariantsDemo />
-      <BadgeSizesDemo />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -74,6 +40,6 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `BadgeProps`.
 
-- `size` — `BadgeSize`. Default: `"md"`.
-- `sx` — `stylex.StyleXStyles`.
-- `variant` — `BadgeVariant`. Default: `"neutral"`.
+- `size` — `BadgeSize`. Controls visual dimensions and, for interactive components, the target size. Default: `"md"`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `variant` — `BadgeVariant`. Selects the built-in visual treatment. Default: `"neutral"`.

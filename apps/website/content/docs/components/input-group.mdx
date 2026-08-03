@@ -4,45 +4,17 @@ description: "Input adornment composition."
 ---
 
 import Example from "@stylextras/ui/input-group/example";
+import exampleCode from "@stylextras/ui/input-group/example?raw";
 
 ## Examples
 
-<ComponentPreview name="InputGroup">
+<ComponentPreview code={exampleCode} name="InputGroup">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { InputGroup } from './index';
-import { Button } from '../button';
-import { Field, FieldDescription, FieldLabel } from '../field';
-import { Input } from '../input';
-
-export default function Example() {
-  return (
-    <Field>
-      <FieldLabel htmlFor="invite-email">Invite email</FieldLabel>
-      <InputGroup>
-        <Input
-          id="invite-email"
-          aria-describedby="invite-email-description"
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="teammate@example.com"
-        />
-        <Button>Invite</Button>
-      </InputGroup>
-      <FieldDescription id="invite-email-description">
-        The label and validation remain attached to the native input.
-      </FieldDescription>
-    </Field>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -68,4 +40,4 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `InputGroupProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

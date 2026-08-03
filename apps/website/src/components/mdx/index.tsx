@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ComponentPreview } from '@/components/catalog/ComponentPreview'
+import { ComponentPreview } from '@/components/catalog/HighlightedComponentPreview'
 import { ThemeGallery } from '@/components/catalog/ThemeGallery'
 import { vars } from '@/theming/vars.stylex'
 import { StyleXStyles } from '@stylexjs/stylex'

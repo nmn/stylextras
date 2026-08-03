@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 
 export type DomOrderedCollectionRecord = {
   getElement: () => Element | null
@@ -37,21 +37,31 @@ export function getDomOrderedRecords<T extends DomOrderedCollectionRecord>(recor
   })
 }
 
-/**
- * Keeps composite-widget records keyed by generated DOM id and returns them in
- * document order. Values are deliberately not keys: duplicate consumer values
- * must never collapse two options into one active-descendant target.
- */
-export function useDomOrderedCollection<T extends DomOrderedCollectionRecord>(
-  componentName: string,
-) {
-  const recordsRef = useRef(new Map<string, T>())
-  const [version, setVersion] = useState(0)
+type DomOrderedCollectionStore<T extends DomOrderedCollectionRecord> = {
+  getItems: () => T[]
+  getSnapshot: () => number
+  register: (record: T) => () => void
+  subscribe: (listener: () => void) => () => void
+}
 
-  const register = useCallback(
-    (record: T) => {
+function createDomOrderedCollectionStore<T extends DomOrderedCollectionRecord>(
+  componentName: string,
+): DomOrderedCollectionStore<T> {
+  const records = new Map<string, T>()
+  const listeners = new Set<() => void>()
+  let revision = 0
+
+  const emitChange = () => {
+    revision += 1
+    for (const listener of listeners) listener()
+  }
+
+  return {
+    getItems: () => getDomOrderedRecords(records.values()),
+    getSnapshot: () => revision,
+    register: (record) => {
       if (process.env.NODE_ENV !== 'production') {
-        const duplicate = [...recordsRef.current.values()].find(
+        const duplicate = [...records.values()].find(
           (candidate) => candidate.id !== record.id && candidate.value === record.value,
         )
         if (duplicate) {
@@ -61,19 +71,37 @@ export function useDomOrderedCollection<T extends DomOrderedCollectionRecord>(
         }
       }
 
-      recordsRef.current.set(record.id, record)
-      setVersion((current) => current + 1)
+      if (records.get(record.id) !== record) {
+        records.set(record.id, record)
+        emitChange()
+      }
 
       return () => {
-        if (recordsRef.current.get(record.id) !== record) return
-        recordsRef.current.delete(record.id)
-        setVersion((current) => current + 1)
+        if (records.get(record.id) !== record) return
+        records.delete(record.id)
+        emitChange()
       }
     },
-    [componentName],
-  )
+    subscribe: (listener) => {
+      listeners.add(listener)
+      return () => {
+        listeners.delete(listener)
+      }
+    },
+  }
+}
 
-  const getItems = useCallback(() => getDomOrderedRecords(recordsRef.current.values()), [])
+/**
+ * Keeps composite-widget records keyed by generated DOM id and returns them in
+ * document order. Values are deliberately not keys: duplicate consumer values
+ * must never collapse two options into one active-descendant target.
+ */
+export function useDomOrderedCollection<T extends DomOrderedCollectionRecord>(
+  componentName: string,
+) {
+  const [store] = useState(() => createDomOrderedCollectionStore<T>(componentName))
+  const revision = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot)
+  const items = useMemo(() => store.getItems(), [revision, store])
 
-  return { getItems, register, version }
+  return { getItems: store.getItems, items, register: store.register }
 }

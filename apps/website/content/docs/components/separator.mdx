@@ -4,49 +4,17 @@ description: "Semantic content separator."
 ---
 
 import Example from "@stylextras/ui/separator/example";
+import exampleCode from "@stylextras/ui/separator/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Separator">
+<ComponentPreview code={exampleCode} name="Separator">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Separator } from './index';
-
-export function HorizontalSeparatorDemo() {
-  return (
-    <>
-      <span>Above</span>
-      <Separator />
-      <span>Below</span>
-    </>
-  );
-}
-
-export function VerticalSeparatorDemo() {
-  return (
-    <>
-      <span>Left</span>
-      <Separator orientation="vertical" />
-      <span>Right</span>
-    </>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <HorizontalSeparatorDemo />
-      <VerticalSeparatorDemo />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -72,7 +40,7 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "className" | "style">`. The props below complete `SeparatorProps`.
 
-- `decorative` — `boolean`. Default: `true`.
-- `emphasis` — `"strong" | "subtle"`. Default: `'subtle'`.
-- `orientation` — `"vertical" | "horizontal"`. Default: `'horizontal'`.
-- `sx` — `stylex.StyleXStyles`.
+- `decorative` — `boolean`. Removes separator semantics when the line is purely visual. Default: `true`.
+- `emphasis` — `"strong" | "subtle"`. Selects the separator's border contrast. Default: `'subtle'`.
+- `orientation` — `"vertical" | "horizontal"`. Controls the layout axis and, where applicable, Arrow-key behavior. Default: `'horizontal'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

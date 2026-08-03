@@ -4,19 +4,22 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-"use client";
-import * as stylex from "@stylexjs/stylex";
-import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
-import { ScrollArea } from "@stylextras/ui/scroll-area";
-import { Check, Clipboard } from "lucide-react";
-import { vars } from "@/theming/vars.stylex";
+'use client'
+import { vars } from '@/theming/vars.stylex'
+import * as stylex from '@stylexjs/stylex'
+import { CopyToClipboardButton } from '@stylextras/ui/copy-to-clipboard-button'
+import { ScrollArea } from '@stylextras/ui/scroll-area'
+import { Check, Clipboard } from 'lucide-react'
+import type { ReactNode } from 'react'
 interface ScrollableCodeBlockProps {
-  content: string;
-  title: string;
-  maxHeight?: number;
+  content: string
+  highlightedContent?: ReactNode
+  title: string
+  maxHeight?: number
 }
 export function ScrollableCodeBlock({
   content,
+  highlightedContent,
   title,
   maxHeight = 300,
 }: ScrollableCodeBlockProps) {
@@ -25,11 +28,7 @@ export function ScrollableCodeBlock({
       <div {...stylex.props(styles.header)}>
         <figcaption {...stylex.props(styles.title)}>{title}</figcaption>
         <CopyToClipboardButton
-          copiedIcon={
-            <Check
-              {...stylex.props(styles.copyIcon, styles.copyIconChecked)}
-            />
-          }
+          copiedIcon={<Check {...stylex.props(styles.copyIcon, styles.copyIconChecked)} />}
           copiedLabel="Copied"
           feedback="none"
           icon={<Clipboard {...stylex.props(styles.copyIcon)} />}
@@ -46,70 +45,70 @@ export function ScrollableCodeBlock({
         tabIndex={0}
       >
         <pre {...stylex.props(styles.pre)}>
-          <code {...stylex.props(styles.code)}>{content}</code>
+          <code {...stylex.props(styles.code)}>{highlightedContent ?? content}</code>
         </pre>
       </ScrollArea>
     </figure>
-  );
+  )
 }
 const styles = stylex.create({
   figure: {
-    position: "relative",
+    position: 'relative',
     marginTop: 16,
     marginBottom: 16,
-    overflow: "hidden",
+    overflow: 'hidden',
     fontSize: 13,
-    backgroundColor: vars["--color-fd-card"],
-    borderColor: vars["--color-fd-border"],
-    borderStyle: "solid",
+    backgroundColor: vars['--color-fd-card'],
+    borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 12,
-    boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
   },
   header: {
-    display: "flex",
+    display: 'flex',
     gap: 8,
-    alignItems: "center",
+    alignItems: 'center',
     height: 38,
     paddingInline: 16,
-    color: vars["--color-fd-muted-foreground"],
-    borderBottomColor: vars["--color-fd-border"],
-    borderBottomStyle: "solid",
+    color: vars['--color-fd-muted-foreground'],
+    borderBottomColor: vars['--color-fd-border'],
+    borderBottomStyle: 'solid',
     borderBottomWidth: 1,
   },
   title: {
     flexGrow: 1,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    fontFamily: "monospace",
-    whiteSpace: "nowrap",
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontFamily: 'monospace',
+    whiteSpace: 'nowrap',
   },
   viewport: (maxHeight: number) => ({
     maxHeight,
     paddingBlock: 8,
-    overflow: "auto",
+    overflow: 'auto',
   }),
   pre: {
-    display: "flex",
-    flexDirection: "column",
-    width: "max-content",
-    minWidth: "100%",
+    display: 'flex',
+    flexDirection: 'column',
+    width: 'max-content',
+    minWidth: '100%',
     margin: 0,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   code: {
     paddingBlock: 8,
     paddingInline: 16,
-    fontFamily: "SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    fontFamily: 'SFMono-Regular, Menlo, Monaco, Consolas, monospace',
     fontSize: 13,
     lineHeight: 1.5,
-    whiteSpace: "pre",
+    whiteSpace: 'pre',
   },
   copyIcon: {
     width: 14,
     height: 14,
   },
   copyIconChecked: {
-    color: vars["--color-fd-accent-foreground"],
+    color: vars['--color-fd-accent-foreground'],
   },
-});
+})

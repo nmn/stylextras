@@ -4,58 +4,17 @@ description: "Reusable content row composition."
 ---
 
 import Example from "@stylextras/ui/item/example";
+import exampleCode from "@stylextras/ui/item/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Item">
+<ComponentPreview code={exampleCode} name="Item">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Button } from '../button';
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Item>
-        <ItemMedia aria-hidden="true">◫</ItemMedia>
-        <ItemContent>
-          <ItemTitle>Documentation</ItemTitle>
-          <ItemDescription>Updated two minutes ago</ItemDescription>
-        </ItemContent>
-        <ItemActions>
-          <Button size="sm" variant="outline">
-            Open
-          </Button>
-        </ItemActions>
-      </Item>
-      <Item>
-        <ItemMedia aria-hidden="true">◇</ItemMedia>
-        <ItemContent>
-          <ItemTitle>Component gallery</ItemTitle>
-          <ItemDescription>Seven themes · light and dark</ItemDescription>
-        </ItemContent>
-        <ItemActions>
-          <Button size="sm" variant="outline">
-            Open
-          </Button>
-        </ItemActions>
-      </Item>
-    </>
-  );
-}
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -86,7 +45,8 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `as` — React element type. Default: `'div'`; choose a semantic container appropriate to the item.
 
 ### ItemActions
 
@@ -94,7 +54,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemActionsProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ItemContent
 
@@ -102,7 +62,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemContentProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ItemDescription
 
@@ -110,7 +70,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `ItemDescriptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ItemMedia
 
@@ -118,7 +78,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ItemMediaProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ItemTitle
 
@@ -126,4 +86,5 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "className" | "style">`. The props below complete `ItemTitleProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `as` — React heading element type. Default: `'h3'`; match the surrounding document outline.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

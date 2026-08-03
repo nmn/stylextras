@@ -49,17 +49,19 @@ element; no provider, context, or client JavaScript is involved.
 ```tsx
 import * as stylex from "@stylexjs/stylex";
 import type { ReactNode } from "react";
-import { colorThemes } from "@stylextras/ui/color-themes";
-import { radiusThemes } from "@stylextras/ui/radius-themes";
-import { spacingThemes } from "@stylextras/ui/spacing-themes";
+import { neutralTheme } from "@stylextras/ui/color-themes/neutral";
+import { zincTheme } from "@stylextras/ui/color-themes/zinc";
+import { roundedTheme } from "@stylextras/ui/radius-themes/rounded";
+import { compactTheme } from "@stylextras/ui/spacing-themes/compact";
 
 export function ThemeBoundary({ children }: { children: ReactNode }) {
   return (
     <section
       {...stylex.props(
-        colorThemes.zinc,
-        spacingThemes.compact,
-        radiusThemes.rounded,
+        neutralTheme,
+        zincTheme,
+        compactTheme,
+        roundedTheme,
       )}
     >
       {children}
@@ -70,4 +72,10 @@ export function ThemeBoundary({ children }: { children: ReactNode }) {
 
 The independent variable groups are colors, spacing, radius, stroke,
 typography, elevation, blur, and motion. Each group keeps its themeable core and
-same-set derived values together.
+same-set derived values together. Named subpaths include only the imported
+theme; importing a family root such as `@stylextras/ui/color-themes` opts into
+the complete catalog for theme pickers.
+
+Accent colors are compact overrides. Apply `neutralTheme` before one when you
+compose color themes directly; this resets every color variable at nested theme
+boundaries. Named style presets include the reset automatically.

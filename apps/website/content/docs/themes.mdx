@@ -8,18 +8,18 @@ description: "Independent theme families plus the coordinated documentation pres
 
 ## Documentation preset
 
-The site shell and component galleries use `stylePresets.docs`. Its existing
+The site shell and component galleries use `docsPresetThemes`. Its existing
 color, typography, spacing, radius, stroke, elevation, blur, and motion themes
 form the documentation design system. Package components consume those token
 sets directly.
 
 ```tsx
 import * as stylex from "@stylexjs/stylex";
-import { stylePresetThemes } from "@stylextras/ui/style-presets";
+import { docsPresetThemes } from "@stylextras/ui/style-presets/docs";
 
 export function DocsTheme({ children }) {
   return (
-    <section {...stylex.props(...stylePresetThemes("docs"))}>
+    <section {...stylex.props(...docsPresetThemes)}>
       {children}
     </section>
   );
@@ -31,11 +31,11 @@ same preset so they remain isolated from a consuming page’s surrounding theme.
 
 ```tsx
 import * as stylex from "@stylexjs/stylex";
-import { stylePresetThemes } from "@stylextras/ui/style-presets";
+import { docsPresetThemes } from "@stylextras/ui/style-presets/docs";
 
 export function ComponentGalleryTheme({ children }) {
   return (
-    <section {...stylex.props(...stylePresetThemes("docs"))}>
+    <section {...stylex.props(...docsPresetThemes)}>
       {children}
     </section>
   );
@@ -48,3 +48,24 @@ Color, spacing, radius, stroke, typography, elevation, blur, and motion remain
 independent variable groups. Components reference those variables directly, so
 a preset changes their built-in styling without broad `sx` replacement rules.
 Use `sx` only for isolated website-specific exceptions.
+
+Every named theme and preset has a direct export such as
+`@stylextras/ui/color-themes/blue` or `@stylextras/ui/style-presets/aurora`.
+Those subpaths keep unrelated theme CSS out of the application. Family and
+preset root imports are intentionally full catalogs for runtime theme pickers.
+Accent color files are compact overrides: compose `neutralTheme` first when
+using one directly. Named presets already include that base reset, followed by
+their selected accent and the other seven axes.
+
+## Surface layering and concentric radii
+
+Every color theme defines the same surface progression: page background,
+subtle container, raised card/control, then top-layer popover. In dark mode,
+each nested surface becomes lighter than its container; in light mode it gains
+equivalent separation without turning cards gray or muddy.
+
+Radius themes override the shared base radius and let the token scale derive
+smaller and larger values. Components use the smaller tokens for controls nested
+inside cards and popovers, keeping adjacent corners visually concentric across
+every preset. An `sx` value still composes last when a product needs a local
+exception.

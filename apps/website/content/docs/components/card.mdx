@@ -4,82 +4,17 @@ description: "Composed content surface."
 ---
 
 import Example from "@stylextras/ui/card/example";
+import exampleCode from "@stylextras/ui/card/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Card">
+<ComponentPreview code={exampleCode} name="Card">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Button } from '../button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from './index';
-
-export function CardCompositionDemo() {
-  return (
-    <>
-      <Card aria-label="Native popups card">
-        <CardHeader>
-          <CardTitle>Native popups</CardTitle>
-          <CardDescription>
-            Popover behavior with much less JavaScript.
-          </CardDescription>
-          <CardAction>
-            <Button size="icon-sm" variant="ghost" aria-label="Card options">
-              ···
-            </Button>
-          </CardAction>
-        </CardHeader>
-        <CardContent>
-          Use explicit trigger and target relationships.
-        </CardContent>
-        <CardFooter>
-          <Button size="sm">Read more</Button>
-          <Button size="sm" variant="outline">
-            Dismiss
-          </Button>
-        </CardFooter>
-      </Card>
-      <Card aria-label="Token-driven surface card">
-        <CardHeader>
-          <CardTitle>Token-driven surface</CardTitle>
-          <CardDescription>
-            Every nested layer gets lighter in dark mode and keeps the active
-            tint.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Card aria-label="Nested layer card">
-            <CardHeader>
-              <CardTitle>Nested layer</CardTitle>
-              <CardDescription>
-                Raised surfaces compound naturally without contextual
-                JavaScript.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </CardContent>
-      </Card>
-    </>
-  );
-}
-
-export default function Example() {
-  return <CardCompositionDemo />;
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -111,7 +46,8 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CardProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `as` — React element type. Default: `'div'`; use a semantic element such as `article` when the card is a standalone composition.
 
 ### CardAction
 
@@ -119,7 +55,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `CardProps`. The props below complete `CardActionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CardContent
 
@@ -127,7 +63,7 @@ Complete native/inherited prop base: `CardProps`. The props below complete `Card
 
 Complete native/inherited prop base: `CardProps`. The props below complete `CardContentProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CardDescription
 
@@ -135,7 +71,7 @@ Complete native/inherited prop base: `CardProps`. The props below complete `Card
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `CardDescriptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CardFooter
 
@@ -143,7 +79,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 
 Complete native/inherited prop base: `CardProps`. The props below complete `CardFooterProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CardHeader
 
@@ -151,7 +87,7 @@ Complete native/inherited prop base: `CardProps`. The props below complete `Card
 
 Complete native/inherited prop base: `CardProps`. The props below complete `CardHeaderProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CardTitle
 
@@ -159,4 +95,5 @@ Complete native/inherited prop base: `CardProps`. The props below complete `Card
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "className" | "style">`. The props below complete `CardTitleProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `as` — React heading element type. Default: `'h3'`; choose the level that fits the surrounding document outline.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

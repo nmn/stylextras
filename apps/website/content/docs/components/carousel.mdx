@@ -4,117 +4,17 @@ description: "Scroll-snap carousel with progressive controls."
 ---
 
 import Example from "@stylextras/ui/carousel/example";
+import exampleCode from "@stylextras/ui/carousel/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Carousel">
+<ComponentPreview code={exampleCode} name="Carousel">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../card';
-import { colors } from '../tokens/color.stylex';
-import { typography } from '../tokens/typography.stylex';
-import { Carousel, CarouselItem } from './index';
-
-const slides = [
-  ['Native controls', 'Scroll snapping supplies the core interaction.'],
-  [
-    'HTML controls',
-    'Previous and next actions use native buttons with real text labels.',
-  ],
-  ['Reduced motion', 'Smooth scrolling yields to the user motion preference.'],
-  [
-    'Anchor positioning',
-    'Layered controls stay attached without measurement code.',
-  ],
-  [
-    'Popover API',
-    'Light dismiss and top-layer rendering come from the platform.',
-  ],
-  [
-    'Dialog commands',
-    'Explicit invoker targets keep modal triggers declarative.',
-  ],
-  [
-    'Focus groups',
-    'Arrow-key navigation progressively enhances grouped controls.',
-  ],
-  [
-    'View transitions',
-    'Optional transitions add continuity without owning navigation.',
-  ],
-  [
-    'Container queries',
-    'Components respond to available space instead of the viewport.',
-  ],
-  [
-    'StyleX themes',
-    'Independent variable sets compose directly on any ancestor.',
-  ],
-];
-
-export default function Example() {
-  return (
-    <Carousel
-      aria-label="Browser API highlights"
-      previousButtonLabel="Previous highlight"
-      nextButtonLabel="Next highlight"
-    >
-      {slides.map(([title, description], index) => (
-        <CarouselItem
-          key={title}
-          aria-label={`${index + 1} of ${slides.length}: ${title}`}
-          sx={styles.slide}
-        >
-          <Card sx={styles.card}>
-            <CardHeader>
-              <span {...stylex.props(styles.number)}>
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <CardTitle>{title}</CardTitle>
-              <CardDescription>{description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <span {...stylex.props(styles.meta)}>Scroll snap card</span>
-            </CardContent>
-          </Card>
-        </CarouselItem>
-      ))}
-    </Carousel>
-  );
-}
-
-const styles = stylex.create({
-  slide: {
-    borderWidth: 0,
-  },
-  card: {
-    height: '100%',
-    minHeight: '12rem',
-  },
-  number: {
-    color: colors.fgMuted,
-    fontFamily: typography.fontMono,
-    fontSize: typography.stepMinus1,
-  },
-  meta: {
-    color: colors.fgMuted,
-    fontFamily: typography.fontMono,
-    fontSize: typography.stepMinus2,
-    textTransform: 'uppercase',
-  },
-});
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -146,11 +46,12 @@ or `group`, and slide roles to `group`.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">` plus one required accessible name.
 
-- `role` — `CarouselProps["role"]`. Default: `'region'`.
-- `previousButtonLabel` — `string`. Default: `'Previous slide'`.
-- `nextButtonLabel` — `string`. Default: `'Next slide'`.
-- `sx` — `stylex.StyleXStyles`.
-- `tabIndex` — `CarouselProps["tabIndex"]`. Default: `0`.
+- `role` — `CarouselProps["role"]`. Landmark role applied to the scroll viewport. Default: `'region'`.
+- `aria-roledescription` — Localizable role description. Default: `'carousel'`.
+- `previousButtonLabel` — `string`. Accessible name for the previous-slide control. Default: `'Previous slide'`.
+- `nextButtonLabel` — `string`. Accessible name for the next-slide control. Default: `'Next slide'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `tabIndex` — `CarouselProps["tabIndex"]`. Makes the native scroll viewport reachable by keyboard. Default: `0`.
 
 ### CarouselItem
 
@@ -159,5 +60,6 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required slide name.
-- `role` — `'group'`. Default: `'group'`.
-- `sx` — `stylex.StyleXStyles`.
+- `aria-roledescription` — Localizable role description. Default: `'slide'`.
+- `role` — `'group'`. Groups each slide within the named carousel region. Default: `'group'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

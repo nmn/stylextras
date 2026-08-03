@@ -4,48 +4,17 @@ description: "Grouped pressed buttons."
 ---
 
 import Example from "@stylextras/ui/toggle-group/example";
+import exampleCode from "@stylextras/ui/toggle-group/example?raw";
 
 ## Examples
 
-<ComponentPreview name="ToggleGroup">
+<ComponentPreview code={exampleCode} name="ToggleGroup">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Toggle } from '../toggle';
-import type { ToggleProps } from '../toggle';
-import { ToggleGroup } from './index';
-import { useState } from 'react';
-
-type DemoToggleProps = Omit<ToggleProps, 'aria-pressed' | 'onClick'> & {
-  defaultPressed?: boolean;
-};
-
-function DemoToggle({ defaultPressed = false, ...props }: DemoToggleProps) {
-  const [pressed, setPressed] = useState(defaultPressed);
-  return (
-    <Toggle
-      aria-pressed={pressed}
-      onClick={() => setPressed((value) => !value)}
-      {...props}
-    />
-  );
-}
-
-export default function Example() {
-  return (
-    <ToggleGroup aria-label="Design token categories">
-      <DemoToggle defaultPressed>Color</DemoToggle>
-      <DemoToggle defaultPressed>Spacing</DemoToggle>
-      <DemoToggle>Motion</DemoToggle>
-    </ToggleGroup>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -72,5 +41,5 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required toolbar name.
-- `orientation` — `'horizontal' | 'vertical'`. Default: `'horizontal'`.
-- `sx` — `stylex.StyleXStyles`.
+- `orientation` — `'horizontal' | 'vertical'`. Controls the layout axis and, where applicable, Arrow-key behavior. Default: `'horizontal'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

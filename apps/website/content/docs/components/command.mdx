@@ -4,56 +4,17 @@ description: "Filterable command collection."
 ---
 
 import Example from "@stylextras/ui/command/example";
+import exampleCode from "@stylextras/ui/command/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Command">
+<ComponentPreview code={exampleCode} name="Command">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import {
-  Command,
-  CommandEmpty,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandStatus,
-  CommandTrigger,
-} from './index';
-
-const commandId = 'quick-jump-command';
-
-export default function Example() {
-  return (
-    <>
-      <CommandTrigger target={commandId}>Open command menu</CommandTrigger>
-      <Command id={commandId} aria-label="Quick jump">
-        <CommandInput aria-label="Search commands" autoFocus placeholder="Search commands…" />
-        <CommandList>
-          <CommandItem value="button-docs" keywords="components actions">
-            Open button docs
-          </CommandItem>
-          <CommandItem value="tokens" keywords="theme variables">
-            Jump to tokens
-          </CommandItem>
-          <CommandItem value="examples" keywords="gallery demos">
-            Browse examples
-          </CommandItem>
-        </CommandList>
-        <CommandEmpty />
-        <CommandStatus>
-          {(count) => `${count} command${count === 1 ? '' : 's'} available.`}
-        </CommandStatus>
-      </Command>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -90,8 +51,8 @@ development warning without changing ID-based active identity.
 
 Complete native/inherited prop base: native dialog props with component-owned styles. `aria-label` or `aria-labelledby` is required.
 
-- `onValueChange` — `(value: string) => void`.
-- `sx` — `stylex.StyleXStyles`.
+- `onValueChange` — `(value: string) => void`. Called when user interaction requests a new value.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CommandEmpty
 
@@ -99,8 +60,8 @@ Complete native/inherited prop base: native dialog props with component-owned st
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CommandEmptyProps`.
 
-- `children` — `CommandEmptyProps["children"]`. Default: `'No results.'`.
-- `sx` — `stylex.StyleXStyles`.
+- `children` — `CommandEmptyProps["children"]`. Content shown when no command items match the query. Default: `'No results.'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CommandInput
 
@@ -111,10 +72,10 @@ active-descendant, listbox, expanded state, role, value, and input type.
 `aria-label` or `aria-labelledby` is required so the combobox has an accessible
 name.
 
-- `aria-expanded` — `CommandInputProps["aria-expanded"]`. Default: `'true'`.
-- `autoComplete` — `CommandInputProps["autoComplete"]`. Default: `'off'`.
-- `sx` — `stylex.StyleXStyles`.
-- `type` — `'text' | 'search'`. Default: `'search'`.
+- `aria-expanded` — `CommandInputProps["aria-expanded"]`. Announces that the command listbox is visible while its dialog is mounted. Default: `'true'`.
+- `autoComplete` — `CommandInputProps["autoComplete"]`. Provides the native browser autofill hint. Default: `'off'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — `'text' | 'search'`. Sets the underlying element's native control type. Default: `'search'`.
 
 ### CommandItem
 
@@ -122,11 +83,12 @@ name.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-disabled" | "aria-selected" | "className" | "onSelect" | "role" | "style" | "tabIndex">`. The props below complete `CommandItemProps`.
 
-- `disabled` — `CommandItemProps["disabled"]`. Default: `false`.
-- `keywords` — `string`. Default: `''`.
-- `onSelect` — `(value: string) => void`.
-- `sx` — `stylex.StyleXStyles`.
-- `value` — `string`. Required.
+- `disabled` — `CommandItemProps["disabled"]`. Keeps the item discoverable but excludes it from activation and keyboard selection. Default: `false`.
+- `hidden` — `boolean`. Default: `false`; author-hidden items remain excluded even when the text filter matches.
+- `keywords` — `string`. Additional searchable terms that are not rendered as the item label. Default: `''`.
+- `onSelect` — `(value: string) => void`. Called with the item value when keyboard or pointer activation selects it.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `value` — `string`. Stable identifier or value used by the selection model and by form submission when applicable. Required.
 
 ### CommandList
 
@@ -134,7 +96,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `CommandListProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### CommandTrigger
 
@@ -142,13 +104,13 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `ButtonProps`. The props below complete `CommandTriggerProps`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `CommandTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'primary'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `CommandTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'primary'`.
 
 ### CommandStatus
 
-- `children` — `ReactNode | ((count: number) => ReactNode)`. Required.
-- `sx` — `stylex.StyleXStyles`.
+- `children` — `ReactNode | ((count: number) => ReactNode)`. Polite status content; a callback receives the current result count. Required.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

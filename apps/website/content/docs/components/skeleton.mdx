@@ -4,30 +4,17 @@ description: "Reduced-motion-aware loading placeholder."
 ---
 
 import Example from "@stylextras/ui/skeleton/example";
+import exampleCode from "@stylextras/ui/skeleton/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Skeleton">
+<ComponentPreview code={exampleCode} name="Skeleton">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Skeleton } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Skeleton aria-label="Loading title" />
-      <Skeleton aria-label="Loading paragraph one" />
-      <Skeleton aria-label="Loading paragraph two" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -53,5 +40,5 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SkeletonProps`.
 
-- `aria-hidden` — `SkeletonProps["aria-hidden"]`. Default: `'true'`.
-- `sx` — `stylex.StyleXStyles`.
+- `aria-hidden` — `SkeletonProps["aria-hidden"]`. Keeps the decorative loading placeholder out of the accessibility tree. Default: `'true'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

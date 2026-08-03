@@ -1,11 +1,21 @@
 import type { Ref, RefCallback } from 'react'
 
+export type RefCleanup = () => void
+
 /** Assigns a ref and returns the React 19 cleanup for that assignment. */
-export function assignRef<T>(ref: Ref<T> | undefined, node: T | null) {
+export function assignRef<T>(ref: Ref<T> | undefined, node: T | null): RefCleanup | undefined {
   if (typeof ref === 'function') {
     const cleanup = ref(node)
-    if (typeof cleanup === 'function') return cleanup
-    return node === null ? undefined : () => ref(null)
+    if (typeof cleanup === 'function') {
+      return () => {
+        cleanup()
+      }
+    }
+    return node === null
+      ? undefined
+      : () => {
+          ref(null)
+        }
   }
 
   if (!ref) return undefined

@@ -4,31 +4,17 @@ description: "Intl-backed calendar grid."
 ---
 
 import Example from "@stylextras/ui/calendar/example";
+import exampleCode from "@stylextras/ui/calendar/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Calendar">
+<ComponentPreview code={exampleCode} name="Calendar">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Calendar } from './index';
-
-export default function Example() {
-  return (
-    <Calendar
-      aria-label="Choose a release date"
-      defaultValue="2026-07-11"
-      min="2026-07-01"
-      max="2026-08-31"
-    />
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -63,15 +49,15 @@ Pass `today` as an ISO `YYYY-MM-DD` value when the server already knows the user
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `CalendarProps`.
 
-- `defaultValue` — ISO `YYYY-MM-DD` string. Default: `''`.
-- `loadingLabel` — `string`. Default: `'Loading calendar'`.
-- `locale` — `string`. Default: `'en-US'`.
-- `max` — `string`.
-- `min` — `string`.
-- `nextMonthLabel` — `string`. Default: `'Next month'`.
-- `onValueChange` — `(value: string) => void`.
-- `previousMonthLabel` — `string`. Default: `'Previous month'`.
-- `sx` — `stylex.StyleXStyles`.
+- `defaultValue` — ISO `YYYY-MM-DD` string. Initial selected date for uncontrolled usage. Default: `''`.
+- `loadingLabel` — `string`. Accessible progress label announced while calendar data is pending. Default: `'Loading calendar'`.
+- `locale` — `string`. BCP 47 locale used for month labels, dates, and the derived first weekday. Default: `'en-US'`.
+- `max` — `string`. Inclusive upper bound in the native control's canonical format.
+- `min` — `string`. Inclusive lower bound in the native control's canonical format.
+- `nextMonthLabel` — `string`. Accessible name for the next-month button. Default: `'Next month'`.
+- `onValueChange` — `(value: string) => void`. Called when user interaction requests a new value.
+- `previousMonthLabel` — `string`. Accessible name for the previous-month button. Default: `'Previous month'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 - `today` — `string`. Stable local date in `YYYY-MM-DD` form for server rendering and `aria-current="date"`.
-- `value` — `string`.
-- `weekStartsOn` — `number`. Default: `getWeekStartsOn(locale)`.
+- `value` — `string`. Current controlled value; pair it with `onValueChange`.
+- `weekStartsOn` — `number`. Zero-based weekday index used as the first grid column. Default: `getWeekStartsOn(locale)`.

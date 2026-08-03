@@ -4,53 +4,17 @@ description: "Styled native input."
 ---
 
 import Example from "@stylextras/ui/input/example";
+import exampleCode from "@stylextras/ui/input/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Input">
+<ComponentPreview code={exampleCode} name="Input">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Field, FieldDescription, FieldLabel } from '../field';
-import { Input } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Field>
-        <FieldLabel htmlFor="input-email">Work email</FieldLabel>
-        <Input
-          id="input-email"
-          aria-describedby="input-email-description"
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="you@company.com"
-        />
-        <FieldDescription id="input-email-description">
-          Try the native email validation state.
-        </FieldDescription>
-      </Field>
-      <Field>
-        <FieldLabel htmlFor="input-search">Search</FieldLabel>
-        <Input
-          id="input-search"
-          aria-describedby="input-search-description"
-          name="query"
-          type="search"
-          placeholder="Search components…"
-        />
-        <FieldDescription id="input-search-description">
-          The browser owns search-input behavior.
-        </FieldDescription>
-      </Field>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -76,5 +40,5 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style">`. The props below complete `InputProps`.
 
-- `sx` — `stylex.StyleXStyles`.
-- `type` — `InputProps["type"]`. Default: `'text'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — `InputProps["type"]`. Sets the underlying element's native control type. Default: `'text'`.

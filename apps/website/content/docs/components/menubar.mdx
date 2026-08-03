@@ -4,55 +4,17 @@ description: "Horizontal native-first menu group."
 ---
 
 import Example from "@stylextras/ui/menubar/example";
+import exampleCode from "@stylextras/ui/menubar/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Menubar">
+<ComponentPreview code={exampleCode} name="Menubar">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../dropdown-menu';
-import { Menubar } from './index';
-
-const menus = [
-  { id: 'file-menu', label: 'File', items: ['New file', 'Open', 'Save'] },
-  { id: 'edit-menu', label: 'Edit', items: ['Undo', 'Redo', 'Find action'] },
-  {
-    id: 'view-menu',
-    label: 'View',
-    items: ['Toggle sidebar', 'Zoom in', 'Zoom out'],
-  },
-];
-
-export default function Example() {
-  return (
-    <Menubar aria-label="Application commands">
-      {menus.map((menu) => (
-        <DropdownMenu key={menu.id}>
-          <DropdownMenuTrigger role="menuitem" variant="ghost" target={menu.id}>
-            {menu.label}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent id={menu.id}>
-            {menu.items.map((item) => (
-              <DropdownMenuItem key={item}>{item}</DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ))}
-    </Menubar>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -82,4 +44,4 @@ where supported and a feature-detected bridge fills the gap elsewhere.
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required accessible widget name.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

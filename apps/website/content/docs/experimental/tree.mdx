@@ -4,65 +4,19 @@ description: "Hierarchical interactive collection."
 ---
 
 import Example from "@stylextras/ui/experimental/tree/example";
+import exampleCode from "@stylextras/ui/experimental/tree/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="Tree">
+<ComponentPreview code={exampleCode} name="Tree">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import {
-  Tree,
-  TreeBranch,
-  TreeBranchContent,
-  TreeBranchTrigger,
-  TreeGroup,
-  TreeItem,
-} from './index';
-
-export default function Example() {
-  return (
-    <Tree aria-label="Package explorer">
-      <TreeGroup>
-        <TreeBranch open>
-          <TreeBranchTrigger>tokens</TreeBranchTrigger>
-          <TreeBranchContent>
-            <TreeBranch open>
-              <TreeBranchTrigger>color</TreeBranchTrigger>
-              <TreeBranchContent>
-                <TreeItem>brand</TreeItem>
-                <TreeItem>background</TreeItem>
-                <TreeItem>foreground</TreeItem>
-              </TreeBranchContent>
-            </TreeBranch>
-            <TreeBranch>
-              <TreeBranchTrigger>spacing</TreeBranchTrigger>
-              <TreeBranchContent>
-                <TreeItem>base</TreeItem>
-                <TreeItem>small</TreeItem>
-                <TreeItem>large</TreeItem>
-              </TreeBranchContent>
-            </TreeBranch>
-          </TreeBranchContent>
-        </TreeBranch>
-        <TreeBranch>
-          <TreeBranchTrigger>components</TreeBranchTrigger>
-          <TreeBranchContent>
-            <TreeItem>button</TreeItem>
-            <TreeItem>card</TreeItem>
-            <TreeItem>dialog</TreeItem>
-          </TreeBranchContent>
-        </TreeBranch>
-      </TreeGroup>
-    </Tree>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -93,7 +47,7 @@ This is a native nested disclosure list, not an ARIA tree view. Summary elements
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "role" | "style">`. The props below complete `TreeProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TreeBranch
 
@@ -101,7 +55,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details">, "className" | "style">`. The props below complete `TreeBranchProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TreeBranchContent
 
@@ -109,7 +63,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"details"
 
 Complete native/inherited prop base: `TreeGroupProps`. The props below complete `TreeBranchContentProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TreeBranchTrigger
 
@@ -117,7 +71,7 @@ Complete native/inherited prop base: `TreeGroupProps`. The props below complete 
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary">, "className" | "style">`. The props below complete `TreeBranchTriggerProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TreeGroup
 
@@ -125,7 +79,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"summary"
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `TreeGroupProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TreeItem
 
@@ -133,4 +87,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "style">`. The props below complete `TreeItemProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

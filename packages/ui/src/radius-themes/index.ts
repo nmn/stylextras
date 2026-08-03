@@ -1,62 +1,26 @@
-import * as stylex from '@stylexjs/stylex'
-import { radius } from '../tokens/radius.stylex'
+import { baseTheme } from './base'
+import { docsTheme } from './docs'
+import { pillTheme } from './pill'
+import { plushTheme } from './plush'
+import { roundedTheme } from './rounded'
+import { sharpTheme } from './sharp'
+import { snugTheme } from './snug'
+import { softTheme } from './soft'
+import { subtleTheme } from './subtle'
+import type { RadiusTheme } from './types'
 
-export type RadiusTheme = stylex.Theme<typeof radius>
+export type { RadiusTheme } from './types'
+export { baseTheme } from './base'
+export { docsTheme } from './docs'
+export { sharpTheme } from './sharp'
+export { roundedTheme } from './rounded'
+export { subtleTheme } from './subtle'
+export { softTheme } from './soft'
+export { pillTheme } from './pill'
+export { snugTheme } from './snug'
+export { plushTheme } from './plush'
 
-export const baseTheme: RadiusTheme = stylex.createTheme(radius, {})
-
-export const docsTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '8px',
-  xs: '4px',
-  sm: '8px',
-  md: '10px',
-  lg: '12px',
-  xl: '16px',
-  xxl: '20px',
-  round: '9999px',
-})
-
-export const sharpTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '0px',
-})
-
-export const roundedTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '10px',
-})
-
-export const subtleTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '6px',
-})
-
-export const softTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '14px',
-})
-
-export const pillTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '20px',
-})
-
-/** Tighter corners than subtle, for dense utility UIs. */
-export const snugTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '4px',
-})
-
-/** Plush, toy-like corners for expressive and playful surfaces. */
-export const plushTheme: RadiusTheme = stylex.createTheme(radius, {
-  base: '24px',
-})
-
-export const radiusThemes: Readonly<{
-  base: RadiusTheme
-  docs: RadiusTheme
-  sharp: RadiusTheme
-  snug: RadiusTheme
-  subtle: RadiusTheme
-  rounded: RadiusTheme
-  soft: RadiusTheme
-  pill: RadiusTheme
-  plush: RadiusTheme
-}> = {
+export const radiusThemes = {
   base: baseTheme,
   docs: docsTheme,
   sharp: sharpTheme,
@@ -66,6 +30,6 @@ export const radiusThemes: Readonly<{
   soft: softTheme,
   pill: pillTheme,
   plush: plushTheme,
-}
+} as const satisfies Readonly<Record<string, RadiusTheme>>
 
 export type RadiusThemeName = keyof typeof radiusThemes

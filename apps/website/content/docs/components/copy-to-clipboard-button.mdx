@@ -4,30 +4,13 @@ description: "Clipboard action with configurable copied feedback."
 ---
 
 import Example from "@stylextras/ui/copy-to-clipboard-button/example";
+import exampleCode from "@stylextras/ui/copy-to-clipboard-button/example?raw";
 
 ## Examples
 
-<ComponentPreview name="CopyToClipboardButton">
+<ComponentPreview code={exampleCode} name="CopyToClipboardButton">
   <Example />
 </ComponentPreview>
-
-### Example code
-
-```tsx
-'use client';
-
-import { CopyToClipboardButton } from '@stylextras/ui/copy-to-clipboard-button';
-
-export default function Example() {
-  return (
-    <CopyToClipboardButton
-      label="Copy install command"
-      resetAfterMs={2000}
-      value={() => 'npx create-stylextras app'}
-    />
-  );
-}
-```
 
 ## Usage
 
@@ -72,15 +55,18 @@ feedback is hidden from the accessibility tree to avoid duplicate announcements.
 `CopyToClipboardButtonProps`
 
 - `value` — `string | (() => string)`. Required and resolved when clicked.
-- `icon` — `React.ReactNode`.
-- `copiedIcon` — `React.ReactNode`.
-- `successAnnouncement` — `string`. Default: `'Copied to clipboard'`.
-- `errorAnnouncement` — `string`. Default: `'Copy failed'`.
+- `icon` — `React.ReactNode`. Decorative icon rendered before a copy succeeds.
+- `copiedIcon` — `React.ReactNode`. Decorative replacement icon rendered during the copied state.
+- `successAnnouncement` — `string`. Polite live-region message announced after a successful copy. Default: `'Copied to clipboard'`.
+- `errorAnnouncement` — `string`. Assertive live-region message announced when copying fails. Default: `'Copy failed'`.
 - `copiedLabel` — Deprecated alias used as the default success announcement during the beta migration.
-- `copiedText` — `React.ReactNode`.
-- `feedback` — `'popover' | 'none'`. Default: `'popover'`.
-- `label` — `string`. Default: `'Copy to clipboard'`.
-- `resetAfterMs` — `number`. Default: `1500`.
-- `onCopy` — `(value: string) => void`.
-- `onError` — `(error: unknown) => void`.
-- `size`, `variant`, and `sx` — The corresponding accessible `Button` props.
+- `copiedText` — `React.ReactNode`. Optional visible feedback content for the successful copied state.
+- `feedback` — `'popover' | 'none'`. Enables or suppresses the visible copied-feedback popover. Default: `'popover'`.
+- `label` — `string`. Stable accessible name for the copy button in every feedback state. Default: `'Copy to clipboard'`.
+- `resetAfterMs` — `number`. Milliseconds before copied feedback returns to its idle state. Default: `1500`.
+- `onCopy` — `(value: string) => void`. Called with the resolved copied text after clipboard writing succeeds.
+- `onError` — `(error: unknown) => void`. Called with the clipboard error after failure feedback is announced.
+- `size` — Accessible `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'icon'`; icon sizes require the stable `label` supplied by this component.
+- `sx` — `stylex.StyleXStyles`, composed after the built-in button and feedback styles.
+- `type` — Native button type. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'ghost'`.

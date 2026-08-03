@@ -28,15 +28,16 @@ export function ThemeGallery() {
         <div {...stylex.props(styles.sectionHeading)}>
           <h2 {...stylex.props(styles.sectionTitle)}>Style presets</h2>
           <p {...stylex.props(styles.intro)}>
-            {styleNames.length} distinctly composed starting points apply the structural theme
-            groups together; Docs also starts with the site’s color palette. Every selector below
-            can still be changed independently.
+            {styleNames.length} coordinated presets apply all eight theme axes together. Every
+            selector below can still be changed independently.
           </p>
         </div>
         <div data-testid="style-gallery" {...stylex.props(styles.styleGrid)}>
-          {styleNames.map((name) => (
-            <StyleTile key={name} name={name} />
-          ))}
+          {styleNames.flatMap((name) =>
+            (['light', 'dark'] as const).map((appearance) => (
+              <StyleTile appearance={appearance} key={`${name}-${appearance}`} name={name} />
+            )),
+          )}
         </div>
       </section>
 
@@ -62,15 +63,21 @@ export function ThemeGallery() {
   )
 }
 
-function StyleTile({ name }: { name: PreviewStyleName }) {
+function StyleTile({
+  appearance,
+  name,
+}: {
+  appearance: 'light' | 'dark'
+  name: PreviewStyleName
+}) {
   const preset = previewStylePresets[name]
   const displayName = `${name[0]!.toUpperCase()}${name.slice(1)}`
   return (
     <section
-      aria-label={`${displayName} style preset`}
+      aria-label={`${displayName} ${appearance} style preset`}
       {...stylex.props(
         colorThemes.neutral,
-        colorThemes[preset.color ?? 'neutral'],
+        colorThemes[preset.color],
         spacingThemes[preset.spacing],
         radiusThemes[preset.radius],
         strokeThemes[preset.stroke],
@@ -80,18 +87,19 @@ function StyleTile({ name }: { name: PreviewStyleName }) {
         motionThemes[preset.motion],
         styles.tile,
         styles.styleTile,
-        styles.light,
+        appearance === 'light' ? styles.light : styles.dark,
       )}
     >
       <header {...stylex.props(styles.header)}>
         <div>
           <h3 {...stylex.props(styles.title)}>{displayName}</h3>
           <p {...stylex.props(styles.appearance)}>
-            {preset.spacing} · {preset.radius} · {preset.typography}
+            {appearance} · {preset.spacing} · {preset.radius} · {preset.typography}
           </p>
         </div>
         <Badge variant="neutral">Aa</Badge>
       </header>
+      <p {...stylex.props(styles.presetDescription)}>{preset.description}</p>
       <Input aria-label={`${displayName} sample input`} placeholder="Project name" />
       <div {...stylex.props(styles.actions)}>
         <Button size="sm">Create</Button>
@@ -241,6 +249,12 @@ const styles = stylex.create({
     marginBlock: '4px 0',
     textTransform: 'uppercase',
   },
+  presetDescription: {
+    color: colors.fgMuted,
+    fontSize: typography.stepMinus1,
+    lineHeight: typography.lineHeightBody,
+    margin: 0,
+  },
   swatches: {
     display: 'grid',
     gap: spacing.xs,
@@ -249,7 +263,7 @@ const styles = stylex.create({
   depthSurface: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: radius.sm,
+    borderRadius: radius.md,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
     display: 'grid',
@@ -260,7 +274,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: colors.card,
     borderColor: colors.border,
-    borderRadius: radius.xs,
+    borderRadius: radius.sm,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
     display: 'flex',

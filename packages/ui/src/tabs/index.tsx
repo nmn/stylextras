@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import * as stylex from '@stylexjs/stylex';
-import type { StyleXStyles } from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
+import type { StyleXStyles } from '@stylexjs/stylex'
 import {
   type ComponentPropsWithRef,
   type FocusEvent,
   type KeyboardEvent,
-  useCallback,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -15,59 +15,51 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import type { AccessibleAriaNameProps } from '../accessibility';
-import { composeRefs } from '../internal/refs';
-import { colors } from '../tokens/color.stylex';
-import { elevation } from '../tokens/elevation.stylex';
-import { motion } from '../tokens/motion.stylex';
-import { radius } from '../tokens/radius.stylex';
-import { spacing } from '../tokens/spacing.stylex';
-import { stroke } from '../tokens/stroke.stylex';
-import { typography } from '../tokens/typography.stylex';
+} from 'react'
+import type { AccessibleAriaNameProps } from '../accessibility'
+import { composeRefs } from '../internal/refs'
+import { colors } from '../tokens/color.stylex'
+import { elevation } from '../tokens/elevation.stylex'
+import { motion } from '../tokens/motion.stylex'
+import { radius } from '../tokens/radius.stylex'
+import { spacing } from '../tokens/spacing.stylex'
+import { stroke } from '../tokens/stroke.stylex'
+import { typography } from '../tokens/typography.stylex'
 
 type TabsContextValue = {
-  activationMode: 'automatic' | 'manual';
-  claimInitialTabStop: (value: string, disabled: boolean) => boolean;
-  idFor: (value: string) => string;
-  orientation: 'horizontal' | 'vertical';
-  registerValue: (kind: 'panel' | 'trigger', value: string) => () => void;
-  select: (value: string) => void;
-  value: string;
-};
-
-const TabsContext = createContext<TabsContextValue | null>(null);
-
-function useTabs(component: string) {
-  const context = useContext(TabsContext);
-  if (!context) throw new Error(`${component} must be rendered inside Tabs`);
-  return context;
+  activationMode: 'automatic' | 'manual'
+  claimInitialTabStop: (value: string, disabled: boolean) => boolean
+  idFor: (value: string) => string
+  orientation: 'horizontal' | 'vertical'
+  registerValue: (kind: 'panel' | 'trigger', value: string) => () => void
+  select: (value: string) => void
+  value: string
 }
 
-type SxProp = { sx?: StyleXStyles };
+const TabsContext = createContext<TabsContextValue | null>(null)
 
-export type TabsProps = Omit<
-  ComponentPropsWithRef<'div'>,
-  'className' | 'defaultValue' | 'style'
-> &
+function useTabs(component: string) {
+  const context = useContext(TabsContext)
+  if (!context) throw new Error(`${component} must be rendered inside Tabs`)
+  return context
+}
+
+type SxProp = { sx?: StyleXStyles }
+
+export type TabsProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'defaultValue' | 'style'> &
   SxProp & {
-    activationMode?: 'automatic' | 'manual';
-    defaultValue?: string;
-    onValueChange?: (value: string) => void;
-    orientation?: 'horizontal' | 'vertical';
-    value?: string;
-  };
+    activationMode?: 'automatic' | 'manual'
+    defaultValue?: string
+    onValueChange?: (value: string) => void
+    orientation?: 'horizontal' | 'vertical'
+    value?: string
+  }
 export type TabsListProps = Omit<
   ComponentPropsWithRef<'div'>,
-  | 'aria-label'
-  | 'aria-labelledby'
-  | 'aria-orientation'
-  | 'className'
-  | 'role'
-  | 'style'
+  'aria-label' | 'aria-labelledby' | 'aria-orientation' | 'className' | 'role' | 'style'
 > &
   AccessibleAriaNameProps &
-  SxProp;
+  SxProp
 export type TabsTriggerProps = Omit<
   ComponentPropsWithRef<'button'>,
   | 'aria-controls'
@@ -80,17 +72,12 @@ export type TabsTriggerProps = Omit<
   | 'type'
   | 'value'
 > &
-  SxProp & { value: string };
+  SxProp & { value: string }
 export type TabsContentProps = Omit<
   ComponentPropsWithRef<'div'>,
-  | 'aria-labelledby'
-  | 'className'
-  | 'hidden'
-  | 'id'
-  | 'role'
-  | 'style'
+  'aria-labelledby' | 'className' | 'hidden' | 'id' | 'role' | 'style'
 > &
-  SxProp & { value: string };
+  SxProp & { value: string }
 
 export function Tabs({
   activationMode = 'automatic',
@@ -102,59 +89,52 @@ export function Tabs({
   value,
   ...props
 }: TabsProps) {
-  const generatedId = useId().replaceAll(':', '');
-  const controlled = value !== undefined;
-  const [internalValue, setInternalValue] = useState(defaultValue);
-  const selectedValue = value ?? internalValue;
-  const initialTabStopRef = useRef<string | null>(null);
-  const idsRef = useRef(new Map<string, string>());
-  const registrationsRef = useRef(
-    new Map<string, { panel: number; trigger: number }>(),
-  );
-  const registerValue = useCallback(
-    (kind: 'panel' | 'trigger', nextValue: string) => {
-      const registrations = registrationsRef.current;
-      const counts = registrations.get(nextValue) ?? { panel: 0, trigger: 0 };
-      counts[kind] += 1;
-      registrations.set(nextValue, counts);
-      if (process.env.NODE_ENV !== 'production' && counts[kind] > 1) {
-        console.warn(
-          `Tabs ${kind} values must be unique. Duplicate value "${nextValue}" was registered.`,
-        );
-      }
-      return () => {
-        const current = registrations.get(nextValue);
-        if (!current) return;
-        current[kind] -= 1;
-        if (current.panel === 0 && current.trigger === 0)
-          registrations.delete(nextValue);
-      };
-    },
-    [],
-  );
-  initialTabStopRef.current = null;
+  const generatedId = useId().replaceAll(':', '')
+  const controlled = value !== undefined
+  const [internalValue, setInternalValue] = useState(defaultValue)
+  const selectedValue = value ?? internalValue
+  const initialTabStopRef = useRef<string | null>(null)
+  const idsRef = useRef(new Map<string, string>())
+  const registrationsRef = useRef(new Map<string, { panel: number; trigger: number }>())
+  const registerValue = useCallback((kind: 'panel' | 'trigger', nextValue: string) => {
+    const registrations = registrationsRef.current
+    const counts = registrations.get(nextValue) ?? { panel: 0, trigger: 0 }
+    counts[kind] += 1
+    registrations.set(nextValue, counts)
+    if (process.env.NODE_ENV !== 'production' && counts[kind] > 1) {
+      console.warn(
+        `Tabs ${kind} values must be unique. Duplicate value "${nextValue}" was registered.`,
+      )
+    }
+    return () => {
+      const current = registrations.get(nextValue)
+      if (!current) return
+      current[kind] -= 1
+      if (current.panel === 0 && current.trigger === 0) registrations.delete(nextValue)
+    }
+  }, [])
+  initialTabStopRef.current = null
   const context = useMemo<TabsContextValue>(
     () => ({
       activationMode,
       claimInitialTabStop: (nextValue, disabled) => {
-        if (disabled) return false;
-        if (initialTabStopRef.current === null)
-          initialTabStopRef.current = nextValue;
-        return initialTabStopRef.current === nextValue;
+        if (disabled) return false
+        if (initialTabStopRef.current === null) initialTabStopRef.current = nextValue
+        return initialTabStopRef.current === nextValue
       },
       idFor: (nextValue) => {
-        const existing = idsRef.current.get(nextValue);
-        if (existing) return existing;
-        const id = `${generatedId}-${idsRef.current.size + 1}`;
-        idsRef.current.set(nextValue, id);
-        return id;
+        const existing = idsRef.current.get(nextValue)
+        if (existing) return existing
+        const id = `${generatedId}-${idsRef.current.size + 1}`
+        idsRef.current.set(nextValue, id)
+        return id
       },
       orientation,
       registerValue,
       select: (nextValue) => {
-        if (nextValue === selectedValue) return;
-        if (!controlled) setInternalValue(nextValue);
-        onValueChange?.(nextValue);
+        if (nextValue === selectedValue) return
+        if (!controlled) setInternalValue(nextValue)
+        onValueChange?.(nextValue)
       },
       value: selectedValue,
     }),
@@ -167,34 +147,30 @@ export function Tabs({
       registerValue,
       selectedValue,
     ],
-  );
+  )
   return (
     <TabsContext value={context}>
       <div ref={ref} {...props} {...stylex.props(styles.root, sx)} />
     </TabsContext>
-  );
+  )
 }
 
 export function TabsList({ ref, sx, ...props }: TabsListProps) {
-  const context = useTabs('TabsList');
-  const listRef = useRef<HTMLDivElement>(null);
-  const setRefs = useMemo(() => composeRefs(listRef, ref), [ref]);
+  const context = useTabs('TabsList')
+  const listRef = useRef<HTMLDivElement>(null)
+  const setRefs = useMemo(() => composeRefs(listRef, ref), [ref])
 
   useLayoutEffect(() => {
-    const tabs = [
-      ...(listRef.current?.querySelectorAll<HTMLButtonElement>(
-        '[role="tab"]',
-      ) ?? []),
-    ];
-    if (!tabs?.length) return;
+    const tabs = [...(listRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? [])]
+    if (!tabs?.length) return
     const selectedTab = tabs.find(
       (tab) => !tab.disabled && tab.getAttribute('aria-selected') === 'true',
-    );
-    const tabStop = selectedTab ?? tabs.find((tab) => !tab.disabled);
+    )
+    const tabStop = selectedTab ?? tabs.find((tab) => !tab.disabled)
     for (const tab of tabs) {
-      tab.tabIndex = tab === tabStop ? 0 : -1;
+      tab.tabIndex = tab === tabStop ? 0 : -1
     }
-  });
+  })
 
   return (
     <div
@@ -202,13 +178,9 @@ export function TabsList({ ref, sx, ...props }: TabsListProps) {
       {...props}
       role="tablist"
       aria-orientation={context.orientation}
-      {...stylex.props(
-        styles.list,
-        context.orientation === 'vertical' && styles.listVertical,
-        sx,
-      )}
+      {...stylex.props(styles.list, context.orientation === 'vertical' && styles.listVertical, sx)}
     />
-  );
+  )
 }
 
 export function TabsTrigger({
@@ -221,66 +193,49 @@ export function TabsTrigger({
   value,
   ...props
 }: TabsTriggerProps) {
-  const context = useTabs('TabsTrigger');
-  const selected = context.value === value;
-  const valueId = context.idFor(value);
-  const triggerId = `stylextras-tabs-trigger-${valueId}`;
-  const panelId = `stylextras-tabs-panel-${valueId}`;
-  const initialTabStop = context.claimInitialTabStop(value, disabled);
+  const context = useTabs('TabsTrigger')
+  const selected = context.value === value
+  const valueId = context.idFor(value)
+  const triggerId = `stylextras-tabs-trigger-${valueId}`
+  const panelId = `stylextras-tabs-panel-${valueId}`
+  const initialTabStop = context.claimInitialTabStop(value, disabled)
 
-  useEffect(
-    () => context.registerValue('trigger', value),
-    [context.registerValue, value],
-  );
+  useEffect(() => context.registerValue('trigger', value), [context.registerValue, value])
 
   const handleFocus = (event: FocusEvent<HTMLButtonElement>) => {
-    onFocus?.(event);
-    if (!event.defaultPrevented && context.activationMode === 'automatic')
-      context.select(value);
-  };
+    onFocus?.(event)
+    if (!event.defaultPrevented && context.activationMode === 'automatic') context.select(value)
+  }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    onKeyDown?.(event);
-    if (event.defaultPrevented) return;
+    onKeyDown?.(event)
+    if (event.defaultPrevented) return
     const triggers = [
       ...event.currentTarget.parentElement!.querySelectorAll<HTMLButtonElement>(
         '[role="tab"]:not(:disabled)',
       ),
-    ];
-    const index = triggers.indexOf(event.currentTarget);
-    const rtl = getComputedStyle(event.currentTarget).direction === 'rtl';
+    ]
+    const index = triggers.indexOf(event.currentTarget)
+    const rtl = getComputedStyle(event.currentTarget).direction === 'rtl'
     const previousKey =
-      context.orientation === 'horizontal'
-        ? rtl
-          ? 'ArrowRight'
-          : 'ArrowLeft'
-        : 'ArrowUp';
+      context.orientation === 'horizontal' ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp'
     const nextKey =
-      context.orientation === 'horizontal'
-        ? rtl
-          ? 'ArrowLeft'
-          : 'ArrowRight'
-        : 'ArrowDown';
-    let next: HTMLButtonElement | undefined;
-    if (event.key === previousKey)
-      next = triggers[(index - 1 + triggers.length) % triggers.length];
-    else if (event.key === nextKey)
-      next = triggers[(index + 1) % triggers.length];
-    else if (event.key === 'Home') next = triggers[0];
-    else if (event.key === 'End') next = triggers.at(-1);
-    else if (
-      (event.key === 'Enter' || event.key === ' ') &&
-      context.activationMode === 'manual'
-    ) {
-      event.preventDefault();
-      context.select(value);
-      return;
+      context.orientation === 'horizontal' ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown'
+    let next: HTMLButtonElement | undefined
+    if (event.key === previousKey) next = triggers[(index - 1 + triggers.length) % triggers.length]
+    else if (event.key === nextKey) next = triggers[(index + 1) % triggers.length]
+    else if (event.key === 'Home') next = triggers[0]
+    else if (event.key === 'End') next = triggers.at(-1)
+    else if ((event.key === 'Enter' || event.key === ' ') && context.activationMode === 'manual') {
+      event.preventDefault()
+      context.select(value)
+      return
     }
     if (next) {
-      event.preventDefault();
-      next.focus();
+      event.preventDefault()
+      next.focus()
     }
-  };
+  }
 
   return (
     <button
@@ -292,27 +247,22 @@ export function TabsTrigger({
       aria-controls={panelId}
       aria-selected={selected}
       disabled={disabled}
-      tabIndex={
-        !disabled && (selected || (!context.value && initialTabStop)) ? 0 : -1
-      }
+      tabIndex={!disabled && (selected || (!context.value && initialTabStop)) ? 0 : -1}
       onClick={(event) => {
-        onClick?.(event);
-        if (!event.defaultPrevented) context.select(value);
+        onClick?.(event)
+        if (!event.defaultPrevented) context.select(value)
       }}
       onFocus={handleFocus}
       onKeyDown={handleKeyDown}
       {...stylex.props(styles.trigger, selected && styles.triggerActive, sx)}
     />
-  );
+  )
 }
 
 export function TabsContent({ ref, sx, tabIndex = 0, value, ...props }: TabsContentProps) {
-  const context = useTabs('TabsContent');
-  const valueId = context.idFor(value);
-  useEffect(
-    () => context.registerValue('panel', value),
-    [context.registerValue, value],
-  );
+  const context = useTabs('TabsContent')
+  const valueId = context.idFor(value)
+  useEffect(() => context.registerValue('panel', value), [context.registerValue, value])
   return (
     <div
       ref={ref}
@@ -324,7 +274,7 @@ export function TabsContent({ ref, sx, tabIndex = 0, value, ...props }: TabsCont
       tabIndex={tabIndex}
       {...stylex.props(styles.content, sx)}
     />
-  );
+  )
 }
 
 const styles = stylex.create({
@@ -356,7 +306,7 @@ const styles = stylex.create({
   },
   trigger: {
     borderColor: 'transparent',
-    borderRadius: radius.md,
+    borderRadius: radius.xs,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
     paddingBlock: spacing.sm,
@@ -425,4 +375,4 @@ const styles = stylex.create({
       ':focus-visible': stroke.focusRing,
     },
   },
-});
+})

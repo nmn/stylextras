@@ -4,92 +4,17 @@ description: "Native dialog with invoker commands."
 ---
 
 import Example from "@stylextras/ui/dialog/example";
+import exampleCode from "@stylextras/ui/dialog/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Dialog">
+<ComponentPreview code={exampleCode} name="Dialog">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { ButtonGroup } from '../button-group';
-import { Field, FieldLabel } from '../field';
-import { Input } from '../input';
-import {
-  Dialog,
-  DialogBody,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  type DialogSize,
-} from './index';
-import { DialogCommandBridge } from './client';
-
-function RenameDialog({ id, size }: { id: string; size: DialogSize }) {
-  return (
-    <Dialog
-      id={id}
-      size={size}
-      aria-labelledby={`${id}-title`}
-      aria-describedby={`${id}-description`}
-    >
-      <DialogHeader>
-        <DialogTitle id={`${id}-title`}>Rename component</DialogTitle>
-        <DialogDescription id={`${id}-description`}>
-          Choose a concise display name.
-        </DialogDescription>
-      </DialogHeader>
-      <DialogBody>
-        <Field>
-          <FieldLabel htmlFor={`${id}-display-name`}>Display name</FieldLabel>
-          <Input
-            id={`${id}-display-name`}
-            name="displayName"
-            defaultValue="Segmented Control"
-          />
-        </Field>
-      </DialogBody>
-      <DialogFooter>
-        <ButtonGroup variant="actions" aria-label="Rename component actions">
-          <DialogClose target={id}>Cancel</DialogClose>
-          <DialogClose target={id} variant="primary">
-            Done
-          </DialogClose>
-        </ButtonGroup>
-      </DialogFooter>
-      <DialogCommandBridge target={id} />
-    </Dialog>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <DialogTrigger target="rename-small-dialog">
-        Open small dialog
-      </DialogTrigger>
-      <RenameDialog id="rename-small-dialog" size="sm" />
-
-      <DialogTrigger target="rename-medium-dialog">
-        Open medium dialog
-      </DialogTrigger>
-      <RenameDialog id="rename-medium-dialog" size="md" />
-
-      <DialogTrigger target="rename-large-dialog">
-        Open large dialog
-      </DialogTrigger>
-      <RenameDialog id="rename-large-dialog" size="lg" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -136,9 +61,9 @@ Escape closes the actual topmost child before it requests that the dialog close.
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "aria-label" | "aria-labelledby" | "className" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required accessible dialog name.
-- `closedBy` — `"none" | "any" | "closerequest"`. Default: `'any'`.
-- `size` — `DialogSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
+- `closedBy` — `"none" | "any" | "closerequest"`. Controls which browser dismissal requests may close the dialog. Default: `'any'`.
+- `size` — `DialogSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DialogBody
 
@@ -146,7 +71,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DialogBodyProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DialogClient
 
@@ -154,9 +79,9 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Optional client adapter for controlled or initially open dialogs. It accepts `DialogProps` except the native `open` prop and automatically installs `DialogCommandBridge` when `id` is provided.
 
-- `defaultOpen` — `boolean`. Default: `false`.
-- `onOpenChange` — `(open: boolean) => void`.
-- `open` — `boolean`.
+- `defaultOpen` — `boolean`. Initial open state for uncontrolled usage. Default: `false`.
+- `onOpenChange` — `(open: boolean) => void`. Called whenever native dialog events reconcile a new open state.
+- `open` — `boolean`. Controlled open state; pair it with `onOpenChange`.
 - Backdrop requests are cancelable through `onCancel`; prevent the event to keep the dialog open.
 
 ### DialogCommandBridge
@@ -171,11 +96,11 @@ Optional client adapter for controlled or initially open dialogs. It accepts `Di
 
 Complete native/inherited prop base: `ButtonProps`. The props below complete `DialogCloseProps`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `DialogCloseProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `DialogCloseProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.
 
 ### DialogDescription
 
@@ -183,7 +108,7 @@ Complete native/inherited prop base: `ButtonProps`. The props below complete `Di
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `DialogDescriptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DialogFooter
 
@@ -191,7 +116,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"footer">, "className" | "style">`. The props below complete `DialogFooterProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DialogHeader
 
@@ -199,7 +124,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"footer">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"header">, "className" | "style">`. The props below complete `DialogHeaderProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DialogTitle
 
@@ -207,7 +132,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"header">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h2">, "className" | "style">`. The props below complete `DialogTitleProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DialogTrigger
 
@@ -215,9 +140,9 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h2">, "c
 
 Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popoverTargetAction">`. The props below complete `DialogTriggerProps`.
 
-- `aria-haspopup` — `DialogTriggerProps["aria-haspopup"]`. Default: `'dialog'`.
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `DialogTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `aria-haspopup` — `DialogTriggerProps["aria-haspopup"]`. Announces the kind of popup controlled by the trigger. Default: `'dialog'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `DialogTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.

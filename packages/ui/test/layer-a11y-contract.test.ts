@@ -29,6 +29,9 @@ describe('layer accessibility contracts', () => {
     const dialogClient = source('dialog/client.tsx')
     expect(dialogClient).toContain('supportsDialogClosedBy()')
     expect(dialogClient).toContain("closedBy !== 'any'")
+    expect(dialogClient).toContain(
+      "import('@stylextras/ui/platform-polyfills/dialog-closedby-fallback')",
+    )
     expect(dialogClient).toContain('getTopmostNestedPopover')
   })
 
@@ -51,12 +54,14 @@ describe('layer accessibility contracts', () => {
     expect(sidebar).toMatch(/<ul ref=\{ref\}[^>]*role="list"/)
   })
 
-  it('keeps focusgroup lifecycle state outside the DOM', () => {
+  it('keeps focusgroup lifecycle state outside the DOM and outside supported-browser bundles', () => {
     const focusgroup = source('focusgroup/index.ts')
-    expect(focusgroup).toContain('focusgroupControllers = new WeakMap')
-    expect(focusgroup).toContain('group.ownerDocument.addEventListener("keydown", handleKeyDown)')
-    expect(focusgroup).toContain('const observer = new MutationObserver(refresh)')
-    expect(focusgroup).not.toContain('data-fg-')
-    expect(focusgroup).not.toContain('@microsoft/focusgroup-polyfill')
+    const fallback = source('platform-polyfills/focusgroup-fallback.ts')
+    expect(focusgroup).toContain("import('@stylextras/ui/platform-polyfills/focusgroup-fallback')")
+    expect(focusgroup).not.toContain('new MutationObserver')
+    expect(fallback).toContain('controllers = new WeakMap')
+    expect(fallback).toContain("group.addEventListener('keydown', handleKeyDown)")
+    expect(fallback).toContain('const observer = new MutationObserver(refresh)')
+    expect(fallback).not.toContain('data-fg-')
   })
 })

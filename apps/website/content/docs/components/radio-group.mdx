@@ -4,44 +4,17 @@ description: "Native radio fieldset."
 ---
 
 import Example from "@stylextras/ui/radio-group/example";
+import exampleCode from "@stylextras/ui/radio-group/example?raw";
 
 ## Examples
 
-<ComponentPreview name="RadioGroup">
+<ComponentPreview code={exampleCode} name="RadioGroup">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
-import { Label } from '../label';
-import { spacing } from '../tokens/spacing.stylex';
-import { RadioGroup, RadioGroupItem, RadioGroupLegend } from './index';
-
-export default function Example() {
-  return (
-    <RadioGroup>
-      <RadioGroupLegend>Density</RadioGroupLegend>
-      {['Compact', 'Default', 'Comfortable'].map((label) => (
-        <Label key={label} sx={styles.option}>
-          <RadioGroupItem
-            name="density"
-            value={label.toLowerCase()}
-            defaultChecked={label === 'Default'}
-          />
-          {label}
-        </Label>
-      ))}
-    </RadioGroup>
-  );
-}
-
-const styles = stylex.create({
-  option: { alignItems: 'center', display: 'flex', gap: spacing.sm },
-});
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -69,7 +42,7 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset">, "className" | "style">`. The props below complete `RadioGroupProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### RadioGroupItem
 
@@ -77,7 +50,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `RadioGroupItemProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### RadioGroupLegend
 
@@ -85,4 +58,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">,
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"legend">, "className" | "style">`. The props below complete `RadioGroupLegendProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

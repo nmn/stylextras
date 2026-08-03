@@ -4,51 +4,17 @@ description: "Label, description, and validation composition."
 ---
 
 import Example from "@stylextras/ui/field/example";
+import exampleCode from "@stylextras/ui/field/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Field">
+<ComponentPreview code={exampleCode} name="Field">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Input } from '../input';
-import { Field, FieldDescription, FieldError, FieldLabel } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Field>
-        <FieldLabel htmlFor="field-email">Email</FieldLabel>
-        <Input
-          id="field-email"
-          aria-describedby="field-email-description"
-          type="email"
-          placeholder="you@example.com"
-        />
-        <FieldDescription id="field-email-description">
-          Used only for account notifications.
-        </FieldDescription>
-      </Field>
-      <Field>
-        <FieldLabel htmlFor="field-handle">Handle</FieldLabel>
-        <Input
-          id="field-handle"
-          aria-describedby="field-handle-error"
-          aria-errormessage="field-handle-error"
-          aria-invalid="true"
-          defaultValue="two words"
-        />
-        <FieldError id="field-handle-error">
-          Use letters, numbers, and hyphens only.
-        </FieldError>
-      </Field>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -79,7 +45,7 @@ inserted error must be announced immediately.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `FieldProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### FieldDescription
 
@@ -87,7 +53,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `FieldDescriptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### FieldError
 
@@ -96,7 +62,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 Complete native/inherited prop base: `FieldDescriptionProps`. The props below complete `FieldErrorProps`.
 
 - `role` — Native paragraph role. No default; live announcement is caller opt-in.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### FieldLabel
 
@@ -104,4 +70,4 @@ Complete native/inherited prop base: `FieldDescriptionProps`. The props below co
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"label">, "className" | "style">`. The props below complete `FieldLabelProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

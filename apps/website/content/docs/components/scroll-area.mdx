@@ -4,57 +4,17 @@ description: "Overflow region with tokenized scrollbars."
 ---
 
 import Example from "@stylextras/ui/scroll-area/example";
+import exampleCode from "@stylextras/ui/scroll-area/example?raw";
 
 ## Examples
 
-<ComponentPreview name="ScrollArea">
+<ComponentPreview code={exampleCode} name="ScrollArea">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
-import { colors } from '../tokens/color.stylex';
-import { spacing } from '../tokens/spacing.stylex';
-import { ScrollArea } from './index';
-
-const releases = Array.from(
-  { length: 12 },
-  (_, index) => `0.2.0-beta.${12 - index}`,
-);
-
-export default function Example() {
-  return (
-    <ScrollArea aria-label="Release history" sx={styles.area}>
-      {releases.map((release) => (
-        <div key={release} {...stylex.props(styles.row)}>
-          <strong>{release}</strong>
-          <span>Native-first component updates</span>
-        </div>
-      ))}
-    </ScrollArea>
-  );
-}
-
-const styles = stylex.create({
-  area: {
-    borderColor: colors.border,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: '12rem',
-  },
-  row: {
-    borderBlockEndColor: colors.border,
-    borderBlockEndStyle: 'solid',
-    borderBlockEndWidth: 1,
-    display: 'grid',
-    gap: spacing.xxxs,
-    padding: spacing.md,
-  },
-});
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -82,6 +42,6 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 - `aria-label` — `string`. Required when `tabIndex={0}` unless `aria-labelledby` is provided.
 - `aria-labelledby` — `string`. Required when `tabIndex={0}` unless `aria-label` is provided.
-- `scrollbar` — `'stable' | 'overlay'`. Default: `'stable'`.
-- `sx` — `stylex.StyleXStyles`.
+- `scrollbar` — `'stable' | 'overlay'`. Chooses reserved-gutter scrollbars or compact overlay scrollbars. Default: `'stable'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 - `tabIndex` — `-1 | 0`. No default; `0` makes the overflow region keyboard-focusable and requires an accessible name.

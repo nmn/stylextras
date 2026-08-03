@@ -4,73 +4,17 @@ description: "Tokenized text elements."
 ---
 
 import Example from "@stylextras/ui/typography/example";
+import exampleCode from "@stylextras/ui/typography/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Typography">
+<ComponentPreview code={exampleCode} name="Typography">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Typography } from './index';
-
-export function TypographyScalesDemo() {
-  return (
-    <>
-      <Typography scale="display" as="h1">
-        Display
-      </Typography>
-      <Typography scale="title" as="h2">
-        Title
-      </Typography>
-      <Typography scale="body" as="p">
-        Body copy
-      </Typography>
-      <Typography scale="label" as="span">
-        Label
-      </Typography>
-    </>
-  );
-}
-
-export function TypographySemanticsDemo() {
-  return (
-    <>
-      <Typography as="h1" scale="display">
-        Heading 1
-      </Typography>
-      <Typography as="h2" scale="title">
-        Heading 2
-      </Typography>
-      <Typography as="h3" scale="title">
-        Heading 3
-      </Typography>
-      <Typography as="p" tone="default">
-        Default paragraph
-      </Typography>
-      <Typography as="p" tone="muted">
-        Muted paragraph
-      </Typography>
-      <Typography as="p" tone="brand">
-        Brand paragraph
-      </Typography>
-    </>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <TypographyScalesDemo />
-      <TypographySemanticsDemo />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -96,8 +40,8 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<T>, "className" | "style">`. The props below complete `TypographyProps`.
 
-- `as` — `T`.
-- `mono` — `boolean`. Default: `false`.
-- `scale` — `TypographyScale`. Default: `'body'`.
-- `sx` — `stylex.StyleXStyles`.
-- `tone` — `TypographyTone`. Default: `'default'`.
+- `as` — `T`. Polymorphic element type used for the rendered text node.
+- `mono` — `boolean`. Switches from the sans token to the monospace font token. Default: `false`.
+- `scale` — `TypographyScale`. Selects the tokenized font size, weight, and line-height treatment. Default: `'body'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `tone` — `TypographyTone`. Selects the semantic foreground-color treatment. Default: `'default'`.

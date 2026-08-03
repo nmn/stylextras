@@ -4,44 +4,17 @@ description: "Direction boundary using the dir attribute."
 ---
 
 import Example from "@stylextras/ui/direction/example";
+import exampleCode from "@stylextras/ui/direction/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Direction">
+<ComponentPreview code={exampleCode} name="Direction">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Button } from '../button';
-import { Field, FieldLabel } from '../field';
-import { Input } from '../input';
-import { Direction } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Direction dir="ltr" lang="en">
-        <Field>
-          <FieldLabel htmlFor="direction-project">Project name</FieldLabel>
-          <Input id="direction-project" defaultValue="Native interface" />
-        </Field>
-        <Button>Save changes</Button>
-      </Direction>
-
-      <Direction dir="rtl" lang="ar">
-        <Field>
-          <FieldLabel htmlFor="direction-project-ar">اسم المشروع</FieldLabel>
-          <Input id="direction-project-ar" defaultValue="واجهة أصلية" />
-        </Field>
-        <Button>حفظ التغييرات</Button>
-      </Direction>
-    </>
-  );
-}
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -67,5 +40,5 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DirectionProps`.
 
-- `dir` — `"ltr" | "rtl"`. Required.
-- `sx` — `stylex.StyleXStyles`.
+- `dir` — `"ltr" | "rtl"`. Text and logical-layout direction supplied to descendants. Required.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

@@ -2,6 +2,11 @@
 
 import * as stylex from '@stylexjs/stylex'
 import {
+  type ComponentType,
+  type FocusEvent,
+  type PointerEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
   createContext,
   use,
   useCallback,
@@ -9,17 +14,9 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  type ComponentType,
-  type FocusEvent,
-  type KeyboardEvent as ReactKeyboardEvent,
-  type PointerEvent,
-  type ReactNode,
 } from 'react'
-import {
-  Button,
-  type AccessibleButtonPropsWithout,
-  type DistributiveOmit,
-} from '../button'
+import { type AccessibleButtonPropsWithout, Button, type DistributiveOmit } from '../button'
+import { useLazyComponent } from '../internal/use-lazy-component'
 import { showPopoverWithSource } from '../platform-polyfills/popover-source'
 import { usePopoverPointerToggleGuard } from './pointer-toggle'
 
@@ -56,22 +53,6 @@ export type LazyPopoverActions = {
 
 const LazyPopoverContext = createContext<LazyPopoverActions | null>(null)
 
-class InvalidLazyPopoverModuleError extends TypeError {}
-
-function resolveLazyPopoverComponent<Props extends object>(module: unknown) {
-  const candidate =
-    typeof module === 'object' && module !== null && 'default' in module
-      ? module.default
-      : undefined
-  const isComponent =
-    typeof candidate === 'function' ||
-    (typeof candidate === 'object' && candidate !== null && '$$typeof' in candidate)
-  if (!isComponent) {
-    throw new InvalidLazyPopoverModuleError('Lazy popover loader must resolve a component default')
-  }
-  return candidate as ComponentType<Props & LazyPopoverContentProps>
-}
-
 function isInitialFocusCandidate(item: HTMLElement) {
   if (
     item.hidden ||
@@ -107,74 +88,43 @@ export function LazyPopover<Props extends object = Record<string, never>>({
   onLoadError,
   preload: preloadMode = 'intent',
 }: LazyPopoverProps<Props>) {
-  const aliveRef = useRef(true)
   const activationAttemptRef = useRef<symbol | null>(null)
   const activationOptionsRef = useRef<LazyPopoverOpenOptions>({ initialFocus })
-  const loadedRef = useRef<ComponentType<Props & LazyPopoverContentProps> | null>(null)
-  const loadRef = useRef<Promise<ComponentType<Props & LazyPopoverContentProps>> | null>(null)
   const [busy, setBusy] = useState(false)
   const [expanded, setExpanded] = useState(false)
-  const [LoadedContent, setLoadedContent] = useState<
-    ComponentType<Props & LazyPopoverContentProps> | null
-  >(null)
   const [status, setStatus] = useState('')
-
-  const focusInitialItem = useCallback(
-    (popover: HTMLElement, focus: LazyPopoverInitialFocus) => {
-      if (focus === 'none') return
-      const items = Array.from(
-        popover.querySelectorAll<HTMLElement>(
-          '[role="menuitem"], [role="option"], [autofocus]',
-        ),
-      ).filter(isInitialFocusCandidate)
-      const item = focus === 'last' ? items.at(-1) : items[0]
-      item?.focus()
-    },
-    [],
+  const {
+    Component: LoadedContent,
+    getLoaded,
+    mount,
+    request: requestModule,
+    reset: resetModule,
+  } = useLazyComponent<Props & LazyPopoverContentProps>(
+    load,
+    'Lazy popover loader must resolve a component default',
   )
 
-  useEffect(() => {
-    aliveRef.current = true
-    return () => {
-      aliveRef.current = false
-    }
+  const focusInitialItem = useCallback((popover: HTMLElement, focus: LazyPopoverInitialFocus) => {
+    if (focus === 'none') return
+    const items = Array.from(
+      popover.querySelectorAll<HTMLElement>('[role="menuitem"], [role="option"], [autofocus]'),
+    ).filter(isInitialFocusCandidate)
+    const item = focus === 'last' ? items.at(-1) : items[0]
+    item?.focus()
   }, [])
 
   const resetAfterFailure = useCallback(
     (error: unknown, announce: boolean) => {
       activationAttemptRef.current = null
-      loadRef.current = null
-      loadedRef.current = null
-      if (!aliveRef.current) return
+      if (!resetModule()) return
       setBusy(false)
       setExpanded(false)
-      setLoadedContent(null)
       if (!announce) return
       setStatus(loadErrorLabel)
       onLoadError?.(error)
     },
-    [loadErrorLabel, onLoadError],
+    [loadErrorLabel, onLoadError, resetModule],
   )
-
-  const requestModule = useCallback(() => {
-    if (loadedRef.current) return Promise.resolve(loadedRef.current)
-    if (!loadRef.current) {
-      const request = Promise.resolve()
-        .then(load)
-        .then((module) => {
-          const Content = resolveLazyPopoverComponent<Props>(module)
-          loadedRef.current = Content
-          return Content
-        })
-      loadRef.current = request
-      void request.catch(() => {
-        if (loadRef.current !== request) return
-        loadRef.current = null
-        loadedRef.current = null
-      })
-    }
-    return loadRef.current
-  }, [load])
 
   const preload = useCallback(() => {
     if (preloadMode === 'intent' && !LoadedContent) void requestModule().catch(() => undefined)
@@ -194,10 +144,7 @@ export function LazyPopover<Props extends object = Record<string, never>>({
       if (LoadedContent) {
         const popover = document.getElementById(id)
         if (!(popover instanceof HTMLElement) || !popover.hasAttribute('popover')) {
-          resetAfterFailure(
-            new TypeError(`Lazy popover content must render [popover]#${id}`),
-            true,
-          )
+          resetAfterFailure(new TypeError(`Lazy popover content must render [popover]#${id}`), true)
           return
         }
         activationAttemptRef.current = null
@@ -217,14 +164,15 @@ export function LazyPopover<Props extends object = Record<string, never>>({
       }
       setBusy(true)
       if (loadingLabel) setStatus(loadingLabel)
-      if (loadedRef.current) {
-        setLoadedContent(() => loadedRef.current)
+      const loaded = getLoaded()
+      if (loaded) {
+        mount(loaded)
         return
       }
       void requestModule()
         .then((Content) => {
-          if (aliveRef.current && activationAttemptRef.current === activationAttempt) {
-            setLoadedContent(() => Content)
+          if (activationAttemptRef.current === activationAttempt) {
+            mount(Content)
           }
         })
         .catch((error: unknown) => {
@@ -236,9 +184,11 @@ export function LazyPopover<Props extends object = Record<string, never>>({
     [
       LoadedContent,
       focusInitialItem,
+      getLoaded,
       id,
       initialFocus,
       loadingLabel,
+      mount,
       requestModule,
       resetAfterFailure,
     ],
@@ -309,10 +259,7 @@ export type LazyPopoverTriggerProps = AccessibleButtonPropsWithout<
   'aria-busy' | 'aria-controls' | 'aria-expanded'
 >
 
-export type LazyPopoverMenuTriggerProps = DistributiveOmit<
-  LazyPopoverTriggerProps,
-  'aria-haspopup'
->
+export type LazyPopoverMenuTriggerProps = DistributiveOmit<LazyPopoverTriggerProps, 'aria-haspopup'>
 
 export function LazyPopoverTrigger({
   onClick,
@@ -381,10 +328,7 @@ export function LazyPopoverTrigger({
 }
 
 /** A menu trigger that supports the APG ArrowDown/ArrowUp open gestures. */
-export function LazyPopoverMenuTrigger({
-  onKeyDown,
-  ...props
-}: LazyPopoverMenuTriggerProps) {
+export function LazyPopoverMenuTrigger({ onKeyDown, ...props }: LazyPopoverMenuTriggerProps) {
   const context = use(LazyPopoverContext)
   if (!context) throw new Error('LazyPopoverMenuTrigger must be rendered inside LazyPopover')
 
@@ -402,13 +346,7 @@ export function LazyPopoverMenuTrigger({
     })
   }
 
-  return (
-    <LazyPopoverTrigger
-      {...props}
-      aria-haspopup="menu"
-      onKeyDown={handleKeyDown}
-    />
-  )
+  return <LazyPopoverTrigger {...props} aria-haspopup="menu" onKeyDown={handleKeyDown} />
 }
 
 const styles = stylex.create({

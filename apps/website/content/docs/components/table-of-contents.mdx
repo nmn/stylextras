@@ -4,39 +4,13 @@ description: "Named native outline with nested-list hierarchy."
 ---
 
 import Example from "@stylextras/ui/table-of-contents/example";
+import exampleCode from "@stylextras/ui/table-of-contents/example?raw";
 
 ## Examples
 
-<ComponentPreview name="TableOfContents">
+<ComponentPreview code={exampleCode} name="TableOfContents">
   <Example />
 </ComponentPreview>
-
-### Example code
-
-```tsx
-import {
-  TableOfContents,
-  TableOfContentsItem,
-  TableOfContentsLink,
-  TableOfContentsList,
-  TableOfContentsTitle,
-} from '@stylextras/ui/table-of-contents';
-
-export default function Example() {
-  return (
-    <TableOfContents aria-labelledby="toc-title">
-      <TableOfContentsTitle id="toc-title">On this page</TableOfContentsTitle>
-      <TableOfContentsList>
-        <TableOfContentsItem>
-          <TableOfContentsLink active href="#overview">
-            Overview
-          </TableOfContentsLink>
-        </TableOfContentsItem>
-      </TableOfContentsList>
-    </TableOfContents>
-  );
-}
-```
 
 ## Usage
 
@@ -108,7 +82,44 @@ consumer remains responsible for calculating the active heading.
 
 `TableOfContentsProps`
 
-- Every part accepts its native props, a forwarded ref, and `sx`.
-- `TableOfContents` — requires `aria-label` or `aria-labelledby`.
-- `TableOfContentsTitle.as` — `h2 | h3 | h4 | h5 | h6`. Default: `h2`.
-- `TableOfContentsLink.active` — `boolean`. Default: `false`.
+Complete native/inherited prop base is native `nav` props with component-owned styling and one required accessible name.
+
+- `aria-label` — Direct navigation-landmark name; required unless `aria-labelledby` is provided.
+- `aria-labelledby` — ID of visible text naming the landmark; required unless `aria-label` is provided.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+
+### TableOfContentsTitle
+
+`TableOfContentsTitleProps`
+
+Complete native/inherited prop base is the selected heading element's native props.
+
+- `as` — `'h2' | 'h3' | 'h4' | 'h5' | 'h6'`. Default: `'h2'`; match the page outline.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+
+### TableOfContentsList
+
+`TableOfContentsListProps`
+
+Complete native/inherited prop base is native `ol` props with `role="list"` restored by the component.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+
+### TableOfContentsItem
+
+`TableOfContentsItemProps`
+
+Complete native/inherited prop base is native `li` props.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+
+### TableOfContentsLink
+
+`TableOfContentsLinkProps`
+
+Complete native/inherited prop base is native anchor props with `href` and `aria-current` managed explicitly.
+
+- `active` — `boolean`. Marks this link as the current document location with `aria-current`. Default: `false`.
+- `aria-current` — Native `aria-current` value used when `active` is false.
+- `href` — `string`. Required in-page hash destination.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

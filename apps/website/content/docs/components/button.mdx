@@ -4,68 +4,13 @@ description: "Styled native button including icon sizes."
 ---
 
 import Example from "@stylextras/ui/button/example";
+import exampleCode from "@stylextras/ui/button/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Button">
+<ComponentPreview code={exampleCode} name="Button">
   <Example />
 </ComponentPreview>
-
-### Example code
-
-```tsx
-'use client';
-
-import { Button, ButtonLink } from './index';
-
-export function ButtonVariantsDemo() {
-  return (
-    <>
-      <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="outline">Outline</Button>
-      <Button variant="ghost">Ghost</Button>
-      <Button variant="link">Link</Button>
-      <Button variant="danger">Danger</Button>
-    </>
-  );
-}
-
-export function ButtonSizesDemo() {
-  return (
-    <>
-      <Button size="sm">Small</Button>
-      <Button size="md">Medium</Button>
-      <Button size="lg">Large</Button>
-      <Button size="icon" aria-label="Add item">
-        +
-      </Button>
-      <Button disabled>Disabled</Button>
-    </>
-  );
-}
-
-export function ButtonLinksDemo() {
-  return (
-    <>
-      <ButtonLink href="#primary-link">Primary link</ButtonLink>
-      <ButtonLink href="#outline-link" variant="outline">
-        Outline link
-      </ButtonLink>
-    </>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <ButtonVariantsDemo />
-      <ButtonSizesDemo />
-      <ButtonLinksDemo />
-    </>
-  );
-}
-```
 
 ## Usage
 
@@ -133,10 +78,10 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "size" | "style">`, combined as the size-discriminated `AccessibleButtonProps` union. Icon-size branches require `AccessibleIconButtonName`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `type` — `ButtonProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'primary'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — `ButtonProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'primary'`.
 
 ### ButtonLink
 
@@ -147,6 +92,6 @@ Complete native/inherited prop base:
 the size-discriminated `AccessibleButtonLinkProps` union.
 
 - `href` — `string`. Required real navigation destination.
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `variant` — `ButtonVariant`. Default: `'primary'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'primary'`.

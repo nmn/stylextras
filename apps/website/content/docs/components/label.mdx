@@ -4,29 +4,17 @@ description: "Styled native label."
 ---
 
 import Example from "@stylextras/ui/label/example";
+import exampleCode from "@stylextras/ui/label/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Label">
+<ComponentPreview code={exampleCode} name="Label">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Label } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Label htmlFor="name">Name</Label>
-      <Label htmlFor="slug">Slug</Label>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -52,4 +40,4 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"label">, "className" | "style">`. The props below complete `LabelProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

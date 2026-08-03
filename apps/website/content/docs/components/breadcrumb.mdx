@@ -4,45 +4,17 @@ description: "Semantic breadcrumb navigation."
 ---
 
 import Example from "@stylextras/ui/breadcrumb/example";
+import exampleCode from "@stylextras/ui/breadcrumb/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Breadcrumb">
+<ComponentPreview code={exampleCode} name="Breadcrumb">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from './index';
-
-export default function Example() {
-  return (
-    <Breadcrumb aria-label="Breadcrumb">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/docs">Docs</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Button</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -77,7 +49,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "
 
 - `aria-label` — `string`. Required unless `aria-labelledby` is provided.
 - `aria-labelledby` — `string`. Required unless `aria-label` is provided.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### BreadcrumbItem
 
@@ -85,7 +57,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"nav">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "style">`. The props below complete `BreadcrumbItemProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### BreadcrumbLink
 
@@ -93,7 +65,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "className" | "style">`. The props below complete `BreadcrumbLinkProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### BreadcrumbList
 
@@ -101,7 +73,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "cl
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ol">, "className" | "style">`. The props below complete `BreadcrumbListProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### BreadcrumbPage
 
@@ -109,8 +81,8 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ol">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `BreadcrumbPageProps`.
 
-- `aria-current` — `BreadcrumbPageProps["aria-current"]`. Default: `'page'`.
-- `sx` — `stylex.StyleXStyles`.
+- `aria-current` — `BreadcrumbPageProps["aria-current"]`. Identifies this breadcrumb as the current page. Default: `'page'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### BreadcrumbSeparator
 
@@ -118,5 +90,5 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, 
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "aria-hidden" | "className" | "style">`. The props below complete `BreadcrumbSeparatorProps`.
 
-- `children` — `BreadcrumbSeparatorProps["children"]`. Default: `'/'`.
-- `sx` — `stylex.StyleXStyles`.
+- `children` — `BreadcrumbSeparatorProps["children"]`. Decorative separator rendered between breadcrumb items. Default: `'/'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

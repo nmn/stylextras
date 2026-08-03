@@ -4,31 +4,19 @@ description: "Semantic list for static tags."
 ---
 
 import Example from "@stylextras/ui/experimental/tag-group/example";
+import exampleCode from "@stylextras/ui/experimental/tag-group/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="TagGroup">
+<ComponentPreview code={exampleCode} name="TagGroup">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Badge } from '../badge';
-import { TagItem, TagList } from './index';
-
-export default function Example() {
-  return (
-    <TagList aria-label="Component metadata">
-      <TagItem><Badge>Design system</Badge></TagItem>
-      <TagItem><Badge>Experimental</Badge></TagItem>
-      <TagItem><Badge>Native popup</Badge></TagItem>
-    </TagList>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -58,7 +46,7 @@ Native `ul` props, including accessible naming, standard ARIA/data attributes, e
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "style">`. The props below complete `TagListProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### TagItem
 

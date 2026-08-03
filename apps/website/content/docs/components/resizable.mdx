@@ -4,51 +4,17 @@ description: "Keyboard-accessible split pane."
 ---
 
 import Example from "@stylextras/ui/resizable/example";
+import exampleCode from "@stylextras/ui/resizable/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Resizable">
+<ComponentPreview code={exampleCode} name="Resizable">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import * as stylex from '@stylexjs/stylex';
-import { colors } from '../tokens/color.stylex';
-import { spacing } from '../tokens/spacing.stylex';
-import { Resizable, ResizableHandle, ResizablePanel } from './index';
-
-export default function Example() {
-  return (
-    <Resizable defaultValue={38} sx={styles.root}>
-      <ResizablePanel id="editor-navigation" sx={styles.panel}>Navigation and files</ResizablePanel>
-      <ResizableHandle
-        aria-label="Resize editor panels"
-        aria-controls="editor-navigation editor-preview"
-      />
-      <ResizablePanel id="editor-preview" sx={styles.panel}>Editor preview</ResizablePanel>
-    </Resizable>
-  );
-}
-
-const styles = stylex.create({
-  root: {
-    borderColor: colors.border,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: '13rem',
-    width: '100%',
-  },
-  panel: {
-    backgroundColor: colors.surface,
-    color: colors.fgMuted,
-    padding: spacing.md,
-  },
-});
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -82,13 +48,13 @@ Shift+Arrow uses a larger step, and Home/End move to the normalized bounds.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "defaultValue" | "style">`. The props below complete `ResizableProps`.
 
-- `defaultValue` — `number`. Default: `50`.
-- `direction` — `"vertical" | "horizontal"`. Default: `'horizontal'`.
-- `max` — `number`. Default: `90`.
-- `min` — `number`. Default: `10`.
-- `onValueChange` — `(value: number) => void`.
-- `sx` — `stylex.StyleXStyles`.
-- `value` — `number`.
+- `defaultValue` — `number`. Initial value for uncontrolled usage. Default: `50`.
+- `direction` — `"vertical" | "horizontal"`. Controls the pane layout and resize-key axis. Default: `'horizontal'`.
+- `max` — `number`. Inclusive upper bound. Default: `90`.
+- `min` — `number`. Inclusive lower bound. Default: `10`.
+- `onValueChange` — `(value: number) => void`. Called when user interaction requests a new numeric value.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `value` — `number`. Current controlled numeric value; pair it with `onValueChange`.
 
 ### ResizableHandle
 
@@ -100,9 +66,9 @@ orientation, numeric value attributes, value text, accessible-name fields, and
 
 - `aria-label` or `aria-labelledby` — Required accessible separator name.
 - `aria-controls` — `string`. Required ID reference for the affected panels.
-- `getValueText` — `(value: number) => string`. Default: percentage text such as `"38%"`.
-- `sx` — `stylex.StyleXStyles`.
-- `tabIndex` — `ResizableHandleProps["tabIndex"]`. Default: `0`.
+- `getValueText` — `(value: number) => string`. Produces localized `aria-valuetext` for the current split percentage. Default: percentage text such as `"38%"`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `tabIndex` — `ResizableHandleProps["tabIndex"]`. Keeps the separator handle reachable for keyboard resizing. Default: `0`.
 
 ### ResizablePanel
 
@@ -110,4 +76,4 @@ orientation, numeric value attributes, value text, accessible-name fields, and
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ResizablePanelProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

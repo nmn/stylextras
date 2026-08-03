@@ -96,7 +96,6 @@ import { Toaster, toast } from "@stylextras/ui/toast";
 import { Toggle } from "@stylextras/ui/toggle";
 import { ToggleGroup } from "@stylextras/ui/toggle-group";
 import { Tooltip, TooltipTrigger } from "@stylextras/ui/tooltip";
-import { installInterestInvokerFallback } from "@stylextras/ui/platform-polyfills/interest-invoker-fallback";
 import { colorThemes } from "@stylextras/ui/color-themes";
 import { radiusThemes } from "@stylextras/ui/radius-themes";
 import { spacingThemes } from "@stylextras/ui/spacing-themes";
@@ -170,11 +169,23 @@ export function UiTestHarness() {
     const trigger = fallbackTriggerRef.current;
     const popover = fallbackPopoverRef.current;
     if (!trigger || !popover) return;
-    return installInterestInvokerFallback(trigger, popover, {
-      hideDelay: 0,
-      interactive: false,
-      showDelay: 0,
-    });
+    let cancelled = false;
+    let removeFallback: (() => void) | undefined;
+    void import("@stylextras/ui/platform-polyfills/interest-invoker-fallback").then(
+      ({ installInterestInvokerFallback }) => {
+        if (cancelled) return;
+        removeFallback = installInterestInvokerFallback(trigger, popover, {
+          hideDelay: 0,
+          interactive: false,
+          showDelay: 0,
+        });
+      },
+      () => undefined,
+    );
+    return () => {
+      cancelled = true;
+      removeFallback?.();
+    };
   }, []);
 
   return (

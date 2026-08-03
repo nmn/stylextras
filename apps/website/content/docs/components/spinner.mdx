@@ -4,29 +4,17 @@ description: "Reduced-motion-aware progress indicator."
 ---
 
 import Example from "@stylextras/ui/spinner/example";
+import exampleCode from "@stylextras/ui/spinner/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Spinner">
+<ComponentPreview code={exampleCode} name="Spinner">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Spinner } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Spinner aria-labelledby="loading-label" />
-      <span id="loading-label">Loading account data…</span>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -54,4 +42,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"progress
 
 - `aria-label` — `string`. Required unless `aria-labelledby` is provided.
 - `aria-labelledby` — `string`. Required unless `aria-label` is provided.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

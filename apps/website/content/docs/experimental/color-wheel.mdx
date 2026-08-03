@@ -4,24 +4,19 @@ description: "Circular native color-input fallback."
 ---
 
 import Example from "@stylextras/ui/experimental/color-wheel/example";
+import exampleCode from "@stylextras/ui/experimental/color-wheel/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="ColorWheel">
+<ComponentPreview code={exampleCode} name="ColorWheel">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { ColorWheel } from './index';
-
-export default function Example() {
-  return <ColorWheel aria-label="Wheel color" defaultValue="#7c3aed" />;
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -47,4 +42,4 @@ Any native input prop not named in `Omit` remains accepted, including standard A
 
 Complete native/inherited prop base: `ColorFieldProps`, which is `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `ColorWheelProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

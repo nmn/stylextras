@@ -4,64 +4,17 @@ description: "Popover menu opened from a context gesture."
 ---
 
 import Example from "@stylextras/ui/context-menu/example";
+import exampleCode from "@stylextras/ui/context-menu/example?raw";
 
 ## Examples
 
-<ComponentPreview name="ContextMenu">
+<ComponentPreview code={exampleCode} name="ContextMenu">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
-import { colors } from '../tokens/color.stylex';
-import { radius } from '../tokens/radius.stylex';
-import { spacing } from '../tokens/spacing.stylex';
-import { stroke } from '../tokens/stroke.stylex';
-import {
-  ContextMenu,
-  ContextMenuButton,
-  ContextMenuGroup,
-  ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-} from './index';
-
-const menuId = 'canvas-context-menu';
-const groupLabelId = 'canvas-context-menu-label';
-
-export default function Example() {
-  return (
-    <>
-      <ContextMenuButton target={menuId}>Canvas actions</ContextMenuButton>
-      <ContextMenuTrigger aria-label="Canvas actions" target={menuId} sx={styles.target}>
-        Open the context menu anywhere in this area
-      </ContextMenuTrigger>
-      <ContextMenu id={menuId} aria-label="Canvas actions">
-        <ContextMenuGroup aria-labelledby={groupLabelId}>
-          <ContextMenuLabel id={groupLabelId}>Canvas</ContextMenuLabel>
-          <ContextMenuItem>Paste</ContextMenuItem>
-          <ContextMenuItem>Duplicate</ContextMenuItem>
-        </ContextMenuGroup>
-        <ContextMenuSeparator />
-        <ContextMenuItem>Delete</ContextMenuItem>
-      </ContextMenu>
-    </>
-  );
-}
-
-const styles = stylex.create({
-  target: {
-    borderColor: colors.border,
-    borderRadius: radius.sm,
-    borderStyle: 'dashed',
-    borderWidth: stroke.thin,
-    padding: spacing.xxl,
-  },
-});
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -106,7 +59,7 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "popover" | "role" | "style">`. The props below complete `ContextMenuProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 - One of `aria-label` or `aria-labelledby` is required.
 
 ### ContextMenuButton
@@ -115,7 +68,11 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete inherited prop base: `AccessibleButtonPropsWithout<"aria-controls" | "aria-haspopup" | "popoverTarget" | "popoverTargetAction">`.
 
-- `target` — `string`. Required.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `size` — Accessible `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`; icon sizes require `aria-label` or `aria-labelledby`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — Native button type. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.
 - Icon sizes require `aria-label` or `aria-labelledby`.
 
 ### ContextMenuItem
@@ -125,14 +82,15 @@ Complete inherited prop base: `AccessibleButtonPropsWithout<"aria-controls" | "a
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "role" | "style">`. The props below complete `ContextMenuItemProps`.
 
 - `disabled` — `boolean`. Default: `false`. Rendered as `aria-disabled` so the item remains discoverable.
-- `sx` — `stylex.StyleXStyles`.
-- `type` — `ContextMenuItemProps["type"]`. Default: `'button'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — `ContextMenuItemProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
 
 ### ContextMenuGroup
 
 `ContextMenuGroupProps` extends native `div` props with a forwarded ref and `sx`.
 
 - `aria-labelledby` — Required ID reference to the group's `ContextMenuLabel`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ContextMenuLabel
 
@@ -140,7 +98,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `ContextMenuLabelProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ContextMenuSeparator
 
@@ -148,7 +106,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "className" | "style">`. The props below complete `ContextMenuSeparatorProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### ContextMenuTrigger
 
@@ -156,10 +114,10 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">`. The props below complete `ContextMenuTriggerProps`.
 
-- `aria-controls` — Set to `target`.
-- `aria-haspopup` — `ContextMenuTriggerProps["aria-haspopup"]`. Default: `'menu'`.
-- `role` — Fixed to `'group'`.
-- `tabIndex` — Default: `0`.
+- `aria-controls` — Identifies the context-menu popover referenced by `target`.
+- `aria-haspopup` — `ContextMenuTriggerProps["aria-haspopup"]`. Announces the kind of popup controlled by the trigger. Default: `'menu'`.
+- `role` — Fixed to `'group'` so the focusable context-menu area has group semantics.
+- `tabIndex` — Adds the context-menu area to the ordinary Tab order. Default: `0`.
 - One of `aria-label` or `aria-labelledby` is required.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.

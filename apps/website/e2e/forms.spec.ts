@@ -57,7 +57,8 @@ test('Combobox filters, exposes active descendant, selects, submits, escapes, an
   const empty = content.getByText('No results found.')
 
   await expect(input).toHaveValue('React')
-  await expect(input).toHaveAttribute('aria-controls', await listbox.getAttribute('id') as string)
+  await expect(content).toHaveAttribute('popover', 'auto')
+  await expect(input).toHaveAttribute('aria-controls', (await listbox.getAttribute('id')) as string)
   await expect(input).not.toHaveAttribute('aria-activedescendant')
   await expect(listbox.locator('[aria-selected="true"]')).toHaveCount(1)
   await expect(listbox.getByText('No results found.')).toHaveCount(0)
@@ -130,7 +131,9 @@ test('Combobox follows live DOM order and handles duplicate and disabled-only re
   await expect(content.getByRole('status')).toHaveText('1 framework available.')
 })
 
-test('controlled Combobox preserves typing and resolves a value registered later', async ({ page }) => {
+test('controlled Combobox preserves typing and resolves a value registered later', async ({
+  page,
+}) => {
   const input = page.getByTestId('controlled-combobox-input')
   await expect(input).toHaveValue('React')
 
@@ -159,9 +162,9 @@ test('Combobox closes and blocks programmatic selection when its root becomes di
 
   await input.click()
   await expect(content).toBeVisible()
-  await page.getByTestId('toggle-combobox-disabled').evaluate((button: HTMLButtonElement) =>
-    button.click(),
-  )
+  await page
+    .getByTestId('toggle-combobox-disabled')
+    .evaluate((button: HTMLButtonElement) => button.click())
   await expect(input).toBeDisabled()
   await expect(input).toHaveAttribute('aria-expanded', 'false')
   await expect(input).not.toHaveAttribute('aria-activedescendant')

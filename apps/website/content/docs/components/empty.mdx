@@ -4,29 +4,17 @@ description: "Empty-state content composition."
 ---
 
 import Example from "@stylextras/ui/empty/example";
+import exampleCode from "@stylextras/ui/empty/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Empty">
+<ComponentPreview code={exampleCode} name="Empty">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Empty } from './index';
-
-export default function Example() {
-  return (
-    <Empty>
-      <h3>No items yet</h3>
-      <span>Create the first item to populate this view.</span>
-    </Empty>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -52,4 +40,4 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `EmptyProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

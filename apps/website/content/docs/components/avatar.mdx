@@ -4,35 +4,17 @@ description: "Image and text fallback avatar."
 ---
 
 import Example from "@stylextras/ui/avatar/example";
+import exampleCode from "@stylextras/ui/avatar/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Avatar">
+<ComponentPreview code={exampleCode} name="Avatar">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Avatar, AvatarFallback, AvatarImage } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Avatar size="sm" aria-label="Avery Kim">
-        <AvatarFallback>AK</AvatarFallback>
-      </Avatar>
-      <Avatar aria-label="Taylor Reed">
-        <AvatarFallback>TR</AvatarFallback>
-      </Avatar>
-      <Avatar size="lg" aria-label="Sam Carter">
-        <AvatarImage src="https://github.com/shadcn.png" alt="Sam Carter" />
-        <AvatarFallback>SC</AvatarFallback>
-      </Avatar>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -60,8 +42,8 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base omits `aria-hidden`, `aria-label`, `aria-labelledby`, `className`, `role`, and `style`. Supply `aria-label`, `aria-labelledby`, or `aria-hidden={true}`.
 
-- `size` — `AvatarSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
+- `size` — `AvatarSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### AvatarFallback
 
@@ -69,7 +51,7 @@ Complete native/inherited prop base omits `aria-hidden`, `aria-label`, `aria-lab
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "className" | "style">`. The props below complete `AvatarFallbackProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### AvatarImage
 
@@ -78,4 +60,4 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"img">, "alt" | "className" | "style">`. The props below complete `AvatarImageProps`.
 
 - `alt` — Native image alternative text; the named Avatar root remains the single exposed image semantic.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

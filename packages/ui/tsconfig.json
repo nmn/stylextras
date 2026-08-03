@@ -9,6 +9,12 @@
       ],
       "@stylextras/ui/platform-polyfills/invoker-command-fallback": [
         "src/platform-polyfills/invoker-command-fallback.ts"
+      ],
+      "@stylextras/ui/platform-polyfills/focusgroup-fallback": [
+        "src/platform-polyfills/focusgroup-fallback.ts"
+      ],
+      "@stylextras/ui/platform-polyfills/dialog-closedby-fallback": [
+        "src/platform-polyfills/dialog-closedby-fallback.ts"
       ]
     }
   },

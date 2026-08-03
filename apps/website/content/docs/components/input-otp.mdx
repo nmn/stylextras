@@ -4,36 +4,17 @@ description: "One-time-code input controller."
 ---
 
 import Example from "@stylextras/ui/input-otp/example";
+import exampleCode from "@stylextras/ui/input-otp/example?raw";
 
 ## Examples
 
-<ComponentPreview name="InputOTP">
+<ComponentPreview code={exampleCode} name="InputOTP">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Field, FieldDescription, FieldLabel } from '../field';
-import { InputOTP } from './index';
-
-export default function Example() {
-  return (
-    <Field>
-      <FieldLabel htmlFor="verification-code">Six-digit code</FieldLabel>
-      <InputOTP
-        id="verification-code"
-        aria-describedby="verification-code-description"
-        name="code"
-        defaultValue="204816"
-      />
-      <FieldDescription id="verification-code-description">
-        Paste or type the code from your authenticator.
-      </FieldDescription>
-    </Field>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -59,8 +40,9 @@ This component uses a focused client controller for composite state and keyboard
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "inputMode" | "style" | "type">`. The props below complete `InputOTPProps`.
 
-- `autoComplete` — `InputOTPProps["autoComplete"]`. Default: `'one-time-code'`.
+- `autoComplete` — `InputOTPProps["autoComplete"]`. Provides the native browser autofill hint. Default: `'one-time-code'`.
 - `length` — `number`. Default: `6`. Number of characters accepted.
-- `maxLength` — `InputOTPProps["maxLength"]`. Default: `length`.
-- `pattern` — `InputOTPProps["pattern"]`. Default: `'[0-9]*'`.
-- `sx` — `stylex.StyleXStyles`.
+- `maxLength` — `InputOTPProps["maxLength"]`. Native maximum length kept in sync with the rendered cell count. Default: `length`.
+- `minLength` — `InputOTPProps["minLength"]`. Native minimum length kept in sync with the rendered cell count and validity model. Default: `length`.
+- `pattern` — `InputOTPProps["pattern"]`. Native validation pattern for accepted one-time-code characters. Default: `'[0-9]*'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

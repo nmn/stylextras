@@ -4,33 +4,17 @@ description: "Styled native progress element."
 ---
 
 import Example from "@stylextras/ui/progress/example";
+import exampleCode from "@stylextras/ui/progress/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Progress">
+<ComponentPreview code={exampleCode} name="Progress">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Label } from '../label';
-import { Progress } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Label htmlFor="tokens-progress">Token migration · 82%</Label>
-      <Progress id="tokens-progress" value={82} />
-      <Label htmlFor="components-progress">Component migration · 64%</Label>
-      <Progress id="components-progress" value={64} />
-      <Label htmlFor="indeterminate-progress">Publishing package</Label>
-      <Progress id="indeterminate-progress" />
-    </>
-  );
-}
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -56,5 +40,5 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"progress">, "className" | "style">`. The props below complete `ProgressProps`.
 
-- `max` — `ProgressProps["max"]`. Default: `100`.
-- `sx` — `stylex.StyleXStyles`.
+- `max` — `ProgressProps["max"]`. Upper bound used to normalize the current progress value. Default: `100`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

@@ -4,48 +4,17 @@ description: "Interest-triggered interactive hint popover."
 ---
 
 import Example from "@stylextras/ui/hover-card/example";
+import exampleCode from "@stylextras/ui/hover-card/example?raw";
 
 ## Examples
 
-<ComponentPreview name="HoverCard">
+<ComponentPreview code={exampleCode} name="HoverCard">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Button } from '../button';
-import {
-  HoverCard,
-  HoverCardDescription,
-  HoverCardHeader,
-  HoverCardTitle,
-  HoverCardTrigger,
-} from './index';
-
-const cardId = 'browser-apis-hover-card';
-
-export default function Example() {
-  return (
-    <>
-      <HoverCardTrigger target={cardId}>New browser APIs</HoverCardTrigger>
-      <HoverCard id={cardId}>
-        <HoverCardHeader>
-          <HoverCardTitle>Native-first overlays</HoverCardTitle>
-          <HoverCardDescription>
-            Invoker relationships and anchor positioning replace most overlay
-            JavaScript.
-          </HoverCardDescription>
-        </HoverCardHeader>
-        <Button size="sm" variant="outline">
-          Learn more
-        </Button>
-      </HoverCard>
-    </>
-  );
-}
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -75,8 +44,8 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "style">`. The props below complete `HoverCardProps`.
 
-- `placement` — `HoverCardPlacement`. Default: `'bottom'`.
-- `sx` — `stylex.StyleXStyles`.
+- `placement` — `HoverCardPlacement`. Sets the preferred anchored edge; the browser may flip it to remain visible. Default: `'bottom'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### HoverCardDescription
 
@@ -84,7 +53,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "className" | "style">`. The props below complete `HoverCardDescriptionProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### HoverCardHeader
 
@@ -92,7 +61,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"p">, "cl
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"header">, "className" | "style">`. The props below complete `HoverCardHeaderProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### HoverCardTitle
 
@@ -100,7 +69,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"header">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "className" | "style">`. The props below complete `HoverCardTitleProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### HoverCardTrigger
 
@@ -108,11 +77,11 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"h3">, "c
 
 Complete native/inherited prop base: `ButtonProps`. The props below complete `HoverCardTriggerProps`.
 
-- `hideDelay` — `number`.
-- `popoverTargetAction` — `HoverCardTriggerProps["popoverTargetAction"]`. Default: `'toggle'`.
-- `showDelay` — `number`.
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `HoverCardTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'link'`.
+- `hideDelay` — `number`. Milliseconds to wait before hiding after interest leaves the trigger and surface.
+- `popoverTargetAction` — `HoverCardTriggerProps["popoverTargetAction"]`. Native action performed on the referenced popover. Default: `'toggle'`.
+- `showDelay` — `number`. Milliseconds to wait before showing after hover or focus interest begins.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `HoverCardTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'link'`.

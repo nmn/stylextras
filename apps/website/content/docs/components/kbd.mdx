@@ -4,38 +4,17 @@ description: "Keyboard-key label."
 ---
 
 import Example from "@stylextras/ui/kbd/example";
+import exampleCode from "@stylextras/ui/kbd/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Kbd">
+<ComponentPreview code={exampleCode} name="Kbd">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Kbd } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <Kbd>cmd</Kbd>
-      <Kbd>k</Kbd>
-      <Kbd>cmd</Kbd>
-      <Kbd>s</Kbd>
-      <Kbd>shift</Kbd>
-      <Kbd>enter</Kbd>
-
-      <Kbd size="sm">esc</Kbd>
-      <Kbd size="sm">/</Kbd>
-      <Kbd size="md">shift</Kbd>
-      <Kbd size="md">enter</Kbd>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -61,5 +40,5 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"kbd">, "className" | "style">`. The props below complete `KbdProps`.
 
-- `size` — `KbdSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
+- `size` — `KbdSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

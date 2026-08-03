@@ -4,34 +4,17 @@ description: "Ratio-preserving content frame."
 ---
 
 import Example from "@stylextras/ui/aspect-ratio/example";
+import exampleCode from "@stylextras/ui/aspect-ratio/example?raw";
 
 ## Examples
 
-<ComponentPreview name="AspectRatio">
+<ComponentPreview code={exampleCode} name="AspectRatio">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { AspectRatio } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <AspectRatio ratio="square">Square</AspectRatio>
-
-      <AspectRatio ratio="video">Video</AspectRatio>
-
-      <AspectRatio ratio="portrait">Portrait</AspectRatio>
-
-      <AspectRatio ratio="landscape">Landscape</AspectRatio>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -57,5 +40,5 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `AspectRatioProps`.
 
-- `ratio` — `AspectRatioValue`. Default: `"video"`.
-- `sx` — `stylex.StyleXStyles`.
+- `ratio` — `AspectRatioValue`. Controls the rendered width-to-height proportion. Default: `"video"`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

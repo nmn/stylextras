@@ -4,91 +4,17 @@ description: "Responsive application sidebar."
 ---
 
 import Example from "@stylextras/ui/sidebar/example";
+import exampleCode from "@stylextras/ui/sidebar/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Sidebar">
+<ComponentPreview code={exampleCode} name="Sidebar">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuLink,
-  SidebarNavigation,
-  SidebarTrigger,
-} from './index';
-
-function WorkspaceNavigation({
-  id,
-  mode = 'inline',
-}: {
-  id?: string;
-  mode?: 'inline' | 'popover';
-}) {
-  return (
-    <Sidebar id={id} mode={mode} aria-label="Workspace sidebar">
-      <SidebarHeader>Acme workspace</SidebarHeader>
-      <SidebarContent>
-        <SidebarNavigation aria-label="Workspace">
-          <SidebarGroup>
-            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuLink aria-current="page" href="/workspace">
-                  Overview
-                </SidebarMenuLink>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuLink href="/workspace/projects">Projects</SidebarMenuLink>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuLink href="/workspace/team">Team</SidebarMenuLink>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel>Manage</SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuLink href="/workspace/settings">Settings</SidebarMenuLink>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-        </SidebarNavigation>
-      </SidebarContent>
-      <SidebarFooter>Signed in as Ada</SidebarFooter>
-    </Sidebar>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <WorkspaceNavigation />
-
-      <SidebarTrigger
-        aria-label="Toggle workspace sidebar"
-        target="workspace-popover-sidebar"
-      >
-        ☰
-      </SidebarTrigger>
-      <WorkspaceNavigation id="workspace-popover-sidebar" mode="popover" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -129,8 +55,8 @@ presentation features do not change the underlying links or landmark structure.
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"aside">, "aria-label" | "aria-labelledby" | "className" | "popover" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required accessible region name.
-- `mode` — `"popover" | "inline"`. Default: `'inline'`.
-- `sx` — `stylex.StyleXStyles`.
+- `mode` — `"popover" | "inline"`. Chooses a native top-layer popover or an in-flow sidebar. Default: `'inline'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SidebarContent
 
@@ -138,7 +64,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"aside">,
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarContentProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SidebarFooter
 
@@ -146,7 +72,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarFooterProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SidebarGroup
 
@@ -154,7 +80,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarGroupProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SidebarGroupLabel
 
@@ -163,7 +89,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 Complete native/inherited prop base is the selected polymorphic heading element.
 
 - `as` — React element type. Default: `h3`; choose the heading level that fits the page outline.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SidebarHeader
 
@@ -171,7 +97,7 @@ Complete native/inherited prop base is the selected polymorphic heading element.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SidebarHeaderProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SidebarMenu
 
@@ -179,7 +105,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "className" | "role" | "style">`; `role="list"` is restored explicitly.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SidebarMenuButton
 
@@ -187,8 +113,8 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"ul">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "style">`. The props below complete `SidebarMenuButtonProps`.
 
-- `sx` — `stylex.StyleXStyles`.
-- `type` — `SidebarMenuButtonProps["type"]`. Default: `'button'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — `SidebarMenuButtonProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
 
 ### SidebarMenuItem
 
@@ -196,7 +122,15 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"li">, "className" | "style">`. The props below complete `SidebarMenuItemProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+
+### SidebarMenuLink
+
+`SidebarMenuLinkProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"a">, "className" | "style">`.
+
+- `sx` — `stylex.StyleXStyles`. Composed after the shared sidebar menu-control presentation; native anchor props such as `href`, `target`, and `aria-current` remain available.
 
 ### SidebarTrigger
 
@@ -206,12 +140,12 @@ Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popov
 
 - `aria-label` — `string`. Required unless `aria-labelledby` is provided.
 - `aria-labelledby` — `string`. Required unless `aria-label` is provided.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `SidebarTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `SidebarTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.
 
 ### SidebarNavigation
 
 - `aria-label` or `aria-labelledby` — Required accessible navigation-landmark name.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

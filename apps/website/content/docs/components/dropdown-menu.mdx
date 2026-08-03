@@ -4,50 +4,17 @@ description: "Popover menu with focusgroup navigation."
 ---
 
 import Example from "@stylextras/ui/dropdown-menu/example";
+import exampleCode from "@stylextras/ui/dropdown-menu/example?raw";
 
 ## Examples
 
-<ComponentPreview name="DropdownMenu">
+<ComponentPreview code={exampleCode} name="DropdownMenu">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from './index';
-
-const menuId = 'project-actions-menu';
-const groupLabelId = 'project-actions-label';
-
-export default function Example() {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger target={menuId}>Actions</DropdownMenuTrigger>
-      <DropdownMenuContent id={menuId}>
-        <DropdownMenuGroup aria-labelledby={groupLabelId}>
-          <DropdownMenuLabel id={groupLabelId}>Project</DropdownMenuLabel>
-          <DropdownMenuItem>
-            Rename <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>Duplicate</DropdownMenuItem>
-          <DropdownMenuItem disabled>Deploy (unavailable)</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>Archive</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -85,7 +52,7 @@ the group to `DropdownMenuLabel` with `aria-labelledby`.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DropdownMenuProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DropdownMenuContent
 
@@ -93,8 +60,8 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "popover" | "role" | "style">`. The props below complete `DropdownMenuContentProps`.
 
-- `placement` — `DropdownMenuPlacement`. Default: `'bottom'`.
-- `sx` — `stylex.StyleXStyles`.
+- `placement` — `DropdownMenuPlacement`. Sets the preferred anchored edge; the browser may flip it to remain visible. Default: `'bottom'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DropdownMenuItem
 
@@ -102,16 +69,17 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "role" | "style">`. The props below complete `DropdownMenuItemProps`.
 
-- `closeOnSelect` — `boolean`. Default: `true`.
+- `closeOnSelect` — `boolean`. Closes the owning menu after this item activates when enabled. Default: `true`.
 - `disabled` — `boolean`. Default: `false`. Rendered as `aria-disabled` so the item remains focusable.
-- `sx` — `stylex.StyleXStyles`.
-- `type` — `DropdownMenuItemProps["type"]`. Default: `'button'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — `DropdownMenuItemProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
 
 ### DropdownMenuGroup
 
 `DropdownMenuGroupProps` extends native `div` props with a forwarded ref and `sx`.
 
 - `aria-labelledby` — Required ID reference to the group's `DropdownMenuLabel`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DropdownMenuLabel
 
@@ -119,7 +87,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `DropdownMenuLabelProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DropdownMenuSeparator
 
@@ -127,7 +95,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "className" | "style">`. The props below complete `DropdownMenuSeparatorProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DropdownMenuShortcut
 
@@ -135,7 +103,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"hr">, "c
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"kbd">, "className" | "style">`. The props below complete `DropdownMenuShortcutProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### DropdownMenuTrigger
 
@@ -143,12 +111,12 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"kbd">, "
 
 Complete native/inherited prop base: `Omit<ButtonProps, "popoverTarget" | "popoverTargetAction">`. The props below complete `DropdownMenuTriggerProps`.
 
-- `aria-haspopup` — `DropdownMenuTriggerProps["aria-haspopup"]`. Default: `'menu'`.
-- `aria-controls` — `DropdownMenuTriggerProps["aria-controls"]`. Default: `target`.
+- `aria-haspopup` — `DropdownMenuTriggerProps["aria-haspopup"]`. Announces the kind of popup controlled by the trigger. Default: `'menu'`.
+- `aria-controls` — `DropdownMenuTriggerProps["aria-controls"]`. Identifies the menu popover controlled by the trigger. Default: `target`.
 - `aria-expanded` — `DropdownMenuTriggerProps["aria-expanded"]`. Default: `false`; synchronized with the popover's open state.
-- `id` — `string`. Default: `` `${target}-trigger` ``.
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `DropdownMenuTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `id` — `string`. Stable trigger ID used by the menu's accessible-name relationship. Default: `` `${target}-trigger` ``.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `DropdownMenuTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.

@@ -4,31 +4,19 @@ description: "Color sample."
 ---
 
 import Example from "@stylextras/ui/experimental/color-swatch/example";
+import exampleCode from "@stylextras/ui/experimental/color-swatch/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="ColorSwatch">
+<ComponentPreview code={exampleCode} name="ColorSwatch">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { ColorSwatch } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <ColorSwatch color="#2563eb" aria-label="Blue" />
-      <ColorSwatch color="#9333ea" aria-label="Purple" />
-      <ColorSwatch color="#db2777" aria-label="Pink" />
-      <ColorSwatch color="#ea580c" aria-label="Orange" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -54,5 +42,5 @@ The visible border keeps very light and very dark colors distinguishable from th
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"span">, "aria-hidden" | "aria-label" | "aria-labelledby" | "className" | "role" | "style">`, combined with either a required accessible name or decorative `aria-hidden`. The props below complete `ColorSwatchProps`.
 
-- `color` — `string`. Default: `"#7c3aed"`.
-- `sx` — `stylex.StyleXStyles`.
+- `color` — `string`. Any valid CSS color used to paint the swatch. Default: `"#7c3aed"`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

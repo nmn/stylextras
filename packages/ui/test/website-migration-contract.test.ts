@@ -20,8 +20,10 @@ const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.
 describe('website migration component contracts', () => {
   it('keeps website styling on the existing token axes', () => {
     const presetSource = readFileSync(path.join(sourceRoot, 'style-presets/index.ts'), 'utf8')
-    expect(presetSource).toContain("color: 'docs'")
-    expect(presetSource).toContain("typography: 'docs'")
+    const docsPreset = readFileSync(path.join(sourceRoot, 'style-presets/docs.ts'), 'utf8')
+    expect(presetSource).toContain("from './docs'")
+    expect(docsPreset).toContain("color: 'docs'")
+    expect(docsPreset).toContain("typography: 'docs'")
     expect(presetSource).not.toContain('componentThemes')
   })
 

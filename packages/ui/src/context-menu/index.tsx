@@ -11,8 +11,9 @@ import {
   useState,
 } from 'react'
 import type { AccessibleAriaNameProps } from '../accessibility'
-import { Button, type AccessibleButtonPropsWithout } from '../button'
+import { type AccessibleButtonPropsWithout, Button } from '../button'
 import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
+import { getDiscoverableItems, getTypeaheadMatch, isTypeaheadKey } from '../internal/typeahead'
 import { getPopoverSource } from '../platform-polyfills/popover-source'
 import { usePopoverPointerToggleGuard } from '../popover/pointer-toggle'
 import { colors } from '../tokens/color.stylex'
@@ -40,11 +41,7 @@ export type ContextMenuTriggerProps = Omit<
   AccessibleAriaNameProps &
   SxProp & { target: string }
 export type ContextMenuButtonProps = AccessibleButtonPropsWithout<
-  | 'aria-controls'
-  | 'aria-expanded'
-  | 'aria-haspopup'
-  | 'popoverTarget'
-  | 'popoverTargetAction'
+  'aria-controls' | 'aria-expanded' | 'aria-haspopup' | 'popoverTarget' | 'popoverTargetAction'
 > & { target: string }
 export type ContextMenuProps = Omit<
   ComponentPropsWithRef<'div'>,
@@ -67,8 +64,6 @@ export type ContextMenuLabelProps = Omit<ComponentPropsWithRef<'div'>, 'classNam
 export type ContextMenuSeparatorProps = Omit<ComponentPropsWithRef<'hr'>, 'className' | 'style'> &
   SxProp
 
-const MENU_ITEM_SELECTOR = '[role="menuitem"]'
-const typeaheadState = new WeakMap<HTMLElement, { query: string; updatedAt: number }>()
 const forcedFocusRestoration = new WeakSet<HTMLElement>()
 
 function isContextMenuOpen(menu: HTMLElement) {
@@ -120,45 +115,16 @@ function useContextMenuExpanded(target: string) {
   return expanded
 }
 
-function isContextMenuItemDiscoverable(item: HTMLElement) {
-  if (
-    item.matches(':disabled') ||
-    item.closest('[hidden], [aria-hidden="true"], [inert]') ||
-    item.getClientRects().length === 0
-  ) {
-    return false
-  }
-
-  const computed = getComputedStyle(item)
-  return (
-    computed.display !== 'none' &&
-    computed.visibility !== 'hidden' &&
-    computed.visibility !== 'collapse'
-  )
-}
-
 function getContextMenuItems(menu: HTMLElement) {
-  return Array.from(menu.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR)).filter(
-    isContextMenuItemDiscoverable,
-  )
+  return getDiscoverableItems(menu, '[role="menuitem"]')
 }
 
 function handleMenuTypeahead(event: ReactKeyboardEvent<HTMLDivElement>) {
-  if (event.key.length !== 1 || event.key === ' ' || event.altKey || event.ctrlKey || event.metaKey) {
-    return
-  }
-  const menu = event.currentTarget
-  const key = event.key.toLocaleLowerCase()
-  const now = Date.now()
-  const previous = typeaheadState.get(menu)
-  const combined = previous && now - previous.updatedAt < 500 ? previous.query + key : key
-  const query = Array.from(combined).every((character) => character === key) ? key : combined
-  typeaheadState.set(menu, { query, updatedAt: now })
-  const items = getContextMenuItems(menu)
-  const activeIndex = items.indexOf(document.activeElement as HTMLElement)
-  const orderedItems = [...items.slice(activeIndex + 1), ...items.slice(0, activeIndex + 1)]
-  const match = orderedItems.find((item) =>
-    item.textContent?.trim().toLocaleLowerCase().startsWith(query),
+  if (!isTypeaheadKey(event)) return
+  const match = getTypeaheadMatch(
+    event.currentTarget,
+    getContextMenuItems(event.currentTarget),
+    event.key,
   )
   if (!match) return
   event.preventDefault()

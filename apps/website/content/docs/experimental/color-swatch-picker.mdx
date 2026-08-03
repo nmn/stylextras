@@ -4,35 +4,19 @@ description: "Color sample collection."
 ---
 
 import Example from "@stylextras/ui/experimental/color-swatch-picker/example";
+import exampleCode from "@stylextras/ui/experimental/color-swatch-picker/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="ColorSwatchPicker">
+<ComponentPreview code={exampleCode} name="ColorSwatchPicker">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { ColorSwatchPicker } from './index';
-
-export default function Example() {
-  return (
-    <ColorSwatchPicker
-      colors={[
-        { color: '#2563eb', label: 'Blue', value: 'blue' },
-        { color: '#0f766e', label: 'Teal', value: 'teal' },
-        { color: '#9333ea', label: 'Purple', value: 'purple' },
-      ]}
-      defaultValue="blue"
-      legend="Accent color"
-      name="accentColor"
-    />
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -62,10 +46,10 @@ are ignored with a development warning.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset">, "className" | "defaultValue" | "style">`. The props below complete `ColorSwatchPickerProps`.
 
-- `colors` — `Array<string | ColorSwatchPickerOption>`. Default: built-in colors.
-- `defaultValue` — `string`.
-- `getColorLabel` — `(color: string, index: number) => ReactNode`.
-- `legend` — `ReactNode`. Required.
-- `name` — `string`. Required.
-- `required` — `boolean`. Default: `false`.
-- `sx` — `stylex.StyleXStyles`.
+- `colors` — `Array<string | ColorSwatchPickerOption>`. Ordered swatches, optionally including per-option labels and disabled state. Default: built-in colors.
+- `defaultValue` — `string`. Initial value for uncontrolled usage.
+- `getColorLabel` — `(color: string, index: number) => ReactNode`. Produces an accessible label when an option does not provide one.
+- `legend` — `ReactNode`. Visible accessible label for the grouped controls. Required.
+- `name` — `string`. Native form field name used during submission. Required.
+- `required` — `boolean`. Participates in native required-value validation. Default: `false`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

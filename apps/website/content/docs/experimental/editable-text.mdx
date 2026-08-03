@@ -4,33 +4,19 @@ description: "Inline text editor."
 ---
 
 import Example from "@stylextras/ui/experimental/editable-text/example";
+import exampleCode from "@stylextras/ui/experimental/editable-text/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="EditableText">
+<ComponentPreview code={exampleCode} name="EditableText">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { EditableText } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <EditableText aria-label="Title" defaultValue="Editable title" />
-      <EditableText
-        aria-label="Body"
-        multiline
-        defaultValue="Editable multiline body copy."
-      />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -56,5 +42,5 @@ The component uses native form controls instead of `contenteditable`, preserving
 
 Complete native/inherited prop base: native input props when `multiline` is false, or native textarea props when `multiline` is true. `className`, `style`, and input `type` are component-owned.
 
-- `multiline` — `boolean`. Default: `false`.
-- `sx` — `stylex.StyleXStyles`.
+- `multiline` — `boolean`. Renders a textarea instead of a single-line text input. Default: `false`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

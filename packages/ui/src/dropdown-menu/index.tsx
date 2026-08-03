@@ -2,14 +2,12 @@
 
 import * as stylex from '@stylexjs/stylex'
 import type { StyleXStyles } from '@stylexjs/stylex'
-import type {
-  ComponentPropsWithRef,
-  KeyboardEvent as ReactKeyboardEvent,
-} from 'react'
+import type { ComponentPropsWithRef, KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { createContext, useContext, useMemo, useState } from 'react'
-import { Button, type AccessibleButtonPropsWithout } from '../button'
+import { type AccessibleButtonPropsWithout, Button } from '../button'
 import { ensureFocusgroupPolyfill, focusgroupAttributes, focusgroupRef } from '../focusgroup'
 import { requestMenuFocus, takeRequestedMenuFocus } from '../internal/menu-state'
+import { getDiscoverableItems, getTypeaheadMatch, isTypeaheadKey } from '../internal/typeahead'
 import { getPopoverSource, showPopoverWithSource } from '../platform-polyfills/popover-source'
 import { usePopoverPointerToggleGuard } from '../popover/pointer-toggle'
 import { colors } from '../tokens/color.stylex'
@@ -27,17 +25,11 @@ type DropdownMenuContextValue = {
   setExpanded: (expanded: boolean) => void
 }
 
-const MENU_ITEM_SELECTOR = '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]'
-const typeaheadState = new WeakMap<HTMLElement, { query: string; updatedAt: number }>()
 const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(null)
 
 export type DropdownMenuProps = Omit<ComponentPropsWithRef<'div'>, 'className' | 'style'> & SxProp
 export type DropdownMenuTriggerProps = AccessibleButtonPropsWithout<
-  | 'aria-controls'
-  | 'aria-expanded'
-  | 'aria-haspopup'
-  | 'popoverTarget'
-  | 'popoverTargetAction'
+  'aria-controls' | 'aria-expanded' | 'aria-haspopup' | 'popoverTarget' | 'popoverTargetAction'
 > & {
   target: string
 }
@@ -68,27 +60,8 @@ function isMenuOpen(menu: HTMLElement) {
   return menu.matches(':popover-open')
 }
 
-function isMenuItemDiscoverable(item: HTMLElement) {
-  if (
-    item.matches(':disabled') ||
-    item.closest('[hidden], [aria-hidden="true"], [inert]') ||
-    item.getClientRects().length === 0
-  ) {
-    return false
-  }
-
-  const computed = getComputedStyle(item)
-  return (
-    computed.display !== 'none' &&
-    computed.visibility !== 'hidden' &&
-    computed.visibility !== 'collapse'
-  )
-}
-
 function getMenuItems(menu: HTMLElement) {
-  return Array.from(menu.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR)).filter(
-    isMenuItemDiscoverable,
-  )
+  return getDiscoverableItems(menu)
 }
 
 function isInitialMenuFocusCandidate(item: HTMLElement) {
@@ -157,33 +130,9 @@ function closeMenu(menu: HTMLElement, restoreFocus: boolean) {
 }
 
 function handleMenuTypeahead(event: ReactKeyboardEvent<HTMLDivElement>) {
-  if (
-    event.key.length !== 1 ||
-    event.key === ' ' ||
-    event.altKey ||
-    event.ctrlKey ||
-    event.metaKey
-  ) {
-    return false
-  }
-
-  const menu = event.currentTarget
-  const key = event.key.toLocaleLowerCase()
-  const now = Date.now()
-  const previous = typeaheadState.get(menu)
-  const combined = previous && now - previous.updatedAt < 500 ? previous.query + key : key
-  const query = Array.from(combined).every((character) => character === key) ? key : combined
-  typeaheadState.set(menu, { query, updatedAt: now })
-
-  const items = getMenuItems(menu)
-  if (items.length === 0) return false
-  const activeIndex = items.indexOf(document.activeElement as HTMLElement)
-  const orderedItems = [...items.slice(activeIndex + 1), ...items.slice(0, activeIndex + 1)]
-  const match = orderedItems.find((item) =>
-    item.textContent?.trim().toLocaleLowerCase().startsWith(query),
-  )
+  if (!isTypeaheadKey(event)) return false
+  const match = getTypeaheadMatch(event.currentTarget, getMenuItems(event.currentTarget), event.key)
   if (!match) return false
-
   event.preventDefault()
   match.focus()
   return true

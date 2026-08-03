@@ -129,7 +129,7 @@ async function openPopulatedSearch(page: Page) {
   const options = dialog.getByRole('option')
   await expect(options).toHaveCount(3)
   await expect(options.first()).toHaveAttribute('aria-selected', 'true')
-  await expect(dialog.getByRole('progressbar', { name: 'Loading search results' })).toBeHidden()
+  await expect(dialog.getByRole('progressbar')).toHaveCount(0)
   await expect
     .poll(async () => (await dialog.getByRole('listbox').boundingBox())?.height ?? 0)
     .toBeGreaterThan(100)
@@ -306,7 +306,7 @@ test('all style presets and color theme objects render', async ({ page }) => {
   await page.goto('/docs/themes')
   const gallery = page.getByTestId('theme-gallery')
   await expect(gallery).toBeVisible()
-  await expect(page.getByTestId('style-gallery').locator(':scope > section')).toHaveCount(9)
+  await expect(page.getByTestId('style-gallery').locator(':scope > section')).toHaveCount(14)
   await page.locator('#nd-nav').evaluate((element) => {
     element.style.setProperty('display', 'none', 'important')
   })

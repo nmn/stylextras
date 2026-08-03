@@ -4,30 +4,17 @@ description: "Native range input composition."
 ---
 
 import Example from "@stylextras/ui/slider/example";
+import exampleCode from "@stylextras/ui/slider/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Slider">
+<ComponentPreview code={exampleCode} name="Slider">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Slider } from './index';
-import { Field, FieldLabel } from '../field';
-
-export default function Example() {
-  return (
-    <Field>
-      <FieldLabel htmlFor="playback-volume">Playback volume</FieldLabel>
-      <Slider id="playback-volume" min={0} max={100} defaultValue={50} />
-    </Field>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -53,7 +40,7 @@ This component uses a focused client controller for composite state and keyboard
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `SliderProps`.
 
-- `max` — `SliderProps["max"]`. Default: `100`.
-- `min` — `SliderProps["min"]`. Default: `0`.
-- `step` — `SliderProps["step"]`. Default: `1`.
-- `sx` — `stylex.StyleXStyles`.
+- `max` — `SliderProps["max"]`. Inclusive upper bound for the native range input. Default: `100`.
+- `min` — `SliderProps["min"]`. Inclusive lower bound for the native range input. Default: `0`.
+- `step` — `SliderProps["step"]`. Sets the permitted increment between numeric values. Default: `1`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

@@ -4,29 +4,19 @@ description: "Native color input with an area-sized presentation."
 ---
 
 import Example from "@stylextras/ui/experimental/color-area/example";
+import exampleCode from "@stylextras/ui/experimental/color-area/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="ColorArea">
+<ComponentPreview code={exampleCode} name="ColorArea">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { ColorArea } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <ColorArea aria-label="Accent" defaultValue="#4f46e5" />
-      <ColorArea aria-label="Secondary accent" defaultValue="#0f766e" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -52,4 +42,4 @@ Give the input a visible label or an accessible name. Any native input prop not 
 
 Complete native/inherited prop base: `ColorFieldProps`, which is `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `ColorAreaProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

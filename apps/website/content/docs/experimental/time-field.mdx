@@ -4,30 +4,19 @@ description: "Native time input."
 ---
 
 import Example from "@stylextras/ui/experimental/time-field/example";
+import exampleCode from "@stylextras/ui/experimental/time-field/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="TimeField">
+<ComponentPreview code={exampleCode} name="TimeField">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Field, FieldLabel } from '../field';
-import { TimeField } from './index';
-
-export default function Example() {
-  return (
-    <Field>
-      <FieldLabel htmlFor="meeting-start">Start time</FieldLabel>
-      <TimeField id="meeting-start" name="meetingStart" defaultValue="09:00" />
-    </Field>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -53,4 +42,4 @@ Give the input a visible label. The component adds a visible focus outline, inva
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"input">, "className" | "style" | "type">`. The props below complete `TimeFieldProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

@@ -1,55 +1,24 @@
-import * as stylex from '@stylexjs/stylex'
-import { stroke } from '../tokens/stroke.stylex'
+import { baseTheme } from './base'
+import { blockTheme } from './block'
+import { boldTheme } from './bold'
+import { brutalTheme } from './brutal'
+import { docsTheme } from './docs'
+import { hairlineTheme } from './hairline'
+import { posterTheme } from './poster'
+import type { StrokeTheme } from './types'
+import { wireframeTheme } from './wireframe'
 
-export type StrokeTheme = stylex.Theme<typeof stroke>
+export type { StrokeTheme } from './types'
+export { baseTheme } from './base'
+export { docsTheme } from './docs'
+export { hairlineTheme } from './hairline'
+export { boldTheme } from './bold'
+export { posterTheme } from './poster'
+export { brutalTheme } from './brutal'
+export { wireframeTheme } from './wireframe'
+export { blockTheme } from './block'
 
-export const baseTheme: StrokeTheme = stylex.createTheme(stroke, {})
-
-export const docsTheme: StrokeTheme = stylex.createTheme(stroke, {
-  thin: '1px',
-  hairline: '1px',
-  thick: '2px',
-  heavy: '3px',
-  focusRing: '2px',
-  focusRingOffset: '0px',
-})
-
-export const hairlineTheme: StrokeTheme = stylex.createTheme(stroke, {
-  thin: '0.75px',
-})
-
-export const boldTheme: StrokeTheme = stylex.createTheme(stroke, {
-  thin: '1.5px',
-})
-
-export const posterTheme: StrokeTheme = stylex.createTheme(stroke, {
-  thin: '2px',
-})
-
-export const brutalTheme: StrokeTheme = stylex.createTheme(stroke, {
-  thin: '3px',
-})
-
-/** Barely visible lines for wireframe-precision, low-ink interfaces. */
-export const wireframeTheme: StrokeTheme = stylex.createTheme(stroke, {
-  thin: '0.5px',
-})
-
-/** Extra-heavy strokes for blocky, high-contrast expressive UI. */
-export const blockTheme: StrokeTheme = stylex.createTheme(stroke, {
-  thin: '4px',
-})
-
-export const strokeThemes: Readonly<{
-  base: StrokeTheme
-  docs: StrokeTheme
-  wireframe: StrokeTheme
-  hairline: StrokeTheme
-  bold: StrokeTheme
-  poster: StrokeTheme
-  brutal: StrokeTheme
-  block: StrokeTheme
-}> = {
+export const strokeThemes = {
   base: baseTheme,
   docs: docsTheme,
   wireframe: wireframeTheme,
@@ -58,6 +27,6 @@ export const strokeThemes: Readonly<{
   poster: posterTheme,
   brutal: brutalTheme,
   block: blockTheme,
-}
+} as const satisfies Readonly<Record<string, StrokeTheme>>
 
 export type StrokeThemeName = keyof typeof strokeThemes

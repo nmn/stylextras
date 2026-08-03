@@ -4,39 +4,17 @@ description: "Styled native textarea."
 ---
 
 import Example from "@stylextras/ui/textarea/example";
+import exampleCode from "@stylextras/ui/textarea/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Textarea">
+<ComponentPreview code={exampleCode} name="Textarea">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Field, FieldDescription, FieldLabel } from '../field';
-import { Textarea } from './index';
-
-export default function Example() {
-  return (
-    <Field>
-      <FieldLabel htmlFor="summary">Summary</FieldLabel>
-      <Textarea
-        id="summary"
-        aria-describedby="summary-description"
-        name="summary"
-        rows={4}
-        placeholder="Add a summary…"
-      />
-      <FieldDescription id="summary-description">
-        Plain native props remain available.
-      </FieldDescription>
-    </Field>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -62,4 +40,4 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"textarea">, "className" | "style">`. The props below complete `TextareaProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

@@ -4,56 +4,17 @@ description: "Native pressed button."
 ---
 
 import Example from "@stylextras/ui/toggle/example";
+import exampleCode from "@stylextras/ui/toggle/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Toggle">
+<ComponentPreview code={exampleCode} name="Toggle">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { Toggle } from './index';
-import type { ToggleProps } from './index';
-import { useState } from 'react';
-
-type DemoToggleProps = Omit<ToggleProps, 'aria-pressed' | 'onClick'> & {
-  defaultPressed?: boolean;
-};
-
-function DemoToggle({ defaultPressed = false, ...props }: DemoToggleProps) {
-  const [pressed, setPressed] = useState(defaultPressed);
-  return (
-    <Toggle
-      aria-pressed={pressed}
-      onClick={() => setPressed((value) => !value)}
-      {...props}
-    />
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <DemoToggle defaultPressed>Bold</DemoToggle>
-      <DemoToggle>Italic</DemoToggle>
-      <DemoToggle>Code</DemoToggle>
-      <DemoToggle disabled defaultPressed>
-        Locked
-      </DemoToggle>
-
-      <DemoToggle size="sm">Small</DemoToggle>
-      <DemoToggle size="md" defaultPressed>
-        Medium
-      </DemoToggle>
-      <DemoToggle size="lg">Large</DemoToggle>
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -79,6 +40,7 @@ This component relies on the browser for its behavior, including keyboard, focus
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"button">, "className" | "style">`. The props below complete `ToggleProps`.
 
-- `size` — `ToggleSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `type` — `ToggleProps["type"]`. Default: `'button'`.
+- `aria-pressed` — `boolean | 'false' | 'mixed' | 'true'`. Required controlled pressed state; use `'mixed'` only for an indeterminate aggregate.
+- `size` — `ToggleSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `type` — `ToggleProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.

@@ -4,81 +4,17 @@ description: "Side-aligned native dialog."
 ---
 
 import Example from "@stylextras/ui/sheet/example";
+import exampleCode from "@stylextras/ui/sheet/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Sheet">
+<ComponentPreview code={exampleCode} name="Sheet">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-'use client';
-
-import { ButtonGroup } from '../button-group';
-import { DialogCommandBridge } from '../dialog/client';
-import { Field, FieldLabel } from '../field';
-import { Input } from '../input';
-import {
-  Sheet,
-  SheetBody,
-  SheetClose,
-  SheetFooter,
-  SheetHeader,
-  type SheetSide,
-  SheetTrigger,
-} from './index';
-
-function ProjectSettingsSheet({ id, side }: { id: string; side: SheetSide }) {
-  return (
-    <Sheet
-      id={id}
-      side={side}
-      aria-labelledby={`${id}-title`}
-      aria-describedby={`${id}-description`}
-    >
-      <SheetHeader>
-        <h2 id={`${id}-title`}>Project settings</h2>
-      </SheetHeader>
-      <SheetBody>
-        <p id={`${id}-description`}>Update the project and team names.</p>
-        <Field>
-          <FieldLabel htmlFor={`${id}-project-name`}>Project name</FieldLabel>
-          <Input id={`${id}-project-name`} defaultValue="StyleXtras" />
-        </Field>
-        <Field>
-          <FieldLabel htmlFor={`${id}-team-name`}>Team</FieldLabel>
-          <Input id={`${id}-team-name`} defaultValue="Interface systems" />
-        </Field>
-      </SheetBody>
-      <SheetFooter>
-        <ButtonGroup variant="actions" aria-label="Project settings actions">
-          <SheetClose target={id}>Cancel</SheetClose>
-          <SheetClose target={id} variant="primary">
-            Save
-          </SheetClose>
-        </ButtonGroup>
-      </SheetFooter>
-      <DialogCommandBridge target={id} />
-    </Sheet>
-  );
-}
-
-export default function Example() {
-  return (
-    <>
-      <SheetTrigger target="end-settings-sheet">Open end sheet</SheetTrigger>
-      <ProjectSettingsSheet id="end-settings-sheet" side="end" />
-
-      <SheetTrigger target="start-settings-sheet">
-        Open start sheet
-      </SheetTrigger>
-      <ProjectSettingsSheet id="start-settings-sheet" side="start" />
-    </>
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -115,8 +51,8 @@ loading its fallback. `LazySheet` installs the same fallback internally.
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">, "aria-label" | "aria-labelledby" | "className" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required accessible dialog name.
-- `side` — `SheetSide`. Default: `'end'`.
-- `sx` — `stylex.StyleXStyles`.
+- `side` — `SheetSide`. Selects the edge from which the surface is positioned. Default: `'end'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SheetBody
 
@@ -124,7 +60,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"dialog">
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SheetBodyProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SheetClose
 
@@ -132,11 +68,11 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `SheetTriggerProps`. The props below complete `SheetCloseProps`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `SheetCloseProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'outline'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `SheetCloseProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'outline'`.
 
 ### SheetFooter
 
@@ -144,7 +80,7 @@ Complete native/inherited prop base: `SheetTriggerProps`. The props below comple
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SheetFooterProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SheetHeader
 
@@ -152,7 +88,7 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`. The props below complete `SheetHeaderProps`.
 
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
 
 ### SheetTrigger
 
@@ -160,8 +96,8 @@ Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "
 
 Complete native/inherited prop base: `ButtonProps`. The props below complete `SheetTriggerProps`.
 
-- `size` — `ButtonSize`. Default: `'md'`.
-- `sx` — `stylex.StyleXStyles`.
-- `target` — `string`. Required.
-- `type` — `SheetTriggerProps["type"]`. Default: `'button'`.
-- `variant` — `ButtonVariant`. Default: `'primary'`.
+- `size` — `ButtonSize`. Controls visual dimensions and, for interactive components, the target size. Default: `'md'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `target` — `string`. ID of the element controlled by this trigger. Required.
+- `type` — `SheetTriggerProps["type"]`. Sets the underlying element's native control type. Default: `'button'`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `'primary'`.

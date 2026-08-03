@@ -1,54 +1,24 @@
-import * as stylex from '@stylexjs/stylex'
-import { blur } from '../tokens/blur.stylex'
+import { baseTheme } from './base'
+import { crispTheme } from './crisp'
+import { docsTheme } from './docs'
+import { frostedTheme } from './frosted'
+import { gauzeTheme } from './gauze'
+import { hazyTheme } from './hazy'
+import { softTheme } from './soft'
+import { subtleTheme } from './subtle'
+import type { BlurTheme } from './types'
 
-export type BlurTheme = stylex.Theme<typeof blur>
+export type { BlurTheme } from './types'
+export { baseTheme } from './base'
+export { docsTheme } from './docs'
+export { crispTheme } from './crisp'
+export { subtleTheme } from './subtle'
+export { softTheme } from './soft'
+export { hazyTheme } from './hazy'
+export { gauzeTheme } from './gauze'
+export { frostedTheme } from './frosted'
 
-export const baseTheme: BlurTheme = stylex.createTheme(blur, {})
-
-export const docsTheme: BlurTheme = stylex.createTheme(blur, {
-  xs: '4px',
-  sm: '8px',
-  md: '16px',
-  lg: '32px',
-  xl: '48px',
-})
-
-export const crispTheme: BlurTheme = stylex.createTheme(blur, {
-  md: '0px',
-})
-
-export const subtleTheme: BlurTheme = stylex.createTheme(blur, {
-  md: '2px',
-})
-
-export const softTheme: BlurTheme = stylex.createTheme(blur, {
-  md: '4px',
-})
-
-export const hazyTheme: BlurTheme = stylex.createTheme(blur, {
-  md: '8px',
-})
-
-/** The faintest hint of blur, just short of fully crisp. */
-export const gauzeTheme: BlurTheme = stylex.createTheme(blur, {
-  md: '1px',
-})
-
-/** Heavy frosted-glass blur for prominent glassmorphism overlays. */
-export const frostedTheme: BlurTheme = stylex.createTheme(blur, {
-  md: '20px',
-})
-
-export const blurThemes: Readonly<{
-  base: BlurTheme
-  docs: BlurTheme
-  crisp: BlurTheme
-  gauze: BlurTheme
-  subtle: BlurTheme
-  soft: BlurTheme
-  hazy: BlurTheme
-  frosted: BlurTheme
-}> = {
+export const blurThemes = {
   base: baseTheme,
   docs: docsTheme,
   crisp: crispTheme,
@@ -57,6 +27,6 @@ export const blurThemes: Readonly<{
   soft: softTheme,
   hazy: hazyTheme,
   frosted: frostedTheme,
-}
+} as const satisfies Readonly<Record<string, BlurTheme>>
 
 export type BlurThemeName = keyof typeof blurThemes

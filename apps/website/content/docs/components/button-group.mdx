@@ -4,53 +4,17 @@ description: "Grouped toolbar and equal-width action layouts."
 ---
 
 import Example from "@stylextras/ui/button-group/example";
+import exampleCode from "@stylextras/ui/button-group/example?raw";
 
 ## Examples
 
-<ComponentPreview name="ButtonGroup">
+<ComponentPreview code={exampleCode} name="ButtonGroup">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { Button } from '../button';
-import { ButtonGroup } from './index';
-
-export default function Example() {
-  return (
-    <>
-      <ButtonGroup aria-label="Text alignment">
-        <Button size="icon-sm" variant="ghost" aria-label="Align start">
-          ≡
-        </Button>
-        <Button size="icon-sm" variant="ghost" aria-label="Align center">
-          ≣
-        </Button>
-        <Button size="icon-sm" variant="ghost" aria-label="Align end">
-          ≡
-        </Button>
-      </ButtonGroup>
-
-      <span>Dialog footer</span>
-      <ButtonGroup variant="actions" aria-label="Confirm changes">
-        <Button variant="outline">Cancel</Button>
-        <Button>Done</Button>
-      </ButtonGroup>
-
-      <ButtonGroup
-        variant="actions"
-        orientation="vertical"
-        aria-label="Document actions"
-      >
-        <Button variant="outline">Save draft</Button>
-        <Button>Publish</Button>
-      </ButtonGroup>
-    </>
-  );
-}
-('use client');
-```
+The live example above is the complete, type-checked package example. It shows the recommended composition and representative variants or states; copy its displayed source as a starting point, then keep only the parts your interface needs.
 
 ## Import
 
@@ -77,6 +41,6 @@ This component starts with semantic HTML and enhances it with newer browser APIs
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "aria-label" | "aria-labelledby" | "className" | "role" | "style">` plus one required accessible name.
 
 - `aria-label` or `aria-labelledby` — Required toolbar/group name.
-- `orientation` — `"vertical" | "horizontal"`. Default: `'horizontal'`.
-- `sx` — `stylex.StyleXStyles`.
-- `variant` — `"toolbar" | "actions"`. Default: `'toolbar'`.
+- `orientation` — `"vertical" | "horizontal"`. Controls the layout axis and, where applicable, Arrow-key behavior. Default: `'horizontal'`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.
+- `variant` — `"toolbar" | "actions"`. Selects the built-in visual treatment. Default: `'toolbar'`.

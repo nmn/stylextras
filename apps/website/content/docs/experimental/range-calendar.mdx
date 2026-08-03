@@ -4,30 +4,19 @@ description: "Date-range calendar grid."
 ---
 
 import Example from "@stylextras/ui/experimental/range-calendar/example";
+import exampleCode from "@stylextras/ui/experimental/range-calendar/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="RangeCalendar">
+<ComponentPreview code={exampleCode} name="RangeCalendar">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { RangeCalendar } from './index';
-
-export default function Example() {
-  return (
-    <RangeCalendar
-      legend="Release window"
-      startDefaultValue="2026-07-11"
-      endDefaultValue="2026-07-18"
-    />
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -57,10 +46,10 @@ event handlers, and refs while the range owns IDs, names, values, and bounds.
 
 Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"fieldset">, "className" | "style">`. The props below complete `RangeCalendarProps`.
 
-- `legend` — `ReactNode`. Required.
+- `legend` — `ReactNode`. Visible accessible label for the grouped controls. Required.
 - `startLabel`, `endLabel` — `ReactNode`.
 - `startName`, `endName` — `string`.
 - `startDefaultValue`, `endDefaultValue` — `string`.
 - `startProps`, `endProps` — Per-field `DateField` props not owned by the range wrapper.
 - `min`, `max` — ISO date strings.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

@@ -41,17 +41,19 @@ There is no provider, context, or `ThemeRoot`. Themes are ordinary `stylex.creat
 
 ```tsx
 import * as stylex from "@stylexjs/stylex";
-import { colorThemes } from "@stylextras/ui/color-themes";
-import { radiusThemes } from "@stylextras/ui/radius-themes";
-import { spacingThemes } from "@stylextras/ui/spacing-themes";
+import { neutralTheme } from "@stylextras/ui/color-themes/neutral";
+import { zincTheme } from "@stylextras/ui/color-themes/zinc";
+import { roundedTheme } from "@stylextras/ui/radius-themes/rounded";
+import { compactTheme } from "@stylextras/ui/spacing-themes/compact";
 
 export function ThemeBoundary({ children }: { children: React.ReactNode }) {
   return (
     <section
       {...stylex.props(
-        colorThemes.zinc,
-        spacingThemes.compact,
-        radiusThemes.rounded,
+        neutralTheme,
+        zincTheme,
+        compactTheme,
+        roundedTheme,
       )}
     >
       {children}
@@ -70,11 +72,11 @@ available as the existing `docs` style preset:
 
 ```tsx
 import * as stylex from "@stylexjs/stylex";
-import { stylePresetThemes } from "@stylextras/ui/style-presets";
+import { docsPresetThemes } from "@stylextras/ui/style-presets/docs";
 
 export function DocsTheme({ children }: { children: React.ReactNode }) {
   return (
-    <section {...stylex.props(...stylePresetThemes("docs"))}>
+    <section {...stylex.props(...docsPresetThemes)}>
       {children}
     </section>
   );
@@ -84,6 +86,14 @@ export function DocsTheme({ children }: { children: React.ReactNode }) {
 Components consume the low-level token axes directly, so changing those themes
 changes the package components without replacing their built-in styles. Use
 `sx` for isolated layout or product-specific exceptions.
+
+Import named theme and preset subpaths to include only their CSS. Family roots
+such as `@stylextras/ui/color-themes` and the `style-presets` root are complete
+catalogs intended for runtime theme pickers.
+
+Accent color themes are deliberately small overrides. Apply `neutralTheme`
+first when using one directly so a nested boundary resets every color token;
+named style presets already include that reset.
 
 ```tsx
 import { colors } from "@stylextras/ui/tokens/color";

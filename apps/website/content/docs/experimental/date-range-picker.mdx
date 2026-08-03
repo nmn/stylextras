@@ -4,32 +4,19 @@ description: "Date-range input and calendar."
 ---
 
 import Example from "@stylextras/ui/experimental/date-range-picker/example";
+import exampleCode from "@stylextras/ui/experimental/date-range-picker/example?raw";
 
 This component is experimental. Its API and behavior may change before it moves into the stable catalog.
 
 ## Examples
 
-<ComponentPreview name="DateRangePicker">
+<ComponentPreview code={exampleCode} name="DateRangePicker">
   <Example />
 </ComponentPreview>
 
-### Example code
+## Usage
 
-```tsx
-import { DateRangePicker } from './index';
-
-export default function Example() {
-  return (
-    <DateRangePicker
-      legend="Travel dates"
-      startDefaultValue="2026-07-11"
-      endDefaultValue="2026-07-18"
-      startName="travelStart"
-      endName="travelEnd"
-    />
-  );
-}
-```
+The live example above is the complete, type-checked package example. It shows the current experimental composition and representative states; copy its displayed source as a starting point, then consult the API reference before depending on the contract.
 
 ## Import
 
@@ -60,11 +47,11 @@ external form association, and submission remain intact.
 
 Complete native/inherited prop base: `RangeCalendarProps`. The props below complete `DateRangePickerProps`.
 
-- `legend` — `ReactNode`. Required.
+- `legend` — `ReactNode`. Visible accessible label for the grouped controls. Required.
 - `startLabel`, `endLabel` — `ReactNode`.
 - `startName`, `endName` — `string`.
 - `startDefaultValue`, `endDefaultValue` — `string`.
 - `startProps`, `endProps` — Per-field props, including refs and event handlers, merged with the wrapper's validation behavior.
 - `invalidRangeMessage` — Plain localized range-order error. Default: `'End date must be on or after start date.'`.
 - `min`, `max` — ISO date strings.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

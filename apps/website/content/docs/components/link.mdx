@@ -4,22 +4,13 @@ description: "Token-styled native anchor for text navigation."
 ---
 
 import Example from "@stylextras/ui/link/example";
+import exampleCode from "@stylextras/ui/link/example?raw";
 
 ## Examples
 
-<ComponentPreview name="Link">
+<ComponentPreview code={exampleCode} name="Link">
   <Example />
 </ComponentPreview>
-
-### Example code
-
-```tsx
-import { Link } from '@stylextras/ui/link';
-
-export default function Example() {
-  return <Link href="#docs">View docs</Link>;
-}
-```
 
 ## Usage
 
@@ -60,4 +51,4 @@ Complete native prop base:
 `Omit<React.ComponentPropsWithRef<"a">, "className" | "href" | "style">`.
 
 - `href` — `string`. Required real navigation destination.
-- `sx` — `stylex.StyleXStyles`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in styles.

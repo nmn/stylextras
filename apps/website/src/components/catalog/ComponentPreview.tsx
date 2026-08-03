@@ -16,41 +16,23 @@ import { spacing } from '@stylextras/ui/tokens/spacing.stylex'
 import { stroke } from '@stylextras/ui/tokens/stroke.stylex'
 import { typography } from '@stylextras/ui/tokens/typography.stylex'
 import { typographyThemes } from '@stylextras/ui/typography-themes'
-import { type ReactNode, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import { ScrollableCodeBlock } from '../mdx/ScrollableCodeBlock'
 import { PreviewThemeControls } from './PreviewThemeControls'
-import {
-  type PreviewStyleSelection,
-  type PreviewThemeSelection,
-  defaultPreviewTheme,
-  previewStylePresets,
-} from './preview-theme-config'
+import { usePreviewTheme } from './use-preview-theme'
 
 export function ComponentPreview({
   children,
+  code,
+  highlightedCode,
   name,
 }: {
   children: ReactNode
+  code?: string
+  highlightedCode?: ReactNode
   name: string
 }) {
-  const [selection, setSelection] = useState<PreviewThemeSelection>(defaultPreviewTheme)
-  const [styleName, setStyleName] = useState<PreviewStyleSelection>('docs')
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => setReady(true), [])
-
-  const changeSelection = (key: keyof PreviewThemeSelection, value: string) => {
-    setSelection((current) => ({ ...current, [key]: value }))
-    if (key !== 'appearance' && key !== 'color') setStyleName('custom')
-  }
-
-  const changeStyle = (nextStyle: PreviewStyleSelection) => {
-    setStyleName(nextStyle)
-    if (nextStyle === 'custom') return
-    setSelection((current) => ({
-      ...current,
-      ...previewStylePresets[nextStyle],
-    }))
-  }
+  const { changeSelection, changeStyle, ready, selection, styleName } = usePreviewTheme()
 
   return (
     <div
@@ -97,6 +79,14 @@ export function ComponentPreview({
           {children}
         </div>
       </section>
+      {code ? (
+        <ScrollableCodeBlock
+          content={code}
+          highlightedContent={highlightedCode}
+          maxHeight={520}
+          title={`${name} example.tsx`}
+        />
+      ) : null}
     </div>
   )
 }
