@@ -56,6 +56,10 @@ export const docsTheme: ColorTheme = stylex.createTheme(colors, {
 
   accent: lightDark('hsl(222, 16%, 83%)', 'hsl(222, 16%, 23%)'),
   accentForeground: lightDark('hsl(222, 67%, 58%)', 'hsl(222, 87%, 78%)'),
+  accentText: lightDark(
+    `color-mix(in oklab, ${colors.accentForeground} 72%, ${colors.fg})`,
+    colors.accentForeground,
+  ),
 
   focusRing: lightDark('hsl(267, 84%, 81%)', 'hsl(267, 84%, 81%)'),
   selection: `color-mix(in oklab, ${colors.primary} 18%, transparent)`,

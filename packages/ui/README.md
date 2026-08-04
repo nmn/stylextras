@@ -223,7 +223,7 @@ an explicit enhanced/lazy choice rather than part of the initial field bundle.
 
 ## Catalog
 
-Stable entries include Accordion, Alert, AlertDialog, AspectRatio, Avatar, Badge, Breadcrumb, Button, ButtonGroup, Calendar, Card, Carousel, Checkbox, Collapsible, Combobox, Command, CopyToClipboardButton, ContextMenu, DatePicker, Dialog, Direction, Drawer, DropdownMenu, Empty, Field, HoverCard, Input, InputGroup, InputOTP, Item, Kbd, Label, Link, Menubar, NavigationMenu, Popover, Progress, RadioGroup, Resizable, ScrollArea, Select, Separator, Sheet, Sidebar, Skeleton, Slider, Spinner, Switch, Table, TableOfContents, Tabs, Textarea, Toast, Toggle, ToggleGroup, Tooltip, and Typography.
+Stable entries include Accordion, Alert, AlertDialog, AnchoredDialog, AspectRatio, Avatar, Badge, Breadcrumb, Button, ButtonGroup, Calendar, Card, Carousel, Checkbox, Collapsible, Combobox, Command, CopyToClipboardButton, ContextMenu, DatePicker, Dialog, Direction, Drawer, DropdownMenu, Empty, Field, HoverCard, Input, InputGroup, InputOTP, Item, Kbd, Label, Link, Menubar, NavigationMenu, Popover, Progress, RadioGroup, Resizable, ScrollArea, Select, Separator, Sheet, Sidebar, Skeleton, Slider, Spinner, Switch, Table, TableOfContents, Tabs, Textarea, Toast, Toggle, ToggleGroup, Tooltip, and Typography.
 
 Advanced color controls, range date/time controls, editable text, file drop zones, image cropper, tag group, and tree are available only from `@stylextras/ui/experimental/*` until they meet the stable accessibility, browser, visual, and size gates.
 

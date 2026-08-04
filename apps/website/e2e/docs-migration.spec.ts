@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { componentPreview } from './locators'
 
 test('site-local MDX surfaces compose package primitives with native semantics', async ({
   page,
@@ -94,6 +95,7 @@ test('site-local code copying resolves the current DOM text and resets after two
   const codeBlock = page.getByTestId('mdx-code-block')
   const codeValue = codeBlock.getByTestId('mdx-code-value')
   const copy = codeBlock.locator('button[aria-label]').first()
+  const announcement = codeBlock.getByRole('status')
   const clipboardIcon = copy.locator('svg.lucide-clipboard')
   const checkIcon = copy.locator('svg.lucide-check')
   await expect(copy).toHaveAttribute('aria-label', 'Copy Text')
@@ -116,7 +118,8 @@ test('site-local code copying resolves the current DOM text and resets after two
       ),
     )
     .toBe('npm install @stylextras/ui@current')
-  await expect(copy).toHaveAttribute('aria-label', 'Copied Text')
+  await expect(copy).toHaveAttribute('aria-label', 'Copy Text')
+  await expect(announcement).toHaveText('Copied Text')
   await expect(checkIcon).toBeVisible()
 
   await page.waitForTimeout(1500)
@@ -227,8 +230,7 @@ test('site-local disclosures preserve standalone, exclusive, and independent beh
 
 test('package tabs remain keyboard complete inside documentation previews', async ({ page }) => {
   await page.goto('/docs/components/tabs')
-  const preview = page.locator('[data-component-demo="Tabs"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Tabs')
 
   const tabs = preview.getByRole('tablist', { name: 'Documentation sections' })
   const overview = tabs.getByRole('tab', { name: 'Overview' })
@@ -240,8 +242,10 @@ test('package tabs remain keyboard complete inside documentation previews', asyn
   )
 
   await overview.focus()
-  await page.keyboard.press('End')
-  await expect(accessibility).toBeFocused()
+  await expect(async () => {
+    await overview.press('End')
+    await expect(accessibility).toBeFocused()
+  }).toPass()
   await expect(accessibility).toHaveAttribute('aria-selected', 'true')
   await page.keyboard.press('Home')
   await expect(overview).toBeFocused()

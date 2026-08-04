@@ -7,7 +7,7 @@
 import { RouterLink } from "@/components/router-link";
 import { ComponentProps } from "react";
 import * as stylex from "@stylexjs/stylex";
-import { vars } from "@/theming/vars.stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
 
 export default function MDXLink({
   xstyle,
@@ -25,8 +25,8 @@ export default function MDXLink({
 const styles = stylex.create({
   base: {
     color: {
-      default: vars["--color-fd-primary"],
-      [stylex.when.descendant(":is(code)")]: vars["--color-code-green"],
+      default: colors.primary,
+      [stylex.when.descendant(":is(code)")]: colors.code,
     },
     textDecorationColor: {
       default: "transparent",

@@ -25,6 +25,18 @@ describe('layer accessibility contracts', () => {
     expect(lazyDialog).toContain('<DialogCommandBridge target={id} />')
   })
 
+  it('keeps AnchoredDialog modal while treating anchoring as progressive layout', () => {
+    const anchoredDialog = source('anchored-dialog/index.tsx')
+    expect(anchoredDialog).toContain('<dialog')
+    expect(anchoredDialog).not.toContain('popover=')
+    expect(anchoredDialog).toContain("anchorScope: '--stylextras-anchored-dialog'")
+    expect(anchoredDialog).toContain("anchorName: '--stylextras-anchored-dialog'")
+    expect(anchoredDialog).toContain("positionAnchor: '--stylextras-anchored-dialog'")
+    expect(anchoredDialog).toContain(
+      "'@supports ((position-anchor: --stylextras-anchored-dialog) and (anchor-scope: --stylextras-anchored-dialog))'",
+    )
+  })
+
   it('preserves dialog backdrop and nested-popover escape fallbacks', () => {
     const dialogClient = source('dialog/client.tsx')
     expect(dialogClient).toContain('supportsDialogClosedBy()')

@@ -6,6 +6,7 @@
  */
 
 import * as stylex from "@stylexjs/stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
 import type { SVGProps } from "react";
 import { AtSignIcon, GithubIcon, TwitterIcon } from "lucide-react";
 import Bluesky from "./icons/Bluesky";
@@ -251,7 +252,7 @@ const styles = stylex.create({
     marginBottom: 16,
     fontSize: "0.875rem",
     fontWeight: 600,
-    color: vars["--color-fd-foreground"],
+    color: colors.fg,
     textAlign: "center",
   },
   list: {
@@ -266,8 +267,8 @@ const styles = stylex.create({
   link: {
     fontSize: "0.875rem",
     color: {
-      default: vars["--color-fd-muted-foreground"],
-      ":hover": vars["--color-fd-foreground"],
+      default: colors.fgMuted,
+      ":hover": colors.fg,
     },
     textDecoration: "none",
     transitionDuration: "150ms",
@@ -315,7 +316,7 @@ const styles = stylex.create({
   },
   copyright: {
     fontSize: "0.875rem",
-    color: vars["--color-fd-muted-foreground"],
+    color: colors.fgMuted,
   },
   socialLinks: {
     display: "flex",
@@ -325,8 +326,8 @@ const styles = stylex.create({
   socialLink: {
     padding: 8,
     color: {
-      default: vars["--color-fd-muted-foreground"],
-      ":hover": vars["--color-fd-foreground"],
+      default: colors.fgMuted,
+      ":hover": colors.fg,
     },
     transitionDuration: "150ms",
     transitionProperty: "color",

@@ -11,6 +11,7 @@ import CtaButton from "@/components/CtaButton";
 import TypingWord from "@/components/TypingWord";
 import Footer from "@/components/Footer";
 import { vars } from "@/theming/vars.stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
 
 export default function Home() {
   return (
@@ -61,7 +62,7 @@ const styles = stylex.create({
     justifyContent: "center",
     minHeight: "calc(100vh - 56px)",
     padding: 32,
-    color: `${vars["--color-fd-foreground"]}`,
+    color: colors.fg,
     backgroundColor: `${vars["--color-fd-background"]}`,
   },
   hero: {
@@ -93,7 +94,7 @@ const styles = stylex.create({
     margin: 0,
     fontSize: "clamp(1.2rem, 1.2rem + 1vw, 2rem)",
     fontWeight: 200,
-    color: `${vars["--color-fd-foreground"]}`,
+    color: colors.fg,
     textAlign: "center",
   },
   ctaSpacer: {

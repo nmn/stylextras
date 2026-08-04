@@ -20,6 +20,7 @@ import {
   TableOfContentsTitle,
 } from '@stylextras/ui/table-of-contents'
 import { Typography } from '@stylextras/ui/typography'
+import { colors } from '@stylextras/ui/tokens/color.stylex'
 import { RouterButtonLink } from '@/components/router-link'
 import { StyleXComponentProps } from './shared'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -133,7 +134,7 @@ const descStyles = stylex.create({
     maxWidth: 'none',
     fontSize: `${18 / 16}rem`,
     lineHeight: 1.555,
-    color: vars['--color-fd-muted-foreground'],
+    color: colors.fgMuted,
     overflowWrap: 'normal',
   },
 })
@@ -267,12 +268,12 @@ const footerStyles = stylex.create({
     fontWeight: 'inherit',
     lineHeight: 'inherit',
     overflowWrap: 'normal',
-    color: vars['--color-fd-primary'],
+    color: colors.primary,
     backgroundColor: {
       default: 'transparent',
-      ':hover': vars['--color-fd-muted'],
+      ':hover': colors.surface,
     },
-    borderColor: vars['--color-fd-border'],
+    borderColor: colors.border,
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 20,

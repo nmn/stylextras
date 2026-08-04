@@ -1,9 +1,11 @@
 'use client'
 
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { supportsDialogClosedBy } from '../internal/layer-support'
 import { composeRefs } from '../internal/refs'
 import { Dialog, type DialogProps } from './index'
 import { rememberDialogReturnFocus, restoreDialogReturnFocus } from './restore-focus'
+import { useDialogCommandBridge, useInvokerCommandFallback } from './use-command-bridge'
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never
 
@@ -20,19 +22,6 @@ type DialogCommandEvent = Event & {
   source?: unknown
 }
 
-function supportsInvokerCommands() {
-  if (typeof document === 'undefined') return true
-  const button = document.createElement('button') as HTMLButtonElement & {
-    command?: unknown
-    commandForElement?: unknown
-  }
-  return typeof button.command === 'string' && button.commandForElement === null
-}
-
-function supportsDialogClosedBy() {
-  return typeof HTMLDialogElement === 'undefined' || 'closedBy' in HTMLDialogElement.prototype
-}
-
 function getTopmostNestedPopover(dialog: HTMLDialogElement, openPopovers: HTMLElement[]) {
   for (let index = openPopovers.length - 1; index >= 0; index -= 1) {
     const popover = openPopovers[index]
@@ -47,23 +36,7 @@ function getTopmostNestedPopover(dialog: HTMLDialogElement, openPopovers: HTMLEl
 
 /** Opt-in legacy bridge; supported browsers stay on the native command/commandfor path. */
 export function DialogCommandBridge({ target }: DialogCommandBridgeProps) {
-  useEffect(() => {
-    if (supportsInvokerCommands()) return
-    let cancelled = false
-    let removeFallback: (() => void) | undefined
-    void import('@stylextras/ui/platform-polyfills/invoker-command-fallback').then(
-      ({ installInvokerCommandFallback }) => {
-        if (cancelled) return
-        removeFallback = installInvokerCommandFallback(target)
-      },
-      () => undefined,
-    )
-
-    return () => {
-      cancelled = true
-      removeFallback?.()
-    }
-  }, [target])
+  useDialogCommandBridge(target)
 
   return null
 }
@@ -89,6 +62,8 @@ export function DialogClient({
   const lastReportedOpenRef = useRef(false)
   const expectedNativeStateRef = useRef<boolean | null>(null)
   const openPopoversRef = useRef<HTMLElement[]>([])
+
+  useInvokerCommandFallback(id)
 
   const setRefs = useMemo(() => composeRefs(dialogRef, ref), [ref])
 
@@ -194,28 +169,22 @@ export function DialogClient({
   }, [isOpen, nativeOpen, reconcileNativeState])
 
   return (
-    <Fragment>
-      <Dialog
-        ref={setRefs}
-        id={id}
-        closedBy={closedBy}
-        onClose={(event) => {
-          onClose?.(event)
-        }}
-        onKeyDownCapture={(event) => {
-          onKeyDownCapture?.(event)
-          if (event.defaultPrevented || event.key !== 'Escape') return
-          const nestedPopover = getTopmostNestedPopover(
-            event.currentTarget,
-            openPopoversRef.current,
-          )
-          if (!nestedPopover) return
-          event.preventDefault()
-          nestedPopover.hidePopover()
-        }}
-        {...props}
-      />
-      {id ? <DialogCommandBridge target={id} /> : null}
-    </Fragment>
+    <Dialog
+      ref={setRefs}
+      id={id}
+      closedBy={closedBy}
+      onClose={(event) => {
+        onClose?.(event)
+      }}
+      onKeyDownCapture={(event) => {
+        onKeyDownCapture?.(event)
+        if (event.defaultPrevented || event.key !== 'Escape') return
+        const nestedPopover = getTopmostNestedPopover(event.currentTarget, openPopoversRef.current)
+        if (!nestedPopover) return
+        event.preventDefault()
+        nestedPopover.hidePopover()
+      }}
+      {...props}
+    />
   )
 }

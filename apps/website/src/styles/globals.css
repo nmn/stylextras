@@ -44,7 +44,7 @@
     color: color-mix(
       in oklab,
       light-dark(var(--shiki-light), var(--shiki-dark)) 70%,
-      var(--color-fd-foreground)
+      currentColor
     );
   }
 
@@ -57,7 +57,6 @@
     padding-inline: 12px;
     text-align: start;
     font-weight: 600;
-    color: var(--color-fd-foreground);
     border-bottom: 1px solid var(--color-fd-border);
   }
 

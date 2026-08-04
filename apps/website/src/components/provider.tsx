@@ -15,23 +15,13 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
 } from 'react'
 import { unstable_RouterContext, unstable_parseRoute } from 'waku/router/client'
+import { useHydrated } from '@/contexts/WebsiteThemeContext'
 import { SearchDialog } from './search-dialog'
 import { RouterLink } from './router-link'
 
 type FrameworkLinkProps = ComponentProps<'a'> & { prefetch?: boolean }
-
-function useHydrated() {
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => {
-    setHydrated(true)
-  }, [])
-
-  return hydrated
-}
 
 function usePathname() {
   const router = useContext(unstable_RouterContext)
@@ -138,7 +128,9 @@ export function Provider({ children }: { children: ReactNode }) {
 
   return (
     <FrameworkProvider {...framework}>
-      <RootProvider search={{ SearchDialog }}>{children}</RootProvider>
+      <RootProvider search={{ SearchDialog }} theme={{ enabled: false }}>
+        {children}
+      </RootProvider>
     </FrameworkProvider>
   )
 }

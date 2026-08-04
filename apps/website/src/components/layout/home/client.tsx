@@ -4,19 +4,25 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client'
+'use client';
 
-import { Fragment } from 'react'
-import * as stylex from '@stylexjs/stylex'
+import { Fragment } from 'react';
+import * as stylex from '@stylexjs/stylex';
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuTrigger,
-} from '@stylextras/ui/navigation-menu'
-import { BaseLinkItem, type LinkItemType, type StyleXComponentProps } from '../shared/index'
-import { RouterButtonLink, RouterLink } from '../../router-link'
-import { vars } from '../../../theming/vars.stylex'
+} from '@stylextras/ui/navigation-menu';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
+import { radius } from '@stylextras/ui/tokens/radius.stylex';
+import {
+  BaseLinkItem,
+  type LinkItemType,
+  type StyleXComponentProps,
+} from '../shared/index';
+import { RouterButtonLink, RouterLink } from '../../router-link';
+import { vars } from '../../../theming/vars.stylex';
 
 export function Navbar({
   children,
@@ -27,7 +33,11 @@ export function Navbar({
   return (
     <>
       <div {...stylex.props(navbarStyles.gap)} />
-      <header id="nd-nav" {...props} {...stylex.props(navbarStyles.header, xstyle)}>
+      <header
+        id="nd-nav"
+        {...props}
+        {...stylex.props(navbarStyles.header, xstyle)}
+      >
         <div
           {...stylex.props(
             navbarStyles.gradientBlur,
@@ -53,7 +63,7 @@ export function Navbar({
         <div {...stylex.props(navbarStyles.overlayBlur)} />
       </header>
     </>
-  )
+  );
 }
 
 export function NavbarLinkItem({
@@ -61,16 +71,16 @@ export function NavbarLinkItem({
   menuId,
   xstyle,
 }: {
-  item: LinkItemType
-  menuId: string
-  xstyle?: stylex.StyleXStyles
+  item: LinkItemType;
+  menuId: string;
+  xstyle?: stylex.StyleXStyles;
 }) {
   if (item.type === 'custom') {
     return (
       <NavigationMenuItem sx={navItemStyles.listItem}>
         <div {...stylex.props(xstyle)}>{item.children}</div>
       </NavigationMenuItem>
-    )
+    );
   }
 
   if (item.type === 'menu') {
@@ -78,7 +88,12 @@ export function NavbarLinkItem({
       <NavigationMenuItem sx={navItemStyles.listItem}>
         <NavigationMenuTrigger
           target={menuId}
-          sx={[navItemVariants.base, navItemVariants.default, navItemStyles.menuTrigger, xstyle]}
+          sx={[
+            navItemVariants.base,
+            navItemVariants.default,
+            navItemStyles.menuTrigger,
+            xstyle,
+          ]}
         >
           {item.text}
         </NavigationMenuTrigger>
@@ -94,16 +109,18 @@ export function NavbarLinkItem({
           ) : null}
           {item.items.map((child, index) => {
             if (child.type === 'custom') {
-              return <Fragment key={index}>{child.children}</Fragment>
+              return <Fragment key={index}>{child.children}</Fragment>;
             }
 
             const {
               banner = child.icon ? (
-                <div {...stylex.props(navItemStyles.iconContainer)}>{child.icon}</div>
+                <div {...stylex.props(navItemStyles.iconContainer)}>
+                  {child.icon}
+                </div>
               ) : null,
               xstyle: menuLinkXstyle,
               ...rest
-            } = child.menu ?? {}
+            } = child.menu ?? {};
 
             return (
               <RouterLink
@@ -116,20 +133,25 @@ export function NavbarLinkItem({
                 {rest.children ?? (
                   <>
                     {banner}
-                    <p {...stylex.props(navItemStyles.menuLinkTitle)}>{child.text}</p>
-                    <p {...stylex.props(navItemStyles.menuLinkDescription)}>{child.description}</p>
+                    <p {...stylex.props(navItemStyles.menuLinkTitle)}>
+                      {child.text}
+                    </p>
+                    <p {...stylex.props(navItemStyles.menuLinkDescription)}>
+                      {child.description}
+                    </p>
                   </>
                 )}
               </RouterLink>
-            )
+            );
           })}
         </NavigationMenuContent>
       </NavigationMenuItem>
-    )
+    );
   }
 
   if (item.type === 'icon') {
-    const accessibleName = item.label ?? (typeof item.text === 'string' ? item.text : 'Open link')
+    const accessibleName =
+      item.label ?? (typeof item.text === 'string' ? item.text : 'Open link');
     return (
       <NavigationMenuItem sx={navItemStyles.listItem}>
         <RouterButtonLink
@@ -137,13 +159,13 @@ export function NavbarLinkItem({
           external={item.external}
           href={item.url}
           size="icon"
-          sx={[navItemVariants.base, xstyle]}
+          sx={[navItemVariants.base, navItemVariants.icon, xstyle]}
           variant="ghost"
         >
           {item.icon}
         </RouterButtonLink>
       </NavigationMenuItem>
-    )
+    );
   }
 
   if (item.type === 'button') {
@@ -160,16 +182,19 @@ export function NavbarLinkItem({
           {item.text}
         </RouterButtonLink>
       </NavigationMenuItem>
-    )
+    );
   }
 
   return (
     <NavigationMenuItem sx={navItemStyles.listItem}>
-      <BaseLinkItem item={item} xstyle={[navItemVariants.base, navItemVariants.default, xstyle]}>
+      <BaseLinkItem
+        item={item}
+        xstyle={[navItemVariants.base, navItemVariants.default, xstyle]}
+      >
         {item.text}
       </BaseLinkItem>
     </NavigationMenuItem>
-  )
+  );
 }
 
 const navbarStyles = stylex.create({
@@ -199,7 +224,7 @@ const navbarStyles = stylex.create({
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: radius.xxl,
     cornerShape: 'squircle',
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
   },
@@ -224,7 +249,8 @@ const navbarStyles = stylex.create({
     bottom: -32,
     pointerEvents: 'none',
     backgroundColor: vars['--color-fd-background'],
-    maskImage: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 50%, transparent)',
+    maskImage:
+      'linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 50%, transparent)',
   },
   disableShadowBlur: {
     bottom: -8,
@@ -236,10 +262,11 @@ const navbarStyles = stylex.create({
     overflow: 'hidden',
     pointerEvents: 'none',
     backgroundColor: 'transparent',
-    borderRadius: 19,
+    borderRadius: `max(0px, calc(${radius.xxl} - 1px))`,
     cornerShape: 'squircle',
     backdropFilter: 'blur(20px) saturate(1000%)',
-    maskImage: 'linear-gradient(to bottom, white, transparent 16%, transparent 84%, white)',
+    maskImage:
+      'linear-gradient(to bottom, white, transparent 16%, transparent 84%, white)',
   },
   menuList: {
     display: 'flex',
@@ -250,7 +277,7 @@ const navbarStyles = stylex.create({
     paddingInline: 4 * 4,
     marginInline: 'auto',
   },
-})
+});
 
 const navItemVariants = stylex.create({
   base: {
@@ -267,22 +294,38 @@ const navItemVariants = stylex.create({
     fontWeight: 'inherit',
     lineHeight: 'inherit',
     color: {
-      default: vars['--color-fd-secondary-foreground'],
-      ':where([data-active=true])': vars['--color-fd-primary'],
-      ':hover': vars['--color-fd-primary'],
+      default: colors.fgSoft,
+      ':focus-visible': colors.accentText,
+      ':where([data-active=true])': colors.accentText,
+      ':hover': colors.accentText,
     },
     textDecoration: 'none',
     borderColor: 'transparent',
-    borderRadius: 8,
+    borderRadius: radius.md,
     cornerShape: 'squircle',
+  },
+  icon: {
+    color: {
+      default: colors.fgMuted,
+      ':focus-visible': colors.accentText,
+      ':hover': colors.accentText,
+      ':active': colors.accentText,
+    },
+    backgroundColor: 'transparent',
+    borderRadius: radius.md,
   },
   button: {
     gap: 1.5 * 4,
     minHeight: 0,
     padding: 2 * 4,
     fontSize: `${14 / 16}rem`,
+    color: {
+      default: colors.secondaryForeground,
+      ':focus-visible': colors.accentText,
+      ':hover': colors.accentText,
+    },
   },
-})
+});
 
 const navItemStyles = stylex.create({
   listItem: {
@@ -295,7 +338,7 @@ const navItemStyles = stylex.create({
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
     borderWidth: 1,
-    borderRadius: '8px',
+    borderRadius: radius.md,
     // eslint-disable-next-line @stylexjs/valid-styles
     ['--svg-size' as any]: '4px',
   },
@@ -304,7 +347,12 @@ const navItemStyles = stylex.create({
     flexDirection: 'column',
     gap: 2 * 4,
     padding: 3 * 4,
-    color: { default: null, ':hover': vars['--color-fd-primary'] },
+    color: {
+      default: colors.fgSoft,
+      ':focus-visible': colors.accentText,
+      ':hover': colors.accentText,
+    },
+    textDecoration: 'none',
     backgroundColor: {
       default: vars['--color-fd-card'],
       ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 80%, transparent)`,
@@ -312,12 +360,12 @@ const navItemStyles = stylex.create({
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
     borderWidth: 1,
-    borderRadius: '8px',
-    textDecoration: 'none',
+    borderRadius: radius.md,
     transitionProperty: 'background-color, color',
   },
   menuRootLink: {
-    gridColumn: '1 / -1',
+    gridColumnStart: '1',
+    gridColumnEnd: '-1',
   },
   menuLinkTitle: {
     margin: 0,
@@ -328,10 +376,10 @@ const navItemStyles = stylex.create({
     display: { default: null, ':empty': 'none' },
     margin: 0,
     fontSize: `${12 / 16}rem`,
-    color: vars['--color-fd-muted-foreground'],
+    color: colors.fgMuted,
   },
   menuTrigger: {
-    borderRadius: '8px',
+    borderRadius: radius.md,
   },
   menuContent: {
     display: 'grid',
@@ -343,4 +391,4 @@ const navItemStyles = stylex.create({
     gap: 2 * 4,
     padding: 4 * 4,
   },
-})
+});

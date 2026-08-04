@@ -4,26 +4,26 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import * as stylex from "@stylexjs/stylex";
-import { Link as UILink } from "@stylextras/ui/link";
-import { Typography } from "@stylextras/ui/typography";
-import { Link as LinkIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactElement } from "react";
-import { headingMarker } from "./mdx.stylex";
-import { vars } from "@/theming/vars.stylex";
+import * as stylex from '@stylexjs/stylex';
+import { Link as UILink } from '@stylextras/ui/link';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
+import { Typography } from '@stylextras/ui/typography';
+import { Link as LinkIcon } from 'lucide-react';
+import type { ComponentPropsWithoutRef, ReactElement } from 'react';
+import { headingMarker } from './mdx.stylex';
 
-type Types = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+type Types = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 type HeadingProps = Omit<
-  ComponentPropsWithoutRef<"h1">,
-  "as" | "className" | "style"
+  ComponentPropsWithoutRef<'h1'>,
+  'as' | 'className' | 'style'
 > & {
   as?: Types;
   xstyle?: stylex.StyleXStyles;
 };
 
 type TypographyHeadingProps = Omit<
-  ComponentPropsWithoutRef<"h1">,
-  "className" | "style"
+  ComponentPropsWithoutRef<'h1'>,
+  'className' | 'style'
 > & {
   as: Types;
   sx?: stylex.StyleXStyles;
@@ -38,7 +38,7 @@ export default function Heading({
   xstyle,
   ...props
 }: HeadingProps): ReactElement {
-  const As = as ?? "h1";
+  const As = as ?? 'h1';
   const size = sizes[As as keyof typeof sizes] ?? {};
 
   if (!props.id) {
@@ -54,16 +54,18 @@ export default function Heading({
   return (
     <TypographyHeading
       as={As}
-      sx={[
-        styles.heading,
-        size,
-        stylex.defaultMarker(),
-        headingMarker,
-        xstyle,
-      ] as stylex.StyleXStyles}
+      sx={
+        [
+          styles.heading,
+          size,
+          stylex.defaultMarker(),
+          headingMarker,
+          xstyle,
+        ] as stylex.StyleXStyles
+      }
       {...props}
     >
-      <UILink data-card="" href={`#${props.id}`} sx={styles.anchor}>
+      <UILink href={`#${props.id}`} sx={styles.anchor}>
         {props.children}
       </UILink>
       <LinkIcon aria-hidden {...stylex.props(styles.icon)} />
@@ -73,36 +75,37 @@ export default function Heading({
 
 const styles = stylex.create({
   heading: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 8,
-    alignItems: "center",
-    maxWidth: "none",
-    marginTop: "1em",
-    overflowWrap: "normal",
-    scrollMarginTop: "7rem",
-    // marginBottom: '0.5em',
+    display: 'flex',
+    flexDirection: 'row',
+    rowGap: 8,
+    columnGap: 8,
+    alignItems: 'center',
+    maxWidth: 'none',
+    marginTop: '1em',
+    overflowWrap: 'normal',
+    scrollMarginTop: '7rem',
   },
   anchor: {
-    display: "inline-flex",
-    gap: 8,
-    fontFamily: "inherit",
-    fontSize: "inherit",
-    color: "inherit",
-    textDecoration: "none",
+    display: 'inline-flex',
+    rowGap: 8,
+    columnGap: 8,
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    color: 'inherit',
+    textDecoration: 'none',
   },
   icon: {
     flexShrink: 0,
     width: 14,
     height: 14,
-    color: vars["--color-fd-muted-foreground"],
+    color: colors.fgMuted,
     opacity: {
       default: 0,
-      [stylex.when.ancestor(":hover", headingMarker)]: 1,
+      [stylex.when.ancestor(':hover', headingMarker)]: 1,
     },
-    transitionTimingFunction: "ease",
-    transitionDuration: "0.15s",
-    transitionProperty: "opacity",
+    transitionTimingFunction: 'ease',
+    transitionDuration: '0.15s',
+    transitionProperty: 'opacity',
   },
 });
 
@@ -114,7 +117,7 @@ const styles = stylex.create({
 // const TEXT_LG_LH = 'calc(1.75 / 1.125)';
 // const TEXT_2XL = '1.5rem';
 // const TEXT_2XL_LH = 'calc(2.5 / 1.5)';
-const TEXT_3XL = "1.875rem";
+const TEXT_3XL = '1.875rem';
 // const TEXT_3XL_LH = 'calc(3.5 / 1.875)';
 
 const sizes = stylex.create({
@@ -126,28 +129,28 @@ const sizes = stylex.create({
     // marginBottom: '0.8888889em',
   },
   h2: {
-    fontSize: "1.4em",
+    fontSize: '1.4em',
     fontWeight: 600,
     lineHeight: 1.3333333,
     // marginTop: '1.5em',
     // marginBottom: '0.5em',
   },
   h3: {
-    fontSize: "1.2em",
+    fontSize: '1.2em',
     fontWeight: 600,
     lineHeight: 1.6,
     // marginTop: '1.6em',
     // marginBottom: '0.6em',
   },
   h4: {
-    fontSize: "1em",
+    fontSize: '1em',
     fontWeight: 600,
     lineHeight: 1.5,
     // marginTop: '1.5em',
     // marginBottom: '0.5em',
   },
   h5: {
-    fontSize: "0.875em",
+    fontSize: '0.875em',
     fontWeight: 500,
     lineHeight: 1.5,
     // marginTop: '1.5em',

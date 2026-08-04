@@ -8,9 +8,15 @@ description: "Independent theme families plus the coordinated documentation pres
 
 ## Documentation preset
 
-The site shell and component galleries use `docsPresetThemes`. Its existing
-color, typography, spacing, radius, stroke, elevation, blur, and motion themes
-form the documentation design system. Package components consume those token
+The website starts with `docsPresetThemes`. Use the palette button in the
+header to open its anchored Theme dialog. The selected preset, appearance, and
+all eight variable groups apply to the entire site: the shell, navigation,
+search, documentation content, reference gallery, and every live component
+example. Examples deliberately inherit that global selection instead of
+creating isolated theme boundaries.
+
+The documentation preset coordinates color, typography, spacing, radius,
+stroke, elevation, blur, and motion. Package components consume those token
 sets directly.
 
 ```tsx
@@ -18,22 +24,6 @@ import * as stylex from "@stylexjs/stylex";
 import { docsPresetThemes } from "@stylextras/ui/style-presets/docs";
 
 export function DocsTheme({ children }) {
-  return (
-    <section {...stylex.props(...docsPresetThemes)}>
-      {children}
-    </section>
-  );
-}
-```
-
-Component galleries and reference fixtures are explicitly nested under the
-same preset so they remain isolated from a consuming page’s surrounding theme.
-
-```tsx
-import * as stylex from "@stylexjs/stylex";
-import { docsPresetThemes } from "@stylextras/ui/style-presets/docs";
-
-export function ComponentGalleryTheme({ children }) {
   return (
     <section {...stylex.props(...docsPresetThemes)}>
       {children}

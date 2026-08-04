@@ -79,7 +79,6 @@ export function Card({
           [styles.cardLink, cardLinkMarker] as unknown as stylex.StyleXStyles
         }
         {...props}
-        data-card
       >
         <UICard sx={styles.linkedCard}>{content}</UICard>
       </RouterLink>
@@ -87,7 +86,7 @@ export function Card({
   }
 
   return (
-    <UICard {...props} data-card>
+    <UICard {...props}>
       {content}
     </UICard>
   );

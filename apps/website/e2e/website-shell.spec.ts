@@ -1,7 +1,9 @@
-import { type Page, expect, test } from '@playwright/test'
+import { type Locator, type Page, expect, test } from '@playwright/test'
+import { searchToggle, typingWord } from './locators'
+import { closeThemeSettings, openThemeSettings } from './theme'
 
 async function waitForWebsiteHydration(page: Page) {
-  await expect(page.locator('body')).toHaveAttribute('data-website-hydrated', 'true')
+  await expect(page.locator('#nd-nav')).toBeVisible()
 }
 
 test.beforeEach(async ({ page }) => {
@@ -9,24 +11,24 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/')
   await waitForWebsiteHydration(page)
   await expect(page.locator('#nd-nav')).toBeVisible()
-  await expect(page.locator('[data-theme-toggle] [aria-pressed="true"]')).toHaveCount(1)
+  await expect(page.getByRole('button', { name: 'Customize website theme' })).toBeVisible()
 })
 
 test('preserves the shell geometry and responsive visibility boundaries', async ({ page }) => {
   await expect(page.locator('#nd-nav')).toHaveCSS('height', '72px')
   await expect(page.locator('#nd-nav nav')).toHaveCSS('height', '56px')
 
-  await expect
-    .poll(() => page.locator('[data-search-full]').boundingBox())
-    .toMatchObject({ height: 37, width: 240 })
-  const searchShortcut = page.locator('[data-search-full] kbd')
+  const searchButton = searchToggle(page)
+  await expect.poll(() => searchButton.boundingBox()).toMatchObject({ height: 37, width: 240 })
+  const searchShortcut = searchButton.locator('kbd')
   await expect(searchShortcut).toHaveCount(1)
   await expect(searchShortcut.locator('span')).toHaveCount(2)
   await expect(searchShortcut).toHaveText(/K/)
   await expect(searchShortcut).toHaveAttribute('aria-hidden', 'true')
-  await expect
-    .poll(() => page.locator('[data-theme-toggle]').boundingBox())
-    .toMatchObject({ height: 34, width: 94 })
+  const themeButton = page.getByRole('button', { name: 'Customize website theme' })
+  const themeButtonBox = await themeButton.boundingBox()
+  expect(themeButtonBox).not.toBeNull()
+  expect(themeButtonBox!.width).toBe(themeButtonBox!.height)
 
   const cta = page.locator('a[href="/docs"]').nth(1)
   await expect(cta).toHaveCSS('border-radius', '10px')
@@ -40,10 +42,10 @@ test('preserves the shell geometry and responsive visibility boundaries', async 
   await expect(page.locator('#nd-nav a[href="/docs"]')).toBeHidden()
 
   await page.setViewportSize({ height: 844, width: 421 })
-  await expect(page.locator('[data-theme-toggle]')).toBeVisible()
+  await expect(themeButton).toBeVisible()
 
   await page.setViewportSize({ height: 844, width: 420 })
-  await expect(page.locator('[data-theme-toggle]')).toBeHidden()
+  await expect(themeButton).toBeVisible()
 
   await page.setViewportSize({ height: 844, width: 361 })
   await expect(page.locator('#nd-nav a[aria-label="GitHub"]')).toBeVisible()
@@ -108,7 +110,7 @@ test('preserves docs and search geometry at their exact responsive boundaries', 
   await page.setViewportSize({ height: 844, width: 390 })
   await page.goto('/docs/get-started')
   await waitForWebsiteHydration(page)
-  await page.locator('[data-search-full]').click()
+  await searchToggle(page).click()
   const dialog = page.getByRole('dialog', { name: 'Search' })
   const listbox = dialog.locator('[role="listbox"]')
   await expect(dialog).toBeVisible()
@@ -118,13 +120,111 @@ test('preserves docs and search geometry at their exact responsive boundaries', 
   await page.keyboard.press('Escape')
 
   await page.setViewportSize({ height: 900, width: 1280 })
-  await page.locator('[data-search-full]').click()
+  await searchToggle(page).click()
   await expect(dialog).toBeVisible()
   await expect.poll(async () => (await dialog.boundingBox())?.width).toBe(640)
 })
 
+test('themes shell foregrounds and radii without recoloring shell surfaces', async ({ page }) => {
+  await page.goto('/docs/get-started')
+  await waitForWebsiteHydration(page)
+
+  const headerBackdrop = page.locator('#nd-nav > div').nth(2)
+  const sidebar = page.locator('aside[aria-label="Documentation"]')
+  const headerLink = page.locator('#nd-nav a[href="/docs"]')
+  const sidebarLink = sidebar.locator('a[href="/docs/themes"]')
+  const searchButton = searchToggle(page)
+  const homeLink = page.getByRole('link', { name: 'StyleXtras home' })
+  const logoText = homeLink.locator('svg > path').last()
+
+  const readPaint = (locator: Locator) =>
+    locator.evaluate((element) => {
+      const style = getComputedStyle(element)
+      return {
+        backgroundColor: style.backgroundColor,
+        borderColor: style.borderColor,
+      }
+    })
+  const readColor = (locator: Locator) =>
+    locator.evaluate((element) => getComputedStyle(element).color)
+  const readSrgb = (locator: Locator) =>
+    locator.evaluate((element) => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 1
+      canvas.height = 1
+      const context = canvas.getContext('2d')
+      if (!context) throw new Error('Could not create a canvas context')
+      context.fillStyle = getComputedStyle(element).color
+      context.fillRect(0, 0, 1, 1)
+      return Array.from(context.getImageData(0, 0, 1, 1).data.slice(0, 3))
+    })
+
+  for (const control of [
+    page.getByRole('button', { name: 'Toggle documentation sidebar' }),
+    page.locator('#nd-nav').getByRole('link', { name: 'GitHub', exact: true }),
+    page.getByRole('button', { name: 'Customize website theme' }),
+  ]) {
+    await page.mouse.move(640, 500)
+    const restingPaint = await readPaint(control)
+    const restingColor = await readColor(control)
+    await control.hover()
+    await expect(control).toHaveCSS('background-color', restingPaint.backgroundColor)
+    await expect(control).toHaveCSS('border-color', restingPaint.borderColor)
+    await expect.poll(() => readColor(control)).not.toBe(restingColor)
+  }
+
+  await page.mouse.move(640, 500)
+  const initialSurfaces = {
+    header: await readPaint(headerBackdrop),
+    search: await readPaint(searchButton),
+    sidebar: await readPaint(sidebar),
+  }
+  const initialForegrounds = {
+    headerLink: await readColor(headerLink),
+    searchButton: await readColor(searchButton),
+    sidebarLink: await readColor(sidebarLink),
+  }
+
+  let themeDialog = await openThemeSettings(page)
+  await themeDialog.getByLabel('Color theme').selectOption('ember')
+  await closeThemeSettings(themeDialog)
+
+  await expect.poll(() => readColor(headerLink)).not.toBe(initialForegrounds.headerLink)
+  await expect.poll(() => readColor(searchButton)).not.toBe(initialForegrounds.searchButton)
+  await expect.poll(() => readColor(sidebarLink)).not.toBe(initialForegrounds.sidebarLink)
+  const activeLinkColor = await readColor(headerLink)
+  const activeLinkRgb = await readSrgb(headerLink)
+  expect(Math.max(...activeLinkRgb)).toBeGreaterThan(160)
+  expect(Math.max(...activeLinkRgb) - Math.min(...activeLinkRgb)).toBeGreaterThan(140)
+  await sidebarLink.hover()
+  await expect.poll(() => readColor(sidebarLink)).toBe(activeLinkColor)
+  expect(await readPaint(headerBackdrop)).toEqual(initialSurfaces.header)
+  expect(await readPaint(searchButton)).toEqual(initialSurfaces.search)
+  expect(await readPaint(sidebar)).toEqual(initialSurfaces.sidebar)
+  const themedHeaderIcon = page
+    .locator('#nd-nav')
+    .getByRole('link', { name: 'GitHub', exact: true })
+  const themedIconColor = await readColor(themedHeaderIcon)
+  await themedHeaderIcon.hover()
+  await expect.poll(() => readColor(themedHeaderIcon)).not.toBe(themedIconColor)
+  await expect
+    .poll(() => logoText.evaluate((element) => getComputedStyle(element).fill))
+    .toBe(await page.locator('html').evaluate((element) => getComputedStyle(element).color))
+
+  themeDialog = await openThemeSettings(page)
+  await themeDialog.getByLabel('Radius theme').selectOption('sharp')
+  await closeThemeSettings(themeDialog)
+
+  await expect(headerBackdrop).toHaveCSS('border-radius', '0px')
+  await expect(searchButton).toHaveCSS('border-radius', '0px')
+  await expect(sidebar).toHaveCSS('border-radius', '0px')
+  await expect(sidebarLink).toHaveCSS('border-radius', '0px')
+})
+
 test('shows one deterministic typing word when reduced motion is requested', async ({ page }) => {
-  const animatedWords = page.locator('[data-animated-typing-word]')
+  const word = typingWord(page)
+  const staticWord = word.locator(':scope > span').first()
+  const animatedWords = word.locator(':scope > span:not(:first-child)')
   await expect(animatedWords).toHaveCount(5)
   expect(
     await animatedWords.evaluateAll((words) =>
@@ -133,12 +233,12 @@ test('shows one deterministic typing word when reduced motion is requested', asy
   ).toEqual(['-40s', '-32s', '-24s', '-16s', '-8s'])
 
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await expect(page.locator('[data-static-typing-word]')).toHaveText('expressive')
-  await expect(page.locator('[data-static-typing-word]')).toBeVisible()
+  await expect(staticWord).toHaveText('expressive')
+  await expect(staticWord).toBeVisible()
   for (let index = 0; index < 5; index += 1) {
     await expect(animatedWords.nth(index)).toBeHidden()
   }
-  await expect(page.locator('[data-typing-word]')).toHaveCSS('animation-name', 'none')
+  await expect(word).toHaveCSS('animation-name', 'none')
 })
 
 test('anchors and dismisses the docs sidebar on the logical side in RTL', async ({ page }) => {
@@ -298,7 +398,7 @@ test('preserves native hash and download link behavior', async ({ page }) => {
 })
 
 test('opens the native search dialog and restores trigger focus', async ({ page }) => {
-  const trigger = page.locator('[data-search-full]')
+  const trigger = searchToggle(page)
   await trigger.focus()
   await page.keyboard.press('Enter')
 
@@ -320,9 +420,8 @@ test('loads the static site index and wraps the active option', async ({ page })
     await route.continue()
   })
 
-  const trigger = page.locator('[data-search-full]')
-  await trigger.focus()
-  await page.keyboard.press('Enter')
+  const trigger = searchToggle(page)
+  await trigger.click()
   const dialog = page.getByRole('dialog', { name: 'Search' })
   const input = dialog.getByRole('textbox', { name: 'Search' })
   await input.fill('clipboard')
@@ -346,17 +445,97 @@ test('loads the static site index and wraps the active option', async ({ page })
   await expect(dialog).toBeHidden()
 })
 
-test('changes and persists the selected color theme', async ({ page }) => {
-  const dark = page.getByRole('button', { name: 'Dark theme' })
-  await dark.click()
+test('opens one anchored theme dialog and resets appearance on reload', async ({ page }) => {
+  const trigger = page.getByRole('button', { name: 'Customize website theme' })
+  await trigger.focus()
+  const dialog = await openThemeSettings(page)
+  const usesAnchorPositioning = await dialog.evaluate(
+    () =>
+      CSS.supports('position-anchor: --stylextras-test') &&
+      CSS.supports('anchor-scope: --stylextras-test'),
+  )
+  if (usesAnchorPositioning) {
+    const [triggerBox, dialogBox] = await Promise.all([trigger.boundingBox(), dialog.boundingBox()])
+    expect(triggerBox).not.toBeNull()
+    expect(dialogBox).not.toBeNull()
+    expect(
+      Math.abs(dialogBox!.x + dialogBox!.width - (triggerBox!.x + triggerBox!.width)),
+    ).toBeLessThanOrEqual(2)
+  }
+
+  for (const label of [
+    'Style preset',
+    'Appearance',
+    'Color theme',
+    'Spacing theme',
+    'Radius theme',
+    'Typography theme',
+    'Stroke theme',
+    'Elevation theme',
+    'Blur theme',
+    'Motion theme',
+  ]) {
+    await expect(dialog.getByLabel(label), label).toHaveCount(1)
+  }
+
+  await dialog.getByLabel('Appearance').selectOption('dark')
+  const classesBeforeColorChange = await page.locator('html').getAttribute('class')
+  await dialog.getByLabel('Color theme').selectOption('blue')
 
   await expect(page.locator('html')).toHaveClass(/dark/)
-  await expect(dark).toHaveAttribute('aria-pressed', 'true')
+  await expect
+    .poll(() => page.locator('html').getAttribute('class'))
+    .not.toBe(classesBeforeColorChange)
+  const selectedThemeClasses = await page.locator('html').getAttribute('class')
+  await closeThemeSettings(dialog)
+  await expect(trigger).toBeFocused()
+
+  await page
+    .getByRole('navigation', { name: 'Primary navigation' })
+    .getByRole('link', { name: 'Docs', exact: true })
+    .click()
+  await expect(page).toHaveURL(/\/docs$/)
+  await expect(page.locator('html')).toHaveAttribute('class', selectedThemeClasses!)
 
   await page.reload()
-  await expect(page.locator('html')).toHaveClass(/dark/)
-  await expect(page.getByRole('button', { name: 'Dark theme' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
+  await waitForWebsiteHydration(page)
+  await expect(page.locator('html')).toHaveCSS('color-scheme', 'light dark')
+  const reloadedDialog = await openThemeSettings(page)
+  await expect(reloadedDialog.getByLabel('Appearance')).toHaveValue('system')
+})
+
+test('keeps legacy website colors unchanged across style presets', async ({ page }) => {
+  const dialog = await openThemeSettings(page)
+  const appearance = dialog.getByLabel('Appearance')
+  const stylePreset = dialog.getByLabel('Style preset')
+  const readLegacyPalette = () =>
+    page.evaluate(() => {
+      const rootStyles = getComputedStyle(document.documentElement)
+      const tokens = Array.from(rootStyles)
+        .filter((name) => name === '--color-code-green' || name.startsWith('--color-fd-'))
+        .sort()
+        .map((name) => [name, rootStyles.getPropertyValue(name)])
+
+      return {
+        background: getComputedStyle(document.body).backgroundColor,
+        tokens,
+      }
+    })
+  const presets = await stylePreset
+    .locator('option')
+    .evaluateAll((options) =>
+      options
+        .map((option) => (option as HTMLOptionElement).value)
+        .filter((value) => value !== 'custom'),
+    )
+
+  for (const colorScheme of ['light', 'dark']) {
+    await appearance.selectOption(colorScheme)
+    const initialPalette = await readLegacyPalette()
+
+    for (const preset of presets) {
+      await stylePreset.selectOption(preset)
+      await expect.poll(readLegacyPalette).toEqual(initialPalette)
+    }
+  }
 })

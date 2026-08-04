@@ -4,20 +4,22 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-"use client";
-import * as stylex from "@stylexjs/stylex";
-import { CopyToClipboardButton } from "@stylextras/ui/copy-to-clipboard-button";
-import { Check, Clipboard } from "lucide-react";
+'use client';
+import * as stylex from '@stylexjs/stylex';
+import { CopyToClipboardButton } from '@stylextras/ui/copy-to-clipboard-button';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
+import { typography } from '@stylextras/ui/tokens/typography.stylex';
+import { Check, Clipboard } from 'lucide-react';
 import type {
+  ComponentType,
   ComponentProps,
   HTMLAttributes,
   ReactNode,
   RefObject,
-} from "react";
-import { useRef } from "react";
-import { preMarker, tabsMarker } from "./mdx.stylex";
-import { vars } from "@/theming/vars.stylex";
-export function Pre(props: ComponentProps<"pre">) {
+} from 'react';
+import { useRef } from 'react';
+import { preMarker, tabsMarker } from './mdx.stylex';
+export function Pre(props: ComponentProps<'pre'>) {
   return (
     <pre
       {...stylex.props(styles.pre, stylex.defaultMarker(), preMarker)}
@@ -27,14 +29,17 @@ export function Pre(props: ComponentProps<"pre">) {
     </pre>
   );
 }
-export interface CodeBlockProps extends ComponentProps<"figure"> {
+export interface CodeBlockProps extends Omit<
+  ComponentProps<'figure'>,
+  'className' | 'style'
+> {
   icon?: ReactNode;
   title?: string;
   allowCopy?: boolean;
   viewportProps?: HTMLAttributes<HTMLDivElement>;
-  "data-line-numbers"?: boolean;
-  "data-line-numbers-start"?: number;
-  Actions?: (_props: { className?: string; children?: ReactNode }) => ReactNode;
+  'data-line-numbers'?: boolean;
+  'data-line-numbers-start'?: number;
+  Actions?: ComponentType<{ children?: ReactNode }>;
   xstyle?: stylex.StyleXStyles;
 }
 export function CodeBlock({
@@ -45,31 +50,21 @@ export function CodeBlock({
   viewportProps = {},
   children,
   xstyle,
-  Actions = ({ children }) => (
-    <div {...stylex.props(styles.actionsWrapper)}>{children}</div>
-  ),
+  Actions = DefaultActions,
   ...props
 }: CodeBlockProps) {
   const areaRef = useRef<HTMLDivElement>(null);
-  const { className, style, ...rest } = props;
-  const {
-    className: _className,
-    style: _style,
-    ..._rest
-  } = stylex.props(styles.figure, xstyle);
   return (
     <figure
       dir="ltr"
       ref={ref}
       tabIndex={-1}
-      {...rest}
-      className={[_className, className].join(" ")}
-      style={{ ..._style, ...style }}
-      {..._rest}
+      {...props}
+      {...stylex.props(styles.figure, xstyle)}
     >
       {title ? (
         <div {...stylex.props(styles.header)}>
-          {typeof icon === "string" ? (
+          {typeof icon === 'string' ? (
             <div
               {...stylex.props(styles.iconWrapper)}
               dangerouslySetInnerHTML={{ __html: icon }}
@@ -78,24 +73,24 @@ export function CodeBlock({
             icon
           )}
           <figcaption {...stylex.props(styles.title)}>{title}</figcaption>
-          {Actions({
-            children: allowCopy && <CopyButton containerRef={areaRef} />,
-          })}
+          <Actions>
+            {allowCopy && <CopyButton containerRef={areaRef} />}
+          </Actions>
         </div>
       ) : (
-        Actions({
-          children: allowCopy && (
+        <Actions>
+          {allowCopy && (
             <CopyButton
               containerRef={areaRef}
               xstyle={styles.floatingCopyButton}
             />
-          ),
-        })
+          )}
+        </Actions>
       )}
       <div
         ref={areaRef}
         aria-label={title ? `${title} code` : undefined}
-        role={title ? "region" : undefined}
+        role={title ? 'region' : undefined}
         tabIndex={0}
         {...viewportProps}
         {...stylex.props(styles.viewport, !title && styles.viewportPadded)}
@@ -105,27 +100,28 @@ export function CodeBlock({
     </figure>
   );
 }
+function DefaultActions({ children }: { children?: ReactNode }) {
+  return <div {...stylex.props(styles.actionsWrapper)}>{children}</div>;
+}
 interface CopyButtonProps {
   containerRef: RefObject<HTMLDivElement | null>;
   xstyle?: stylex.StyleXStyles;
 }
 function CopyButton({ containerRef, xstyle }: CopyButtonProps) {
   function resolveValue() {
-    const pre = containerRef.current?.getElementsByTagName("pre").item(0);
-    if (!pre) return "";
+    const pre = containerRef.current?.getElementsByTagName('pre').item(0);
+    if (!pre) return '';
     const clone = pre.cloneNode(true) as HTMLElement;
-    clone.querySelectorAll(".nd-copy-ignore").forEach((node) => {
-      node.replaceWith("\n");
+    clone.querySelectorAll('.nd-copy-ignore').forEach((node) => {
+      node.replaceWith('\n');
     });
-    return clone.textContent ?? "";
+    return clone.textContent ?? '';
   }
 
   return (
     <CopyToClipboardButton
       copiedIcon={
-        <Check
-          {...stylex.props(styles.copyIcon, styles.copyIconChecked)}
-        />
+        <Check {...stylex.props(styles.copyIcon, styles.copyIconChecked)} />
       }
       copiedLabel="Copied Text"
       feedback="none"
@@ -140,76 +136,78 @@ function CopyButton({ containerRef, xstyle }: CopyButtonProps) {
 }
 const styles = stylex.create({
   figure: {
-    position: "relative",
+    position: 'relative',
     marginTop: {
       default: 16,
-      [stylex.when.ancestor(":where(*)", tabsMarker)]: 4,
+      [stylex.when.ancestor(':where(*)', tabsMarker)]: 4,
     },
     marginBottom: 16,
-    overflow: "hidden",
+    overflow: 'hidden',
     fontSize: 13,
     lineHeight: 1.5,
-    backgroundColor: vars["--color-fd-card"],
-    borderColor: vars["--color-fd-border"],
-    borderStyle: "solid",
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 12,
-    boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
   },
   header: {
-    display: "flex",
-    gap: 8,
-    alignItems: "center",
+    display: 'flex',
+    rowGap: 8,
+    columnGap: 8,
+    alignItems: 'center',
     height: 38,
     paddingInline: 16,
-    color: vars["--color-fd-muted-foreground"],
-    borderBottomColor: vars["--color-fd-border"],
-    borderBottomStyle: "solid",
+    color: colors.fgMuted,
+    borderBottomColor: colors.border,
+    borderBottomStyle: 'solid',
     borderBottomWidth: 1,
   },
   iconWrapper: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 16,
   },
   title: {
     flexGrow: 1,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   actionsWrapper: {
-    display: "contents",
+    display: 'contents',
   },
   viewport: {
     paddingBlock: 8,
-    overflow: "auto",
+    overflow: 'auto',
   },
   viewportPadded: {
     paddingInlineEnd: 48,
   },
   pre: {
-    display: "flex",
-    flexDirection: "column",
-    width: "max-content",
-    minWidth: "100%",
+    display: 'flex',
+    flexDirection: 'column',
+    width: 'max-content',
+    minWidth: '100%',
     margin: 0,
-    backgroundColor: "transparent",
+    fontFamily: typography.fontMono,
+    backgroundColor: 'transparent',
   },
   floatingCopyButton: {
-    position: "absolute",
+    position: 'absolute',
     insetInlineEnd: 4,
     top: 4,
     zIndex: 2,
     borderRadius: 8,
-    backdropFilter: "blur(8px)",
+    backdropFilter: 'blur(8px)',
   },
   copyIcon: {
     width: 14,
     height: 14,
   },
   copyIconChecked: {
-    color: vars["--color-fd-accent-foreground"],
+    color: colors.accentText,
   },
 });

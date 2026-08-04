@@ -12,7 +12,7 @@ export type TableProps = Omit<ComponentProps<typeof UITable>, 'className' | 'sty
 
 export default function Table(props: TableProps) {
   return (
-    <TableScrollArea aria-label="Scrollable table" sx={styles.wrapper}>
+    <TableScrollArea aria-label="Scrollable table" sx={styles.wrapper} tabIndex={0}>
       <UITable {...props} sx={styles.table} />
     </TableScrollArea>
   )

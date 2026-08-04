@@ -17,6 +17,13 @@ import { calloutMarker } from './mdx.stylex';
 import { vars } from '@/theming/vars.stylex';
 import { spacing } from '@stylextras/ui/tokens/spacing.stylex';
 
+const DEFAULT_ICONS = {
+  info: Info,
+  warning: TriangleAlert,
+  error: CircleX,
+  success: CircleCheck,
+} as const;
+
 export type CalloutType =
   'info' | 'warn' | 'warning' | 'error' | 'success' | 'danger' | 'tip';
 
@@ -66,19 +73,7 @@ export function CalloutContainer({
 }: CalloutContainerProps) {
   const type = resolveType(inputType);
   const variant: AlertVariant = type === 'error' ? 'danger' : type;
-
-  const iconStyleProps = stylex.props(
-    iconStyles.base,
-    title !== undefined && iconStyles.withTitle,
-    iconStyles[type],
-  );
-
-  const defaultIcon = {
-    info: <Info {...iconStyleProps} />,
-    warning: <TriangleAlert {...iconStyleProps} />,
-    error: <CircleX {...iconStyleProps} />,
-    success: <CircleCheck {...iconStyleProps} />,
-  }[type];
+  const DefaultIcon = DEFAULT_ICONS[type];
 
   return (
     <Alert
@@ -91,7 +86,15 @@ export function CalloutContainer({
         role="none"
         {...stylex.props(indicatorStyles.base, indicatorStyles[type])}
       />
-      {icon ?? defaultIcon}
+      {icon ?? (
+        <DefaultIcon
+          {...stylex.props(
+            iconStyles.base,
+            title !== undefined && iconStyles.withTitle,
+            iconStyles[type],
+          )}
+        />
+      )}
       <div {...stylex.props(styles.content)}>{children}</div>
     </Alert>
   );

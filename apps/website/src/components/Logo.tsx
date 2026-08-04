@@ -9,7 +9,8 @@
 
 import * as React from "react";
 import * as stylex from "@stylexjs/stylex";
-import { legacyColors, vars } from "@/theming/vars.stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
+import { legacyColors } from "@/theming/vars.stylex";
 
 export const viewBox = "0 0 644 435";
 
@@ -23,7 +24,7 @@ export function LogoText() {
 
 const styles = stylex.create({
   logo: {
-    fill: vars["--color-fd-card-foreground"],
+    fill: colors.fg,
     fillRule: "nonzero",
   },
 });

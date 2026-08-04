@@ -1,5 +1,7 @@
 import { type Page, expect, test } from '@playwright/test'
 import { initAdvancedSearch } from 'fumadocs-core/search/server'
+import { componentPreview, referenceGallery, searchToggle, typingWord } from './locators'
+import { setWebsiteTheme } from './theme'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -36,15 +38,11 @@ async function prepareVisualPage(
     colorScheme: appearance,
     reducedMotion: 'reduce',
   })
-  await page.addInitScript((theme) => {
-    localStorage.setItem('theme', theme)
-  }, appearance)
   await page.goto(path)
 
-  await expect(page.locator('body')).toHaveAttribute('data-website-hydrated', 'true')
-  await expect(page.locator('html')).toHaveCSS('color-scheme', appearance)
+  await expect(page.locator('html')).toHaveCSS('color-scheme', 'light dark')
   if (shell) {
-    await expect(page.locator('[data-theme-toggle] [aria-pressed="true"]')).toHaveCount(1)
+    await expect(page.getByRole('button', { name: 'Customize website theme' })).toBeVisible()
   }
 
   await settleVisualPage(page)
@@ -119,7 +117,7 @@ async function mockSearchResults(page: Page) {
 }
 
 async function openPopulatedSearch(page: Page) {
-  await page.locator('[data-search-full]').click()
+  await searchToggle(page).click()
   const dialog = page.getByRole('dialog', { name: 'Search' })
   const input = dialog.getByRole('textbox', { name: 'Search' })
   await expect(dialog).toBeVisible()
@@ -151,8 +149,9 @@ for (const viewport of ['desktop', 'mobile'] as const) {
           'The expressive, type-safe, composable, predictable, and themeable styling system for ambitious interfaces',
         ),
       ).toBeVisible()
-      await expect(page.locator('[data-static-typing-word]')).toHaveText('expressive')
-      await expect(page.locator('[data-static-typing-word]')).toBeVisible()
+      const staticWord = typingWord(page).locator(':scope > span').first()
+      await expect(staticWord).toHaveText('expressive')
+      await expect(staticWord).toBeVisible()
       await expect(page.locator('footer')).toContainText('Meta Platforms, Inc.')
 
       await expect(page).toHaveScreenshot(`website-home-${viewport}-${appearance}.png`, {
@@ -274,61 +273,49 @@ for (const viewport of ['desktop', 'mobile'] as const) {
 
 test('reference gallery Docs and Zinc light/dark', async ({ page }) => {
   await page.goto('/docs')
-  const gallery = page.getByTestId('reference-gallery')
-  const color = gallery.getByLabel('Color theme')
-  const appearance = gallery.getByLabel('Appearance')
+  const gallery = referenceGallery(page)
   await expect(gallery).toBeVisible()
-  await expect(gallery).toHaveAttribute('data-preview-ready', 'true')
-  await expect(gallery).toHaveAttribute('data-preview-style', 'docs')
-  await expect(gallery).toHaveAttribute('data-preview-color', 'docs')
-  await expect(gallery).toHaveAttribute('data-preview-appearance', 'inherit')
-  await appearance.selectOption('light')
-  await expect(gallery).toHaveAttribute('data-preview-appearance', 'light')
-  await page.locator('#nd-nav').evaluate((element) => {
-    element.style.setProperty('display', 'none', 'important')
-  })
+  await expect(gallery).toHaveCSS('color-scheme', 'light dark')
+  await setWebsiteTheme(page, { Appearance: 'light' })
+  await expect(gallery).toHaveCSS('color-scheme', 'light')
 
   await expect(gallery).toHaveScreenshot('reference-docs-light.png')
-  await appearance.selectOption('dark')
-  await expect(gallery).toHaveAttribute('data-preview-appearance', 'dark')
+  await setWebsiteTheme(page, { Appearance: 'dark' })
+  await expect(gallery).toHaveCSS('color-scheme', 'dark')
   await expect(gallery).toHaveScreenshot('reference-docs-dark.png')
-  await color.selectOption('zinc')
-  await expect(gallery).toHaveAttribute('data-preview-color', 'zinc')
-  await appearance.selectOption('light')
-  await expect(gallery).toHaveAttribute('data-preview-appearance', 'light')
+  await setWebsiteTheme(page, { 'Color theme': 'zinc' })
+  await setWebsiteTheme(page, { Appearance: 'light' })
+  await expect(gallery).toHaveCSS('color-scheme', 'light')
   await expect(gallery).toHaveScreenshot('reference-zinc-light.png')
-  await appearance.selectOption('dark')
-  await expect(gallery).toHaveAttribute('data-preview-appearance', 'dark')
+  await setWebsiteTheme(page, { Appearance: 'dark' })
+  await expect(gallery).toHaveCSS('color-scheme', 'dark')
   await expect(gallery).toHaveScreenshot('reference-zinc-dark.png')
 })
 
 test('all style presets and color theme objects render', async ({ page }) => {
   await page.goto('/docs/themes')
-  const gallery = page.getByTestId('theme-gallery')
+  const stylePresets = page.getByRole('region', { name: 'Style presets', exact: true })
+  const gallery = stylePresets.locator('..')
   await expect(gallery).toBeVisible()
-  await expect(page.getByTestId('style-gallery').locator(':scope > section')).toHaveCount(14)
+  await expect(stylePresets.locator(':scope > div').last().locator(':scope > section')).toHaveCount(
+    14,
+  )
   await page.locator('#nd-nav').evaluate((element) => {
     element.style.setProperty('display', 'none', 'important')
   })
   await expect(gallery).toHaveScreenshot('all-color-themes.png')
 })
 
-test('individual component demos render with shared preview presets', async ({ page }) => {
+test('individual component demos inherit global website themes', async ({ page }) => {
   await page.goto('/docs/components/button')
-  const demo = page.locator('[data-component-demo="Button"]')
+  const demo = componentPreview(page, 'Button')
   await expect(demo).toBeVisible()
-  await expect(demo).toHaveAttribute('data-preview-ready', 'true')
-  await expect(demo).toHaveAttribute('data-preview-appearance', 'inherit')
-  await page.locator('#nd-nav').evaluate((element) => {
-    element.style.setProperty('display', 'none', 'important')
-  })
+  await expect(demo).toHaveCSS('color-scheme', 'light dark')
 
-  await demo.getByLabel('Appearance').selectOption('light')
-  await expect(demo).toHaveAttribute('data-preview-appearance', 'light')
+  await setWebsiteTheme(page, { Appearance: 'light' })
+  await expect(demo).toHaveCSS('color-scheme', 'light')
   await expect(demo).toHaveScreenshot('component-demo-docs-light.png')
-  await demo.getByLabel('Color theme').selectOption('zinc')
-  await demo.getByLabel('Appearance').selectOption('dark')
-  await expect(demo).toHaveAttribute('data-preview-color', 'zinc')
-  await expect(demo).toHaveAttribute('data-preview-appearance', 'dark')
+  await setWebsiteTheme(page, { Appearance: 'dark', 'Color theme': 'zinc' })
+  await expect(demo).toHaveCSS('color-scheme', 'dark')
   await expect(demo).toHaveScreenshot('component-demo-zinc-dark.png')
 })

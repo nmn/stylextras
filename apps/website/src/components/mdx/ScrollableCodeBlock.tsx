@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 'use client'
-import { vars } from '@/theming/vars.stylex'
 import * as stylex from '@stylexjs/stylex'
 import { CopyToClipboardButton } from '@stylextras/ui/copy-to-clipboard-button'
 import { ScrollArea } from '@stylextras/ui/scroll-area'
+import { colors } from '@stylextras/ui/tokens/color.stylex'
+import { typography } from '@stylextras/ui/tokens/typography.stylex'
 import { Check, Clipboard } from 'lucide-react'
 import type { ReactNode } from 'react'
 interface ScrollableCodeBlockProps {
@@ -58,8 +59,8 @@ const styles = stylex.create({
     marginBottom: 16,
     overflow: 'hidden',
     fontSize: 13,
-    backgroundColor: vars['--color-fd-card'],
-    borderColor: vars['--color-fd-border'],
+    backgroundColor: colors.card,
+    borderColor: colors.border,
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 12,
@@ -71,8 +72,8 @@ const styles = stylex.create({
     alignItems: 'center',
     height: 38,
     paddingInline: 16,
-    color: vars['--color-fd-muted-foreground'],
-    borderBottomColor: vars['--color-fd-border'],
+    color: colors.fgMuted,
+    borderBottomColor: colors.border,
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
   },
@@ -80,7 +81,7 @@ const styles = stylex.create({
     flexGrow: 1,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    fontFamily: 'monospace',
+    fontFamily: typography.fontMono,
     whiteSpace: 'nowrap',
   },
   viewport: (maxHeight: number) => ({
@@ -99,7 +100,8 @@ const styles = stylex.create({
   code: {
     paddingBlock: 8,
     paddingInline: 16,
-    fontFamily: 'SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+    fontFamily: typography.fontMono,
+    color: colors.code,
     fontSize: 13,
     lineHeight: 1.5,
     whiteSpace: 'pre',
@@ -109,6 +111,6 @@ const styles = stylex.create({
     height: 14,
   },
   copyIconChecked: {
-    color: vars['--color-fd-accent-foreground'],
+    color: colors.accentText,
   },
 })

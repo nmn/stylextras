@@ -1,0 +1,166 @@
+---
+title: "Anchored Dialog"
+description: "A native modal dialog positioned against its trigger."
+---
+
+import Example from "@stylextras/ui/anchored-dialog/example";
+import exampleCode from "@stylextras/ui/anchored-dialog/example?raw";
+
+## Examples
+
+<ComponentPreview code={exampleCode} name="AnchoredDialog">
+  <Example />
+</ComponentPreview>
+
+## Usage
+
+Wrap each trigger and dialog pair in `AnchoredDialogRoot`. The root scopes their
+CSS anchor name, which keeps separate instances independent without generating
+runtime styles or IDs. The dialog falls back to the browser's centered modal
+layout when CSS anchor positioning is unavailable.
+
+The live example is type checked from the public package export and includes a
+compact form, a smaller action dialog, two placements, and the optional legacy
+bridge.
+
+## Import
+
+```tsx
+import {
+  AnchoredDialog,
+  AnchoredDialogBody,
+  AnchoredDialogClose,
+  AnchoredDialogDescription,
+  AnchoredDialogFooter,
+  AnchoredDialogHeader,
+  AnchoredDialogRoot,
+  AnchoredDialogTitle,
+  AnchoredDialogTrigger,
+} from "@stylextras/ui/anchored-dialog";
+import { AnchoredDialogBridge } from "@stylextras/ui/anchored-dialog/client";
+```
+
+## Anatomy
+
+- `AnchoredDialogRoot` — Anchor-scoping `<div>` for one trigger/dialog pair.
+- `AnchoredDialogTrigger` — Styled `<button>` that invokes the dialog.
+- `AnchoredDialog` — Styled native `<dialog>`.
+- `AnchoredDialogHeader` — Compact `<header>`.
+- `AnchoredDialogTitle` — Styled `<h2>`.
+- `AnchoredDialogDescription` — Styled `<p>`.
+- `AnchoredDialogBody` — Compact content `<div>`.
+- `AnchoredDialogFooter` — Compact action `<footer>`.
+- `AnchoredDialogClose` — Styled `<button>` that requests closure.
+- `AnchoredDialogBridge` — Optional client bridge that renders no DOM.
+
+## Accessibility and browser behavior
+
+`AnchoredDialog` uses `showModal()` through declarative invoker commands. It is
+a modal dialog—not a menu or non-modal popover—so the browser moves focus into
+it, makes the rest of the document inert, handles Escape, and returns focus
+after closure. Give every instance an accessible name with `aria-label` or
+`aria-labelledby`; connect concise supporting text with `aria-describedby`.
+
+`closedBy="any"` enables Escape, platform close requests, and backdrop light
+dismiss. `AnchoredDialogBridge` feature-detects invoker commands and `closedby`
+independently, then dynamically imports only the missing fallback. CSS anchor
+positioning is a progressive layout enhancement and needs no JavaScript
+polyfill.
+
+The root, dialog, and every content part accept `sx`; consumer styles are
+composed after the built-in styles. Keep the trigger and its dialog inside the
+same `AnchoredDialogRoot` so the scoped anchor relationship remains unambiguous.
+
+## API reference
+
+### AnchoredDialog
+
+`AnchoredDialogProps`
+
+Complete native/inherited prop base: `DialogProps` except `size`, including one
+required accessible name.
+
+- `aria-label` or `aria-labelledby` — Required accessible name announced for the modal dialog.
+- `closedBy` — `"none" | "any" | "closerequest"`. Controls which browser dismissal requests may close the dialog. Default: `"any"`.
+- `placement` — `"bottom" | "top" | "end" | "start"`. Places the surface relative to its scoped trigger when CSS anchors are supported. Top and bottom placements align the surface and trigger at their inline-end edges; start and end placements align their block-end edges. Default: `"bottom"`.
+- `size` — `AnchoredDialogSize`. Selects a popover-like width of `"sm"`, `"md"`, or `"lg"`. Default: `"md"`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after placement, sizing, and built-in dialog styles.
+
+### AnchoredDialogBody
+
+`AnchoredDialogBodyProps`
+
+Complete native/inherited prop base: `DialogBodyProps`.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the compact body spacing.
+
+### AnchoredDialogClose
+
+`AnchoredDialogCloseProps`
+
+Complete native/inherited prop base: `DialogCloseProps`.
+
+- `size` — `ButtonSize`. Controls the visual dimensions and interactive target size. Default: `"md"`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the built-in button styles.
+- `target` — `string`. Required dialog ID targeted by the native close request.
+- `type` — `AnchoredDialogCloseProps["type"]`. Sets the native button type. Default: `"button"`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `"outline"`.
+
+### AnchoredDialogDescription
+
+`AnchoredDialogDescriptionProps`
+
+Complete native/inherited prop base: `DialogDescriptionProps`.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the compact description typography.
+
+### AnchoredDialogFooter
+
+`AnchoredDialogFooterProps`
+
+Complete native/inherited prop base: `DialogFooterProps`.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the compact footer layout.
+
+### AnchoredDialogHeader
+
+`AnchoredDialogHeaderProps`
+
+Complete native/inherited prop base: `DialogHeaderProps`.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the compact header layout.
+
+### AnchoredDialogRoot
+
+`AnchoredDialogRootProps`
+
+Complete native/inherited prop base: `Omit<React.ComponentPropsWithRef<"div">, "className" | "style">`.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the anchor-scoping root styles.
+
+### AnchoredDialogTitle
+
+`AnchoredDialogTitleProps`
+
+Complete native/inherited prop base: `DialogTitleProps`.
+
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the compact title typography.
+
+### AnchoredDialogTrigger
+
+`AnchoredDialogTriggerProps`
+
+Complete native/inherited prop base: `DialogTriggerProps`.
+
+- `size` — `ButtonSize`. Controls the visual dimensions and interactive target size. Default: `"md"`.
+- `sx` — `stylex.StyleXStyles`. Theme-aware local overrides composed after the scoped anchor and button styles.
+- `target` — `string`. Required dialog ID controlled by the native invoker command.
+- `type` — `AnchoredDialogTriggerProps["type"]`. Sets the native button type. Default: `"button"`.
+- `variant` — `ButtonVariant`. Selects the built-in visual treatment. Default: `"outline"`.
+
+### AnchoredDialogBridge
+
+`AnchoredDialogBridgeProps`
+
+- `closedBy` — `"none" | "any" | "closerequest"`. Determines whether the bridge may load backdrop light-dismiss behavior. Default: `"any"`.
+- `target` — `string`. Required dialog ID used by conditionally loaded browser fallbacks.

@@ -1,7 +1,7 @@
 import type { BaseLayoutProps } from '@/components/layout/shared';
 import * as stylex from '@stylexjs/stylex';
 import LogoBold from '@/components/LogoBold';
-import { vars } from '../theming/vars.stylex';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -30,7 +30,7 @@ export function baseOptions(): BaseLayoutProps {
 
 const styles = stylex.create({
   logo: {
-    '--fg1': vars['--color-fd-card-foreground'],
+    color: colors.fg,
     // width: 48,
     height: 36,
   },

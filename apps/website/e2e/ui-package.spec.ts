@@ -1,12 +1,13 @@
 import { expect, test } from '@playwright/test'
+import { componentPreview } from './locators'
 
 test('static callouts and primitive toasts do not announce on page load', async ({ page }) => {
   for (const component of ['alert', 'field', 'toast']) {
     await page.goto(`/docs/components/${component}`)
-    const preview = page.locator(
-      `[data-component-demo="${component === 'toast' ? 'Toast' : component === 'field' ? 'Field' : 'Alert'}"]`,
+    const preview = componentPreview(
+      page,
+      component === 'toast' ? 'Toast' : component === 'field' ? 'Field' : 'Alert',
     )
-    await expect(preview).toHaveAttribute('data-preview-ready', 'true')
     const liveRegions = preview.locator(
       '[role="alert"], [role="status"], [aria-live]:not([aria-live="off"])',
     )
@@ -33,9 +34,8 @@ test('Link and ButtonLink keep native anchors, forwarded refs, and accessible ic
   }
 
   await page.goto('/docs/components/button')
-  const preview = page.locator('[data-component-demo="Button"]')
+  const preview = componentPreview(page, 'Button')
   const iconLink = preview.locator('a[href="#button-link-icon"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await expect(iconLink).toHaveRole('link')
   await expect(iconLink).toHaveAccessibleName('Open linked item')
 })
@@ -82,10 +82,9 @@ test('TableOfContents exposes nested list structure and active location semantic
 }) => {
   await page.goto('/docs/components/table-of-contents')
 
-  const preview = page.locator('[data-component-demo="TableOfContents"]')
+  const preview = componentPreview(page, 'TableOfContents')
   const toc = preview.getByRole('navigation', { name: 'On this page' })
   const topLevelList = toc.locator(':scope > ol')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await expect(toc.getByRole('heading', { name: 'On this page', level: 3 })).toBeVisible()
   await expect(toc.getByRole('link', { name: 'Overview' })).toHaveAttribute(
     'aria-current',
@@ -101,14 +100,14 @@ test('disclosures support custom indicators, hidden indicators, and optional acc
   page,
 }) => {
   await page.goto('/docs/components/accordion')
-  const accordion = page.locator('[data-component-demo="Accordion"]')
+  const accordion = componentPreview(page, 'Accordion')
   await expect(accordion.locator('details[name="component-docs-accordion"]')).toHaveCount(3)
   const independent = accordion.locator('details:not([name])')
   await expect(independent).toHaveCount(1)
   await expect(independent.locator('summary span[aria-hidden="true"]')).toHaveCount(0)
 
   await page.goto('/docs/components/collapsible')
-  const collapsible = page.locator('[data-component-demo="Collapsible"]')
+  const collapsible = componentPreview(page, 'Collapsible')
   const trigger = collapsible.locator('summary')
   const indicator = trigger.locator(':scope > span[aria-hidden="true"]')
   const label = trigger.locator(':scope > span:not([aria-hidden])')
@@ -125,7 +124,7 @@ test('ScrollArea preserves stable defaults and offers the six-pixel overlay mode
 }) => {
   await page.goto('/docs/components/scroll-area')
 
-  const preview = page.locator('[data-component-demo="ScrollArea"]')
+  const preview = componentPreview(page, 'ScrollArea')
   const stable = preview.getByLabel('Stable release history')
   const overlay = preview.getByLabel('Overlay release history')
   await expect(stable).toHaveCSS('scrollbar-gutter', 'stable')

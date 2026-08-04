@@ -7,11 +7,12 @@
 
 import { ComponentPreview } from '@/components/catalog/HighlightedComponentPreview'
 import { ThemeGallery } from '@/components/catalog/ThemeGallery'
-import { vars } from '@/theming/vars.stylex'
 import { StyleXStyles } from '@stylexjs/stylex'
 import * as stylex from '@stylexjs/stylex'
 import { Button as AriaButton } from '@stylextras/ui/button'
 import { Collapsible, CollapsibleTrigger } from '@stylextras/ui/collapsible'
+import { colors } from '@stylextras/ui/tokens/color.stylex'
+import { typography } from '@stylextras/ui/tokens/typography.stylex'
 import {
   TableBody,
   TableCaption,
@@ -135,7 +136,7 @@ const styles = stylex.create({
       default: '1.25em',
       ':last-child': 0,
     },
-    color: vars['--color-fd-foreground'],
+    color: colors.fg,
   },
   list: {
     paddingInlineStart: '1.25rem',
@@ -183,17 +184,18 @@ const styles = stylex.create({
       [stylex.when.ancestor(':where(h3)')]: '0.9em',
     },
     fontWeight: 'inherit',
+    fontFamily: typography.fontMono,
     lineHeight: {
       default: null,
       [stylex.when.ancestor(':where(pre)')]: 1.5,
     },
     // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
-    color: vars['--color-code-green'],
+    color: colors.code,
     backgroundColor: {
-      default: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
+      default: colors.surface,
       [stylex.when.ancestor(':where(pre)', preMarker)]: 'transparent',
     },
-    borderColor: vars['--color-fd-border'],
+    borderColor: colors.border,
     borderStyle: {
       default: 'solid',
       [stylex.when.ancestor(':where(pre)', preMarker)]: 'none',

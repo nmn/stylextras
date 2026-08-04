@@ -4,152 +4,150 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-"use client";
+'use client';
 
-import type { SVGProps } from "react";
-import { useTheme } from "next-themes";
-import { useLayoutEffect, useState } from "react";
-import * as stylex from "@stylexjs/stylex";
-import { StyleXAttributes } from "./layout/shared";
-import { Toggle } from "@stylextras/ui/toggle";
-import { ToggleGroup } from "@stylextras/ui/toggle-group";
+import * as stylex from '@stylexjs/stylex';
+import {
+  AnchoredDialog,
+  AnchoredDialogBody,
+  AnchoredDialogClose,
+  AnchoredDialogDescription,
+  AnchoredDialogHeader,
+  AnchoredDialogRoot,
+  AnchoredDialogTitle,
+  AnchoredDialogTrigger,
+} from '@stylextras/ui/anchored-dialog';
+import { AnchoredDialogBridge } from '@stylextras/ui/anchored-dialog/client';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
+import { radius } from '@stylextras/ui/tokens/radius.stylex';
+import { type SVGProps, useId } from 'react';
+import { ThemeControls } from './catalog/ThemeControls';
 
-type ThemeKey = "light" | "dark" | "system";
-
-const items: { key: ThemeKey; Icon: typeof SunIcon; label: string }[] = [
-  { key: "light", Icon: SunIcon, label: "Light theme" },
-  { key: "dark", Icon: MoonIcon, label: "Dark theme" },
-  { key: "system", Icon: SparklesIcon, label: "System theme" },
-];
-
-export function ThemeToggle({
-  xstyle,
-  mode = "light-dark-system",
-  ...props
-}: StyleXAttributes<HTMLElement> & {
-  mode?: "light-dark" | "light-dark-system";
-}) {
-  const { setTheme, theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useLayoutEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const current =
-    mode === "light-dark"
-      ? mounted
-        ? (resolvedTheme ?? null)
-        : null
-      : mounted
-        ? (theme as ThemeKey | null)
-        : null;
-
-  const visibleItems =
-    mode === "light-dark" ? items.filter((i) => i.key !== "system") : items;
+export function ThemeToggle() {
+  const dialogId = `website-theme-${useId().replaceAll(':', '')}`;
+  const titleId = `${dialogId}-title`;
+  const descriptionId = `${dialogId}-description`;
 
   return (
-    <ToggleGroup
-      aria-label="Color theme"
-      data-theme-toggle=""
-      {...props}
-      sx={[styles.container, xstyle]}
-    >
-      {visibleItems.map(({ key, Icon, label }) => {
-        const isActive = current === key;
+    <AnchoredDialogRoot>
+      <AnchoredDialogTrigger
+        aria-label="Customize website theme"
+        title="Customize website theme"
+        size="icon-lg"
+        target={dialogId}
+        variant="ghost"
+        sx={styles.trigger}
+      >
+        <PaletteIcon aria-hidden="true" {...stylex.props(styles.icon)} />
+      </AnchoredDialogTrigger>
 
-        const nextTheme =
-          mode === "light-dark" && key === "system" ? "system" : key;
-
-        return (
-          <Toggle
-            aria-label={label}
-            aria-pressed={isActive}
-            key={key}
-            onClick={() => setTheme(nextTheme)}
-            size="sm"
-            sx={visibleItems.length === 3 ? styles.itemGrow : undefined}
+      <AnchoredDialog
+        id={dialogId}
+        aria-describedby={descriptionId}
+        aria-labelledby={titleId}
+        placement="bottom"
+        size="lg"
+        sx={styles.dialog}
+      >
+        <AnchoredDialogHeader sx={styles.header}>
+          <div {...stylex.props(styles.headingCopy)}>
+            <AnchoredDialogTitle id={titleId}>Theme</AnchoredDialogTitle>
+            <AnchoredDialogDescription id={descriptionId}>
+              Tune the entire documentation site.
+            </AnchoredDialogDescription>
+          </div>
+          <AnchoredDialogClose
+            aria-label="Close theme settings"
+            size="icon-sm"
+            target={dialogId}
+            variant="ghost"
+            sx={styles.close}
           >
-            <Icon {...stylex.props(styles.icon)} />
-          </Toggle>
-        );
-      })}
-    </ToggleGroup>
+            <CloseIcon aria-hidden="true" {...stylex.props(styles.closeIcon)} />
+          </AnchoredDialogClose>
+        </AnchoredDialogHeader>
+        <AnchoredDialogBody>
+          <ThemeControls />
+        </AnchoredDialogBody>
+        <AnchoredDialogBridge target={dialogId} />
+      </AnchoredDialog>
+    </AnchoredDialogRoot>
   );
 }
 
-function SunIcon(props: SVGProps<SVGSVGElement>) {
+function PaletteIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="2"
+      strokeWidth="1.8"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2" />
-      <path d="M12 20v2" />
-      <path d="m4.93 4.93 1.41 1.41" />
-      <path d="m17.66 17.66 1.41 1.41" />
-      <path d="M2 12h2" />
-      <path d="M20 12h2" />
-      <path d="m6.34 17.66-1.41 1.41" />
-      <path d="m19.07 4.93-1.41 1.41" />
+      <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8Z" />
+      <circle cx="13.5" cy="6.5" fill="currentColor" r=".5" />
+      <circle cx="17.5" cy="10.5" fill="currentColor" r=".5" />
+      <circle cx="6.5" cy="12.5" fill="currentColor" r=".5" />
+      <circle cx="8.5" cy="7.5" fill="currentColor" r=".5" />
     </svg>
   );
 }
 
-function MoonIcon(props: SVGProps<SVGSVGElement>) {
+function CloseIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
-      strokeLinejoin="round"
       strokeWidth="2"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
-    </svg>
-  );
-}
-
-function SparklesIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
-      <path d="M20 2v4" />
-      <path d="M22 4h-4" />
-      <circle cx="4" cy="20" r="2" />
+      <path d="m18 6-12 12M6 6l12 12" />
     </svg>
   );
 }
 
 const styles = stylex.create({
-  container: {
-    display: { default: "inline-flex", "@media (max-width: 420px)": "none" },
+  trigger: {
+    marginInline: -8,
+    color: {
+      default: colors.fgMuted,
+      ':focus-visible': colors.accentText,
+      ':hover': colors.accentText,
+      ':active': colors.accentText,
+    },
+    backgroundColor: 'transparent',
+    borderRadius: radius.md,
   },
-  itemGrow: {
-    flexGrow: 1,
-    width: "auto",
+  dialog: {
+    maxHeight: 'calc(100dvh - 4rem)',
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: 19,
+    height: 19,
+  },
+  header: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr) auto',
+    alignItems: 'start',
+  },
+  headingCopy: {
+    display: 'grid',
+    rowGap: 2,
+    columnGap: 2,
+  },
+  close: {
+    marginBlockStart: -4,
+    marginInlineEnd: -4,
+    borderRadius: radius.round,
+  },
+  closeIcon: {
+    width: 17,
+    height: 17,
   },
 });

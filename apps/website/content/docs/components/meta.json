@@ -4,6 +4,7 @@
     "./accordion.mdx",
     "./alert.mdx",
     "./alert-dialog.mdx",
+    "./anchored-dialog.mdx",
     "./aspect-ratio.mdx",
     "./avatar.mdx",
     "./badge.mdx",

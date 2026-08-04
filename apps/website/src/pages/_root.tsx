@@ -1,23 +1,14 @@
-import * as stylex from "@stylexjs/stylex";
-import { stylePresetThemes } from "@stylextras/ui/style-presets";
-import { websiteLegacyColorTheme } from "@/theming/vars.stylex";
+import { HTML } from "@/contexts/WebsiteThemeContext";
 import type { ReactNode } from "react";
 import { ErrorBoundary } from "waku/router/client";
 
 export default function RootElement({ children }: { children: ReactNode }) {
   return (
     <ErrorBoundary>
-      <html lang="en" suppressHydrationWarning>
+      <HTML>
         <head />
-        <body
-          {...stylex.props(
-            ...stylePresetThemes("docs"),
-            websiteLegacyColorTheme,
-          )}
-        >
-          {children}
-        </body>
-      </html>
+        <body>{children}</body>
+      </HTML>
     </ErrorBoundary>
   );
 }

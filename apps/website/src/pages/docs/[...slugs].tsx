@@ -14,7 +14,8 @@ import {
 } from "@/components/layout/page";
 import { mdxComponents } from "@/components/mdx";
 import * as stylex from "@stylexjs/stylex";
-import { vars } from "@/theming/vars.stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
+import { typography } from "@stylextras/ui/tokens/typography.stylex";
 
 export default function DocPage({ slugs }: PageProps<"/docs/[...slugs]">) {
   const page = source.getPage(slugs);
@@ -75,17 +76,18 @@ const styles = stylex.create({
     fontSize: "1.875rem",
     fontWeight: 700,
     lineHeight: "2.25rem",
-    color: `${vars["--color-fd-foreground"]}`,
+    color: colors.fg,
   },
   fallbackDescription: {
-    color: `${vars["--color-fd-muted-foreground"]}`,
+    color: colors.fgMuted,
   },
   codeTitle: {
     padding: 3,
-    fontFamily: "var(--default-mono-font-family)",
+    fontFamily: typography.fontMono,
     fontWeight: 400,
-    backgroundColor: `color-mix(in oklab, ${vars["--color-fd-muted"]} 95%, currentColor)`,
-    borderColor: `${vars["--color-fd-border"]}`,
+    color: colors.code,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 5,

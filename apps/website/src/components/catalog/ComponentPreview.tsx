@@ -1,25 +1,14 @@
-'use client'
+'use client';
 
-import * as stylex from '@stylexjs/stylex'
-import { blurThemes } from '@stylextras/ui/blur-themes'
-import { colorThemes } from '@stylextras/ui/color-themes'
-import { elevationThemes } from '@stylextras/ui/elevation-themes'
-import { motionThemes } from '@stylextras/ui/motion-themes'
-import { radiusThemes } from '@stylextras/ui/radius-themes'
-import { spacingThemes } from '@stylextras/ui/spacing-themes'
-import { strokeThemes } from '@stylextras/ui/stroke-themes'
-import { stylePresetThemes } from '@stylextras/ui/style-presets'
-import { colors } from '@stylextras/ui/tokens/color.stylex'
-import { elevation } from '@stylextras/ui/tokens/elevation.stylex'
-import { radius } from '@stylextras/ui/tokens/radius.stylex'
-import { spacing } from '@stylextras/ui/tokens/spacing.stylex'
-import { stroke } from '@stylextras/ui/tokens/stroke.stylex'
-import { typography } from '@stylextras/ui/tokens/typography.stylex'
-import { typographyThemes } from '@stylextras/ui/typography-themes'
-import type { ReactNode } from 'react'
-import { ScrollableCodeBlock } from '../mdx/ScrollableCodeBlock'
-import { PreviewThemeControls } from './PreviewThemeControls'
-import { usePreviewTheme } from './use-preview-theme'
+import * as stylex from '@stylexjs/stylex';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
+import { elevation } from '@stylextras/ui/tokens/elevation.stylex';
+import { radius } from '@stylextras/ui/tokens/radius.stylex';
+import { spacing } from '@stylextras/ui/tokens/spacing.stylex';
+import { stroke } from '@stylextras/ui/tokens/stroke.stylex';
+import { typography } from '@stylextras/ui/tokens/typography.stylex';
+import type { ReactNode } from 'react';
+import { ScrollableCodeBlock } from '../mdx/ScrollableCodeBlock';
 
 export function ComponentPreview({
   children,
@@ -27,55 +16,19 @@ export function ComponentPreview({
   highlightedCode,
   name,
 }: {
-  children: ReactNode
-  code?: string
-  highlightedCode?: ReactNode
-  name: string
+  children: ReactNode;
+  code?: string;
+  highlightedCode?: ReactNode;
+  name: string;
 }) {
-  const { changeSelection, changeStyle, ready, selection, styleName } = usePreviewTheme()
-
   return (
-    <div
-      {...stylex.props(
-        ...stylePresetThemes('docs'),
-        styles.presetBoundary,
-        selection.appearance === 'light' && styles.light,
-        selection.appearance === 'dark' && styles.dark,
-      )}
-    >
-      <section
-        aria-label={`${name} live demo`}
-        data-component-demo={name}
-        data-preview-appearance={selection.appearance}
-        data-preview-color={selection.color}
-        data-preview-ready={ready ? 'true' : 'false'}
-        data-preview-style={styleName}
-        {...stylex.props(
-          colorThemes.neutral,
-          colorThemes[selection.color],
-          spacingThemes[selection.spacing],
-          radiusThemes[selection.radius],
-          strokeThemes[selection.stroke],
-          typographyThemes[selection.typography],
-          elevationThemes[selection.elevation],
-          blurThemes[selection.blur],
-          motionThemes[selection.motion],
-          styles.root,
-          selection.appearance === 'light' && styles.light,
-          selection.appearance === 'dark' && styles.dark,
-        )}
-      >
+    <>
+      <section aria-label={`${name} live demo`} {...stylex.props(styles.root)}>
         <header {...stylex.props(styles.header)}>
           <span {...stylex.props(styles.eyebrow)}>Live demo</span>
           <h2 {...stylex.props(styles.title)}>{name}</h2>
         </header>
-        <PreviewThemeControls
-          onSelectionChange={changeSelection}
-          onStyleChange={changeStyle}
-          selection={selection}
-          styleName={styleName}
-        />
-        <div data-component-demo-canvas="" {...stylex.props(styles.canvas)}>
+        <div {...stylex.props(styles.canvas)}>
           {children}
         </div>
       </section>
@@ -87,14 +40,11 @@ export function ComponentPreview({
           title={`${name} example.tsx`}
         />
       ) : null}
-    </div>
-  )
+    </>
+  );
 }
 
 const styles = stylex.create({
-  presetBoundary: {
-    display: 'contents',
-  },
   root: {
     display: 'grid',
     width: '100%',
@@ -109,12 +59,6 @@ const styles = stylex.create({
     borderWidth: stroke.thin,
     borderRadius: radius.lg,
     boxShadow: elevation.sm,
-  },
-  light: {
-    colorScheme: 'light',
-  },
-  dark: {
-    colorScheme: 'dark',
   },
   header: {
     display: 'grid',
@@ -147,4 +91,4 @@ const styles = stylex.create({
     overflow: 'clip',
     backgroundColor: colors.bg,
   },
-})
+});

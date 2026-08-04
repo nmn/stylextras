@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { componentCatalog } from '@stylextras/ui/catalog'
+import { componentCanvas, componentPreview } from './locators'
+import { closeThemeSettings, openThemeSettings, setWebsiteTheme } from './theme'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -23,33 +25,19 @@ test('every component page renders its live demo', async ({ browserName, page })
     const response = await page.goto(`/docs/${section}/${slug}`)
     expect(response?.ok(), `${entry.export} response`).toBe(true)
 
-    const preview = page.locator(`[data-component-demo="${entry.name}"]`)
+    const preview = componentPreview(page, entry.name)
     await expect(preview, `${entry.export} preview`).toBeVisible()
-    await expect(preview, `${entry.export} hydrated preview`).toHaveAttribute(
-      'data-preview-ready',
-      'true',
-    )
-    await expect(preview, `${entry.export} inherited appearance`).toHaveAttribute(
-      'data-preview-appearance',
-      'inherit',
+    await expect(preview, `${entry.export} inherited appearance`).toHaveCSS(
+      'color-scheme',
+      'light dark',
     )
     await expect(preview, `${entry.export} styled preview`).toHaveCSS('display', 'grid')
-    for (const label of [
-      'Style preset',
-      'Appearance',
-      'Color theme',
-      'Spacing theme',
-      'Radius theme',
-      'Typography theme',
-      'Stroke theme',
-      'Elevation theme',
-      'Blur theme',
-      'Motion theme',
-    ]) {
-      await expect(preview.getByLabel(label), `${entry.export} ${label}`).toHaveCount(1)
-    }
     await expect(
-      preview.locator('[data-component-demo-canvas] > *').first(),
+      preview.getByLabel('Style preset'),
+      `${entry.export} local theme controls`,
+    ).toHaveCount(0)
+    await expect(
+      componentCanvas(preview).locator(':scope > *').first(),
       `${entry.export} demo content`,
     ).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Examples', exact: true })).toBeVisible()
@@ -70,7 +58,7 @@ test('every component page renders its live demo', async ({ browserName, page })
     await expect(page.locator('vite-error-overlay')).toHaveCount(0)
 
     const results = await new AxeBuilder({ page })
-      .include(`[data-component-demo="${entry.name}"]`)
+      .include(`section[aria-label="${entry.name} live demo"]`)
       .analyze()
     expect(results.violations, `${entry.export} axe results`).toEqual([])
 
@@ -102,12 +90,8 @@ test('every component page fits a narrow viewport', async ({ browserName, page }
     const slug = entry.export.replace('experimental/', '')
     const section = entry.status === 'experimental' ? 'experimental' : 'components'
     await page.goto(`/docs/${section}/${slug}`)
-    const preview = page.locator(`[data-component-demo="${entry.name}"]`)
+    const preview = componentPreview(page, entry.name)
     await expect(preview, `${entry.export} preview`).toBeVisible()
-    await expect(preview, `${entry.export} hydrated preview`).toHaveAttribute(
-      'data-preview-ready',
-      'true',
-    )
     await expect(preview, `${entry.export} styled preview`).toHaveCSS('display', 'grid')
 
     const layout = await page.evaluate(() => {
@@ -164,11 +148,10 @@ test('every component page fits a narrow viewport', async ({ browserName, page }
 test('Accordion keeps a stable width as native details items toggle', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/accordion')
-  const preview = page.locator('[data-component-demo="Accordion"]')
+  const preview = componentPreview(page, 'Accordion')
   const exclusiveItems = preview.locator('details[name="component-docs-accordion"]')
   const independentItem = preview.locator('details:not([name])')
   await expect(preview).toBeVisible()
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await expect(exclusiveItems).toHaveCount(3)
   await expect(independentItem).toHaveCount(1)
   await expect(preview.locator('summary')).toHaveCount(4)
@@ -203,8 +186,7 @@ test('Carousel uses real controls and native scroll snap across an extended exam
   page,
 }) => {
   await page.goto('/docs/components/carousel')
-  const preview = page.locator('[data-component-demo="Carousel"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Carousel')
   const carousel = preview.getByRole('region', { name: 'Browser API highlights' })
   const items = carousel.locator('[role="group"][aria-roledescription="slide"]')
   const previous = preview.getByRole('button', { name: 'Previous slide' })
@@ -231,8 +213,7 @@ test('Carousel uses real controls and native scroll snap across an extended exam
 
 test('ButtonGroup action choices are equal-width inline-grid tracks', async ({ page }) => {
   await page.goto('/docs/components/button-group')
-  const preview = page.locator('[data-component-demo="ButtonGroup"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'ButtonGroup')
   const group = preview.getByRole('group', { name: 'Confirm changes' })
   // Grid items are blockified by their grid parent, so inline-grid computes to grid.
   await expect(group).toHaveCSS('display', 'grid')
@@ -257,7 +238,7 @@ test('ButtonGroup action choices are equal-width inline-grid tracks', async ({ p
 test('Collapsible keeps a stable custom inline-start indicator', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/collapsible')
-  const preview = page.locator('[data-component-demo="Collapsible"]')
+  const preview = componentPreview(page, 'Collapsible')
   const details = preview.locator('details')
   const trigger = details.locator('summary')
   const label = trigger.locator(':scope > span:not([aria-hidden])')
@@ -299,11 +280,10 @@ test('ScrollArea exposes stable and thin overlay scrollbar modes', async ({
   page,
 }) => {
   await page.goto('/docs/components/scroll-area')
-  const preview = page.locator('[data-component-demo="ScrollArea"]')
+  const preview = componentPreview(page, 'ScrollArea')
   const stable = preview.getByLabel('Stable release history')
   const overlay = preview.getByLabel('Overlay release history')
 
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await expect(stable).toHaveCSS('scrollbar-gutter', 'stable')
   await expect(overlay).toHaveCSS('scrollbar-gutter', 'auto')
 
@@ -322,12 +302,11 @@ test('TableOfContents renders real outline nesting and active location semantics
   page,
 }) => {
   await page.goto('/docs/components/table-of-contents')
-  const preview = page.locator('[data-component-demo="TableOfContents"]')
+  const preview = componentPreview(page, 'TableOfContents')
   const toc = preview.getByRole('navigation', { name: 'On this page' })
   const topLevelList = toc.locator(':scope > ol')
   const active = toc.getByRole('link', { name: 'Overview' })
 
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await expect(topLevelList.locator(':scope > li')).toHaveCount(3)
   await expect(toc.locator('ol')).toHaveCount(2)
   await expect(active).toHaveAttribute('aria-current', 'location')
@@ -338,7 +317,7 @@ test('TableOfContents renders real outline nesting and active location semantics
 
 test('Switch thumb position follows the inline axis', async ({ page }) => {
   await page.goto('/docs/components/switch')
-  const preview = page.locator('[data-component-demo="Switch"]')
+  const preview = componentPreview(page, 'Switch')
   const checked = preview.locator('input[role="switch"]:checked').first()
   const unchecked = preview.locator('input[role="switch"]:not(:checked)').first()
 
@@ -356,7 +335,7 @@ test('Switch thumb position follows the inline axis', async ({ page }) => {
 
 test('Radio indicator follows the native checked state', async ({ page }) => {
   await page.goto('/docs/components/radio-group')
-  const preview = page.locator('[data-component-demo="RadioGroup"]')
+  const preview = componentPreview(page, 'RadioGroup')
   const compact = preview.getByRole('radio', { name: 'Compact' })
   const defaultDensity = preview.getByRole('radio', { name: 'Default' })
   const indicatorOpacity = (radio: typeof compact) =>
@@ -375,8 +354,7 @@ test('Radio indicator follows the native checked state', async ({ page }) => {
 test('Card action stays on the inline end edge', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/card')
-  const preview = page.locator('[data-component-demo="Card"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Card')
   const card = preview.getByRole('article', { name: 'Native popups', exact: true })
   const action = card.getByRole('button', { name: 'Options for Native popups' })
 
@@ -398,7 +376,7 @@ test('Card action stays on the inline end edge', async ({ page }) => {
 test('Popover end placement follows the component direction', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/popover')
-  const preview = page.locator('[data-component-demo="Popover"]')
+  const preview = componentPreview(page, 'Popover')
   const trigger = preview.getByRole('button', { name: 'View activity' })
   const popover = preview.locator('#standard-details-popover')
 
@@ -431,8 +409,7 @@ test('Popover end placement follows the component direction', async ({ page }) =
 
 test('ContextMenu pointer placement follows inline start in RTL', async ({ page }) => {
   await page.goto('/docs/components/context-menu')
-  const preview = page.locator('[data-component-demo="ContextMenu"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'ContextMenu')
   const trigger = preview.getByText('Open the context menu anywhere in this area', { exact: true })
   const menu = preview.locator('#canvas-context-menu')
   const triggerBox = await trigger.boundingBox()
@@ -441,25 +418,9 @@ test('ContextMenu pointer placement follows inline start in RTL', async ({ page 
     x: Math.min(120, triggerBox!.width / 2),
     y: triggerBox!.height / 2,
   }
-  const openAt = (box: NonNullable<typeof triggerBox>) =>
-    trigger.evaluate(
-      (element, coordinates) =>
-        element.dispatchEvent(
-          new MouseEvent('contextmenu', {
-            bubbles: true,
-            button: 2,
-            cancelable: true,
-            clientX: coordinates.x,
-            clientY: coordinates.y,
-          }),
-        ),
-      {
-        x: box.x + clickPosition.x,
-        y: box.y + clickPosition.y,
-      },
-    )
+  const openAt = () => trigger.click({ button: 'right', position: clickPosition })
 
-  await openAt(triggerBox!)
+  await openAt()
   await expect(menu).toBeVisible()
   const ltrMenuBox = await menu.boundingBox()
   expect(ltrMenuBox).not.toBeNull()
@@ -470,7 +431,7 @@ test('ContextMenu pointer placement follows inline start in RTL', async ({ page 
   await preview.evaluate((element) => element.setAttribute('dir', 'rtl'))
   const rtlTriggerBox = await trigger.boundingBox()
   expect(rtlTriggerBox).not.toBeNull()
-  await openAt(rtlTriggerBox!)
+  await openAt()
   await expect(menu).toBeVisible()
   const rtlMenuBox = await menu.boundingBox()
   expect(rtlMenuBox).not.toBeNull()
@@ -482,7 +443,7 @@ test('ContextMenu pointer placement follows inline start in RTL', async ({ page 
 test('Dialog actions shrink-wrap at the footer end', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/dialog')
-  const preview = page.locator('[data-component-demo="Dialog"]')
+  const preview = componentPreview(page, 'Dialog')
   await preview.getByRole('button', { name: 'Open medium dialog' }).click()
   const dialog = preview.locator('#rename-medium-dialog')
   await expect(dialog).toBeVisible()
@@ -501,11 +462,69 @@ test('Dialog actions shrink-wrap at the footer end', async ({ page }) => {
   expect(Math.abs(widths[0]! - widths[1]!)).toBeLessThanOrEqual(1)
 })
 
+test('AnchoredDialog keeps native modal behavior while following its trigger', async ({
+  browserName,
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/docs/components/anchored-dialog')
+  const preview = componentPreview(page, 'AnchoredDialog')
+  const trigger = preview.getByRole('button', { name: 'View options' })
+  const dialog = page.getByRole('dialog', { name: 'View options' })
+
+  await trigger.focus()
+  await trigger.click()
+  await expect(dialog).toBeVisible()
+  await expect(dialog).toHaveJSProperty('open', true)
+  await expect(dialog).toMatchAriaSnapshot(`
+    - dialog "View options":
+      - heading "View options" [level=2]
+      - paragraph: Adjust how this project is displayed.
+      - text: Density
+      - combobox "Density":
+        - option "Compact"
+        - option "Comfortable" [selected]
+        - option "Spacious"
+      - paragraph: The setting applies to every project view.
+      - group "View option actions":
+        - button "Cancel"
+        - button "Apply"
+  `)
+  await expect.poll(() => dialog.evaluate((element) => element.matches(':modal'))).toBe(true)
+
+  const [triggerBox, dialogBox] = await Promise.all([trigger.boundingBox(), dialog.boundingBox()])
+  expect(triggerBox).not.toBeNull()
+  expect(dialogBox).not.toBeNull()
+  const placedBelowTrigger = dialogBox!.y >= triggerBox!.y + triggerBox!.height - 1
+  const placedAboveTrigger = dialogBox!.y + dialogBox!.height <= triggerBox!.y + 1
+  const overlapsTriggerInline =
+    dialogBox!.x <= triggerBox!.x + triggerBox!.width &&
+    dialogBox!.x + dialogBox!.width >= triggerBox!.x
+  const placedAgainstTrigger = (placedBelowTrigger || placedAboveTrigger) && overlapsTriggerInline
+  if (browserName === 'chromium') expect(placedAgainstTrigger).toBe(true)
+  if (placedAgainstTrigger) {
+    const triggerInlineEnd = triggerBox!.x + triggerBox!.width
+    const dialogInlineEnd = dialogBox!.x + dialogBox!.width
+    expect(Math.abs(dialogInlineEnd - triggerInlineEnd)).toBeLessThanOrEqual(2)
+  } else {
+    const viewport = page.viewportSize()!
+    expect(Math.abs(dialogBox!.x + dialogBox!.width / 2 - viewport.width / 2)).toBeLessThanOrEqual(
+      2,
+    )
+    expect(
+      Math.abs(dialogBox!.y + dialogBox!.height / 2 - viewport.height / 2),
+    ).toBeLessThanOrEqual(2)
+  }
+
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
 test('Sheet sides follow the requested logical viewport edges', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/sheet')
-  const preview = page.locator('[data-component-demo="Sheet"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Sheet')
   await expect(preview).toHaveCSS('display', 'grid')
   const viewportWidth = page.viewportSize()!.width
 
@@ -549,7 +568,7 @@ test('Sheet sides follow the requested logical viewport edges', async ({ page })
 test('Bottom Drawer is pinned to the viewport bottom', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/drawer')
-  const preview = page.locator('[data-component-demo="Drawer"]')
+  const preview = componentPreview(page, 'Drawer')
   await preview.getByRole('button', { name: 'Open bottom drawer' }).click()
   const drawer = preview.locator('#bottom-page-drawer')
   await expect(drawer).toBeVisible()
@@ -568,11 +587,10 @@ test('Command stays out of layout while closed and reports empty results accurat
   page,
 }) => {
   await page.goto('/docs/components/command')
-  const preview = page.locator('[data-component-demo="Command"]')
+  const preview = componentPreview(page, 'Command')
   const dialog = preview.locator('dialog')
   const input = dialog.getByPlaceholder('Search commands…')
 
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
   await expect(dialog).toBeHidden()
   await preview.getByRole('button', { name: 'Open command menu' }).click()
   await expect(dialog).toBeVisible()
@@ -588,8 +606,7 @@ test('Resizable exposes separator relationships and supports every input axis', 
   page,
 }) => {
   await page.goto('/docs/components/resizable')
-  const preview = page.locator('[data-component-demo="Resizable"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Resizable')
 
   const horizontalRoot = preview.locator('#horizontal-resizable')
   const horizontalHandle = horizontalRoot.getByRole('separator', {
@@ -691,8 +708,7 @@ test('Resizable exposes separator relationships and supports every input axis', 
 test('NavigationMenu anchors its native popover to the trigger', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/navigation-menu')
-  const preview = page.locator('[data-component-demo="NavigationMenu"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'NavigationMenu')
   const trigger = preview.getByRole('button', { name: 'Components' })
   const content = preview.locator('[popover]')
   await trigger.click()
@@ -718,14 +734,15 @@ test('Menubar keeps a keyboard-opened menu anchored to its trigger', async ({
   test.skip(browserName !== 'chromium', 'Programmatic popover source positioning is checked once.')
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/menubar')
-  const preview = page.locator('[data-component-demo="Menubar"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Menubar')
   const trigger = preview.getByRole('menuitem', { name: 'File', exact: true })
   const menu = preview.locator('#file-menu')
 
   await trigger.focus()
-  await page.keyboard.press('ArrowDown')
-  await expect(menu).toBeVisible()
+  await expect(async () => {
+    await trigger.press('ArrowDown')
+    await expect(menu).toBeVisible()
+  }).toPass()
   await expect(menu.getByRole('menuitem').first()).toBeFocused()
 
   const [triggerBox, menuBox] = await Promise.all([trigger.boundingBox(), menu.boundingBox()])
@@ -742,8 +759,7 @@ test('Menubar switches menus with wrapped, directional, typeahead, and pointer i
   page,
 }) => {
   await page.goto('/docs/components/menubar')
-  const preview = page.locator('[data-component-demo="Menubar"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Menubar')
   const menubar = preview.getByRole('menubar', { name: 'Application menu' })
   const fileTrigger = menubar.getByRole('menuitem', { name: 'File', exact: true })
   const editTrigger = menubar.getByRole('menuitem', { name: 'Edit', exact: true })
@@ -753,8 +769,10 @@ test('Menubar switches menus with wrapped, directional, typeahead, and pointer i
   const viewMenu = preview.locator('#view-menu')
 
   await fileTrigger.focus()
-  await page.keyboard.press('ArrowRight')
-  await expect(editTrigger).toBeFocused()
+  await expect(async () => {
+    await fileTrigger.press('ArrowRight')
+    await expect(editTrigger).toBeFocused()
+  }).toPass()
   await page.keyboard.press('ArrowRight')
   await expect(viewTrigger).toBeFocused()
   await page.keyboard.press('ArrowRight')
@@ -840,19 +858,19 @@ test('Menubar switches menus with wrapped, directional, typeahead, and pointer i
     .toBe(0)
 })
 
-test('preview controls theme each variable group independently', async ({ browserName, page }) => {
+test('header theme dialog controls every variable group globally', async ({
+  browserName,
+  page,
+}) => {
   test.skip(browserName !== 'chromium', 'Computed-style regression runs once.')
   await page.goto('/docs/components/button')
-  const preview = page.locator('[data-component-demo="Button"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
-  const button = preview
-    .locator('[data-component-demo-canvas] button')
-    .filter({ hasText: 'Primary' })
-    .first()
+  const preview = componentPreview(page, 'Button')
+  const button = componentCanvas(preview).locator('button').filter({ hasText: 'Primary' }).first()
   await expect(button).toBeVisible()
 
-  await preview.getByLabel('Style preset').selectOption('brutalist')
-  await expect(preview).toHaveAttribute('data-preview-style', 'brutalist')
+  const themeDialog = await openThemeSettings(page)
+  await themeDialog.getByLabel('Style preset').selectOption('brutalist')
+  await expect(themeDialog.getByLabel('Style preset')).toHaveValue('brutalist')
   for (const [label, value] of [
     ['Spacing theme', 'poster'],
     ['Radius theme', 'sharp'],
@@ -862,10 +880,11 @@ test('preview controls theme each variable group independently', async ({ browse
     ['Blur theme', 'crisp'],
     ['Motion theme', 'instant'],
   ] as const) {
-    await expect(preview.getByLabel(label)).toHaveValue(value)
+    await expect(themeDialog.getByLabel(label)).toHaveValue(value)
   }
-  await preview.getByLabel('Style preset').selectOption('docs')
-  await expect(preview).toHaveAttribute('data-preview-style', 'docs')
+  await themeDialog.getByLabel('Style preset').selectOption('docs')
+  await expect(themeDialog.getByLabel('Style preset')).toHaveValue('docs')
+  await closeThemeSettings(themeDialog)
 
   const read = () =>
     button.evaluate((element) => {
@@ -881,38 +900,36 @@ test('preview controls theme each variable group independently', async ({ browse
     })
 
   const initial = await read()
-  await preview.getByLabel('Color theme').selectOption('violet')
-  await expect(preview).toHaveAttribute('data-preview-color', 'violet')
+  await setWebsiteTheme(page, { 'Color theme': 'violet' })
   await expect
     .poll(() => read().then((value) => value.backgroundColor))
     .not.toBe(initial.backgroundColor)
-  await preview.getByLabel('Spacing theme').selectOption('poster')
+  await setWebsiteTheme(page, { 'Spacing theme': 'poster' })
   await expect.poll(() => read().then((value) => value.height)).not.toBe(initial.height)
-  await preview.getByLabel('Radius theme').selectOption('sharp')
+  await setWebsiteTheme(page, { 'Radius theme': 'sharp' })
   await expect.poll(() => read().then((value) => value.borderRadius)).not.toBe(initial.borderRadius)
-  await preview.getByLabel('Typography theme').selectOption('mono')
+  await setWebsiteTheme(page, { 'Typography theme': 'mono' })
   await expect.poll(() => read().then((value) => value.fontFamily)).not.toBe(initial.fontFamily)
-  await preview.getByLabel('Stroke theme').selectOption('brutal')
+  await setWebsiteTheme(page, { 'Stroke theme': 'brutal' })
   await expect.poll(() => read().then((value) => value.borderWidth)).not.toBe(initial.borderWidth)
-  await preview.getByLabel('Motion theme').selectOption('instant')
+  await setWebsiteTheme(page, { 'Motion theme': 'instant' })
   await expect
     .poll(() => read().then((value) => value.transitionDuration))
     .not.toBe(initial.transitionDuration)
 
   const initialShadow = await preview.evaluate((element) => getComputedStyle(element).boxShadow)
-  await preview.getByLabel('Elevation theme').selectOption('poster')
+  await setWebsiteTheme(page, { 'Elevation theme': 'poster' })
   await expect
     .poll(() => preview.evaluate((element) => getComputedStyle(element).boxShadow))
     .not.toBe(initialShadow)
 
   await page.goto('/docs/components/dialog')
-  const dialogPreview = page.locator('[data-component-demo="Dialog"]')
-  await expect(dialogPreview).toHaveAttribute('data-preview-ready', 'true')
+  const dialogPreview = componentPreview(page, 'Dialog')
   const dialog = dialogPreview.locator('dialog').first()
   const initialBlur = await dialog.evaluate(
     (element) => getComputedStyle(element, '::backdrop').backdropFilter,
   )
-  await dialogPreview.getByLabel('Blur theme').selectOption('hazy')
+  await setWebsiteTheme(page, { 'Blur theme': 'hazy' })
   await expect
     .poll(() =>
       dialog.evaluate((element) => getComputedStyle(element, '::backdrop').backdropFilter),
@@ -923,17 +940,16 @@ test('preview controls theme each variable group independently', async ({ browse
 test('selected tabs use the active elevation theme', async ({ browserName, page }) => {
   test.skip(browserName !== 'chromium', 'Computed-style regression runs once.')
   await page.goto('/docs/components/tabs')
-  const preview = page.locator('[data-component-demo="Tabs"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Tabs')
   const selectedTab = preview.getByRole('tab', { name: 'Overview' })
   await expect(selectedTab).toHaveAttribute('aria-selected', 'true')
   const readShadow = () => selectedTab.evaluate((element) => getComputedStyle(element).boxShadow)
   const initialShadow = await readShadow()
 
-  await preview.getByLabel('Elevation theme').selectOption('flat')
+  await setWebsiteTheme(page, { 'Elevation theme': 'flat' })
   await expect.poll(readShadow).not.toBe(initialShadow)
   const flatShadow = await readShadow()
-  await preview.getByLabel('Elevation theme').selectOption('poster')
+  await setWebsiteTheme(page, { 'Elevation theme': 'poster' })
   await expect.poll(readShadow).not.toBe(flatShadow)
 })
 
@@ -943,13 +959,12 @@ test('docs Option states use blue highlights without tinting the picker surface'
 }) => {
   test.skip(browserName !== 'chromium', 'Customizable-select styling is checked once in Chromium.')
   await page.goto('/docs/components/select')
-  const preview = page.locator('[data-component-demo="Select"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
-  await preview.getByLabel('Style preset').selectOption('docs')
+  const preview = componentPreview(page, 'Select')
+  await setWebsiteTheme(page, { 'Style preset': 'docs' })
 
   const readOptionTheme = () =>
-    preview
-      .locator('[data-component-demo-canvas] option')
+    componentCanvas(preview)
+      .locator('option')
       .first()
       .evaluate((option) => {
         const classNames = Array.from(option.classList)
@@ -962,7 +977,7 @@ test('docs Option states use blue highlights without tinting the picker surface'
         }
         for (const sheet of document.styleSheets) visit(sheet.cssRules)
 
-        const previewRoot = option.closest<HTMLElement>('[data-component-demo="Select"]')!
+        const previewRoot = option.closest<HTMLElement>('section[aria-label="Select live demo"]')!
         const probe = document.createElement('div')
         previewRoot.append(probe)
         const canvas = document.createElement('canvas')
@@ -1009,9 +1024,9 @@ test('docs Option states use blue highlights without tinting the picker surface'
         }
       })
 
-  await preview.getByLabel('Appearance').selectOption('light')
+  await setWebsiteTheme(page, { Appearance: 'light' })
   const light = await readOptionTheme()
-  await preview.getByLabel('Appearance').selectOption('dark')
+  await setWebsiteTheme(page, { Appearance: 'dark' })
   const dark = await readOptionTheme()
 
   expect(light.palette.accent).toEqual([76, 119, 220, 255])
@@ -1048,9 +1063,8 @@ test('DropdownMenu follows the menu button keyboard contract', async ({ browserN
     'Keyboard behavior is checked once with the focusgroup polyfill.',
   )
   await page.goto('/docs/components/dropdown-menu')
-  const preview = page.locator('[data-component-demo="DropdownMenu"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
-  await preview.getByLabel('Style preset').selectOption('docs')
+  const preview = componentPreview(page, 'DropdownMenu')
+  await setWebsiteTheme(page, { 'Style preset': 'docs' })
 
   const trigger = preview.getByRole('button', { name: 'Actions' })
   const menu = preview.locator('[role="menu"]')
@@ -1059,15 +1073,17 @@ test('DropdownMenu follows the menu button keyboard contract', async ({ browserN
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
 
   await trigger.focus()
-  await page.keyboard.press('ArrowDown')
-  await expect(menu).toBeVisible()
+  await expect(async () => {
+    await trigger.press('ArrowDown')
+    await expect(menu).toBeVisible()
+  }).toPass()
   await expect(trigger).toHaveAttribute('aria-expanded', 'true')
   const triggerId = await trigger.getAttribute('id')
   expect(triggerId).toBeTruthy()
   await expect(menu).toHaveAttribute('aria-labelledby', triggerId!)
   await expect(items.nth(0)).toBeFocused()
   const focusedColors = await items.nth(0).evaluate((item) => {
-    const previewRoot = item.closest<HTMLElement>('[data-component-demo="DropdownMenu"]')!
+    const previewRoot = item.closest<HTMLElement>('section[aria-label="DropdownMenu live demo"]')!
     const probe = document.createElement('div')
     previewRoot.append(probe)
     probe.style.backgroundColor = 'var(--color-fd-accent)'
@@ -1086,7 +1102,7 @@ test('DropdownMenu follows the menu button keyboard contract', async ({ browserN
   expect(focusedColors.foreground).toBe(focusedColors.accentText)
   const seriousAccessibilityViolations = async () => {
     const accessibility = await new AxeBuilder({ page })
-      .include('[data-component-demo="DropdownMenu"] [role="menu"]')
+      .include('section[aria-label="DropdownMenu live demo"] [role="menu"]')
       .analyze()
     return accessibility.violations.filter(
       (violation) => violation.impact === 'serious' || violation.impact === 'critical',
@@ -1131,7 +1147,7 @@ test('DropdownMenu follows the menu button keyboard contract', async ({ browserN
   await expect(menu).toBeHidden()
   await expect(menu.locator(':focus')).toHaveCount(0)
 
-  await preview.getByLabel('Appearance').selectOption('dark')
+  await setWebsiteTheme(page, { Appearance: 'dark' })
   await trigger.focus()
   await page.keyboard.press('ArrowDown')
   await expect(items.nth(0)).toBeFocused()

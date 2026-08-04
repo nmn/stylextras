@@ -6,9 +6,7 @@ import ts from 'typescript'
 import { componentCatalog, experimentalCatalog, stableCatalog } from '../src/catalog'
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const packageJson = JSON.parse(
-  readFileSync(path.join(packageRoot, 'package.json'), 'utf8'),
-) as {
+const packageJson = JSON.parse(readFileSync(path.join(packageRoot, 'package.json'), 'utf8')) as {
   dependencies?: Record<string, string>
   exports: Record<string, unknown>
 }
@@ -37,13 +35,11 @@ function entersClientGraph(file: string, visited = new Set<string>()): boolean {
 
 describe('public catalog manifest', () => {
   it('has unique canonical names and paths', () => {
-    expect(new Set(componentCatalog.map((entry) => entry.name)).size).toBe(
-      componentCatalog.length,
-    )
+    expect(new Set(componentCatalog.map((entry) => entry.name)).size).toBe(componentCatalog.length)
     expect(new Set(componentCatalog.map((entry) => entry.export)).size).toBe(
       componentCatalog.length,
     )
-    expect(stableCatalog).toHaveLength(57)
+    expect(stableCatalog).toHaveLength(58)
     expect(experimentalCatalog).toHaveLength(16)
   })
 
@@ -117,8 +113,6 @@ describe('public catalog manifest', () => {
 
   it('has no primitive-library runtime dependency', () => {
     const dependencies = Object.keys(packageJson.dependencies ?? {})
-    expect(dependencies.some((name) => /radix|base-ui|react-aria/.test(name))).toBe(
-      false,
-    )
+    expect(dependencies.some((name) => /radix|base-ui|react-aria/.test(name))).toBe(false)
   })
 })

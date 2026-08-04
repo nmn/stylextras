@@ -59,7 +59,10 @@ export const neutralTheme: ColorTheme = stylex.createTheme(colors, {
   secondaryForeground: colors.fg,
   accent: lightDark(mix(colors.bg, colors.tone, 88), alpha(colors.tone, 0.18)),
   accentForeground: colors.fg,
-  accentText: lightDark(mix(colors.accentForeground, colors.fg, 72), colors.accentForeground),
+  accentText: lightDark(
+    `oklch(from ${colors.brand} min(l, 0.54) c h)`,
+    `oklch(from ${colors.brand} max(l, 0.78) c h)`,
+  ),
   focusRing: alpha(colors.tone, 0.46),
   selection: alpha(colors.brand, 0.18),
   infoSoft: alpha(colors.info, 0.18),

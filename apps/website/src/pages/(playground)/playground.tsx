@@ -9,6 +9,7 @@ import * as stylex from "@stylexjs/stylex";
 import { Playground } from "@/components/Playground/DynamicPlayground";
 import Footer from "@/components/Footer";
 import { vars } from "@/theming/vars.stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
 
 export default function PlaygroundPage() {
   return (
@@ -29,7 +30,7 @@ const styles = stylex.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 8,
-    color: `${vars["--color-fd-foreground"]}`,
+    color: colors.fg,
     backgroundColor: `${vars["--color-fd-background"]}`,
   },
 });

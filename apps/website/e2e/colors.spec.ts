@@ -1,4 +1,6 @@
 import { type Locator, expect, test } from '@playwright/test'
+import { componentCanvas, componentPreview, referenceGallery } from './locators'
+import { setWebsiteTheme } from './theme'
 
 const websitePalette = {
   light: {
@@ -31,15 +33,15 @@ const websitePalette = {
     '--color-fd-accent-foreground': 'hsl(222, 87%, 78%)',
     '--color-fd-background': 'hsl(0, 0%, 7%)',
     '--color-fd-border': 'hsla(0, 0%, 30%, 25%)',
-    '--color-fd-card': 'hsl(0, 0%, 13%)',
+    '--color-fd-card': 'hsl(0, 0%, 8.5%)',
     '--color-fd-card-foreground': 'hsl(0, 0%, 98%)',
     '--color-fd-error': 'oklch(63.7% 0.237 25.331)',
     '--color-fd-foreground': 'hsl(0, 0%, 92%)',
     '--color-fd-info': 'oklch(62.3% 0.214 259.815)',
-    '--color-fd-muted': 'hsl(0, 0%, 10%)',
+    '--color-fd-muted': 'hsl(0, 0%, 12.9%)',
     '--color-fd-muted-foreground': 'hsla(0, 0%, 70%, 0.8)',
     '--color-fd-overlay': 'hsla(0, 0%, 0%, 0.2)',
-    '--color-fd-popover': 'hsl(0, 0%, 16%)',
+    '--color-fd-popover': 'hsl(0, 0%, 11.6%)',
     '--color-fd-popover-foreground': 'hsl(0, 0%, 86.9%)',
     '--color-fd-primary': 'hsl(270, 72%, 77%)',
     '--color-fd-primary-foreground': 'hsl(240, 23%, 9%)',
@@ -52,14 +54,13 @@ const websitePalette = {
 } as const
 
 for (const appearance of ['light', 'dark'] as const) {
-  test(`website ${appearance} preset preserves the legacy color bridge`, async ({ page }) => {
+  test(`website system appearance preserves the ${appearance} legacy color bridge`, async ({
+    page,
+  }) => {
     await page.emulateMedia({ colorScheme: appearance })
-    await page.addInitScript((theme) => {
-      localStorage.setItem('theme', theme)
-    }, appearance)
     await page.goto('/')
 
-    await expect(page.locator('html')).toHaveCSS('color-scheme', appearance)
+    await expect(page.locator('html')).toHaveCSS('color-scheme', 'light dark')
     await expect
       .poll(
         () =>
@@ -106,25 +107,18 @@ for (const appearance of ['light', 'dark'] as const) {
 }
 
 for (const appearance of ['light', 'dark'] as const) {
-  test(`catalog previews inherit the ${appearance} website appearance by default`, async ({
-    page,
-  }) => {
+  test(`catalog previews default to system with a ${appearance} preference`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: appearance })
-    await page.addInitScript((theme) => {
-      localStorage.setItem('theme', theme)
-    }, appearance)
 
     await page.goto('/docs/components/button')
-    const componentPreview = page.locator('[data-component-demo="Button"]')
-    await expect(componentPreview).toHaveAttribute('data-preview-ready', 'true')
-    await expect(componentPreview).toHaveAttribute('data-preview-appearance', 'inherit')
-    await expect(componentPreview).toHaveCSS('color-scheme', appearance)
+    const buttonPreview = componentPreview(page, 'Button')
+    await expect(buttonPreview).toBeVisible()
+    await expect(buttonPreview).toHaveCSS('color-scheme', 'light dark')
 
     await page.goto('/docs')
-    const referenceGallery = page.getByTestId('reference-gallery')
-    await expect(referenceGallery).toHaveAttribute('data-preview-ready', 'true')
-    await expect(referenceGallery).toHaveAttribute('data-preview-appearance', 'inherit')
-    await expect(referenceGallery).toHaveCSS('color-scheme', appearance)
+    const gallery = referenceGallery(page)
+    await expect(gallery).toBeVisible()
+    await expect(gallery).toHaveCSS('color-scheme', 'light dark')
   })
 }
 
@@ -243,10 +237,10 @@ async function textChromas(locator: Locator, start = 0) {
 
 test('component previews resolve packaged color tokens in both appearances', async ({ page }) => {
   await page.goto('/docs/components/drawer')
-  const preview = page.locator('[data-component-demo="Drawer"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Drawer')
+  await expect(preview).toBeVisible()
 
-  await preview.getByLabel('Appearance').selectOption('light')
+  await setWebsiteTheme(page, { Appearance: 'light' })
   const light = await preview.evaluate((element) => {
     const style = getComputedStyle(element)
     return { background: style.backgroundColor, color: style.color }
@@ -254,7 +248,7 @@ test('component previews resolve packaged color tokens in both appearances', asy
   expect(await backgroundAlpha(preview)).toBe(255)
   expect(light.background).not.toBe('rgba(0, 0, 0, 0)')
 
-  await preview.getByLabel('Appearance').selectOption('dark')
+  await setWebsiteTheme(page, { Appearance: 'dark' })
   const dark = await preview.evaluate((element) => {
     const style = getComputedStyle(element)
     return { background: style.backgroundColor, color: style.color }
@@ -270,7 +264,7 @@ test('accent themes tint their surfaces subtly in both appearances', async ({
   page,
 }) => {
   await page.goto('/docs/themes')
-  const gallery = page.getByTestId('theme-gallery')
+  const gallery = page.getByRole('region', { name: 'Color themes', exact: true }).locator('..')
   await expect(gallery).toBeVisible()
   await expect
     .poll(() => backgroundChroma(gallery.getByLabel('Amber light theme')))
@@ -279,12 +273,14 @@ test('accent themes tint their surfaces subtly in both appearances', async ({
   await expect(amberDark).toHaveCSS('color-scheme', 'dark')
   if (browserName !== 'webkit') {
     await expect
-      .poll(() => backgroundAlpha(amberDark.locator('[data-surface-depth="amber"]')))
+      .poll(() =>
+        backgroundAlpha(amberDark.getByRole('group', { name: 'Amber surface depth', exact: true })),
+      )
       .toBeLessThan(255)
   }
 
   const samples = await gallery
-    .locator('[aria-label$=" theme"] [data-surface-depth]')
+    .getByRole('group', { name: / surface depth$/ })
     .evaluateAll((elements) => {
       const canvas = document.createElement('canvas')
       canvas.width = 1
@@ -351,11 +347,11 @@ test('accent themes tint their surfaces subtly in both appearances', async ({
 
 test('alert status text keeps a subtle semantic tint', async ({ page }) => {
   await page.goto('/docs/components/alert')
-  const preview = page.locator('[data-component-demo="Alert"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Alert')
+  await expect(preview).toBeVisible()
 
   for (const appearance of ['light', 'dark'] as const) {
-    await preview.getByLabel('Appearance').selectOption(appearance)
+    await setWebsiteTheme(page, { Appearance: appearance })
     await expect(preview).toHaveCSS('color-scheme', appearance)
     const chromas = await textChromas(
       preview.getByRole('heading', { name: /^(info|success|warning|danger)$/ }),
@@ -371,11 +367,11 @@ test('alert status text keeps a subtle semantic tint', async ({ page }) => {
 
 test('badge status text keeps a subtle semantic tint', async ({ page }) => {
   await page.goto('/docs/components/badge')
-  const preview = page.locator('[data-component-demo="Badge"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
+  const preview = componentPreview(page, 'Badge')
+  await expect(preview).toBeVisible()
 
   for (const appearance of ['light', 'dark'] as const) {
-    await preview.getByLabel('Appearance').selectOption(appearance)
+    await setWebsiteTheme(page, { Appearance: appearance })
     await expect(preview).toHaveCSS('color-scheme', appearance)
     const chromas = await textChromas(
       preview.getByText(/^(Info|Success|Warning|Danger)$/, { exact: true }),
@@ -392,12 +388,11 @@ test('badge status text keeps a subtle semantic tint', async ({ page }) => {
 test('native select trigger and customizable picker stay opaque', async ({ browserName, page }) => {
   test.skip(browserName !== 'chromium', 'Customizable select is currently a Chromium enhancement.')
   await page.goto('/docs/components/select')
-  const preview = page.locator('[data-component-demo="Select"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
-  await preview.getByLabel('Color theme').selectOption('blue')
-  await preview.getByLabel('Appearance').selectOption('dark')
+  const preview = componentPreview(page, 'Select')
+  await expect(preview).toBeVisible()
+  await setWebsiteTheme(page, { Appearance: 'dark', 'Color theme': 'blue' })
   await expect(preview).toHaveCSS('color-scheme', 'dark')
-  const select = preview.locator('[data-component-demo-canvas] select').first()
+  const select = componentCanvas(preview).locator('select').first()
   await expect(select).toBeVisible()
   expect(await backgroundAlpha(select)).toBe(255)
   expect(await backgroundAlpha(select, '::picker(select)')).toBe(255)
@@ -411,6 +406,7 @@ test('top-layer component surfaces stay opaque in dark accent themes', async ({ 
     ['hover-card', '[popover]'],
     ['drawer', 'dialog'],
     ['dialog', 'dialog'],
+    ['anchored-dialog', 'dialog'],
     ['context-menu', '[popover]'],
     ['command', 'dialog'],
     ['combobox', '[popover]'],
@@ -418,12 +414,11 @@ test('top-layer component surfaces stay opaque in dark accent themes', async ({ 
 
   for (const [slug, selector] of cases) {
     await page.goto(`/docs/components/${slug}`)
-    const preview = page.locator('[data-component-demo]').first()
-    await expect(preview, `${slug} preview`).toHaveAttribute('data-preview-ready', 'true')
-    await preview.getByLabel('Color theme').selectOption('blue')
-    await preview.getByLabel('Appearance').selectOption('dark')
+    const preview = componentPreview(page).first()
+    await expect(preview, `${slug} preview`).toBeVisible()
+    await setWebsiteTheme(page, { Appearance: 'dark', 'Color theme': 'blue' })
     await expect(preview).toHaveCSS('color-scheme', 'dark')
-    const layer = preview.locator(`[data-component-demo-canvas] ${selector}`).first()
+    const layer = componentCanvas(preview).locator(selector).first()
     await expect(layer, `${slug} layer`).toHaveCount(1)
     expect(await backgroundAlpha(layer), `${slug} background alpha`).toBe(255)
   }
@@ -431,12 +426,10 @@ test('top-layer component surfaces stay opaque in dark accent themes', async ({ 
 
 test('dark checkbox indicator follows its foreground token', async ({ page }) => {
   await page.goto('/docs/components/checkbox')
-  const preview = page.locator('[data-component-demo="Checkbox"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
-  await preview.getByLabel('Color theme').selectOption('neutral')
-  await expect(preview).toHaveAttribute('data-preview-color', 'neutral')
-  await preview.getByLabel('Appearance').selectOption('dark')
-  await expect(preview).toHaveAttribute('data-preview-appearance', 'dark')
+  const preview = componentPreview(page, 'Checkbox')
+  await expect(preview).toBeVisible()
+  await setWebsiteTheme(page, { 'Color theme': 'neutral' })
+  await setWebsiteTheme(page, { Appearance: 'dark' })
   await expect(preview).toHaveCSS('color-scheme', 'dark')
   const checkbox = preview.locator('input[type="checkbox"]:checked').first()
   await expect(checkbox).toBeVisible()
@@ -458,14 +451,14 @@ test('every theme keeps nested cards and overlays lighter than their containers'
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/themes')
   const labels = await page
-    .locator('[aria-label$=" theme"]:has([data-surface-depth])')
+    .locator('section[aria-label$=" theme"]:has([role="group"][aria-label$=" surface depth"])')
     .evaluateAll((themes) =>
       themes.map((theme) => theme.getAttribute('aria-label')).filter(Boolean),
     )
 
   for (const label of labels) {
-    const theme = page.getByLabel(label!, { exact: true })
-    const surface = theme.locator('[data-surface-depth]')
+    const theme = page.getByRole('region', { name: label!, exact: true })
+    const surface = theme.getByRole('group', { name: / surface depth$/ })
     const raised = surface.locator(':scope > div')
     const overlay = raised.locator(':scope > span').last()
     const themeRoot = `[aria-label="${label}"]`
@@ -491,12 +484,10 @@ test('every theme keeps nested cards and overlays lighter than their containers'
   }
 
   await page.goto('/docs/components/card')
-  const cardPreview = page.locator('[data-component-demo="Card"]')
-  await expect(cardPreview).toHaveAttribute('data-preview-ready', 'true')
-  await cardPreview.getByLabel('Color theme').selectOption('blue')
-  await expect(cardPreview).toHaveAttribute('data-preview-color', 'blue')
-  await cardPreview.getByLabel('Appearance').selectOption('dark')
-  await expect(cardPreview).toHaveAttribute('data-preview-appearance', 'dark')
+  const cardPreview = componentPreview(page, 'Card')
+  await expect(cardPreview).toBeVisible()
+  await setWebsiteTheme(page, { 'Color theme': 'blue' })
+  await setWebsiteTheme(page, { Appearance: 'dark' })
   await expect(cardPreview).toHaveCSS('color-scheme', 'dark')
   const outerCard = cardPreview
     .getByRole('heading', { exact: true, name: 'Token-driven surface' })
@@ -505,23 +496,21 @@ test('every theme keeps nested cards and overlays lighter than their containers'
     .getByRole('heading', { exact: true, name: 'Nested layer' })
     .locator('xpath=ancestor::article[1]')
   const [outerCardLuminance, nestedCardLuminance] = await Promise.all([
-    effectiveBackgroundLuminance(outerCard, '[data-component-demo="Card"]'),
-    effectiveBackgroundLuminance(nestedCard, '[data-component-demo="Card"]'),
+    effectiveBackgroundLuminance(outerCard, 'section[aria-label="Card live demo"]'),
+    effectiveBackgroundLuminance(nestedCard, 'section[aria-label="Card live demo"]'),
   ])
   expect(nestedCardLuminance).toBeGreaterThan(outerCardLuminance)
 
   await page.goto('/docs/components/tabs')
-  const tabsPreview = page.locator('[data-component-demo="Tabs"]')
-  await expect(tabsPreview).toHaveAttribute('data-preview-ready', 'true')
-  await tabsPreview.getByLabel('Color theme').selectOption('blue')
-  await expect(tabsPreview).toHaveAttribute('data-preview-color', 'blue')
-  await tabsPreview.getByLabel('Appearance').selectOption('dark')
-  await expect(tabsPreview).toHaveAttribute('data-preview-appearance', 'dark')
+  const tabsPreview = componentPreview(page, 'Tabs')
+  await expect(tabsPreview).toBeVisible()
+  await setWebsiteTheme(page, { 'Color theme': 'blue' })
+  await setWebsiteTheme(page, { Appearance: 'dark' })
   await expect(tabsPreview).toHaveCSS('color-scheme', 'dark')
   const selectedTab = tabsPreview.getByRole('tab', { selected: true }).first()
   const tabList = tabsPreview.getByRole('tablist').first()
-  const tabsCanvas = tabsPreview.locator('[data-component-demo-canvas]')
-  const tabsCanvasRoot = '[data-component-demo-canvas]'
+  const tabsCanvas = componentCanvas(tabsPreview)
+  const tabsCanvasRoot = 'section[aria-label="Tabs live demo"] > div'
   await Promise.all([
     expectPaintedBackground(tabsCanvas, 'Tabs canvas has loaded'),
     expectPaintedBackground(tabList, 'Tabs list has loaded'),
@@ -540,23 +529,21 @@ test('every theme keeps nested cards and overlays lighter than their containers'
 
 test('light tabs clearly distinguish the active surface', async ({ browserName, page }) => {
   await page.goto('/docs/components/tabs')
-  const preview = page.locator('[data-component-demo="Tabs"]')
-  await expect(preview).toHaveAttribute('data-preview-ready', 'true')
-  await preview.getByLabel('Color theme').selectOption('neutral')
-  await expect(preview).toHaveAttribute('data-preview-color', 'neutral')
-  await preview.getByLabel('Appearance').selectOption('light')
-  await expect(preview).toHaveAttribute('data-preview-appearance', 'light')
+  const preview = componentPreview(page, 'Tabs')
+  await expect(preview).toBeVisible()
+  await setWebsiteTheme(page, { 'Color theme': 'neutral' })
+  await setWebsiteTheme(page, { Appearance: 'light' })
   await expect(preview).toHaveCSS('color-scheme', 'light')
-  const canvasRoot = '[data-component-demo-canvas]'
+  const canvasRoot = 'section[aria-label="Tabs live demo"] > div'
   const tabList = preview.getByRole('tablist').first()
   const selectedTab = preview.getByRole('tab', { selected: true }).first()
   await Promise.all([
-    expectPaintedBackground(preview.locator(canvasRoot), 'Tabs canvas has loaded'),
+    expectPaintedBackground(componentCanvas(preview), 'Tabs canvas has loaded'),
     expectPaintedBackground(tabList, 'Tabs list has loaded'),
     expectPaintedBackground(selectedTab, 'Selected tab has loaded'),
   ])
   const [canvasLuminance, tabListLuminance, selectedTabLuminance] = await Promise.all([
-    effectiveBackgroundLuminance(preview.locator(canvasRoot), canvasRoot),
+    effectiveBackgroundLuminance(componentCanvas(preview), canvasRoot),
     effectiveBackgroundLuminance(tabList, canvasRoot),
     effectiveBackgroundLuminance(selectedTab, canvasRoot),
   ])

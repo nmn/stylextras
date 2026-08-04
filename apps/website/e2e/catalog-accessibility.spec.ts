@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { componentCatalog } from '@stylextras/ui/catalog'
+import { componentCanvas, componentPreview } from './locators'
 
 test('every component default state has valid semantics and named controls', async ({ page }) => {
   test.setTimeout(240_000)
@@ -11,19 +12,15 @@ test('every component default state has valid semantics and named controls', asy
     const response = await page.goto(`/docs/${section}/${slug}`)
     expect(response?.ok(), `${entry.export} response`).toBe(true)
 
-    const preview = page.locator(`[data-component-demo="${entry.name}"]`)
+    const preview = componentPreview(page, entry.name)
     await expect(preview, `${entry.export} preview`).toBeVisible()
-    await expect(preview, `${entry.export} hydrated preview`).toHaveAttribute(
-      'data-preview-ready',
-      'true',
-    )
     await expect(
-      preview.locator('[data-component-demo-canvas] > *').first(),
+      componentCanvas(preview).locator(':scope > *').first(),
       `${entry.export} demo content`,
     ).toBeVisible()
 
     const axeResults = await new AxeBuilder({ page })
-      .include(`[data-component-demo="${entry.name}"]`)
+      .include(`section[aria-label="${entry.name} live demo"]`)
       // Color and other visual-only remediation are intentionally outside this gate.
       .disableRules(['color-contrast'])
       .analyze()

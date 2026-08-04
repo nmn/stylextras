@@ -60,13 +60,23 @@ describe('theme and fallback loading boundaries', () => {
   it('keeps substantial compatibility implementations behind dynamic imports', () => {
     const focusgroup = readFileSync(path.join(sourceRoot, 'focusgroup/index.ts'), 'utf8')
     const dialog = readFileSync(path.join(sourceRoot, 'dialog/client.tsx'), 'utf8')
+    const dialogCommandBridge = readFileSync(
+      path.join(sourceRoot, 'dialog/use-command-bridge.ts'),
+      'utf8',
+    )
+    const anchoredDialog = readFileSync(path.join(sourceRoot, 'anchored-dialog/client.tsx'), 'utf8')
     const interest = readFileSync(
       path.join(sourceRoot, 'platform-polyfills/interest-invoker.ts'),
       'utf8',
     )
     expect(focusgroup).toContain("import('@stylextras/ui/platform-polyfills/focusgroup-fallback')")
-    expect(dialog).toContain("import('@stylextras/ui/platform-polyfills/invoker-command-fallback')")
+    expect(dialogCommandBridge).toContain(
+      "import('@stylextras/ui/platform-polyfills/invoker-command-fallback')",
+    )
     expect(dialog).toContain("import('@stylextras/ui/platform-polyfills/dialog-closedby-fallback')")
+    expect(anchoredDialog).toContain(
+      "import('@stylextras/ui/platform-polyfills/dialog-closedby-fallback')",
+    )
     expect(interest).toContain(
       "import('@stylextras/ui/platform-polyfills/interest-invoker-fallback')",
     )

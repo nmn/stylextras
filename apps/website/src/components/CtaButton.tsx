@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
  */
 
 import * as stylex from "@stylexjs/stylex";
-import { vars } from "../theming/vars.stylex";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
 import { RouterButtonLink } from "./router-link";
 
 export default function CtaButton({
@@ -41,11 +41,7 @@ const styles = stylex.create({
     paddingInline: "2rem",
     fontWeight: 400,
     whiteSpace: "nowrap",
-    // color: vars['--color-fd-background'],
-    textDecoration: {
-      default: "none",
-      ":hover": "none",
-    },
+    textDecoration: "none",
     borderColor: "currentColor",
     borderWidth: 2,
     borderRadius: 10,
@@ -62,28 +58,28 @@ const styles = stylex.create({
   },
   pink: {
     color: {
-      default: vars["--color-fd-background"],
-      ":focus-visible": vars["--color-fd-primary"],
-      ":hover": vars["--color-fd-primary"],
+      default: colors.primaryForeground,
+      ":focus-visible": colors.primary,
+      ":hover": colors.primary,
     },
     backgroundColor: {
-      default: vars["--color-fd-primary"],
-      ":focus-visible": `color-mix(in srgb, ${vars["--color-fd-primary"]} 10%, transparent)`,
-      ":hover": `color-mix(in srgb, ${vars["--color-fd-primary"]} 10%, transparent)`,
+      default: colors.primary,
+      ":focus-visible": colors.primaryForeground,
+      ":hover": colors.primaryForeground,
     },
-    borderColor: vars["--color-fd-primary"],
+    borderColor: colors.primary,
   },
   blue: {
     color: {
-      default: vars["--color-fd-background"],
-      ":focus-visible": vars["--color-fd-accent-foreground"],
-      ":hover": vars["--color-fd-accent-foreground"],
+      default: colors.accentText,
+      ":focus-visible": colors.accent,
+      ":hover": colors.accent,
     },
     backgroundColor: {
-      default: vars["--color-fd-accent-foreground"],
-      ":focus-visible": `color-mix(in srgb, ${vars["--color-fd-accent-foreground"]} 10%, transparent)`,
-      ":hover": `color-mix(in srgb, ${vars["--color-fd-accent-foreground"]} 10%, transparent)`,
+      default: colors.accent,
+      ":focus-visible": colors.accentText,
+      ":hover": colors.accentText,
     },
-    borderColor: vars["--color-fd-accent-foreground"],
+    borderColor: colors.accentText,
   },
 });

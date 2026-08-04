@@ -12,6 +12,8 @@ import {
   stableCatalog,
   type BrowserMode,
 } from "@stylextras/ui/catalog";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
+import { typography } from "@stylextras/ui/tokens/typography.stylex";
 import { vars } from "@/theming/vars.stylex";
 
 const groups: Array<{
@@ -145,14 +147,14 @@ const styles = stylex.create({
     justifyContent: "space-between",
   },
   catalogTitle: {
-    color: vars["--color-fd-foreground"],
+    color: colors.fg,
     fontSize: 24,
     fontWeight: 650,
     lineHeight: 1.25,
     margin: 0,
   },
   catalogDescription: {
-    color: vars["--color-fd-muted-foreground"],
+    color: colors.fgMuted,
     fontSize: 14,
     lineHeight: 1.55,
     marginBlock: "6px 0",
@@ -162,7 +164,7 @@ const styles = stylex.create({
     borderRadius: 8,
     borderStyle: "solid",
     borderWidth: 1,
-    color: vars["--color-fd-primary"],
+    color: colors.primary,
     fontSize: 13,
     fontWeight: 600,
     paddingBlock: 8,
@@ -196,7 +198,7 @@ const styles = stylex.create({
     justifyContent: "space-between",
   },
   groupTitle: {
-    color: vars["--color-fd-foreground"],
+    color: colors.fg,
     fontSize: 15,
     fontWeight: 650,
     margin: 0,
@@ -204,15 +206,15 @@ const styles = stylex.create({
   count: {
     backgroundColor: vars["--color-fd-muted"],
     borderRadius: 999,
-    color: vars["--color-fd-muted-foreground"],
-    fontFamily: "var(--default-mono-font-family)",
+    color: colors.fgMuted,
+    fontFamily: typography.fontMono,
     fontSize: 11,
     lineHeight: 1,
     paddingBlock: 5,
     paddingInline: 7,
   },
   groupDescription: {
-    color: vars["--color-fd-muted-foreground"],
+    color: colors.fgMuted,
     fontSize: 12,
     lineHeight: 1.5,
     marginBlock: "7px 12px",
@@ -228,7 +230,7 @@ const styles = stylex.create({
   link: {
     alignItems: "center",
     borderRadius: 7,
-    color: vars["--color-fd-foreground"],
+    color: colors.fg,
     display: "flex",
     fontSize: 13,
     gap: 8,
@@ -247,8 +249,8 @@ const styles = stylex.create({
     whiteSpace: "nowrap",
   },
   fallback: {
-    color: vars["--color-fd-muted-foreground"],
-    fontFamily: "var(--default-mono-font-family)",
+    color: colors.fgMuted,
+    fontFamily: typography.fontMono,
     fontSize: 10,
   },
   experimental: {
@@ -271,13 +273,13 @@ const styles = stylex.create({
     borderRadius: 7,
     borderStyle: "solid",
     borderWidth: 1,
-    color: vars["--color-fd-foreground"],
+    color: colors.fg,
     fontSize: 12,
     paddingBlock: 7,
     paddingInline: 9,
     textDecoration: "none",
     ":hover": {
-      borderColor: vars["--color-fd-primary"],
+      borderColor: colors.primary,
     },
   },
 });

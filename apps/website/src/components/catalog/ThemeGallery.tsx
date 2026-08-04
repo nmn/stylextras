@@ -1,77 +1,97 @@
-import * as stylex from '@stylexjs/stylex'
-import { Badge } from '@stylextras/ui/badge'
-import { blurThemes } from '@stylextras/ui/blur-themes'
-import { Button } from '@stylextras/ui/button'
-import { type ColorThemeName, colorThemes } from '@stylextras/ui/color-themes'
-import { elevationThemes } from '@stylextras/ui/elevation-themes'
-import { Input } from '@stylextras/ui/input'
-import { motionThemes } from '@stylextras/ui/motion-themes'
-import { radiusThemes } from '@stylextras/ui/radius-themes'
-import { spacingThemes } from '@stylextras/ui/spacing-themes'
-import { strokeThemes } from '@stylextras/ui/stroke-themes'
-import { colors } from '@stylextras/ui/tokens/color.stylex'
-import { elevation } from '@stylextras/ui/tokens/elevation.stylex'
-import { radius } from '@stylextras/ui/tokens/radius.stylex'
-import { spacing } from '@stylextras/ui/tokens/spacing.stylex'
-import { stroke } from '@stylextras/ui/tokens/stroke.stylex'
-import { typography } from '@stylextras/ui/tokens/typography.stylex'
-import { typographyThemes } from '@stylextras/ui/typography-themes'
-import { type PreviewStyleName, previewStylePresets } from './preview-theme-config'
+import * as stylex from '@stylexjs/stylex';
+import { Badge } from '@stylextras/ui/badge';
+import { blurThemes } from '@stylextras/ui/blur-themes';
+import { Button } from '@stylextras/ui/button';
+import { type ColorThemeName, colorThemes } from '@stylextras/ui/color-themes';
+import { elevationThemes } from '@stylextras/ui/elevation-themes';
+import { Input } from '@stylextras/ui/input';
+import { motionThemes } from '@stylextras/ui/motion-themes';
+import { radiusThemes } from '@stylextras/ui/radius-themes';
+import { spacingThemes } from '@stylextras/ui/spacing-themes';
+import { strokeThemes } from '@stylextras/ui/stroke-themes';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
+import { elevation } from '@stylextras/ui/tokens/elevation.stylex';
+import { radius } from '@stylextras/ui/tokens/radius.stylex';
+import { spacing } from '@stylextras/ui/tokens/spacing.stylex';
+import { stroke } from '@stylextras/ui/tokens/stroke.stylex';
+import { typography } from '@stylextras/ui/tokens/typography.stylex';
+import { typographyThemes } from '@stylextras/ui/typography-themes';
+import { type WebsiteStyleName, websiteStylePresets } from './theme-config';
 
-const themeNames = Object.keys(colorThemes) as ColorThemeName[]
-const styleNames = Object.keys(previewStylePresets) as PreviewStyleName[]
+const themeNames = Object.keys(colorThemes) as ColorThemeName[];
+const styleNames = Object.keys(websiteStylePresets) as WebsiteStyleName[];
 
 export function ThemeGallery() {
   return (
-    <div data-testid="theme-gallery" {...stylex.props(styles.root)}>
-      <section {...stylex.props(styles.section)}>
+    <div {...stylex.props(styles.root)}>
+      <section
+        aria-labelledby="style-presets-title"
+        {...stylex.props(styles.section)}
+      >
         <div {...stylex.props(styles.sectionHeading)}>
-          <h2 {...stylex.props(styles.sectionTitle)}>Style presets</h2>
+          <h2 id="style-presets-title" {...stylex.props(styles.sectionTitle)}>
+            Style presets
+          </h2>
           <p {...stylex.props(styles.intro)}>
-            {styleNames.length} coordinated presets apply all eight theme axes together. Every
-            selector below can still be changed independently.
+            {styleNames.length} coordinated presets apply all eight theme axes
+            together. Every variable group can still be changed independently
+            from the header theme dialog.
           </p>
         </div>
-        <div data-testid="style-gallery" {...stylex.props(styles.styleGrid)}>
+        <div {...stylex.props(styles.styleGrid)}>
           {styleNames.flatMap((name) =>
             (['light', 'dark'] as const).map((appearance) => (
-              <StyleTile appearance={appearance} key={`${name}-${appearance}`} name={name} />
+              <StyleTile
+                appearance={appearance}
+                key={`${name}-${appearance}`}
+                name={name}
+              />
             )),
           )}
         </div>
       </section>
 
-      <section {...stylex.props(styles.section)}>
+      <section
+        {...stylex.props(styles.section)}
+        aria-labelledby="color-themes-title"
+      >
         <div {...stylex.props(styles.sectionHeading)}>
-          <h2 {...stylex.props(styles.sectionTitle)}>Color themes</h2>
+          <h2 {...stylex.props(styles.sectionTitle)} id="color-themes-title">
+            Color themes
+          </h2>
           <p {...stylex.props(styles.intro)}>
-            All {themeNames.length} color themes are ordinary StyleX theme objects. Each tile
-            applies one directly with <code>stylex.props()</code>; accent palettes tint every
-            surface, and dark layers rise lighter as they nest. Light and dark are shown side by
-            side without a provider or theme context.
+            All {themeNames.length} color themes are ordinary StyleX theme
+            objects. Each tile applies one directly with{' '}
+            <code>stylex.props()</code>; accent palettes tint every surface, and
+            dark layers rise lighter as they nest. Light and dark are shown side
+            by side without a provider or theme context.
           </p>
         </div>
         <div {...stylex.props(styles.grid)}>
           {themeNames.flatMap((name) =>
             (['light', 'dark'] as const).map((appearance) => (
-              <ThemeTile appearance={appearance} key={`${name}-${appearance}`} name={name} />
+              <ThemeTile
+                appearance={appearance}
+                key={`${name}-${appearance}`}
+                name={name}
+              />
             )),
           )}
         </div>
       </section>
     </div>
-  )
+  );
 }
 
 function StyleTile({
   appearance,
   name,
 }: {
-  appearance: 'light' | 'dark'
-  name: PreviewStyleName
+  appearance: 'light' | 'dark';
+  name: WebsiteStyleName;
 }) {
-  const preset = previewStylePresets[name]
-  const displayName = `${name[0]!.toUpperCase()}${name.slice(1)}`
+  const preset = websiteStylePresets[name];
+  const displayName = `${name[0]!.toUpperCase()}${name.slice(1)}`;
   return (
     <section
       aria-label={`${displayName} ${appearance} style preset`}
@@ -94,13 +114,17 @@ function StyleTile({
         <div>
           <h3 {...stylex.props(styles.title)}>{displayName}</h3>
           <p {...stylex.props(styles.appearance)}>
-            {appearance} · {preset.spacing} · {preset.radius} · {preset.typography}
+            {appearance} · {preset.spacing} · {preset.radius} ·{' '}
+            {preset.typography}
           </p>
         </div>
         <Badge variant="neutral">Aa</Badge>
       </header>
       <p {...stylex.props(styles.presetDescription)}>{preset.description}</p>
-      <Input aria-label={`${displayName} sample input`} placeholder="Project name" />
+      <Input
+        aria-label={`${displayName} sample input`}
+        placeholder="Project name"
+      />
       <div {...stylex.props(styles.actions)}>
         <Button size="sm">Create</Button>
         <Button size="sm" variant="outline">
@@ -108,17 +132,17 @@ function StyleTile({
         </Button>
       </div>
     </section>
-  )
+  );
 }
 
 function ThemeTile({
   appearance,
   name,
 }: {
-  appearance: 'light' | 'dark'
-  name: ColorThemeName
+  appearance: 'light' | 'dark';
+  name: ColorThemeName;
 }) {
-  const displayName = `${name[0]!.toUpperCase()}${name.slice(1)}`
+  const displayName = `${name[0]!.toUpperCase()}${name.slice(1)}`;
   return (
     <section
       aria-label={`${displayName} ${appearance} theme`}
@@ -149,7 +173,7 @@ function ThemeTile({
       </div>
       <div
         aria-label={`${displayName} surface depth`}
-        data-surface-depth={name}
+        role="group"
         {...stylex.props(styles.depthSurface)}
       >
         <span {...stylex.props(styles.depthLabel)}>Surface</span>
@@ -158,7 +182,10 @@ function ThemeTile({
           <span {...stylex.props(styles.depthOverlay)}>Overlay</span>
         </div>
       </div>
-      <Input aria-label={`${displayName} sample input`} placeholder="Search projects…" />
+      <Input
+        aria-label={`${displayName} sample input`}
+        placeholder="Search projects…"
+      />
       <div {...stylex.props(styles.actions)}>
         <Button size="sm">Create</Button>
         <Button size="sm" variant="outline">
@@ -166,7 +193,7 @@ function ThemeTile({
         </Button>
       </div>
     </section>
-  )
+  );
 }
 
 const styles = stylex.create({
@@ -183,43 +210,43 @@ const styles = stylex.create({
     gap: spacing.xs,
   },
   sectionTitle: {
-    color: 'inherit',
+    margin: 0,
     fontSize: 20,
     lineHeight: 1.25,
-    margin: 0,
+    color: 'inherit',
   },
   intro: {
     margin: 0,
   },
   grid: {
     display: 'grid',
-    gap: spacing.md,
     gridTemplateColumns: {
       default: 'minmax(0, 1fr)',
       '@media (min-width: 680px)': 'repeat(2, minmax(0, 1fr))',
     },
+    gap: spacing.md,
   },
   styleGrid: {
     display: 'grid',
-    gap: spacing.md,
     gridTemplateColumns: {
       default: 'minmax(0, 1fr)',
       '@media (min-width: 680px)': 'repeat(2, minmax(0, 1fr))',
     },
+    gap: spacing.md,
   },
   tile: {
-    backgroundColor: colors.bg,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
-    boxShadow: elevation.sm,
-    color: colors.fg,
     display: 'grid',
-    fontFamily: typography.fontSans,
     gap: spacing.md,
     minWidth: 0,
     padding: spacing.lg,
+    fontFamily: typography.fontSans,
+    color: colors.fg,
+    backgroundColor: colors.bg,
+    borderColor: colors.border,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    borderRadius: radius.lg,
+    boxShadow: elevation.sm,
   },
   light: {
     colorScheme: 'light',
@@ -231,79 +258,80 @@ const styles = stylex.create({
     alignContent: 'start',
   },
   header: {
-    alignItems: 'start',
     display: 'flex',
+    alignItems: 'start',
     justifyContent: 'space-between',
   },
   title: {
-    color: 'inherit',
+    margin: 0,
     fontSize: 16,
     fontWeight: 600,
     lineHeight: 1.2,
-    margin: 0,
+    color: 'inherit',
   },
   appearance: {
-    color: colors.fgMuted,
+    marginBlockStart: '4px',
+    marginBlockEnd: '0',
     fontFamily: typography.fontMono,
     fontSize: typography.stepMinus2,
-    marginBlock: '4px 0',
+    color: colors.fgMuted,
     textTransform: 'uppercase',
   },
   presetDescription: {
-    color: colors.fgMuted,
+    margin: 0,
     fontSize: typography.stepMinus1,
     lineHeight: typography.lineHeightBody,
-    margin: 0,
+    color: colors.fgMuted,
   },
   swatches: {
     display: 'grid',
-    gap: spacing.xs,
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    gap: spacing.xs,
   },
   depthSurface: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     display: 'grid',
     gap: spacing.xs,
     padding: spacing.xs,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    borderRadius: radius.md,
   },
   depthRaised: {
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.sm,
-    borderStyle: 'solid',
-    borderWidth: stroke.thin,
     display: 'flex',
     gap: spacing.xs,
+    alignItems: 'center',
     justifyContent: 'space-between',
     padding: spacing.xs,
-  },
-  depthOverlay: {
-    backgroundColor: colors.popover,
-    borderColor: colors.borderStrong,
-    borderRadius: radius.xs,
+    backgroundColor: colors.card,
+    borderColor: colors.border,
     borderStyle: 'solid',
     borderWidth: stroke.thin,
-    color: colors.fg,
+    borderRadius: radius.sm,
+  },
+  depthOverlay: {
+    padding: spacing.xs,
     fontFamily: typography.fontMono,
     fontSize: typography.stepMinus2,
     lineHeight: 1,
-    padding: spacing.xs,
+    color: colors.fg,
     textTransform: 'uppercase',
+    backgroundColor: colors.popover,
+    borderColor: colors.borderStrong,
+    borderStyle: 'solid',
+    borderWidth: stroke.thin,
+    borderRadius: radius.xs,
   },
   depthLabel: {
-    color: colors.fgSoft,
     fontFamily: typography.fontMono,
     fontSize: typography.stepMinus2,
     lineHeight: 1,
+    color: colors.fgSoft,
     textTransform: 'uppercase',
   },
   actions: {
     display: 'flex',
     gap: spacing.sm,
   },
-})
+});

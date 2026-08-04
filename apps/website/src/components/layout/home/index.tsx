@@ -19,6 +19,7 @@ import * as stylex from "@stylexjs/stylex";
 import SidebarToggle from "./SidebarToggle";
 import { vars } from "../../../theming/vars.stylex";
 import { RouterLink } from "../../router-link";
+import { colors } from "@stylextras/ui/tokens/color.stylex";
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -140,6 +141,7 @@ const styles = stylex.create({
     display: "inline-flex",
     gap: 2.5 * 4,
     alignItems: "center",
+    color: colors.fg,
     fontWeight: 600,
   },
   navLinkList: {

@@ -157,7 +157,7 @@ export function SearchDialog({
       return
     }
     const element = listViewportRef.current.querySelector<HTMLElement>(
-      `[data-search-item="${activeId}"]`,
+      '[role="option"][aria-selected="true"]',
     )
     if (element) {
       scrollIntoView(element, {
@@ -202,11 +202,7 @@ export function SearchDialog({
           </Kbd>
         </Button>
       </div>
-      <div
-        data-empty={items == null}
-        ref={listContainerRef}
-        {...stylex.props(styles.listContainer)}
-      >
+      <div ref={listContainerRef} {...stylex.props(styles.listContainer)}>
         <ScrollArea
           aria-label="Search results"
           ref={listViewportRef}
@@ -225,7 +221,6 @@ export function SearchDialog({
               return (
                 <Button
                   aria-selected={active}
-                  data-search-item={item.id}
                   key={item.id}
                   onClick={() => onOpenItem(item)}
                   onPointerMove={() => setActiveId(item.id)}
@@ -246,7 +241,6 @@ export function SearchDialog({
             return (
               <Button
                 aria-selected={active}
-                data-search-item={item.id}
                 key={item.id}
                 onClick={() => onOpenItem(item)}
                 onPointerMove={() => setActiveId(item.id)}
