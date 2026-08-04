@@ -1,3 +1,4 @@
+import { codeHighlightThemes } from '@/lib/code-highlight-theme'
 import { highlight } from 'fumadocs-core/highlight'
 import type { ReactNode } from 'react'
 import { ComponentPreview as ClientComponentPreview } from './ComponentPreview'
@@ -21,6 +22,7 @@ export async function ComponentPreview({ children, code, name }: ComponentPrevie
           pre: HighlightedCodeContents,
         },
         lang: 'tsx',
+        themes: codeHighlightThemes,
       })
     : undefined
 

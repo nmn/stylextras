@@ -18,6 +18,7 @@ import type {
   RefObject,
 } from 'react';
 import { useRef } from 'react';
+import { syntax } from '@/theming/syntax.stylex';
 import { preMarker, tabsMarker } from './mdx.stylex';
 export function Pre(props: ComponentProps<'pre'>) {
   return (
@@ -145,6 +146,7 @@ const styles = stylex.create({
     overflow: 'hidden',
     fontSize: 13,
     lineHeight: 1.5,
+    color: syntax['--syntax-foreground'],
     backgroundColor: colors.card,
     borderColor: colors.border,
     borderStyle: 'solid',

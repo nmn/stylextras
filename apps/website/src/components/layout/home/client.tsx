@@ -188,6 +188,7 @@ export function NavbarLinkItem({
   return (
     <NavigationMenuItem sx={navItemStyles.listItem}>
       <BaseLinkItem
+        activeXstyle={navItemVariants.active}
         item={item}
         xstyle={[navItemVariants.base, navItemVariants.default, xstyle]}
       >
@@ -296,13 +297,15 @@ const navItemVariants = stylex.create({
     color: {
       default: colors.fgSoft,
       ':focus-visible': colors.accentText,
-      ':where([data-active=true])': colors.accentText,
       ':hover': colors.accentText,
     },
     textDecoration: 'none',
     borderColor: 'transparent',
     borderRadius: radius.md,
     cornerShape: 'squircle',
+  },
+  active: {
+    color: colors.accentText,
   },
   icon: {
     color: {

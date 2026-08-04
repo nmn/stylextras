@@ -8,6 +8,7 @@ import {
   defineConfig,
   defineDocs,
 } from 'fumadocs-mdx/config';
+import { codeHighlightThemes } from './src/lib/code-highlight-theme.js';
 
 export const docs = defineDocs({
   dir: 'content/docs',
@@ -18,4 +19,10 @@ export const docs = defineDocs({
   },
 });
 
-export default defineConfig();
+export default defineConfig({
+  mdxOptions: {
+    rehypeCodeOptions: {
+      themes: codeHighlightThemes,
+    },
+  },
+});

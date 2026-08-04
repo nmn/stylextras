@@ -259,6 +259,40 @@ test('component previews resolve packaged color tokens in both appearances', asy
   expect(dark.color).not.toBe(light.color)
 })
 
+test('syntax highlighting derives its palette from the active website theme', async ({ page }) => {
+  await page.goto('/docs/components/button')
+  const example = page
+    .getByRole('figure')
+    .filter({ hasText: 'Button example.tsx' })
+    .first()
+  const roles = ['keyword', 'function', 'string-expression', 'constant'] as const
+  const token = (role: (typeof roles)[number]) =>
+    example.locator(`span[style*="--syntax-token-${role}"]`).first()
+  const readPalette = () =>
+    Promise.all(
+      roles.map((role) => token(role).evaluate((element) => getComputedStyle(element).color)),
+    )
+
+  for (const role of roles) await expect(token(role)).toBeVisible()
+
+  await setWebsiteTheme(page, { Appearance: 'light', 'Color theme': 'docs' })
+  const docsLight = await readPalette()
+
+  await setWebsiteTheme(page, { 'Color theme': 'ember' })
+  await expect.poll(readPalette).not.toEqual(docsLight)
+  const emberLight = await readPalette()
+  expect(new Set(emberLight).size).toBe(roles.length)
+
+  await setWebsiteTheme(page, { Appearance: 'dark' })
+  await expect.poll(readPalette).not.toEqual(emberLight)
+
+  await page.goto('/docs/get-started')
+  await expect(page.locator('pre code .line span').first()).toHaveAttribute(
+    'style',
+    /--shiki-theme:var\(--syntax-/,
+  )
+})
+
 test('accent themes tint their surfaces subtly in both appearances', async ({
   browserName,
   page,

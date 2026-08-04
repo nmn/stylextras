@@ -50,7 +50,7 @@ test('every component page renders its live demo', async ({ browserName, page })
     await expect(exampleCode).toContainText('export default function Example')
     await expect(exampleCode.locator('code > .line > span').first()).toHaveAttribute(
       'style',
-      /--shiki-light:.+--shiki-dark:/,
+      /--shiki-theme:var\(--syntax-/,
     )
     await expect(page.getByRole('heading', { name: 'Anatomy', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'API reference', exact: true })).toBeVisible()

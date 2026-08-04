@@ -4,19 +4,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use client'
-import * as stylex from '@stylexjs/stylex'
-import { CopyToClipboardButton } from '@stylextras/ui/copy-to-clipboard-button'
-import { ScrollArea } from '@stylextras/ui/scroll-area'
-import { colors } from '@stylextras/ui/tokens/color.stylex'
-import { typography } from '@stylextras/ui/tokens/typography.stylex'
-import { Check, Clipboard } from 'lucide-react'
-import type { ReactNode } from 'react'
+'use client';
+import * as stylex from '@stylexjs/stylex';
+import { CopyToClipboardButton } from '@stylextras/ui/copy-to-clipboard-button';
+import { ScrollArea } from '@stylextras/ui/scroll-area';
+import { colors } from '@stylextras/ui/tokens/color.stylex';
+import { typography } from '@stylextras/ui/tokens/typography.stylex';
+import { Check, Clipboard } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { syntax } from '@/theming/syntax.stylex';
 interface ScrollableCodeBlockProps {
-  content: string
-  highlightedContent?: ReactNode
-  title: string
-  maxHeight?: number
+  content: string;
+  highlightedContent?: ReactNode;
+  title: string;
+  maxHeight?: number;
 }
 export function ScrollableCodeBlock({
   content,
@@ -29,7 +30,9 @@ export function ScrollableCodeBlock({
       <div {...stylex.props(styles.header)}>
         <figcaption {...stylex.props(styles.title)}>{title}</figcaption>
         <CopyToClipboardButton
-          copiedIcon={<Check {...stylex.props(styles.copyIcon, styles.copyIconChecked)} />}
+          copiedIcon={
+            <Check {...stylex.props(styles.copyIcon, styles.copyIconChecked)} />
+          }
           copiedLabel="Copied"
           feedback="none"
           icon={<Clipboard {...stylex.props(styles.copyIcon)} />}
@@ -46,11 +49,13 @@ export function ScrollableCodeBlock({
         tabIndex={0}
       >
         <pre {...stylex.props(styles.pre)}>
-          <code {...stylex.props(styles.code)}>{highlightedContent ?? content}</code>
+          <code {...stylex.props(styles.code)}>
+            {highlightedContent ?? content}
+          </code>
         </pre>
       </ScrollArea>
     </figure>
-  )
+  );
 }
 const styles = stylex.create({
   figure: {
@@ -68,7 +73,8 @@ const styles = stylex.create({
   },
   header: {
     display: 'flex',
-    gap: 8,
+    rowGap: 8,
+    columnGap: 8,
     alignItems: 'center',
     height: 38,
     paddingInline: 16,
@@ -101,9 +107,9 @@ const styles = stylex.create({
     paddingBlock: 8,
     paddingInline: 16,
     fontFamily: typography.fontMono,
-    color: colors.code,
     fontSize: 13,
     lineHeight: 1.5,
+    color: syntax['--syntax-foreground'],
     whiteSpace: 'pre',
   },
   copyIcon: {
@@ -113,4 +119,4 @@ const styles = stylex.create({
   copyIconChecked: {
     color: colors.accentText,
   },
-})
+});
